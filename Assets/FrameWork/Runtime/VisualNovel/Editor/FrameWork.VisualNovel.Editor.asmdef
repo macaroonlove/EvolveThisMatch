@@ -1,0 +1,16 @@
+{
+    "name": "FrameWork.VisualNovel.Editor",
+    "rootNamespace": "FrameWork.VisualNovel.Editor",
+    "references": [
+        "GUID:758ae7e9af42dc744b638f0e86bea512"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

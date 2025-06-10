@@ -1,0 +1,22 @@
+{
+    "name": "FrameWork.VisualNovel",
+    "rootNamespace": "FrameWork.VisualNovel",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:84651a3751eca9349aac36a66bba901b",
+        "GUID:1a175238fb225f44ea4fcaedaff5ad40",
+        "GUID:0a93103fc30486240ad11c7765531213",
+        "GUID:df7aefb5965f4de4a89064d48eb76ce3",
+        "GUID:ecbce731de11709478affea29b6bc5e3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

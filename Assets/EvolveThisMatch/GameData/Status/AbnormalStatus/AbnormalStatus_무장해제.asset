@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2676ce51c0285f242bd88fb9ab686a0b, type: 3}
+  m_Name: "AbnormalStatus_\uBB34\uC7A5\uD574\uC81C"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: 757025be0fc43ad4b9e061af7b067c42, type: 3}
+  _displayName: "\uBB34\uC7A5\uD574\uC81C"
+  _description: "\uACF5\uACA9 \uBD88\uAC00 \uC0C1\uD0DC\uAC00 \uB429\uB2C8\uB2E4."
+  _delay: 0
+  _useHitCountLimit: 0
+  _hitCount: 0
+  effects:
+  - {fileID: 1935938253200958776}
+  _applyFX: {fileID: 11400000, guid: d6154e13ae61b5f41a623a4622a39628, type: 2}
+  _removeFX: {fileID: 11400000, guid: 208aeae81897e094aa397ace62f4792a, type: 2}
+--- !u!114 &1935938253200958776
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5c9ef7806300742a5688339e0ad424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

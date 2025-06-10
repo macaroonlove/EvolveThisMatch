@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c07506fdbaa7fc45875ac46e8746973, type: 3}
+  m_Name: "PassiveItem_\uD14C\uC2A4\uD2B8"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _id: 0
+  _displayName: "\uD14C\uC2A4\uD2B8"
+  _description: "\uC2E4\uD5D8"
+  _rarity: {fileID: 11400000, guid: b1cab0295bcd26048bc722e277d364de, type: 2}
+  _price: 2
+  _casterFX: {fileID: 0}
+  triggers: []

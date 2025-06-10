@@ -1,0 +1,22 @@
+- 스킬 사용 방식
+
+1. RPG (하나의 캐릭터 / 스킬이 여러 개 / 키보드 등의 버튼을 눌러서 스킬을 실행)
+SkillTreeSystem - PlayFab과 같은 외부 저장소에 저장되어있는 데이터를 불러온다.
+SkillTreeSystem - 각 데이터와 해당 캐릭터의 스킬트리를 대조하여 습득한 스킬을 리스트에 저장한다.
+SkillTreeSystem - 해당 캐릭터의 스킬트리와 스킬 습득 데이터를 통해 SkillTreeCanvas를 초기화시킨다.
+SkillTreeSystem - 스킬버튼에 등록된 스킬 데이터를 통해 SkillExecuteCanvas를 초기화시킨다.
+SkillTreeCanvas - 스킬트리의 노드(UISkillNodeController)와 패스(UISkillPathController)를 생성하여 스킬트리를 화면에 보여준다. 노드는 버튼 형식으로 눌러서 스킬을 습득할 수 있다.
+SkillExecuteCanvas - 임의의 개수의 스킬 사용 버튼(UISkillExecuteButton)을 생성한다.
+SkillExecuteCanvas - 등록된 스킬 데이터를 활용하여 스킬 사용 버튼(UISkillExecuteButton)에 등록한다.
+SkillInputs - New Input System에서 각 스킬 버튼을 받아서 해당 버튼이 눌렸을 경우 해당 캐릭터의 SkillAbility의 TryExecuteSkill를 실행한다.
+SkillAbility - 스킬의 애니메이션을 상황에 맞게 실행하고 데미지 계산 로직을 실행한다.
+
+2. 캐쥬얼 (여러 캐릭터 / 유닛 당 스킬이 여러 개)
+AgentSelectSystem - 유닛을 선택했을 때, 해당 유닛의 SkillTreeGraph를 받아와 SkillTemplate로 버튼(UISkillExecuteButton)을 초기화하여 화면에 표시해준다.
+UISkillExecuteButton - 버튼을 눌렀다면 해당 SkillTemplate을 SkillAbility의 TryExecuteSkill에 전달하여 스킬을 실행한다.
+SkillAbility - 스킬의 애니메이션을 상황에 맞게 실행하고 데미지 계산 로직을 실행한다.
+
+3. 캐쥬얼 (여러 캐릭터 / 유닛 당 스킬이 하나)
+AgentSelectSystem - 유닛을 선택했을 때, 해당 유닛의 SkillTemplate을 받아와 버튼(UISkillExecuteButton)을 초기화하여 화면에 표시해준다.
+UISkillExecuteButton - 버튼을 눌렀다면 해당 SkillTemplate을 SkillAbility의 TryExecuteSkill에 전달하여 스킬을 실행한다.
+SkillAbility - 스킬의 애니메이션을 상황에 맞게 실행하고 데미지 계산 로직을 실행한다.

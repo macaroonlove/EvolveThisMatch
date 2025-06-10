@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 739d310a8ced1bc409d2d1d937fc99fc, type: 3}
+  m_Name: VFX Despawn_Bind
+  m_EditorClassIdentifier: 
+  _vfxObj: {fileID: 5618313314820945176, guid: ebc4ce214563ddc4280bfda38fa1102b, type: 3}

@@ -1,0 +1,21 @@
+{
+    "name": "FrameWork.Loading",
+    "rootNamespace": "FrameWork.Loading",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:1a175238fb225f44ea4fcaedaff5ad40",
+        "GUID:0a93103fc30486240ad11c7765531213",
+        "GUID:df7aefb5965f4de4a89064d48eb76ce3",
+        "GUID:f6b267d3f3fbb574181940732f727368"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

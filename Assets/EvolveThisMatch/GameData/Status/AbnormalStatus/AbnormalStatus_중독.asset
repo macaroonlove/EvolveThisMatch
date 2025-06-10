@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-616041501589957223
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0e64b4358806846890f35b37909f24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2676ce51c0285f242bd88fb9ab686a0b, type: 3}
+  m_Name: "AbnormalStatus_\uC911\uB3C5"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: 05c785224526bcf4f8a455b46d65a148, type: 3}
+  _displayName: "\uC911\uB3C5"
+  _description: "\uD68C\uBCF5 \uBD88\uAC00 \uC0C1\uD0DC\uAC00 \uB418\uBA70, \uB9E4
+    \uCD08 \uCD5C\uB300 \uCCB4\uB825\uC758 1%\uC758 \uD53C\uD574\uB97C \uC785\uC2B5\uB2C8\uB2E4."
+  _delay: 0
+  _useHitCountLimit: 0
+  _hitCount: 0
+  effects:
+  - {fileID: -616041501589957223}
+  - {fileID: 1502111714091674097}
+  _applyFX: {fileID: 11400000, guid: 7682836961be6bc48b07c24e1ab3ddec, type: 2}
+  _removeFX: {fileID: 11400000, guid: 802ea46843477814f9ef326ea3080aba, type: 2}
+--- !u!114 &1502111714091674097
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef56f10da1b48c4bb95d6a4b7dbe669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _value: -0.01

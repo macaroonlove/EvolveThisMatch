@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29102e1da39c9224093d839c85df4021, type: 3}
+  m_Name: "Skin_\uBAA8\uD5D8\uAC00_\uAE30\uBCF8_Battle"
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 7137419757110548002, guid: 7d233aa6d5a7eda4586f7c721927a1a8, type: 3}
+  _spawnVoice: {fileID: 0}
+  _deathVoice: {fileID: 0}
+  _casterFX: {fileID: 0}
+  _targetFX: {fileID: 0}

@@ -1,0 +1,24 @@
+AttackAbility: 공격력, 공격 속도, 공격 사거리를 조작하고, 공격하는 기능이 있는 어빌리티
+
+HitAbility: 회피력을 계산하고 물리, 마법 피해 면역을 적용하여 HealthAbility에 값을 전달하는 어빌리티
+
+DamageCalculateAbility: 치명타, 치명타 데미지, 물리 관통력, 마법 관통력, 방어력, 마법저항력을 조작하고, 최종 가해지는 데미지를 계산하는 어빌리티
+
+HealthAbility: 최대 체력을 계산하고 HP를 조작하는 어빌리티
+
+ManaAbility: 마나를 관리하는 어빌리티
+
+SkillAbility: 스킬 사용을 관리하는 어빌리티
+
+
+
+
+finalATK | finalAttackTerm | finalAttackRange | finalAttackCount | finalAttackType
+
+finalTargetOfAttack | finalIsAvoidance
+
+finalDamageType | finalDamageIncrease | finalDamageMultiplier | finalPhysicalResistance | finalMagicResistance | finalPhysicalPenetration | finalMagicPenetration | finalIsCriticalHit | finalCriticalHitDamage
+
+finalMaxHP | finalMinHP | healingAdditional | healingIncrease | healingMultiplier
+
+finalMoveSpeed | finalIsMoveAble

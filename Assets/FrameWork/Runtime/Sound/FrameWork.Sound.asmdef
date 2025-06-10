@@ -1,0 +1,16 @@
+{
+    "name": "FrameWork.Sound",
+    "rootNamespace": "FrameWork.Sound",
+    "references": [
+        "GUID:0a93103fc30486240ad11c7765531213"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

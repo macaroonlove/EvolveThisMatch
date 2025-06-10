@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: SettingTable_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 9f1779235218d7347bf1bad59203e3a0, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 260645220352
+    m_Localized: Basic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1814190256128
+    m_Localized: Graphic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2361664368640
+    m_Localized: Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4107149144064
+    m_Localized: Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4518769750016
+    m_Localized: Name Visibility
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4901114114048
+    m_Localized: Max FPS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4995209129984
+    m_Localized: Rotation Sensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5287329820672
+    m_Localized: Viewing Distance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7435652329472
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10575193731072
+    m_Localized: Please write your name.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 123098316304384
+    m_Localized: Screen Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 123832181092352
+    m_Localized: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 124937136926720
+    m_Localized: Graphic Quality
+    m_Metadata:
+      m_Items: []
+  - m_Id: 125346350002176
+    m_Localized: Upper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 125521265061888
+    m_Localized: Middle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 125687669878784
+    m_Localized: Lower
+    m_Metadata:
+      m_Items: []
+  - m_Id: 126962717323264
+    m_Localized: Screen Brightness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 127487953235968
+    m_Localized: Master Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 128228566659072
+    m_Localized: Background Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 128728934543360
+    m_Localized: Sound Effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129236361441280
+    m_Localized: Select Microphone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129683834957824
+    m_Localized: Microphone Sensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129804152762368
+    m_Localized: Voice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129985405415424
+    m_Localized: Ambient Sounds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 133373639684096
+    m_Localized: Control Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134100005056512
+    m_Localized: Move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134120800415744
+    m_Localized: Rotate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134405480411136
+    m_Localized: Sprint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134644421521408
+    m_Localized: Jump/Climb
+    m_Metadata:
+      m_Items: []
+  - m_Id: 135155510046720
+    m_Localized: Crouch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 135237827457024
+    m_Localized: Interaction
+    m_Metadata:
+      m_Items: []
+  - m_Id: 135411714912256
+    m_Localized: Move Mouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177830120550400
+    m_Localized: Press the key to specify.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 179958188765184
+    m_Localized: Full Screen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 179977683890176
+    m_Localized: Windowed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 179985397215232
+    m_Localized: Borderless
+    m_Metadata:
+      m_Items: []
+  - m_Id: 180997629571072
+    m_Localized: No limit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 356185780416512
+    m_Localized: Toggle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 356156160241664
+    m_Localized: Hold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 353909749739520
+    m_Localized: Control Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13437180188454912
+    m_Localized: 'Detecting your voice.
+
+      Please shout "Ah~" comfortably.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13437320232071168
+    m_Localized: 'Detecting ambient sounds.
+
+      Please do not raise any voice.'
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

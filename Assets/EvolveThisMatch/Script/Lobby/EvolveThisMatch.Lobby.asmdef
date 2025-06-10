@@ -1,0 +1,26 @@
+{
+    "name": "EvolveThisMatch.Lobby",
+    "rootNamespace": "EvolveThisMatch.Lobby",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:db2875c6bc6e11c4fb8730f4afcd8265",
+        "GUID:63ebd60d5c68886498ecfee04b5d6a12",
+        "GUID:1a175238fb225f44ea4fcaedaff5ad40",
+        "GUID:0a93103fc30486240ad11c7765531213",
+        "GUID:937ab28f69bba5e4299d9c94381ef030",
+        "GUID:df7aefb5965f4de4a89064d48eb76ce3",
+        "GUID:645ad48f197b5bd40af752c3f7fe4f84",
+        "GUID:9b1dadba60ee15e4b8ced18cbc4a1ed9",
+        "GUID:f6b267d3f3fbb574181940732f727368"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

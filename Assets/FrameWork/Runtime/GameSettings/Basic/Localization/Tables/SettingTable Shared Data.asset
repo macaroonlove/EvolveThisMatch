@@ -1,0 +1,197 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: SettingTable Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: SettingTable
+  m_TableCollectionNameGuidString: 9f1779235218d7347bf1bad59203e3a0
+  m_Entries:
+  - m_Id: 260645220352
+    m_Key: Option_Basic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1814190256128
+    m_Key: Option_Graphic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2361664368640
+    m_Key: Option_Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4107149144064
+    m_Key: DisplayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4518769750016
+    m_Key: DisplayNameVisible
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4901114114048
+    m_Key: FPS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4995209129984
+    m_Key: RotateSensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5287329820672
+    m_Key: ViewDistance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7435652329472
+    m_Key: LanguageSetting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10575193731072
+    m_Key: PlayerNamePlaceHolder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 123098316304384
+    m_Key: ScreenMode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 123832181092352
+    m_Key: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 124937136926720
+    m_Key: GraphicQuality
+    m_Metadata:
+      m_Items: []
+  - m_Id: 125346350002176
+    m_Key: High
+    m_Metadata:
+      m_Items: []
+  - m_Id: 125521265061888
+    m_Key: Middle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 125687669878784
+    m_Key: Low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 126962717323264
+    m_Key: ScreenBrightness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 127487953235968
+    m_Key: Master
+    m_Metadata:
+      m_Items: []
+  - m_Id: 128228566659072
+    m_Key: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 128728934543360
+    m_Key: SFX
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129236361441280
+    m_Key: Microphone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129683834957824
+    m_Key: MicrophoneSensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129804152762368
+    m_Key: Voice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129985405415424
+    m_Key: AmbientSounds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 133373639684096
+    m_Key: Control
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134100005056512
+    m_Key: Move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134120800415744
+    m_Key: Rotate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134405480411136
+    m_Key: Sprint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 134644421521408
+    m_Key: Jump
+    m_Metadata:
+      m_Items: []
+  - m_Id: 135155510046720
+    m_Key: Crouch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 135237827457024
+    m_Key: Interaction
+    m_Metadata:
+      m_Items: []
+  - m_Id: 135411714912256
+    m_Key: MoveMouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177830120550400
+    m_Key: BindingDescription
+    m_Metadata:
+      m_Items: []
+  - m_Id: 179958188765184
+    m_Key: FullScreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 179977683890176
+    m_Key: Windowed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 179985397215232
+    m_Key: NoBorder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 180997629571072
+    m_Key: NoLlimit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 353909749739520
+    m_Key: Control Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 356156160241664
+    m_Key: Hold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 356185780416512
+    m_Key: Toggle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13437180188454912
+    m_Key: VoiceDescription
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13437320232071168
+    m_Key: AmbientSoundDescription
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 5878297525688991771
+  references:
+    version: 2
+    RefIds:
+    - rid: 5878297525688991771
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1721614702358

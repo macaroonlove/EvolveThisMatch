@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53387b0564debbf4886c6d8435e8b1ba, type: 3}
+  m_Name: AgentLibrary_All
+  m_EditorClassIdentifier: 
+  templates:
+  - {fileID: 11400000, guid: 70f8c7c0ddf90a94c8f3ce1f9fbb0272, type: 2}
+  - {fileID: 11400000, guid: f6a48827e1da95d48a6777d5721d0650, type: 2}
+  _isAll: 1

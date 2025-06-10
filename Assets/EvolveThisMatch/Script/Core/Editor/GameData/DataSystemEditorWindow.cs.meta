@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 50b26c1023cea3f42ab4c09ebacc4994
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - skin: {fileID: 11400000, guid: ea0fdaec75ec7734f8377e07f9b769d7, type: 2}
+  - emptySkillSprite: {fileID: 21300000, guid: 41db6abcc81cda541a6cc45be475e250, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

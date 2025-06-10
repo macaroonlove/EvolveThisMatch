@@ -1,0 +1,126 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5508403693995327544
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef68eb525becc8458ebedd6bdf47435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: 0
+  _rarity: {fileID: 0}
+  _displayName: 
+  _description: 
+  _faceSprite: {fileID: 0}
+  lobbyResource:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  battleResource:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+--- !u!114 &-4476297839729748533
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef68eb525becc8458ebedd6bdf47435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: 0
+  _rarity: {fileID: 0}
+  _displayName: 
+  _description: 
+  _faceSprite: {fileID: 0}
+  lobbyResource:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  battleResource:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+--- !u!114 &-1897421210009251676
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef68eb525becc8458ebedd6bdf47435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: 0
+  _rarity: {fileID: 0}
+  _displayName: 
+  _description: 
+  _faceSprite: {fileID: 0}
+  lobbyResource:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  battleResource:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315827f885b2bdb4db10ec962e833c34, type: 3}
+  m_Name: "Agent_\uBAA8\uD5D8\uAC00"
+  m_EditorClassIdentifier: 
+  _id: 0
+  _rarity: {fileID: 11400000, guid: e2abef2d73980a943aa1a2f6a18c9ed1, type: 2}
+  _job: {fileID: 0}
+  _displayName: "\uBAA8\uD5D8\uAC00"
+  _moveType: 0
+  _moveSpeed: 1
+  _chaseRange: 5
+  _chaseFailRange: 8
+  _attackType: 0
+  _damageType: 0
+  _atk: 20
+  _attackTerm: 1
+  _attackRange: 1
+  _isProjectileAttack: 0
+  _projectilePrefab: {fileID: 0}
+  _spawnPoint: 0
+  _physicalPenetration: 0
+  _magicPenetration: 0
+  _criticalHitChance: 0
+  _criticalHitDamage: 0
+  _maxHP: 10000
+  _physicalResistance: 100
+  _magicResistance: 100
+  _hpRecoveryPerSec: 0
+  _manaRecoveryType: 0
+  _maxMana: 100
+  _startMana: 0
+  _manaRecoveryPerSec: 25
+  _skillTreeGraph: {fileID: 11400000, guid: 3f5919f2736bcec4f994e58d719c0215, type: 2}
+  skins:
+  - {fileID: 11400000, guid: f2a25a39ddaa8e6439443560eb7f0bea, type: 2}

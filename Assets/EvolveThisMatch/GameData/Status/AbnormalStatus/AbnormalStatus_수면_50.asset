@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2805571097056442521
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5c9ef7806300742a5688339e0ad424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-2422942470330413690
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05f711e840ec76547a9ba1e213804ca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2676ce51c0285f242bd88fb9ab686a0b, type: 3}
+  m_Name: "AbnormalStatus_\uC218\uBA74_50"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: 222e577b9d36cbc41bd258356ed31fd6, type: 3}
+  _displayName: "\uC218\uBA74"
+  _description: "1\uCD08 \uD6C4, \uC774\uB3D9, \uACF5\uACA9, \uC2A4\uD0AC \uC0AC\uC6A9
+    \uBD88\uAC00 \uC0C1\uD0DC\uAC00 \uB418\uBA70, \uBC1B\uB294 \uD53C\uD574\uB7C9\uC774
+    50% \uC99D\uAC00\uD569\uB2C8\uB2E4.\n\uD53C\uACA9 \uC2DC, \uC218\uBA74 \uC0C1\uD0DC\uAC00
+    \uD574\uC81C\uB429\uB2C8\uB2E4."
+  _delay: 1
+  _useHitCountLimit: 1
+  _hitCount: 1
+  effects:
+  - {fileID: -2422942470330413690}
+  - {fileID: -2805571097056442521}
+  - {fileID: 387344413209021073}
+  - {fileID: 5531977814641384130}
+  _applyFX: {fileID: 11400000, guid: 27bb40a41bc5903448343b474dccd7e9, type: 2}
+  _removeFX: {fileID: 11400000, guid: 16fa3255efa886f4293c7d89c87e3ad9, type: 2}
+--- !u!114 &387344413209021073
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b701ca5bfa7714f8f421cc2b520828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5531977814641384130
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca79af71da95a234194a485752061636, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _value: 0.5

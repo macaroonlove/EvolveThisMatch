@@ -1,0 +1,20 @@
+{
+    "name": "FrameWork.Tooltip",
+    "rootNamespace": "FrameWork.Tooltip",
+    "references": [
+        "Unity.TextMeshPro",
+        "UniTask",
+        "FrameWork",
+        "FrameWork.UIBinding",
+        "VInspector"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
