@@ -10,23 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Manager
+  m_Name: SkinResource
   m_EditorClassIdentifier: 
-  m_GroupName: Manager
-  m_GUID: edb3367dd2eae9a428a35737ce5f49d3
+  m_GroupName: SkinResource
+  m_GUID: 70aa6827473da204089a297ce17daf7c
   m_SerializeEntries:
-  - m_GUID: 4bfb7415e32ffa04cb63e9b1427e5de9
-    m_Address: GameDataManager
+  - m_GUID: 6b3907537b037a0459373c0565a5176d
+    m_Address: "Skin_\uBAA8\uD5D8\uAC00_\uAE30\uBCF8_Battle"
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b5d0e86774bd7e245a58e25a659c3550
-    m_Address: SaveManager
+  - m_GUID: 8103e3efe007569458c613f5b9d5f439
+    m_Address: "Skin_\uBAA8\uD5D8\uAC00_\uAE30\uBCF8_Lobby"
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cbd5eafc9ed85ea4da3224a0bb05f408
-    m_Address: LoadingManager
+  - m_GUID: c8bfa0dcc7c6bbd49ab72b392bd87202
+    m_Address: "Skin_\uC804\uC0AC_\uAE30\uBCF8_Battle"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f385141f447d6674b8df7fb36de1214c
+    m_Address: "Skin_\uC804\uC0AC_\uAE30\uBCF8_Lobby"
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -34,5 +39,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 9dbfa78e93c17e14d9a9b1505239b656, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: b82bb2ec3a856c34f802b864a8df52da, type: 2}
-    - {fileID: 11400000, guid: d45cd1ac59e23954c9a74ae4e800f0c9, type: 2}
+    - {fileID: 11400000, guid: ee5d66c25df64e64ab969dcecb76a47a, type: 2}
+    - {fileID: 11400000, guid: 9a5298b087db37e40be98c679ba4a7df, type: 2}
