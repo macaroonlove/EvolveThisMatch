@@ -10,7 +10,6 @@ namespace EvolveThisMatch.Editor
         protected override void ConvertCSVToTemplate(Dictionary<string, List<string>> csvDic)
         {
             InitializeRarityTemplates();
-            InitializeJobTemplates();
 
             Dictionary<int, EnemyTemplate> templateDic = new Dictionary<int, EnemyTemplate>();
             var guids = AssetDatabase.FindAssets("t:EnemyTemplate");
@@ -38,12 +37,6 @@ namespace EvolveThisMatch.Editor
                         template.SetRarity(rarity);
                     }
 
-                    // 직군
-                    if (_jobDic.TryGetValue(csvDic["직군"][i], out var job))
-                    {
-                        template.SetJob(job);
-                    }
-
                     // 유닛 이름
                     if (template.displayName != csvDic["유닛 이름"][i])
                     {
@@ -64,24 +57,6 @@ namespace EvolveThisMatch.Editor
                     if (float.TryParse(csvDic["이동 속도"][i], out var moveSpeed))
                     {
                         template.SetMoveSpeed(moveSpeed);
-                    }
-
-                    // 추적 거리
-                    if (float.TryParse(csvDic["추적 거리"][i], out var chaseRange))
-                    {
-                        template.SetChaseRange(chaseRange);
-                    }
-
-                    // 추적 실패 거리
-                    if (float.TryParse(csvDic["추적 실패 거리"][i], out var chaseFailRange))
-                    {
-                        template.SetChaseFailRange(chaseFailRange);
-                    }
-
-                    // 공격 방식
-                    if (Enum.TryParse<EAttackType>(csvDic["공격 방식"][i], out var attackType))
-                    {
-                        template.SetAttackType(attackType);
                     }
 
                     // 데미지 타입
@@ -156,30 +131,6 @@ namespace EvolveThisMatch.Editor
                         template.SetHPRecoveryPerSec(hpRecoveryPerSec);
                     }
 
-                    // 마나 회복 방식
-                    if (Enum.TryParse<EManaRecoveryType>(csvDic["마나 회복 방식"][i], out var manaRecoveryType))
-                    {
-                        template.SetManaRecoveryType(manaRecoveryType);
-                    }
-
-                    // 최대 마나
-                    if (int.TryParse(csvDic["최대 마나"][i], out var maxMana))
-                    {
-                        template.SetMaxMana(maxMana);
-                    }
-
-                    // 시작 마나
-                    if (int.TryParse(csvDic["시작 마나"][i], out var startMana))
-                    {
-                        template.SetStartMana(startMana);
-                    }
-
-                    // 초당 마나 회복량
-                    if (int.TryParse(csvDic["초당 마나 회복량"][i], out var manaRecoveryPerSec))
-                    {
-                        template.SetManaRecoveryPerSec(manaRecoveryPerSec);
-                    }
-
                     EditorUtility.SetDirty(template);
                 }
                 // 템플릿이 존재하지 않는다면 생성
@@ -196,12 +147,6 @@ namespace EvolveThisMatch.Editor
                         newTemplate.SetRarity(rarity);
                     }
 
-                    // 직군
-                    if (_jobDic.TryGetValue(csvDic["직군"][i], out var job))
-                    {
-                        newTemplate.SetJob(job);
-                    }
-
                     // 유닛 이름
                     newTemplate.SetDisplayName(csvDic["유닛 이름"][i]);
 
@@ -215,24 +160,6 @@ namespace EvolveThisMatch.Editor
                     if (float.TryParse(csvDic["이동 속도"][i], out var moveSpeed))
                     {
                         newTemplate.SetMoveSpeed(moveSpeed);
-                    }
-
-                    // 추적 거리
-                    if (float.TryParse(csvDic["추적 거리"][i], out var chaseRange))
-                    {
-                        newTemplate.SetChaseRange(chaseRange);
-                    }
-
-                    // 추적 실패 거리
-                    if (float.TryParse(csvDic["추적 실패 거리"][i], out var chaseFailRange))
-                    {
-                        newTemplate.SetChaseFailRange(chaseFailRange);
-                    }
-
-                    // 공격 방식
-                    if (Enum.TryParse<EAttackType>(csvDic["공격 방식"][i], out var attackType))
-                    {
-                        newTemplate.SetAttackType(attackType);
                     }
 
                     // 데미지 타입
@@ -307,30 +234,6 @@ namespace EvolveThisMatch.Editor
                         newTemplate.SetHPRecoveryPerSec(hpRecoveryPerSec);
                     }
 
-                    // 마나 회복 방식
-                    if (Enum.TryParse<EManaRecoveryType>(csvDic["마나 회복 방식"][i], out var manaRecoveryType))
-                    {
-                        newTemplate.SetManaRecoveryType(manaRecoveryType);
-                    }
-
-                    // 최대 마나
-                    if (int.TryParse(csvDic["최대 마나"][i], out var maxMana))
-                    {
-                        newTemplate.SetMaxMana(maxMana);
-                    }
-
-                    // 시작 마나
-                    if (int.TryParse(csvDic["시작 마나"][i], out var startMana))
-                    {
-                        newTemplate.SetStartMana(startMana);
-                    }
-
-                    // 초당 마나 회복량
-                    if (int.TryParse(csvDic["초당 마나 회복량"][i], out var manaRecoveryPerSec))
-                    {
-                        newTemplate.SetManaRecoveryPerSec(manaRecoveryPerSec);
-                    }
-
                     string path = $"Assets/EvolveThisMatch/GameData/Unit/Enemy/Enemy_{csvDic["유닛 이름"][i]}.asset";
                     AssetDatabase.CreateAsset(newTemplate, path);
                 }
@@ -351,21 +254,6 @@ namespace EvolveThisMatch.Editor
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var rarity = AssetDatabase.LoadAssetAtPath<EnemyRarityTemplate>(path);
                 _rarityDic[rarity.rarity.ToString()] = rarity;
-            }
-        }
-        #endregion
-
-        #region 직업 템플릿 가져오기
-        private Dictionary<string, JobTemplate> _jobDic = new Dictionary<string, JobTemplate>();
-
-        private void InitializeJobTemplates()
-        {
-            var guids = AssetDatabase.FindAssets("t:JobTemplate");
-            foreach (var guid in guids)
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var job = AssetDatabase.LoadAssetAtPath<JobTemplate>(path);
-                _jobDic[job.job.ToString()] = job;
             }
         }
         #endregion

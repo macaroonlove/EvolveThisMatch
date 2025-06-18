@@ -6,8 +6,7 @@ namespace EvolveThisMatch.Core
     public class EnemyTemplate : ScriptableObject, IDataWindowEntry
     {
         [HideInInspector, SerializeField] private int _id;
-        [HideInInspector, SerializeField] private RarityTemplate _rarity;
-        [HideInInspector, SerializeField] private JobTemplate _job;
+        [HideInInspector, SerializeField] private EnemyRarityTemplate _rarity;
         [HideInInspector, SerializeField] private string _displayName;
 
         [HideInInspector, SerializeField] private Sprite _sprite;
@@ -15,18 +14,11 @@ namespace EvolveThisMatch.Core
 
         [HideInInspector, SerializeField] private EMoveType _moveType;
         [HideInInspector, SerializeField] private float _moveSpeed;
-        [HideInInspector, SerializeField] private float _chaseRange;
-        [HideInInspector, SerializeField] private float _chaseFailRange;
 
-        [HideInInspector, SerializeField] private EAttackType _attackType;
         [HideInInspector, SerializeField] private EDamageType _damageType;
         [HideInInspector, SerializeField] private int _atk;
         [HideInInspector, SerializeField] private float _attackTerm;
         [HideInInspector, SerializeField] private float _attackRange;
-
-        [HideInInspector, SerializeField] private bool _isProjectileAttack;
-        [HideInInspector, SerializeField] private GameObject _projectilePrefab;
-        [HideInInspector, SerializeField] private ESpawnPoint _spawnPoint;
 
         [HideInInspector, SerializeField] private int _physicalPenetration;
         [HideInInspector, SerializeField] private int _magicPenetration;
@@ -52,7 +44,6 @@ namespace EvolveThisMatch.Core
         #region 프로퍼티
         public int id => _id;
         public RarityTemplate rarity => _rarity;
-        public JobTemplate job => _job;
         public string displayName => _displayName;
 
         public Sprite sprite => _sprite;
@@ -60,18 +51,11 @@ namespace EvolveThisMatch.Core
 
         public EMoveType MoveType => _moveType;
         public float MoveSpeed => _moveSpeed;
-        public float ChaseRange => _chaseRange;
-        public float ChaseFailRange => _chaseFailRange;
 
-        public EAttackType AttackType => _attackType;
         public EDamageType DamageType => _damageType;
         public int ATK => _atk;
         public float AttackTerm => _attackTerm;
         public float AttackRange => _attackRange;
-
-        public bool isProjectileAttack => _isProjectileAttack;
-        public GameObject projectilePrefab => _projectilePrefab;
-        public ESpawnPoint spawnPoint => _spawnPoint;
 
         public int PhysicalPenetration => _physicalPenetration;
         public int MagicPenetration => _magicPenetration;
@@ -97,16 +81,12 @@ namespace EvolveThisMatch.Core
 
         #region 값 변경 메서드
         internal void SetId(int id) => _id = id;
-        internal void SetRarity(RarityTemplate rarity) => _rarity = rarity;
-        internal void SetJob(JobTemplate job) => _job = job;
+        internal void SetRarity(EnemyRarityTemplate rarity) => _rarity = rarity;
         public void SetDisplayName(string name) => _displayName = name;
 
         internal void SetMoveType(EMoveType moveType) => _moveType = moveType;
         internal void SetMoveSpeed(float speed) => _moveSpeed = speed;
-        internal void SetChaseRange(float range) => _chaseRange = range;
-        internal void SetChaseFailRange(float range) => _chaseFailRange = range;
 
-        internal void SetAttackType(EAttackType attackType) => _attackType = attackType;
         internal void SetDamageType(EDamageType damageType) => _damageType = damageType;
         internal void SetATK(int atk) => _atk = atk;
         internal void SetAttackTerm(float term) => _attackTerm = term;
@@ -142,7 +122,6 @@ namespace EvolveThisMatch.Editor
     {
         private SerializedProperty _id;
         private SerializedProperty _rarity;
-        private SerializedProperty _job;
         private SerializedProperty _displayName;
 
         private SerializedProperty _sprite;
@@ -150,18 +129,11 @@ namespace EvolveThisMatch.Editor
 
         private SerializedProperty _moveType;
         private SerializedProperty _moveSpeed;
-        private SerializedProperty _chaseRange;
-        private SerializedProperty _chaseFailRange;
 
-        private SerializedProperty _attackType;
         private SerializedProperty _damageType;
         private SerializedProperty _atk;
         private SerializedProperty _attackTerm;
         private SerializedProperty _attackRange;
-
-        private SerializedProperty _isProjectileAttack;
-        private SerializedProperty _projectilePrefab;
-        private SerializedProperty _spawnPoint;
 
         private SerializedProperty _physicalPenetration;
         private SerializedProperty _magicPenetration;
@@ -188,25 +160,17 @@ namespace EvolveThisMatch.Editor
         {
             _id = serializedObject.FindProperty("_id");
             _rarity = serializedObject.FindProperty("_rarity");
-            _job = serializedObject.FindProperty("_job");
             _displayName = serializedObject.FindProperty("_displayName");
             _sprite = serializedObject.FindProperty("_sprite");
             _prefab = serializedObject.FindProperty("_prefab");
 
             _moveType = serializedObject.FindProperty("_moveType");
             _moveSpeed = serializedObject.FindProperty("_moveSpeed");
-            _chaseRange = serializedObject.FindProperty("_chaseRange");
-            _chaseFailRange = serializedObject.FindProperty("_chaseFailRange");
 
-            _attackType = serializedObject.FindProperty("_attackType");
             _damageType = serializedObject.FindProperty("_damageType");
             _atk = serializedObject.FindProperty("_atk");
             _attackTerm = serializedObject.FindProperty("_attackTerm");
             _attackRange = serializedObject.FindProperty("_attackRange");
-
-            _isProjectileAttack = serializedObject.FindProperty("_isProjectileAttack");
-            _projectilePrefab = serializedObject.FindProperty("_projectilePrefab");
-            _spawnPoint = serializedObject.FindProperty("_spawnPoint");
 
             _physicalPenetration = serializedObject.FindProperty("_physicalPenetration");
             _magicPenetration = serializedObject.FindProperty("_magicPenetration");
@@ -251,11 +215,6 @@ namespace EvolveThisMatch.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("직군", GUILayout.Width(80));
-            EditorGUILayout.PropertyField(_job, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
             GUILayout.Label("유닛 이름", GUILayout.Width(80));
             EditorGUILayout.PropertyField(_displayName, GUIContent.none);
             GUILayout.EndHorizontal();
@@ -281,24 +240,7 @@ namespace EvolveThisMatch.Editor
             EditorGUILayout.PropertyField(_moveSpeed, GUIContent.none);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("추적 거리", GUILayout.Width(192));
-            EditorGUILayout.PropertyField(_chaseRange, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("추적 실패 거리", GUILayout.Width(192));
-            EditorGUILayout.PropertyField(_chaseFailRange, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            _chaseFailRange.floatValue = Mathf.Max(_chaseRange.floatValue, _chaseFailRange.floatValue);
-
             GUILayout.Space(10);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("공격 방식", GUILayout.Width(192));
-            EditorGUILayout.PropertyField(_attackType, GUIContent.none);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("데미지 타입", GUILayout.Width(192));
@@ -319,26 +261,6 @@ namespace EvolveThisMatch.Editor
             GUILayout.Label("공격 사거리", GUILayout.Width(192));
             EditorGUILayout.PropertyField(_attackRange, GUIContent.none);
             GUILayout.EndHorizontal();
-
-            GUILayout.Space(10);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("투사체 사용 여부", GUILayout.Width(192));
-            EditorGUILayout.PropertyField(_isProjectileAttack, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            if (_isProjectileAttack.boolValue)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("투사체 프리팹", GUILayout.Width(192));
-                EditorGUILayout.PropertyField(_projectilePrefab, GUIContent.none);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("스폰 위치", GUILayout.Width(192));
-                EditorGUILayout.PropertyField(_spawnPoint, GUIContent.none);
-                GUILayout.EndHorizontal();
-            }
 
             GUILayout.Space(10);
 

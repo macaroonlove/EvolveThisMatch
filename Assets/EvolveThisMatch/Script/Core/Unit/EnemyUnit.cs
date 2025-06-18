@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace EvolveThisMatch.Core
 {
@@ -14,6 +13,9 @@ namespace EvolveThisMatch.Core
         {
             _id = template.id;
             _template = template;
+
+            SortingGroup group = GetComponent<SortingGroup>();
+            group.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
 
             base.Initialize(this);
         }

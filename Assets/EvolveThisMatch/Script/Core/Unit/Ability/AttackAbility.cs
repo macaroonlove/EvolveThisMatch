@@ -193,16 +193,9 @@ namespace EvolveThisMatch.Core
                 _baseATK = enemyUnit.template.ATK;
                 _baseAttackTerm = enemyUnit.template.AttackTerm;
                 _baseAttackRange = enemyUnit.template.AttackRange;
-                _baseAttackType = enemyUnit.template.AttackType;
+                _baseAttackType = EAttackType.Near;
                 _casterFX = enemyUnit.template.casterFX;
                 _targetFX = enemyUnit.template.targetFX;
-
-                if (enemyUnit.template.isProjectileAttack)
-                {
-                    _isProjectileAttack = true;
-                    _projectilePrefab = enemyUnit.template.projectilePrefab;
-                    _spawnPoint = enemyUnit.template.spawnPoint;
-                }
             }
 
             _attackCooldown = finalAttackTerm;

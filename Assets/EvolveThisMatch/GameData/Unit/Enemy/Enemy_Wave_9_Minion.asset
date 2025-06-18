@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 210bcf92f4da822409ad4c85029e24cf, type: 3}
+  m_Name: Enemy_Wave_9_Minion
+  m_EditorClassIdentifier: 
+  _id: 32
+  _rarity: {fileID: 11400000, guid: 8b7d26b04d81f4a4c918cc66b308282b, type: 2}
+  _displayName: Wave_9_Minion
+  _sprite: {fileID: 21300000, guid: 6d6ff4ad563ed6e48987584c1f507cd2, type: 3}
+  _prefab: {fileID: 5962856483269901865, guid: 4a4bb5f380118f447b7b5fdaa6b29b6d, type: 3}
+  _moveType: 0
+  _moveSpeed: 0
+  _damageType: 0
+  _atk: 0
+  _attackTerm: 0
+  _attackRange: 0
+  _physicalPenetration: 0
+  _magicPenetration: 0
+  _criticalHitChance: 0
+  _criticalHitDamage: 0
+  _maxHP: 0
+  _physicalResistance: 0
+  _magicResistance: 0
+  _hpRecoveryPerSec: 0
+  _manaRecoveryType: 0
+  _maxMana: 0
+  _startMana: 0
+  _manaRecoveryPerSec: 0
+  _skillTreeGraph: {fileID: 0}
+  _casterFX: {fileID: 0}
+  _targetFX: {fileID: 0}

@@ -23,12 +23,6 @@ namespace EvolveThisMatch.Core
                 _chaseFailRange = agentUnit.template.ChaseFailRange * agentUnit.template.ChaseFailRange;
                 _stoppingDistance = agentUnit.template.AttackRange * agentUnit.template.AttackRange;
             }
-            else if (unit is EnemyUnit enemyUnit)
-            {
-                _chaseRange = enemyUnit.template.ChaseRange;
-                _chaseFailRange = enemyUnit.template.ChaseFailRange * enemyUnit.template.ChaseFailRange;
-                _stoppingDistance = enemyUnit.template.AttackRange * enemyUnit.template.AttackRange;
-            }
         }
 
         internal override void UpdateAbility()

@@ -101,6 +101,7 @@ namespace EvolveThisMatch.Core
     /// </summary>
     public enum EAgentRarity
     {
+        Myth,
         Legend,
         Epic,
         Rare,
@@ -114,7 +115,8 @@ namespace EvolveThisMatch.Core
     {
         Boss,
         Elite,
-        Normal
+        Common,
+        Minion,
     }
 
     /// <summary>

@@ -5,11 +5,8 @@ namespace EvolveThisMatch.Core
     public enum EJob
     {
         Melee,
-        Tanker,
-        Ranger,
         Wizard,
-        Healer,
-        Supporter,
+        Summoner,
     }
 
     [CreateAssetMenu(menuName = "Templates/Etc/Job", fileName = "Job", order = 1)]

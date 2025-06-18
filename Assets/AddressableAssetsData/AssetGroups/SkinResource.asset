@@ -14,27 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: SkinResource
   m_GUID: 70aa6827473da204089a297ce17daf7c
-  m_SerializeEntries:
-  - m_GUID: 6b3907537b037a0459373c0565a5176d
-    m_Address: "Skin_\uBAA8\uD5D8\uAC00_\uAE30\uBCF8_Battle"
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8103e3efe007569458c613f5b9d5f439
-    m_Address: "Skin_\uBAA8\uD5D8\uAC00_\uAE30\uBCF8_Lobby"
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c8bfa0dcc7c6bbd49ab72b392bd87202
-    m_Address: "Skin_\uC804\uC0AC_\uAE30\uBCF8_Battle"
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f385141f447d6674b8df7fb36de1214c
-    m_Address: "Skin_\uC804\uC0AC_\uAE30\uBCF8_Lobby"
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9dbfa78e93c17e14d9a9b1505239b656, type: 2}
   m_SchemaSet:
