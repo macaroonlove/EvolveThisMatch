@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 1375930295509703317}
   - component: {fileID: 7415324553390672476}
   - component: {fileID: -1030165394725568450}
+  - component: {fileID: -7132471313836108199}
   m_Layer: 7
   m_Name: _EnemyBase
   m_TagString: Untagged
@@ -254,10 +255,24 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1736555264916169751}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 351196539
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_SortAtRoot: 0
+--- !u!114 &-7132471313836108199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736555264916169751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2d2ec37e58ddc24c8e4dedf15d18734, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _priority: 0
+  _baseMoveSpeed: 0
 --- !u!1 &3905504116318330056
 GameObject:
   m_ObjectHideFlags: 0
