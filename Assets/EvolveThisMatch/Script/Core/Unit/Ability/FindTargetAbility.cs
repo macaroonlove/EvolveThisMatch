@@ -162,9 +162,16 @@ namespace EvolveThisMatch.Core
         /// </summary>
         internal List<Unit> FindAttackableTarget(float range, EAttackType attackType, int attackCount)
         {
-            if (unit is AgentUnit)
+            if (unit is AgentUnit agentUnit)
             {
-                return FindAttackableTargetInCircle(range, EUnitType.Enemy, attackType, attackCount);
+                if (agentUnit.template.job.job == EJob.Melee)
+                {
+                    return FindAttackableTargetInCircle(range, EUnitType.Enemy, attackType, attackCount);
+                }
+                else
+                {
+                    return FindAttackableTargetInLine((int)range, EUnitType.Enemy, attackType, attackCount);
+                }
             }
             else if (unit is EnemyUnit)
             {
@@ -283,6 +290,24 @@ namespace EvolveThisMatch.Core
             if ((unitType & EUnitType.Enemy) != 0)
             {
                 targets.AddRange(_enemySystem.GetAttackableEnemies(unit.cellPos, grid, attackType, maxCount));
+            }
+
+            if (maxCount != int.MaxValue)
+            {
+                GetSortedUnits(targets, transform.position, maxCount);
+            }
+
+            return targets;
+        }
+
+        internal List<Unit> FindAttackableTargetInLine(int range, EUnitType unitType, EAttackType attackType, int maxCount)
+        {
+            List<Unit> targets = (maxCount == int.MaxValue) ? new List<Unit>() : new List<Unit>(maxCount);
+
+            if ((unitType & EUnitType.Enemy) != 0)
+            {
+                Vector2 pos = transform.position;
+                targets.AddRange(_enemySystem.GetAttackableEnemies(pos, range, attackType, maxCount));
             }
 
             if (maxCount != int.MaxValue)

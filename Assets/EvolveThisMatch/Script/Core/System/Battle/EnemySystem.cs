@@ -14,11 +14,13 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField, ReadOnly] private List<EnemyUnit> _enemies = new List<EnemyUnit>();
 
+        private AttackRangeRenderer _attackRangeRenderer;
+
         internal event UnityAction<Unit> onRegist;
 
         public void Initialize()
         {
-
+            _attackRangeRenderer = BattleManager.Instance.GetSubSystem<AttackRangeRenderer>();
         }
 
         public void Deinitialize()
@@ -51,7 +53,7 @@ namespace EvolveThisMatch.Core
             return _enemies;
         }
 
-        #region 원 범위 안쪽의 아군 유닛을 반환
+        #region 원 범위 안쪽의 적군 유닛을 반환
         /// <summary>
         /// 원 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
@@ -153,7 +155,7 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        #region 직선 범위 안쪽의 아군 유닛을 반환
+        #region 직선 범위 안쪽의 적군 유닛을 반환
         /// <summary>
         /// 직선 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
@@ -278,7 +280,7 @@ namespace EvolveThisMatch.Core
 
         #region 시야각 안쪽의 아군 유닛을 반환
         /// <summary>
-        /// 시야각 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
+        /// 시야각 안쪽의 적군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
         internal List<EnemyUnit> GetEnemiesInCone(Vector3 unitPos, Vector3 targetDir, float range, int angle, int maxCount = int.MaxValue)
         {
@@ -405,7 +407,7 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        #region 격자 범위 안쪽의 아군 유닛을 반환(2D 전용, X, Z 좌표)
+        #region 격자 범위 안쪽의 적군 유닛을 반환(2D 전용, X, Z 좌표)
         /// <summary>
         /// 격자 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
@@ -505,6 +507,140 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+        #region 라인 범위 안쪽의 적군 유닛을 반환
+        /// <summary>
+        /// 원 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
+        /// </summary>
+        internal List<EnemyUnit> GetEnemiesInLine(Vector2 unitPos, float range, int maxCount = int.MaxValue)
+        {
+            if (maxCount == int.MaxValue)
+            {
+                return GetAllEnemiesInLine(range);
+            }
+            else
+            {
+                return GetSortedEnemiesInLine(unitPos, range, maxCount);
+            }
+        }
+
+        private List<EnemyUnit> GetAllEnemiesInLine(float range)
+        {
+            List<EnemyUnit> enemies = new List<EnemyUnit>();
+
+            float tileRadius = 0.625f;
+            float sqrRange = tileRadius * tileRadius;
+
+            foreach (EnemyUnit enemy in _enemies)
+            {
+                if (enemy == null || !enemy.isActiveAndEnabled) continue;
+
+                Vector2 enemyPos = enemy.transform.position;
+
+                for (int i = 0; i < range; i++)
+                {
+                    foreach (var point in _attackRangeRenderer.lines[i])
+                    {
+                        if ((enemyPos - point).sqrMagnitude <= sqrRange)
+                        {
+                            enemies.Add(enemy);
+                            goto NextEnemy;
+                        }
+                    }
+                }
+
+                NextEnemy:;
+            }
+
+            return enemies;
+        }
+
+        private List<EnemyUnit> GetSortedEnemiesInLine(Vector2 unitPos, float range)
+        {
+            PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
+
+            float tileRadius = 0.625f;
+            float sqrRange = tileRadius * tileRadius;
+
+            foreach (EnemyUnit enemy in _enemies)
+            {
+                if (enemy == null || !enemy.isActiveAndEnabled) continue;
+
+                Vector2 enemyPos = enemy.transform.position;
+
+                for (int i = 0; i < range; i++)
+                {
+                    foreach (var point in _attackRangeRenderer.lines[i])
+                    {
+                        if ((enemyPos - point).sqrMagnitude <= sqrRange)
+                        {
+                            var distance = (enemyPos - unitPos).sqrMagnitude;
+
+                            priorityQueue.Enqueue(enemy, distance);
+                            goto NextEnemy;
+                        }
+                    }
+                }
+
+                NextEnemy:;
+            }
+
+            List<EnemyUnit> enemies = new List<EnemyUnit>(priorityQueue.Count);
+
+            while (priorityQueue.Count > 0)
+            {
+                enemies.Add(priorityQueue.Dequeue());
+            }
+
+            return enemies;
+        }
+
+        private List<EnemyUnit> GetSortedEnemiesInLine(Vector2 unitPos, float range, int maxCount)
+        {
+            PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
+
+            float tileRadius = 0.625f;
+            float sqrRange = tileRadius * tileRadius;
+
+            foreach (EnemyUnit enemy in _enemies)
+            {
+                if (enemy == null || !enemy.isActiveAndEnabled) continue;
+
+                Vector2 enemyPos = enemy.transform.position;
+
+                for (int i = 0; i < range; i++)
+                {
+                    foreach (var point in _attackRangeRenderer.lines[i])
+                    {
+                        if ((enemyPos - point).sqrMagnitude <= sqrRange)
+                        {
+                            var distance = (enemyPos - unitPos).sqrMagnitude;
+
+                            priorityQueue.Enqueue(enemy, distance);
+
+                            if (priorityQueue.Count > maxCount)
+                            {
+                                priorityQueue.Dequeue();
+                            }
+
+                            goto NextEnemy;
+                        }
+                    }
+                }
+
+                NextEnemy:;
+            }
+
+            List<EnemyUnit> enemies = new List<EnemyUnit>(priorityQueue.Count);
+
+            while (priorityQueue.Count > 0)
+            {
+                enemies.Add(priorityQueue.Dequeue());
+            }
+
+            return enemies;
+        }
+        #endregion
+
         #region 범위 내 공격 가능한 적군 유닛을 반환
         internal List<EnemyUnit> GetAttackableEnemies(Vector3 unitPos, float radius, EAttackType attackType, int maxCount = int.MaxValue)
         {
@@ -530,6 +666,13 @@ namespace EvolveThisMatch.Core
         internal List<EnemyUnit> GetAttackableEnemies(Vector2Int unitCellPos, List<Vector2Int> grid, EAttackType attackType, int maxCount = int.MaxValue)
         {
             var enemies = GetSortedEnemiesInGrid(unitCellPos, grid);
+
+            return CheckAttackable(enemies, attackType, maxCount);
+        }
+
+        internal List<EnemyUnit> GetAttackableEnemies(Vector2 unitPos, int range, EAttackType attackType, int maxCount = int.MaxValue)
+        {
+            var enemies = GetSortedEnemiesInLine(unitPos, range);
 
             return CheckAttackable(enemies, attackType, maxCount);
         }

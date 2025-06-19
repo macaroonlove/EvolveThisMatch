@@ -24,7 +24,7 @@ MonoBehaviour:
   _damageType: 1
   _atk: 350
   _attackTerm: 1
-  _attackRange: 5
+  _attackRange: 3
   _isProjectileAttack: 0
   _projectilePrefab: {fileID: 0}
   _spawnPoint: 0
