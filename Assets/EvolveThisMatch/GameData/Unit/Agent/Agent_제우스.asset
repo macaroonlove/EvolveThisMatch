@@ -32,7 +32,7 @@ MonoBehaviour:
   _magicPenetration: 0
   _criticalHitChance: 0
   _criticalHitDamage: 0
-  _maxHP: 0
+  _maxHP: 1000
   _physicalResistance: 0
   _magicResistance: 0
   _hpRecoveryPerSec: 0
@@ -41,4 +41,5 @@ MonoBehaviour:
   _startMana: 0
   _manaRecoveryPerSec: 0
   _skillTreeGraph: {fileID: 0}
-  skins: []
+  skins:
+  - {fileID: 11400000, guid: c03865cd47b0a3443b85fcfe83afcac8, type: 2}

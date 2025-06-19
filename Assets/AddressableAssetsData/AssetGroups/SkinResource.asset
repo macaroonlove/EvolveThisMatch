@@ -14,7 +14,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: SkinResource
   m_GUID: 70aa6827473da204089a297ce17daf7c
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 154729a996e5ed540bcc21ca910e7bac
+    m_Address: "Skin_\uD1A0\uB974_\uAE30\uBCF8_Lobby"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2360409db6b562d4bbcca4bc60ab3137
+    m_Address: "Skin_\uB85C\uD0A4_\uAE30\uBCF8_Battle"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b9dde615c6d0484ab5ac0557e13f2c2
+    m_Address: "Skin_\uC624\uB518_\uAE30\uBCF8_Lobby"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 699128308bba1094d836ed5ddcdcd295
+    m_Address: "Skin_\uC81C\uC6B0\uC2A4_\uAE30\uBCF8_Battle"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 832311e1dbb095e4c84947d78060abba
+    m_Address: "Skin_\uB85C\uD0A4_\uAE30\uBCF8_Lobby"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8745f89ecf7a71f4e9cc2b1bb3bd4568
+    m_Address: "Skin_\uD3EC\uC138\uC774\uB3C8_\uAE30\uBCF8_Battle"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 935bb5fa03eeea745bd162465c5886e9
+    m_Address: "Skin_\uD558\uB370\uC2A4_\uAE30\uBCF8_Lobby"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a1ce8b7f9b40fd4f958214877721336
+    m_Address: "Skin_\uD3EC\uC138\uC774\uB3C8_\uAE30\uBCF8_Lobby"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4d50c6c54b881242801e235f4391f36
+    m_Address: "Skin_\uD1A0\uB974_\uAE30\uBCF8_Battle"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb11629844921f648a63a5747b929811
+    m_Address: "Skin_\uD558\uB370\uC2A4_\uAE30\uBCF8_Battle"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6a06cf14dd9c8c4da74210a9d349012
+    m_Address: "Skin_\uC624\uB518_\uAE30\uBCF8_Battle"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da99304d9ded9eb4cb8bba16cc1ab4c2
+    m_Address: "Skin_\uC81C\uC6B0\uC2A4_\uAE30\uBCF8_Lobby"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9dbfa78e93c17e14d9a9b1505239b656, type: 2}
   m_SchemaSet:

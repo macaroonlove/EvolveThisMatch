@@ -480,6 +480,8 @@ MonoBehaviour:
     - a6a1bbc054e282346a02e7bbddde3206
     - 964fc201163fe884ca6a20094b6f3b49
     - 86b677955452bb5449f9f4dd47b6ddfe
+    - bea2571852d868d45bb1bf2df295448a
+    - a67bb1210d1cdbc4bb15ea240dfe4e1d
     values:
     - iconNameOrGuid: 
       colorIndex: 10
@@ -2343,6 +2345,14 @@ MonoBehaviour:
       isColorRecursive: 0
     - iconNameOrGuid: 
       colorIndex: 4
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 10
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 10
       isIconRecursive: 0
       isColorRecursive: 0
   bookmarks: []

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using FrameWork;
 using System;
 using System.Collections.Generic;
@@ -38,11 +39,29 @@ namespace EvolveThisMatch.Core
         private void OnDestroy()
         {
             onBattleManagerDestroy?.Invoke();
+
+            ReleaseSkinAddressable();
         }
 
         [ContextMenu("배틀시작")]
-        public void InitializeBattle()
+        public async void InitializeBattle()
         {
+            List<UniTask> tasks = new List<UniTask>();
+
+            var agents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            foreach (var agent in agents)
+            {
+                var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
+
+                if (template != null)
+                {
+                    var task = template.LoadSkinBattleTemplate();
+                    tasks.Add(task);
+                }
+            }
+
+            await UniTask.WhenAll(tasks);
+
             foreach (var system in this._subSystems.Values)
             {
                 system.Initialize();
@@ -55,9 +74,25 @@ namespace EvolveThisMatch.Core
         {
             onBattleDeinitialize?.Invoke();
 
+            ReleaseSkinAddressable();
+
             foreach (var item in _subSystems.Values)
             {
                 item.Deinitialize();
+            }
+        }
+
+        private void ReleaseSkinAddressable()
+        {
+            var agents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            foreach (var agent in agents)
+            {
+                var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
+
+                if (template != null)
+                {
+                    template.ReleaseSkinBattleTemplate();
+                }
             }
         }
 

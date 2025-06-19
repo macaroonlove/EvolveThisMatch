@@ -35,6 +35,10 @@ namespace EvolveThisMatch.Core
                     templates.Add(template);
                 }
             }
+
+            // id순 정렬
+            templates.Sort((a, b) => a.id.CompareTo(b.id));
+
             // 변경 사항을 저장
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();

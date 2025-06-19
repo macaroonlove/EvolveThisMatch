@@ -23,12 +23,12 @@ MonoBehaviour:
       inited: 1
     ownedAgents:
     - id: 0
-      unitCount: 37
+      unitCount: 1
       level: 1
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 1
-      unitCount: 5
+      unitCount: 1
       level: 1
       selectedSkinId: 0
       ownedSkinIds: 00000000

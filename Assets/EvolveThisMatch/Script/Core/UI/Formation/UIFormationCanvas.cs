@@ -152,17 +152,6 @@ namespace EvolveThisMatch.Core
             BattleManager.Instance.InitializeBattle();
             BattleManager.Instance.onBattleDeinitialize += OnBattleDeinitialize;
 
-            // TODO: 임시로 유닛 생성하는것, 추후 삭제
-            int x = -1;
-            foreach (var slot in _uiFormationSlots)
-            {
-                if (slot.template != null)
-                {
-                    BattleManager.Instance.GetSubSystem<AgentCreateSystem>().CreateUnit(slot.template, new Vector3(x, 0, 0));
-                }
-                x++;
-            }
-
             // 배치 저장
             List<FormationSlot> formation = new List<FormationSlot>();
 
