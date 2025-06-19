@@ -20,11 +20,11 @@ MonoBehaviour:
   _moveSpeed: 0
   _chaseRange: 0
   _chaseFailRange: 0
-  _attackType: 0
-  _damageType: 0
-  _atk: 0
-  _attackTerm: 0
-  _attackRange: 0
+  _attackType: 1
+  _damageType: 1
+  _atk: 350
+  _attackTerm: 1
+  _attackRange: 5
   _isProjectileAttack: 0
   _projectilePrefab: {fileID: 0}
   _spawnPoint: 0

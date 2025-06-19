@@ -14,12 +14,15 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+        [SerializeField] private float visibleTime = 5;
+
         private Unit _unit;
         private HealthAbility _healthAbility;
 
         private Image _hp;
         private Image _shield;
         private Vector2 _shieldPos = new Vector2(0, -0.5f);
+        private float _visibleTime;
 
         protected override void Awake()
         {
@@ -33,6 +36,8 @@ namespace EvolveThisMatch.Core
             
             _unit.onAbilityInitialize += OnAbilityInitialize;
             _unit.onAbilityDeinitialize += OnAbilityDeinitialize;
+
+            Hide(true);
         }
 
         private void OnDestroy()
@@ -43,8 +48,6 @@ namespace EvolveThisMatch.Core
 
         private void OnAbilityInitialize()
         {
-            Show();
-
             _healthAbility = _unit.healthAbility;
             _healthAbility.onChangedHealth += OnChangedHealth;
             _healthAbility.onChangedShield += OnChangedShield;
@@ -52,10 +55,20 @@ namespace EvolveThisMatch.Core
 
         private void OnAbilityDeinitialize()
         {
-            Hide();
-
             _healthAbility.onChangedHealth -= OnChangedHealth;
             _healthAbility.onChangedShield -= OnChangedShield;
+        }
+
+        private void Update()
+        {
+            if (_visibleTime >= 0)
+            {
+                _visibleTime -= Time.deltaTime;
+                if (_visibleTime <= 0)
+                {
+                    Hide(true);
+                }
+            }
         }
 
         private void OnChangedHealth(int hp)
@@ -63,6 +76,9 @@ namespace EvolveThisMatch.Core
             var maxHp = _healthAbility.finalMaxHP;
             var per = hp / (float)maxHp;
             _hp.fillAmount = per;
+
+            _visibleTime = visibleTime;
+            Show(true);
         }
 
         private void OnChangedShield(int shield)
@@ -85,6 +101,9 @@ namespace EvolveThisMatch.Core
                 _shield.rectTransform.anchoredPosition = _shieldPos;
                 _shield.fillOrigin = 1;
             }
+
+            _visibleTime = visibleTime;
+            Show(true);
         }
     }
 }

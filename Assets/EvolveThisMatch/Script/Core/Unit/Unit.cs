@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 namespace EvolveThisMatch.Core
 {
@@ -71,6 +72,9 @@ namespace EvolveThisMatch.Core
             }
 
             onAbilityInitialize?.Invoke();
+
+            SortingGroup group = GetComponent<SortingGroup>();
+            group.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
         }
 
         internal void Deinitialize()
