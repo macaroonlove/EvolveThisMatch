@@ -663,10 +663,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7540163829523877986, guid: a112644fdc1c51f458af928f11df6a94, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8704917616393573368, guid: a112644fdc1c51f458af928f11df6a94, type: 3}
       propertyPath: m_Name
       value: BattleManager

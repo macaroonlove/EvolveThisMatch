@@ -527,7 +527,7 @@ namespace EvolveThisMatch.Core
         {
             List<EnemyUnit> enemies = new List<EnemyUnit>();
 
-            float tileRadius = 0.625f;
+            float tileRadius = 1.25f;
             float sqrRange = tileRadius * tileRadius;
 
             foreach (EnemyUnit enemy in _enemies)
@@ -558,7 +558,7 @@ namespace EvolveThisMatch.Core
         {
             PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
 
-            float tileRadius = 0.625f;
+            float tileRadius = 1.25f;
             float sqrRange = tileRadius * tileRadius;
 
             foreach (EnemyUnit enemy in _enemies)
@@ -598,7 +598,7 @@ namespace EvolveThisMatch.Core
         {
             PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
 
-            float tileRadius = 0.625f;
+            float tileRadius = 1.25f;
             float sqrRange = tileRadius * tileRadius;
 
             foreach (EnemyUnit enemy in _enemies)

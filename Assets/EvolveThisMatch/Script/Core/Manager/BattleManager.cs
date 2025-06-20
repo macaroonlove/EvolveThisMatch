@@ -39,8 +39,6 @@ namespace EvolveThisMatch.Core
         private void OnDestroy()
         {
             onBattleManagerDestroy?.Invoke();
-
-            ReleaseSkinAddressable();
         }
 
         [ContextMenu("배틀시작")]

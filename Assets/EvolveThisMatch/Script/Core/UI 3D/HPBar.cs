@@ -49,6 +49,10 @@ namespace EvolveThisMatch.Core
         private void OnAbilityInitialize()
         {
             _healthAbility = _unit.healthAbility;
+
+            OnChangedHealth(_healthAbility.currentHP);
+            OnChangedShield(0);
+
             _healthAbility.onChangedHealth += OnChangedHealth;
             _healthAbility.onChangedShield += OnChangedShield;
         }
