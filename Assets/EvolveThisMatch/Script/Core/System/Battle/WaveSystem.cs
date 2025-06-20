@@ -67,7 +67,7 @@ namespace EvolveThisMatch.Core
                     arrivalPos.x += offset;
                     arrivalPos.y += offset * 2;
 
-                    var unit = _enemySpawnSystem.SpawnUnit(waveInfo.template, spawnPos);
+                    var unit = _enemySpawnSystem.SpawnUnit(waveInfo.template, spawnPos, waveInfo.coin, waveInfo.crystal);
 
                     // 경로 초기화
                     unit.GetAbility<MoveWayPointAbility>().InitializeArrivalPoint(arrivalPos);

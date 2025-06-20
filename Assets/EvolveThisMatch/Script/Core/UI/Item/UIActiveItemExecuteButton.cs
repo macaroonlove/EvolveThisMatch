@@ -40,7 +40,7 @@ namespace EvolveThisMatch.Core
         private Color _lackCostColor = new Color(1, 0.27f, 0);
 
         private InputSystem _inputSystem;
-        private CostSystem _costSystem;
+        private CoinSystem _coinSystem;
         private ActiveItemRangeRenderer _rangeRenderer;
         private ActiveItemTemplate _template;
 
@@ -137,8 +137,8 @@ namespace EvolveThisMatch.Core
 
             _rangeRenderer = BattleManager.Instance.GetSubSystem<ActiveItemRangeRenderer>();
             _inputSystem = BattleManager.Instance.GetSubSystem<InputSystem>();
-            _costSystem = BattleManager.Instance.GetSubSystem<CostSystem>();
-            _costSystem.onChangedCost += OnChangeCost;
+            _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
+            _coinSystem.onChangedCoin += OnChangeCoin;
 
             CalcMaxCoolDownTime();
             _currentCoolDownTime = 0;
@@ -157,8 +157,8 @@ namespace EvolveThisMatch.Core
             _template = null;
             _rangeRenderer = null;
 
-            _costSystem.onChangedCost -= OnChangeCost;
-            _costSystem = null;
+            _coinSystem.onChangedCoin -= OnChangeCoin;
+            _coinSystem = null;
 
             InputCancelBinding();
             _inputSystem = null;
@@ -291,7 +291,7 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 아이템 사용 조건 로직
-        private void OnChangeCost(int cost)
+        private void OnChangeCoin(int cost)
         {
             _currentCost = cost;
             CheckInteractable();
@@ -526,7 +526,7 @@ namespace EvolveThisMatch.Core
             CalcMaxCoolDownTime();
 
             // 코스트 지불
-            _costSystem.PayCost(finalNeedCost);
+            _coinSystem.PayCoin(finalNeedCost);
 
             CheckInteractable();
         }

@@ -25,5 +25,7 @@ namespace EvolveThisMatch.Core
         [Label("µô·¹ÀÌ")] public float delayTime;
         [Label("½ºÆùÇÒ À¯´ÖÀÇ ¼ö")] public int spawnCount = 1;
         [Label("½ºÆù °£°İ")] public float spawnInterval = 0;
+        [Label("È¹µæÇÒ ÄÚÀÎ")] public int coin = 0;
+        [Label("È¹µæÇÒ Å©¸®½ºÅ»")] public int crystal = 0;
     }
 }

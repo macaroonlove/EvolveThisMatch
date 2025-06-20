@@ -23,21 +23,21 @@ namespace EvolveThisMatch.Core
         private Button _button;
 
         private AgentCreateSystem _agentCreateSystem;
-        private CostSystem _costSystem;
-        private int _needCost;
+        private CoinSystem _coinSystem;
+        private int _needCoin;
 
         internal new void Initialize()
         {
             _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
-            _costSystem = BattleManager.Instance.GetSubSystem<CostSystem>();
-            _costSystem.onChangedCost += OnChangeCost;
+            _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
+            _coinSystem.onChangedCoin += OnChangeCoin;
 
             BindButton(typeof(Buttons));
             BindText(typeof(Texts));
 
-            _needCost = 20;
+            _needCoin = 20;
             _needCostText = GetText((int)Texts.NeedCostText);
-            _needCostText.text = _needCost.ToString();
+            _needCostText.text = _needCoin.ToString();
 
             _button = GetButton((int)Buttons.CraeteUnitButton);
             _button.onClick.AddListener(Create);
@@ -45,12 +45,12 @@ namespace EvolveThisMatch.Core
 
         private void OnDestroy()
         {
-            _costSystem.onChangedCost -= OnChangeCost;
+            _coinSystem.onChangedCoin -= OnChangeCoin;
         }
 
-        private void OnChangeCost(int currentCost)
+        private void OnChangeCoin(int currentCoin)
         {
-            if (_needCost > currentCost)
+            if (_needCoin > currentCoin)
             {
                 _button.enabled = false;
                 _needCostText.color = Color.red;
@@ -66,9 +66,9 @@ namespace EvolveThisMatch.Core
         {
             if (_agentCreateSystem.CreateRandomUnit())
             {
-                _costSystem.PayCost(_needCost);
-                _needCost++;
-                _needCostText.text = _needCost.ToString();
+                _coinSystem.PayCoin(_needCoin);
+                _needCoin++;
+                _needCostText.text = _needCoin.ToString();
             }            
         }
     }

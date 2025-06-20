@@ -801,7 +801,7 @@ GameObject:
   - component: {fileID: 3535599450379851767}
   - component: {fileID: 7073572550914088205}
   m_Layer: 0
-  m_Name: CostSystem
+  m_Name: CoinSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -834,7 +834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b2f0b560ee8ee14db0b5cd05aa59afb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _costVariable: {fileID: 11400000, guid: 91b151cba44e8da43ade59c3d98057cc, type: 2}
+  _coinVariable: {fileID: 11400000, guid: 91b151cba44e8da43ade59c3d98057cc, type: 2}
 --- !u!1 &444136972243618068
 GameObject:
   m_ObjectHideFlags: 0
@@ -11013,6 +11013,51 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &8002895237404941788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8069666420724054286}
+  - component: {fileID: 6903507289136285781}
+  m_Layer: 0
+  m_Name: CrystalSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8069666420724054286
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8002895237404941788}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3922504144110307591}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6903507289136285781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8002895237404941788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d30261f786e9324b9f8c68f24d2deb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _crystalVariable: {fileID: 11400000, guid: ddccd55077ce02d4db28f86a40bf721b, type: 2}
 --- !u!1 &8108661260961289863
 GameObject:
   m_ObjectHideFlags: 0
@@ -11731,6 +11776,7 @@ Transform:
   - {fileID: 5033377472048142789}
   - {fileID: 2732570360920927933}
   - {fileID: 3535599450379851767}
+  - {fileID: 8069666420724054286}
   - {fileID: 4497056214624323783}
   - {fileID: 4512401954550358914}
   - {fileID: 5850814332393082586}

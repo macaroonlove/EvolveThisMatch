@@ -18,11 +18,17 @@ MonoBehaviour:
     delayTime: 0
     spawnCount: 3
     spawnInterval: 1
+    coin: 5
+    crystal: 0
   - template: {fileID: 11400000, guid: 488272b4c18cf52429f18b69754b76b4, type: 2}
     delayTime: 2
     spawnCount: 5
     spawnInterval: 1
+    coin: 5
+    crystal: 0
   - template: {fileID: 11400000, guid: 488272b4c18cf52429f18b69754b76b4, type: 2}
     delayTime: 4
     spawnCount: 7
     spawnInterval: 1
+    coin: 5
+    crystal: 0

@@ -129,10 +129,6 @@ namespace EvolveThisMatch.Editor
             menu.AddItem(new GUIContent("골드 획득량 증감"), false, CreateEffectCallback, typeof(GoldGainIncreaseDataEffect));
             menu.AddItem(new GUIContent("골드 획득량 상승·하락"), false, CreateEffectCallback, typeof(GoldGainMultiplierDataEffect));
 
-            menu.AddItem(new GUIContent("코스트 증가 속도 차감"), false, CreateEffectCallback, typeof(CostRecoveryTimeAdditionalDataEffect));
-            menu.AddItem(new GUIContent("코스트 증가 속도 증감"), false, CreateEffectCallback, typeof(CostRecoveryTimeIncreaseDataEffect));
-            menu.AddItem(new GUIContent("코스트 증가 속도 상승·하락"), false, CreateEffectCallback, typeof(CostRecoveryTimeMultiplierDataEffect));
-
             menu.ShowAsContext();
         }
 

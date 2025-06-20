@@ -5,13 +5,18 @@ namespace EvolveThisMatch.Core
     public class EnemyUnit : Unit
     {
         private EnemyTemplate _template;
+        private int _gainCoin;
+        private int _gainCrystal;
 
         internal EnemyTemplate template => _template;
 
-        internal void Initialize(EnemyTemplate template)
+        internal void Initialize(EnemyTemplate template, int coin, int crystal)
         {
             _id = template.id;
             _template = template;
+
+            _gainCoin = coin;
+            _gainCrystal = crystal;
 
             base.Initialize(this);
         }
@@ -21,6 +26,15 @@ namespace EvolveThisMatch.Core
             base.OnDeath();
 
             var enemySystem = BattleManager.Instance.GetSubSystem<EnemySystem>();
+
+            if (_gainCoin > 0)
+            {
+                BattleManager.Instance.GetSubSystem<CoinSystem>().AddCoin(_gainCoin);
+            }
+            if (_gainCrystal > 0)
+            {
+                BattleManager.Instance.GetSubSystem<CrystalSystem>().AddCrystal(_gainCrystal);
+            }
 
             enemySystem.Deregist(this);
         }

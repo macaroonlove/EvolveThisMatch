@@ -16,18 +16,10 @@ namespace EvolveThisMatch.Core
         private List<GoldGainIncreaseDataEffect> _goldGainIncreaseDataEffects = new List<GoldGainIncreaseDataEffect>();
         private List<GoldGainMultiplierDataEffect> _goldGainMultiplierDataEffects = new List<GoldGainMultiplierDataEffect>();
 
-        private List<CostRecoveryTimeAdditionalDataEffect> _costRecoveryTimeAdditionalDataEffects = new List<CostRecoveryTimeAdditionalDataEffect>();
-        private List<CostRecoveryTimeIncreaseDataEffect> _costRecoveryTimeIncreaseDataEffects = new List<CostRecoveryTimeIncreaseDataEffect>();
-        private List<CostRecoveryTimeMultiplierDataEffect> _costRecoveryTimeMultiplierDataEffects = new List<CostRecoveryTimeMultiplierDataEffect>();
-
         #region 프로퍼티
         internal IReadOnlyList<GoldGainAdditionalDataEffect> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
         internal IReadOnlyList<GoldGainIncreaseDataEffect> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
         internal IReadOnlyList<GoldGainMultiplierDataEffect> GoldGainMultiplierDataEffects => _goldGainMultiplierDataEffects;
-        
-        internal IReadOnlyList<CostRecoveryTimeAdditionalDataEffect> CostRecoveryTimeAdditionalDataEffects => _costRecoveryTimeAdditionalDataEffects;
-        internal IReadOnlyList<CostRecoveryTimeIncreaseDataEffect> CostRecoveryTimeIncreaseDataEffects => _costRecoveryTimeIncreaseDataEffects;
-        internal IReadOnlyList<CostRecoveryTimeMultiplierDataEffect> CostRecoveryTimeMultiplierDataEffects => _costRecoveryTimeMultiplierDataEffects;
         #endregion
         #endregion
 
@@ -110,19 +102,6 @@ namespace EvolveThisMatch.Core
                     {
                         _goldGainMultiplierDataEffects.Add(goldGainMultiplierDataEffect);
                     }
-                    
-                    else if (effect is CostRecoveryTimeAdditionalDataEffect costRecoveryTimeAdditionalDataEffect)
-                    {
-                        _costRecoveryTimeAdditionalDataEffects.Add(costRecoveryTimeAdditionalDataEffect);
-                    }
-                    else if (effect is CostRecoveryTimeIncreaseDataEffect costRecoveryTimeIncreaseDataEffect)
-                    {
-                        _costRecoveryTimeIncreaseDataEffects.Add(costRecoveryTimeIncreaseDataEffect);
-                    }
-                    else if (effect is CostRecoveryTimeMultiplierDataEffect costRecoveryTimeMultiplierDataEffect)
-                    {
-                        _costRecoveryTimeMultiplierDataEffects.Add(costRecoveryTimeMultiplierDataEffect);
-                    }
 
                 }
             }
@@ -191,19 +170,6 @@ namespace EvolveThisMatch.Core
                 else if (effect is GoldGainMultiplierDataEffect goldGainMultiplierDataEffect)
                 {
                     _goldGainMultiplierDataEffects.Remove(goldGainMultiplierDataEffect);
-                }
-
-                else if (effect is CostRecoveryTimeAdditionalDataEffect costRecoveryTimeAdditionalDataEffect)
-                {
-                    _costRecoveryTimeAdditionalDataEffects.Remove(costRecoveryTimeAdditionalDataEffect);
-                }
-                else if (effect is CostRecoveryTimeIncreaseDataEffect costRecoveryTimeIncreaseDataEffect)
-                {
-                    _costRecoveryTimeIncreaseDataEffects.Remove(costRecoveryTimeIncreaseDataEffect);
-                }
-                else if (effect is CostRecoveryTimeMultiplierDataEffect costRecoveryTimeMultiplierDataEffect)
-                {
-                    _costRecoveryTimeMultiplierDataEffects.Remove(costRecoveryTimeMultiplierDataEffect);
                 }
             }
         }

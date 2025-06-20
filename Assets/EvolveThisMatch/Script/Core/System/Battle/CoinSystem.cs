@@ -1,0 +1,46 @@
+using ScriptableObjectArchitecture;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace EvolveThisMatch.Core
+{
+    /// <summary>
+    /// 전투에서 사용하는 Coin 값을 관리하는 클래스
+    /// </summary>
+    public class CoinSystem : MonoBehaviour, IBattleSystem
+    {
+        [SerializeField] private ObscuredIntVariable _coinVariable;
+
+        internal event UnityAction<int> onChangedCoin;
+
+        public void Initialize()
+        {
+            SetCoin(100);
+        }
+
+        public void Deinitialize()
+        {
+        }
+
+        internal void AddCoin(int value)
+        {
+            SetCoin(_coinVariable.Value + value);
+        }
+
+        internal void PayCoin(int value)
+        {
+            int newCost = _coinVariable.Value - value;
+            if (newCost >= 0)
+            {
+                SetCoin(newCost);
+            }
+        }
+
+        private void SetCoin(int newCoin)
+        {
+            _coinVariable.Value = newCoin;
+
+            onChangedCoin?.Invoke(newCoin);
+        }
+    }
+}
