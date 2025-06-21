@@ -12,6 +12,7 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private int _id;
         [HideInInspector, SerializeField] private AgentRarityTemplate _rarity;
         [HideInInspector, SerializeField] private JobTemplate _job;
+        [HideInInspector, SerializeField] private List<SynergyTemplate> _synergy = new List<SynergyTemplate>();
         [HideInInspector, SerializeField] private string _displayName;
 
         [HideInInspector, SerializeField] private EMoveType _moveType;
@@ -57,6 +58,7 @@ namespace EvolveThisMatch.Core
         public int id => _id;
         public AgentRarityTemplate rarity => _rarity;
         public JobTemplate job => _job;
+        public IReadOnlyList<SynergyTemplate> synergy => _synergy;
         public string displayName => _displayName;
 
         public Sprite sprite => (skins.Count == 0) ? null : skins[0]?.faceSprite;
@@ -241,6 +243,7 @@ namespace EvolveThisMatch.Editor
         private SerializedProperty _id;
         private SerializedProperty _rarity;
         private SerializedProperty _job;
+        private SerializedProperty _synergy;
         private SerializedProperty _displayName;
 
         private SerializedProperty _moveType;
@@ -287,6 +290,7 @@ namespace EvolveThisMatch.Editor
             _id = serializedObject.FindProperty("_id");
             _rarity = serializedObject.FindProperty("_rarity");
             _job = serializedObject.FindProperty("_job");
+            _synergy = serializedObject.FindProperty("_synergy");
             _displayName = serializedObject.FindProperty("_displayName");
 
             _moveType = serializedObject.FindProperty("_moveType");
@@ -342,6 +346,11 @@ namespace EvolveThisMatch.Editor
             GUILayout.BeginHorizontal();
             GUILayout.Label("직군", GUILayout.Width(140));
             EditorGUILayout.PropertyField(_job, GUIContent.none);
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("시너지", GUILayout.Width(140));
+            EditorGUILayout.PropertyField(_synergy, GUIContent.none);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

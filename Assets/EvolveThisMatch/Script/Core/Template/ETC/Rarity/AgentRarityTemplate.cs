@@ -6,11 +6,13 @@ namespace EvolveThisMatch.Core
     public class AgentRarityTemplate : RarityTemplate
     {
         [SerializeField] private EAgentRarity _rarity;
-        [SerializeField] private Sprite _sprite;
+        [SerializeField] private Color _backgroundColor;
+        [SerializeField] private Color _textColor;
 
         #region 프로퍼티
         public EAgentRarity rarity => _rarity;
-        public Sprite sprite => _sprite;
+        public Color backgroundColor => _backgroundColor;
+        public Color textColor => _textColor;
         #endregion
     }
 }

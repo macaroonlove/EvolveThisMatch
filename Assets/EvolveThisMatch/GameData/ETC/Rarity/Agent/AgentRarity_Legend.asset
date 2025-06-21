@@ -15,4 +15,5 @@ MonoBehaviour:
   _order: 1
   _displayName: "\uC804\uC124"
   _rarity: 1
-  _sprite: {fileID: 0}
+  _backgroundColor: {r: 1, g: 0.84313726, b: 0, a: 1}
+  _textColor: {r: 0.29411766, g: 0, b: 0.50980395, a: 1}

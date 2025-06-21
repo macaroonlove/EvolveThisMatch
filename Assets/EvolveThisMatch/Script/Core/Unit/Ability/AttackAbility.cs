@@ -40,6 +40,7 @@ namespace EvolveThisMatch.Core
 
         #region 프로퍼티
         internal int baseATK => _baseATK;
+        internal float baseAttackTerm => _baseAttackTerm;
         #endregion
 
         #region 스탯 계산

@@ -14,12 +14,14 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private string _displayName;
         [SerializeField] private EJob _job;
-        [SerializeField] private Sprite _sprite;
+        [SerializeField] private Color _backgroundColor;
+        [SerializeField] private Color _textColor;
 
         #region 프로퍼티
         public string displayName => _displayName;
         public EJob job => _job;
-        public Sprite sprite => _sprite;
+        public Color backgroundColor => _backgroundColor;
+        public Color textColor => _textColor;
         #endregion
     }
 }

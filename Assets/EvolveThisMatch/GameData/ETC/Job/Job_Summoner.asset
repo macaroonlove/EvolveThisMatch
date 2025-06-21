@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _displayName: "\uC18C\uD658\uC0AC"
   _job: 2
-  _sprite: {fileID: 0}
+  _backgroundColor: {r: 0.11764704, g: 0.5411765, b: 0.31371757, a: 1}
+  _textColor: {r: 1, g: 1, b: 0.9411765, a: 1}

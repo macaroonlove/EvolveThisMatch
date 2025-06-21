@@ -20,8 +20,8 @@ namespace EvolveThisMatch.Core
             DisplayName,
             LevelText,
             LimitText,
+            SynergyText,
         }
-
         enum Images
         {
             FullBodyImage,
@@ -31,16 +31,21 @@ namespace EvolveThisMatch.Core
         private TextMeshProUGUI _displayNameText;
         private TextMeshProUGUI _levelText;
         private TextMeshProUGUI _limitText;
+        private TextMeshProUGUI _synergyText;
         private Image _fullBodyImage;
 
         private AllyUnit _allyUnit;
         private UnitRayCastSystem _unitRayCastSystem;
         private AttackRangeRenderer _attackRangeRenderer;
-        
+
+        private UIRarityTag _rarityTag;
+        private UIJobTag _jobTag;
         private UIBattleStatCanvas _battleStatCanvas;
 
         protected override void Initialize()
         {
+            _rarityTag = GetComponentInChildren<UIRarityTag>();
+            _jobTag = GetComponentInChildren<UIJobTag>();
             _battleStatCanvas = GetComponentInChildren<UIBattleStatCanvas>();
 
             BindButton(typeof(Buttons));
@@ -51,6 +56,7 @@ namespace EvolveThisMatch.Core
             _displayNameText = GetText((int)Texts.DisplayName);
             _levelText = GetText((int)Texts.LevelText);
             _limitText = GetText((int)Texts.LimitText);
+            _synergyText = GetText((int)Texts.SynergyText);
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
             GetButton((int)Buttons.LevelUpgradeButton).onClick.AddListener(UpgradeLevel);
@@ -91,11 +97,21 @@ namespace EvolveThisMatch.Core
             if (_allyUnit is AgentUnit agentUnit)
             {
                 _fullBodyImage.sprite = agentUnit.template.sprite;
+                _synergyText.text = agentUnit.template.synergy[0].displayName;
                 _displayNameText.text = agentUnit.template.displayName;
                 _levelText.text = agentUnit.level.ToString();
                 _limitText.text = agentUnit.limit.ToString();
 
+                // 공격 범위
                 _attackRangeRenderer.Show((int)Mathf.Clamp(agentUnit.template.AttackRange, 0, 4));
+
+                // 등급 태그
+                _rarityTag.Show(agentUnit.template.rarity);
+
+                // 직업 태그
+                _jobTag.Show(agentUnit.template.job);
+
+                // 스탯 캔버스
                 _battleStatCanvas.ShowInfomation(agentUnit);
             }
 

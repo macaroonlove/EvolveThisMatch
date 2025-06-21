@@ -30,7 +30,7 @@ namespace EvolveThisMatch.Core
 
         protected override string GetBaseValue()
         {
-            return $"기본 공격 간격: {_attackAbility.finalAttackTerm}";
+            return $"기본 공격 간격: {_attackAbility.baseAttackTerm}";
         }
 
         protected override string GetValueText()

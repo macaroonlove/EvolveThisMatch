@@ -15,6 +15,8 @@ MonoBehaviour:
   _id: 5
   _rarity: {fileID: 11400000, guid: 3f5b5c01cbd48654eb24dcb18e2dad86, type: 2}
   _job: {fileID: 11400000, guid: 68be10d7a2cf1664db54e8f2f75e1081, type: 2}
+  _synergy:
+  - {fileID: 11400000, guid: 0618a3c0900256742b188799b2da2f2d, type: 2}
   _displayName: "\uB85C\uD0A4"
   _moveType: 0
   _moveSpeed: 0

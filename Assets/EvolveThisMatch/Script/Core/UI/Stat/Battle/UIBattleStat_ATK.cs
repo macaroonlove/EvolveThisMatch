@@ -30,7 +30,7 @@ namespace EvolveThisMatch.Core
 
         protected override string GetBaseValue()
         {
-            return $"기본 공격력: {_attackAbility.baseATK}";
+            return $"기본 전투력: {_attackAbility.baseATK}";
         }
 
         protected override string GetValueText()
