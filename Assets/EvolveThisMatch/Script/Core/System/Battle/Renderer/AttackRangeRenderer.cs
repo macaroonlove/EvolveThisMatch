@@ -40,5 +40,21 @@ namespace EvolveThisMatch.Core
         {
 
         }
+
+        internal void Show(int lineCount)
+        {
+            for (int i = 0; i < lineCount; i++)
+            {
+                _lineGroup[i].SetActive(true);
+            }
+        }
+
+        internal void Hide()
+        {
+            foreach (var line in _lineGroup)
+            {
+                line.SetActive(false);
+            }
+        }
     }
 }

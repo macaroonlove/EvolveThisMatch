@@ -21,8 +21,8 @@ namespace EvolveThisMatch.Core
 
         private List<AttackCountAdditionalDataEffect> _attackCountAdditionalDataEffects = new List<AttackCountAdditionalDataEffect>();
 
-        private List<AttackSpeedIncreaseDataEffect> _attackSpeedIncreaseDataEffects = new List<AttackSpeedIncreaseDataEffect>();
-        private List<AttackSpeedMultiplierDataEffect> _attackSpeedMultiplierDataEffects = new List<AttackSpeedMultiplierDataEffect>();
+        private Dictionary<AttackSpeedIncreaseDataEffect, string> _attackSpeedIncreaseDataEffects = new Dictionary<AttackSpeedIncreaseDataEffect, string>();
+        private Dictionary<AttackSpeedMultiplierDataEffect, string> _attackSpeedMultiplierDataEffects = new Dictionary<AttackSpeedMultiplierDataEffect, string>();
 
         private List<AvoidanceAdditionalDataEffect> _avoidanceAdditionalDataEffects = new List<AvoidanceAdditionalDataEffect>();
 
@@ -83,8 +83,8 @@ namespace EvolveThisMatch.Core
 
         internal IReadOnlyList<AttackCountAdditionalDataEffect> AttackCountAdditionalDataEffects => _attackCountAdditionalDataEffects;
 
-        internal IReadOnlyList<AttackSpeedIncreaseDataEffect> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
-        internal IReadOnlyList<AttackSpeedMultiplierDataEffect> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
+        internal IReadOnlyDictionary<AttackSpeedIncreaseDataEffect, string> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
+        internal IReadOnlyDictionary<AttackSpeedMultiplierDataEffect, string> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
 
         internal IReadOnlyList<AvoidanceAdditionalDataEffect> AvoidanceAdditionalDataEffects => _avoidanceAdditionalDataEffects;
 
@@ -265,11 +265,11 @@ namespace EvolveThisMatch.Core
 
                     else if (effect is AttackSpeedIncreaseDataEffect AttackSpeedIncreaseDataEffect)
                     {
-                        _attackSpeedIncreaseDataEffects.Add(AttackSpeedIncreaseDataEffect);
+                        _attackSpeedIncreaseDataEffects.Add(AttackSpeedIncreaseDataEffect, template.displayName);
                     }
                     else if (effect is AttackSpeedMultiplierDataEffect AttackSpeedMultiplierDataEffect)
                     {
-                        _attackSpeedMultiplierDataEffects.Add(AttackSpeedMultiplierDataEffect);
+                        _attackSpeedMultiplierDataEffects.Add(AttackSpeedMultiplierDataEffect, template.displayName);
                     }
 
                     else if (effect is AvoidanceAdditionalDataEffect AvoidanceAdditionalDataEffect)

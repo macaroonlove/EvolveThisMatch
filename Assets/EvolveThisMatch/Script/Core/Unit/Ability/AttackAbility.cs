@@ -78,7 +78,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        private float finalAttackTerm
+        internal float finalAttackTerm
         {
             get
             {
@@ -87,7 +87,7 @@ namespace EvolveThisMatch.Core
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects)
+                foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects.Keys)
                 {
                     increase += effect.value;
                 }
@@ -96,7 +96,7 @@ namespace EvolveThisMatch.Core
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects)
+                foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects.Keys)
                 {
                     result *= effect.value;
                 }

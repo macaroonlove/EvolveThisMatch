@@ -11,7 +11,7 @@ namespace EvolveThisMatch.Core
         private Camera _camera;
         private LayerMask _layerMask;
 
-        internal event UnityAction<Unit> onCast;
+        internal event UnityAction<AllyUnit> onCast;
 
         public void Initialize()
         {
@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Core
         private void Awake()
         {
             _camera = Camera.main;
-            _layerMask = LayerMask.GetMask("Agent", "Enemy");
+            _layerMask = LayerMask.GetMask("Agent");
         }
 
         private void Update()
@@ -62,7 +62,7 @@ namespace EvolveThisMatch.Core
 
             if (hitinfo.collider != null)
             {
-                var unit = hitinfo.collider.GetComponentInParent<Unit>();
+                var unit = hitinfo.collider.GetComponentInParent<AllyUnit>();
                 if (unit != null)
                 {
                     onCast?.Invoke(unit);

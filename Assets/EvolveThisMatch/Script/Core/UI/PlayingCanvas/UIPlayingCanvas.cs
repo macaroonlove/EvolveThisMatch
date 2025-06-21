@@ -11,15 +11,15 @@ namespace EvolveThisMatch.Core
         {
             _uiCreateUnitButton = GetComponentInChildren<UICreateUnitButton>();
 
-            BattleManager.Instance.onBattleInitialize += OnBattleStart;
+            BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
         }
 
         private void OnDestroy()
         {
-            BattleManager.Instance.onBattleInitialize -= OnBattleStart;
+            BattleManager.Instance.onBattleInitialize -= OnBattleInitialize;
         }
 
-        private void OnBattleStart()
+        private void OnBattleInitialize()
         {
             _uiCreateUnitButton.Initialize();
         }
