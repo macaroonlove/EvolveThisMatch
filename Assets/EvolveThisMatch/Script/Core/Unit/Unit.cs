@@ -73,8 +73,9 @@ namespace EvolveThisMatch.Core
 
             onAbilityInitialize?.Invoke();
 
-            SortingGroup group = GetComponent<SortingGroup>();
-            group.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
+            Vector3 pos = transform.position;
+            pos.z = pos.y;
+            transform.position = pos;
         }
 
         internal void Deinitialize()
