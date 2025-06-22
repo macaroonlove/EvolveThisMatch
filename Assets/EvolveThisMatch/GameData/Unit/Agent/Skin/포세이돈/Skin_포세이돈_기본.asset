@@ -21,7 +21,7 @@ MonoBehaviour:
     \uC804\uD574\uC9C0\uBA70, \uADF8\uC758 \uC190\uC5D0 \uC950\uC5B4\uC9C4 \uC0BC\uC9C0\uCC3D
     \u2018\uD2B8\uB9AC\uD1A4\uC758 \uBFD4\u2019\uC740 \uBC14\uB2E4\uAD34\uC218\uC870\uCC28
     \uBCF5\uC885\uC2DC\uD0A4\uB294 \uC2E0\uC801 \uAD8C\uB2A5\uC758 \uC0C1\uC9D5\uC774\uB2E4."
-  _faceSprite: {fileID: 0}
+  _faceSprite: {fileID: 21300000, guid: 0b4ceb3aa06ab4043842fa6138f6df6b, type: 3}
   lobbyResource:
     m_AssetGUID: 9a1ce8b7f9b40fd4f958214877721336
     m_SubObjectName: 

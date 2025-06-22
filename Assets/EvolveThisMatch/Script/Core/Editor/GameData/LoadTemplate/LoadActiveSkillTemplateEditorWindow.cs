@@ -9,9 +9,11 @@ namespace EvolveThisMatch.Editor
     {
         protected override void ConvertCSVToTemplate(Dictionary<string, List<string>> csvDic)
         {
+            InitializeSkillTypeTemplates();
+
             Dictionary<int, ActiveSkillTemplate> templateDic = new Dictionary<int, ActiveSkillTemplate>();
             var guids = AssetDatabase.FindAssets("t:ActiveSkillTemplate");
-
+            
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
@@ -29,6 +31,12 @@ namespace EvolveThisMatch.Editor
                 // 템플릿이 존재한다면 수정
                 if (templateDic.TryGetValue(id, out var template))
                 {
+                    // 스킬 타입
+                    if (_skillTypeDic.TryGetValue(csvDic["스킬 타입"][i], out var skillType))
+                    {
+                        template.SetSkillType(skillType);
+                    }
+
                     // 스킬 이름
                     if (template.displayName != csvDic["스킬 이름"][i])
                     {
@@ -85,6 +93,12 @@ namespace EvolveThisMatch.Editor
                     // 식별번호
                     newTemplate.SetId(id);
 
+                    // 스킬 타입
+                    if (_skillTypeDic.TryGetValue(csvDic["스킬 타입"][i], out var skillType))
+                    {
+                        template.SetSkillType(skillType);
+                    }
+
                     // 스킬 이름
                     newTemplate.SetDisplayName(csvDic["스킬 이름"][i]);
 
@@ -132,5 +146,20 @@ namespace EvolveThisMatch.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+
+        #region 스킬 타입 템플릿 가져오기
+        private Dictionary<string, SkillTypeTemplate> _skillTypeDic = new Dictionary<string, SkillTypeTemplate>();
+
+        private void InitializeSkillTypeTemplates()
+        {
+            var guids = AssetDatabase.FindAssets("t:SkillTypeTemplate");
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var skillType = AssetDatabase.LoadAssetAtPath<SkillTypeTemplate>(path);
+                _skillTypeDic[skillType.type.ToString()] = skillType;
+            }
+        }
+        #endregion
     }
 }

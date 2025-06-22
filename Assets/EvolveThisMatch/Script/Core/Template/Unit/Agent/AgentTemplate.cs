@@ -46,7 +46,7 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private int _startMana;
         [HideInInspector, SerializeField] private int _manaRecoveryPerSec;
 
-        [HideInInspector, SerializeField] private SkillTreeGraph _skillTreeGraph;
+        [HideInInspector, SerializeField] private List<SkillTemplate> _skillTemplates;
 
         [HideInInspector]
         public List<SkinTemplate> skins = new List<SkinTemplate>();
@@ -95,7 +95,7 @@ namespace EvolveThisMatch.Core
         public int StartMana => _startMana;
         public int ManaRecoveryPerSec => _manaRecoveryPerSec;
 
-        public SkillTreeGraph skillTreeGraph => _skillTreeGraph;
+        public IReadOnlyList<SkillTemplate> skillTemplates => _skillTemplates;
 
         public FX casterFX => skins[_selectedSkinId]?.battleTemplate.casterFX;
         public FX targetFX => skins[_selectedSkinId]?.battleTemplate.targetFX;
@@ -277,7 +277,7 @@ namespace EvolveThisMatch.Editor
         private SerializedProperty _startMana;
         private SerializedProperty _manaRecoveryPerSec;
 
-        private SerializedProperty _skillTreeGraph;
+        private SerializedProperty _skillTemplates;
 
         private ReorderableList _skinList;
         private SkinTemplate _currentSkin;
@@ -324,7 +324,7 @@ namespace EvolveThisMatch.Editor
             _startMana = serializedObject.FindProperty("_startMana");
             _manaRecoveryPerSec = serializedObject.FindProperty("_manaRecoveryPerSec");
 
-            _skillTreeGraph = serializedObject.FindProperty("_skillTreeGraph");
+            _skillTemplates = serializedObject.FindProperty("_skillTemplates");
 
             CreateSkinList();
         }
@@ -528,8 +528,8 @@ namespace EvolveThisMatch.Editor
             GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("스킬 트리", GUILayout.Width(140));
-            EditorGUILayout.PropertyField(_skillTreeGraph, GUIContent.none);
+            GUILayout.Label("스킬", GUILayout.Width(140));
+            EditorGUILayout.PropertyField(_skillTemplates, GUIContent.none);
             GUILayout.EndHorizontal();
 
             serializedObject.ApplyModifiedProperties();

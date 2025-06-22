@@ -6,11 +6,11 @@ namespace EvolveThisMatch.Core
     {
         private ActiveSkillAbility _activeSkillAbility;
         private HealthAbility _healthAbility;
-        private ManaAbility _manaAbility;
         private bool _isEnoughPayAmount;
 
         public ActiveSkillTemplate template { get; private set; }
         public float coolDownTime { get; private set; }
+        internal bool isAutoSkill { get; set; }
 
         internal float finalCoolDownTime
         {
@@ -24,14 +24,14 @@ namespace EvolveThisMatch.Core
 
         public event UnityAction<bool> onChangedIsEnoughPayAmount;
 
-        public ActiveSkillInstance(ActiveSkillTemplate template, ActiveSkillAbility activeSkillAbility, ManaAbility manaAbility)
+        public ActiveSkillInstance(ActiveSkillTemplate template, ActiveSkillAbility activeSkillAbility)
         {
             this.template = template;
             _activeSkillAbility = activeSkillAbility;
             _healthAbility = _activeSkillAbility.unit.healthAbility;
-            _manaAbility = manaAbility;
 
             _isEnoughPayAmount = true;
+            isAutoSkill = true;
 
             if (template.skillTriggerType == EActiveSkillTriggerType.Spawn)
             {
@@ -46,10 +46,6 @@ namespace EvolveThisMatch.Core
             {
                 _healthAbility.onChangedHealth += OnChangePayAmount;
             }
-            else if (template.skillPayType == EActiveSkillPayType.Mana)
-            {
-                _manaAbility.onChangedMana += OnChangePayAmount;
-            }
         }
 
         #region ÄðÅ¸ÀÓ °ü¸®
@@ -61,7 +57,7 @@ namespace EvolveThisMatch.Core
                 if (coolDownTime < 0) coolDownTime = 0;
             }
 
-            if (CanExecute() && template.skillTriggerType == EActiveSkillTriggerType.Automatic)
+            if (CanExecute() && (isAutoSkill || template.skillTriggerType == EActiveSkillTriggerType.Automatic))
             {
                 _activeSkillAbility.TryExecuteSkill(this);
             }
@@ -102,10 +98,6 @@ namespace EvolveThisMatch.Core
             {
                 if (_healthAbility.CheckHP(template.payAmount) == false) return false;
             }
-            else if (template.skillPayType == EActiveSkillPayType.Mana)
-            {
-                if (_manaAbility.CheckMana(template.payAmount) == false) return false;
-            }
 
             return true;
         }
@@ -117,10 +109,6 @@ namespace EvolveThisMatch.Core
             if (template.skillPayType == EActiveSkillPayType.Health)
             {
                 if (_healthAbility.TryExecuteSkill(template.payAmount) == false) return false;
-            }
-            else if (template.skillPayType == EActiveSkillPayType.Mana)
-            {
-                if (_manaAbility.TryExecuteSkill(template.payAmount) == false) return false;
             }
             
             coolDownTime = finalCoolDownTime;
@@ -147,10 +135,6 @@ namespace EvolveThisMatch.Core
             if (template.skillPayType == EActiveSkillPayType.Health)
             {
                 _healthAbility.onChangedHealth -= OnChangePayAmount;
-            }
-            else if (template.skillPayType == EActiveSkillPayType.Mana)
-            {
-                _manaAbility.onChangedMana -= OnChangePayAmount;
             }
         }
         #endregion

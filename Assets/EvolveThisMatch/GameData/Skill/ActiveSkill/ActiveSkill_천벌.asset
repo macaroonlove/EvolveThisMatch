@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4195897891568079141
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3012cfd102b50094b870ab094792a71b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects:
+  - {fileID: 7051101734359491632}
+  _getTargetData:
+    _getTargetFilter: 1
+    _attackType: 1
+    _targetType: 2
+    _unitType: 4
+    _rangeType: 0
+    _directionType: 0
+    _range: 0
+    _assistantRange: 0
+    _tileRangeTemplate: {fileID: 0}
+    _numberOfTarget: 5
+  _targetFX: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5093661109052b9438d278789d9e23d4, type: 3}
+  m_Name: "ActiveSkill_\uCC9C\uBC8C"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _id: 1
+  _displayName: "\uCC9C\uBC8C"
+  _description: "\uC81C\uC6B0\uC2A4\uAC00 \uC190\uC744 \uD558\uB298\uB85C \uBED7\uC5B4
+    5\uB9C8\uB9AC\uC758 \uBB34\uC791\uC704 \uC801\uC5D0\uAC8C \uC804\uD22C\uB825\uC758
+    2000%\uB9CC\uD07C\uC758 \uB9C8\uBC95 \uD53C\uD574\uB97C \uC785\uD788\uB294 \uBCBC\uB77D\uC744
+    \uAC15\uD558\uC2DC\uD0B5\uB2C8\uB2E4."
+  _skillType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
+  _skillTriggerType: 1
+  _skillTargetingType: 0
+  _unitType: 0
+  _skillRange: 0
+  _skillPayType: 0
+  _payAmount: 0
+  _cooldownTime: 10
+  _parameterName: Skill2
+  _parameterHash: -750362048
+  _casterFX: {fileID: 0}
+  effects:
+  - {fileID: -4195897891568079141}
+--- !u!114 &7051101734359491632
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _repeatCount: 1
+  _isTick: 1
+  _tickCycle: 1
+  _tickCount: 0
+  _damageType: 1
+  _applyTypeByAmountDatas:
+  - applyType: 2
+    amount: 2000

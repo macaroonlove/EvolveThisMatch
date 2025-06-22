@@ -41,12 +41,14 @@ namespace EvolveThisMatch.Core
         private UIRarityTag _rarityTag;
         private UIJobTag _jobTag;
         private UIBattleStatCanvas _battleStatCanvas;
+        private UISkillCanvas _skillCanvas;
 
         protected override void Initialize()
         {
             _rarityTag = GetComponentInChildren<UIRarityTag>();
             _jobTag = GetComponentInChildren<UIJobTag>();
             _battleStatCanvas = GetComponentInChildren<UIBattleStatCanvas>();
+            _skillCanvas = GetComponentInChildren<UISkillCanvas>();
 
             BindButton(typeof(Buttons));
             BindText(typeof(Texts));
@@ -113,6 +115,9 @@ namespace EvolveThisMatch.Core
 
                 // ½ºÅÈ Äµ¹ö½º
                 _battleStatCanvas.ShowInfomation(agentUnit);
+
+                // ½ºÅ³ Äµ¹ö½º
+                _skillCanvas.ShowSkill(agentUnit);
             }
 
             Show(true);

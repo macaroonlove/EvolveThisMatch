@@ -72,8 +72,8 @@ namespace EvolveThisMatch.Editor
 
         private Dictionary<string, List<string>> CSVToDictionary(string data)
         {
-            var lines = data.Split("\n");
-            if (lines.Length < 2) return null;
+            var lines = GetLineList(data);
+            if (lines.Count < 2) return null;
 
             var headers = lines[0].Trim().Split(',');
             var csvDict = new Dictionary<string, List<string>>();
@@ -83,7 +83,7 @@ namespace EvolveThisMatch.Editor
                 csvDict[header] = new List<string>();
             }
 
-            for (int i = 1; i < lines.Length; i++)
+            for (int i = 1; i < lines.Count; i++)
             {
                 var values = SplitLine(lines[i].Trim());
                 
@@ -96,6 +96,64 @@ namespace EvolveThisMatch.Editor
             }
 
             return csvDict;
+        }
+
+        private List<string> GetLineList(string data)
+        {
+            var lines = data.Split('\n');
+            var result = new List<string>();
+
+            string currentLine = "";
+            int quoteCount = 0;
+
+            foreach (var rawLine in lines)
+            {
+                // CRLF 제거 (Windows 대응)
+                string line = rawLine.Replace("\r", "");
+
+                // 줄 합치기 시작
+                if (currentLine == "")
+                    currentLine = line;
+                else
+                    currentLine += "\n" + line;
+
+                quoteCount += CountTrueQuotes(line);
+
+                // 따옴표 쌍이 짝수면 하나의 셀로 본다
+                if (quoteCount % 2 == 0)
+                {
+                    result.Add(currentLine);
+                    currentLine = "";
+                    quoteCount = 0;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(currentLine))
+            {
+                result.Add(currentLine);
+            }
+
+            return result;
+        }
+
+        private int CountTrueQuotes(string line)
+        {
+            int count = 0;
+            for (int i = 0; i < line.Length; i++)
+            {
+                if (line[i] == '"')
+                {
+                    if (i + 1 < line.Length && line[i + 1] == '"')
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
         }
 
         private List<string> SplitLine(string line)

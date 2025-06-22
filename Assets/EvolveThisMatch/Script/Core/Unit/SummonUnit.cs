@@ -55,7 +55,6 @@ namespace EvolveThisMatch.Editor
             menu.AddItem(new GUIContent("버프"), false, AddAbility, typeof(BuffAbility));
             menu.AddItem(new GUIContent("상태이상"), false, AddAbility, typeof(AbnormalStatusAbility));
 
-            menu.AddItem(new GUIContent("마나"), false, AddAbility, typeof(ManaAbility));
             menu.AddItem(new GUIContent("액티브 스킬"), false, AddAbility, typeof(ActiveSkillAbility));
             menu.AddItem(new GUIContent("패시브 스킬"), false, AddAbility, typeof(PassiveSkillAbility));
 

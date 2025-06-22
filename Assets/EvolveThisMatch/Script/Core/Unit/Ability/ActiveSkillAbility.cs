@@ -9,7 +9,6 @@ namespace EvolveThisMatch.Core
     public class ActiveSkillAbility : ConditionAbility
     {
         private UnitAnimationAbility _unitAnimationAbility;
-        private ManaAbility _manaAbility;
         private AbnormalStatusAbility _abnormalStatusAbility;
 
         private bool _isExecuteSkill;
@@ -36,7 +35,6 @@ namespace EvolveThisMatch.Core
             base.Initialize(unit);
 
             _unitAnimationAbility = unit.GetAbility<UnitAnimationAbility>();
-            _manaAbility = unit.GetAbility<ManaAbility>();
             _abnormalStatusAbility = unit.GetAbility<AbnormalStatusAbility>();
 
             InitializeActiveSkillInstance();
@@ -45,27 +43,27 @@ namespace EvolveThisMatch.Core
         #region 스킬 인스턴스 관리
         private void InitializeActiveSkillInstance()
         {
-            if (unit is AgentUnit agentUnit && agentUnit.template.skillTreeGraph != null)
+            if (unit is AgentUnit agentUnit && agentUnit.template.skillTemplates.Count > 0)
             {
-                InitializeActiveSkillInstance(agentUnit.template.skillTreeGraph);
+                InitializeActiveSkillInstance(agentUnit.template.skillTemplates);
             }
-            else if (unit is SummonUnit summonUnit && summonUnit.template.skillTreeGraph != null)
+            else if (unit is SummonUnit summonUnit && summonUnit.template.skillTemplates.Count > 0)
             {
-                InitializeActiveSkillInstance(summonUnit.template.skillTreeGraph);
+                InitializeActiveSkillInstance(summonUnit.template.skillTemplates);
             }
-            else if (unit is EnemyUnit enemyUnit && enemyUnit.template.skillTreeGraph != null)
+            else if (unit is EnemyUnit enemyUnit && enemyUnit.template.skillTemplates.Count > 0)
             {
-                InitializeActiveSkillInstance(enemyUnit.template.skillTreeGraph);
+                InitializeActiveSkillInstance(enemyUnit.template.skillTemplates);
             }
         }
 
-        private void InitializeActiveSkillInstance(SkillTreeGraph skillTree)
+        private void InitializeActiveSkillInstance(IReadOnlyList<SkillTemplate> skillTemplates)
         {
-            foreach (var node in skillTree.nodes)
+            foreach (var skillTemplate in skillTemplates)
             {
-                if (node is SkillNode skillNode && skillNode.skillTemplate is ActiveSkillTemplate skill)
+                if (skillTemplate is ActiveSkillTemplate skill)
                 {
-                    _skills[skill.id] = (new ActiveSkillInstance(skill, this, _manaAbility));
+                    _skills[skill.id] = (new ActiveSkillInstance(skill, this));
                 }
             }
         }

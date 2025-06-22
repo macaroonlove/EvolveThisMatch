@@ -229,7 +229,6 @@ GameObject:
   - component: {fileID: 2349015614413425190}
   - component: {fileID: 7215328118547293664}
   - component: {fileID: 6540089919933195054}
-  - component: {fileID: 7926993913968426360}
   - component: {fileID: 1568172049601641840}
   - component: {fileID: 6202978478221049075}
   - component: {fileID: -2258892940850300582}
@@ -417,19 +416,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useUpdate: 1
---- !u!114 &7926993913968426360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7116394714028806410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad3c42bcb89f75245b2b8761e9352532, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  useUpdate: 1
 --- !u!114 &1568172049601641840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -570,7 +556,8 @@ PrefabInstance:
       value: AgentUnitCanvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5934524504148069657, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}

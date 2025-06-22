@@ -77,11 +77,6 @@ namespace EvolveThisMatch.Editor
         private Vector2 passiveSkillScrollPosition;
         private List<PassiveSkillTemplate> passiveSkillTemplates = new List<PassiveSkillTemplate>();
         #endregion
-        #region 스킬 트리
-        private int selectedSkillTreeIndex = 0;
-        private Vector2 skillTreeScrollPosition;
-        private List<SkillTreeGraph> skillTreeTemplates = new List<SkillTreeGraph>();
-        #endregion
         #endregion
 
         #region 아이템
@@ -209,14 +204,12 @@ namespace EvolveThisMatch.Editor
             GUILayout.BeginHorizontal();
             if (GUILayout.Toggle(selectedSkillTitle == 0, "액티브 스킬", "Button")) selectedSkillTitle = 0;
             if (GUILayout.Toggle(selectedSkillTitle == 1, "패시브 스킬", "Button")) selectedSkillTitle = 1;
-            if (GUILayout.Toggle(selectedSkillTitle == 2, "스킬트리", "Button")) selectedSkillTitle = 2;
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10);
 
             if (selectedSkillTitle == 0) DrawActiveSkillTab();
             else if (selectedSkillTitle == 1) DrawPassiveSkillTab();
-            else DrawSkillTreeTab();
         }
 
         private void DrawItemTitle()
@@ -375,109 +368,6 @@ namespace EvolveThisMatch.Editor
                 }
             );
         }
-
-        #region 스킬 트리
-        private void DrawSkillTreeTab()
-        {
-            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
-            GUILayout.BeginVertical(GUILayout.Width(200));
-            if (GUILayout.Button("스킬 트리 추가"))
-            {
-                AddSkillTreeTemplate();
-            }
-            if (GUILayout.Button("스킬 트리 삭제"))
-            {
-                DeleteSelectedSkillTreeTemplate();
-            }
-            if (GUILayout.Button("스킬 트리 탐색"))
-            {
-                LoadSkillTreeTemplates();
-            }
-
-            DrawLine();
-
-            skillTreeScrollPosition = GUILayout.BeginScrollView(skillTreeScrollPosition, false, true);
-
-            var skillCatalog = new GUIStyle(GUI.skin.button);
-            skillCatalog.alignment = TextAnchor.MiddleLeft;
-            skillCatalog.padding = new RectOffset(5, 5, 5, 5);
-            skillCatalog.margin = new RectOffset(5, 5, -2, -2);
-            skillCatalog.border = new RectOffset(0, 0, 0, 0);
-            skillCatalog.fixedWidth = GUI.skin.box.fixedWidth;
-            skillCatalog.fixedHeight = GUI.skin.box.fixedHeight;
-
-            for (int i = 0; i < skillTreeTemplates.Count; i++)
-            {
-                bool isSelected = (selectedSkillTreeIndex == i);
-
-                var text = "  " + skillTreeTemplates[i].displayName;
-                text = text.Substring(0, Mathf.Min(text.Length, 18));
-
-                if (GUILayout.Toggle(isSelected, text, skillCatalog))
-                {
-                    selectedSkillTreeIndex = i;
-                }
-            }
-            GUILayout.EndScrollView();
-            GUILayout.EndVertical();
-
-            GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-
-            if (GUILayout.Button("에디터 열기"))
-            {
-                SkillTreeWindow.Open(skillTreeTemplates[selectedSkillTreeIndex]);
-            }
-
-            GUILayout.EndVertical();
-
-            GUILayout.EndHorizontal();
-        }
-
-        private void AddSkillTreeTemplate()
-        {
-            // 스킬 트리 템플릿 생성
-            SkillTreeGraph newSkill = CreateInstance<SkillTreeGraph>();
-
-            // 에셋 저장
-            string defaultPath = "Assets/EvolveThisMatch/GameData/Skill/SkillTree";
-            string path = EditorUtility.SaveFilePanelInProject("스킬 트리 추가", "SkillTree_", "asset", "", defaultPath);
-            if (!string.IsNullOrEmpty(path))
-            {
-                newSkill.displayName = Path.GetFileNameWithoutExtension(path).Replace("SkillTree_", "");
-
-                AssetDatabase.CreateAsset(newSkill, path);
-                AssetDatabase.SaveAssets();
-                LoadSkillTreeTemplates();
-            }
-        }
-
-        private void DeleteSelectedSkillTreeTemplate()
-        {
-            if (!EditorUtility.DisplayDialog("경고!", "이 템플릿을 삭제하시겠습니까?", "네", "아니요")) return;
-
-            if (skillTreeTemplates.Count > 0)
-            {
-                SkillTreeGraph selectedSkill = skillTreeTemplates[selectedSkillTreeIndex];
-                string assetPath = AssetDatabase.GetAssetPath(selectedSkill);
-                skillTreeTemplates.RemoveAt(selectedSkillTreeIndex);
-                AssetDatabase.DeleteAsset(assetPath);
-                AssetDatabase.SaveAssets();
-            }
-        }
-
-        private void LoadSkillTreeTemplates()
-        {
-            skillTreeTemplates.Clear();
-            string[] guids = AssetDatabase.FindAssets("t:SkillTreeGraph");
-            foreach (var guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                SkillTreeGraph skillTree = AssetDatabase.LoadAssetAtPath<SkillTreeGraph>(path);
-
-                skillTreeTemplates.Add(skillTree);
-            }
-        }
-        #endregion
         #endregion
 
         #region 아이템
