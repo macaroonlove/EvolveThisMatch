@@ -57,7 +57,7 @@ namespace EvolveThisMatch.Core
                 if (coolDownTime < 0) coolDownTime = 0;
             }
 
-            if (CanExecute() && (isAutoSkill || template.skillTriggerType == EActiveSkillTriggerType.Automatic))
+            if (CanExecute() && isAutoSkill)
             {
                 _activeSkillAbility.TryExecuteSkill(this);
             }

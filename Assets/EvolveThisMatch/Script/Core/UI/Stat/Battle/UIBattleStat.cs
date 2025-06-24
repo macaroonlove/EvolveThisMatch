@@ -46,11 +46,13 @@ namespace EvolveThisMatch.Core
         public virtual void Initialize(Unit unit)
         {
             _unit = unit;
+            gameObject.SetActive(true);
         }
 
         public virtual void Deinitialize()
         {
             _unit = null;
+            gameObject.SetActive(false);
         }
 
         protected void Update()

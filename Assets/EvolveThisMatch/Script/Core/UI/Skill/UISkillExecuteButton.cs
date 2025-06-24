@@ -68,7 +68,6 @@ namespace EvolveThisMatch.Core
         internal void Show(AgentUnit unit, SkillTemplate template)
         {
             GetImage((int)Images.Icon).sprite = template.sprite;
-            SetCoolDownVisibility(false);
 
             if (template is ActiveSkillTemplate activeSkillTemplate)
             {
@@ -89,6 +88,10 @@ namespace EvolveThisMatch.Core
 
                 _isCoolDownVisible = true;
                 CalcCoolDownTimeRatio();
+            }
+            else
+            {
+                _coolDownTimeImage.gameObject.SetActive(false);
             }
         }
 

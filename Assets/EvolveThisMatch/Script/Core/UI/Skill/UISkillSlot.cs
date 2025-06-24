@@ -63,6 +63,8 @@ namespace EvolveThisMatch.Core
             if (template is ActiveSkillTemplate activeSkillTemplate)
             {
                 _typeTag.Show(activeSkillTemplate.skillType);
+                _typeTag.gameObject.SetActive(true);
+
                 _instance = unit.GetAbility<ActiveSkillAbility>().GetSkillInstance(activeSkillTemplate);
 
                 _autoSkillToggle.gameObject.SetActive(true);
@@ -77,7 +79,7 @@ namespace EvolveThisMatch.Core
             }
             else
             {
-                _typeTag.Hide(true);
+                _typeTag.gameObject.SetActive(false);
                 _autoSkillToggle.gameObject.SetActive(false);
             }
 
@@ -91,12 +93,14 @@ namespace EvolveThisMatch.Core
             if (isOn)
             {
                 _autoSkillImage.color = _activeColor;
+                _autoSkillImage.transform.rotation = Quaternion.identity;
                 _autoSkillImage.transform.DORotate(new Vector3(0, 0, 360), 2f, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
             }
             else
             {
                 _autoSkillImage.color = _inActiveColor;
                 _autoSkillImage.transform.DOKill();
+                _autoSkillImage.transform.rotation = Quaternion.identity;
             }
         }
     }

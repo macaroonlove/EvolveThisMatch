@@ -13,11 +13,20 @@ namespace EvolveThisMatch.Core
             _stats = GetComponentsInChildren<IBattleStat>().ToList();
         }
 
-        internal void ShowInfomation(Unit unit)
+        internal void ShowInfomation(AllyUnit unit)
         {
             foreach (var stat in _stats)
             {
                 stat.Initialize(unit);
+            }
+
+            if (unit is AgentUnit agentUnit)
+            {
+                if (agentUnit.template.job.job != EJob.Melee)
+                {
+                    _stats[2].Deinitialize();
+                    _stats[3].Deinitialize();
+                }
             }
         }
     }

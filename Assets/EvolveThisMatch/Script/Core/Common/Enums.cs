@@ -189,7 +189,6 @@ namespace EvolveThisMatch.Core
     /// </summary>
     public enum EActiveSkillTriggerType
     {
-        Automatic,
         Manual,
         Spawn,
         Death,

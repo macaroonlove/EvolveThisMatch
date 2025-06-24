@@ -46,7 +46,7 @@ MonoBehaviour:
     2000%\uB9CC\uD07C\uC758 \uB9C8\uBC95 \uD53C\uD574\uB97C \uC785\uD788\uB294 \uBCBC\uB77D\uC744
     \uAC15\uD558\uC2DC\uD0B5\uB2C8\uB2E4."
   _skillType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
-  _skillTriggerType: 1
+  _skillTriggerType: 0
   _skillTargetingType: 0
   _unitType: 0
   _skillRange: 0

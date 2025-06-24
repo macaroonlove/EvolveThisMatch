@@ -92,10 +92,20 @@ namespace EvolveThisMatch.Core
             return _isExecuteSkill;
         }
 
+        internal override void UpdateAbility()
+        {
+            ActiveSkillCooldown();
+
+            if (_isExecuteSkill == false)
+            {
+                unit.ReleaseCurrentAbility();
+            }
+        }
+
         private void ActiveSkillCooldown()
         {
             var deltaTime = Time.deltaTime;
-
+            
             foreach (var skill in _skills.Values)
             {
                 skill.Update(deltaTime);

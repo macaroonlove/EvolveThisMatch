@@ -15,7 +15,7 @@ namespace EvolveThisMatch.Core
 
         public void Initialize()
         {
-            SetCoin(100);
+            SetCoin(10000);
         }
 
         public void Deinitialize()
