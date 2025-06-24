@@ -12,7 +12,7 @@ namespace EvolveThisMatch.Core
     /// </summary>
     public class AllySystem : MonoBehaviour, IBattleSystem
     {
-        [SerializeField, ReadOnly] private List<AgentUnit> _agents = new List<AgentUnit>();
+        [SerializeField, ReadOnly] private List<AgentBattleData> _agents = new List<AgentBattleData>();
         [SerializeField, ReadOnly] private List<SummonUnit> _summons = new List<SummonUnit>();
 
         internal event UnityAction<Unit> onRegist;
@@ -27,7 +27,7 @@ namespace EvolveThisMatch.Core
             // 유닛 오브젝트 모두 파괴
             foreach (var agent in _agents)
             {
-                Destroy(agent.gameObject);
+                Destroy(agent.agentUnit.gameObject);
             }
 
             foreach (var summon in _summons)
@@ -37,16 +37,19 @@ namespace EvolveThisMatch.Core
         }
 
         #region 아군 유닛 등록·해제
-        internal void Regist(AgentUnit agent)
+        internal AgentBattleData Regist(AgentUnit agent, AgentTemplate agentTemplate)
         {
-            _agents.Add(agent);
+            var agentData = new AgentBattleData(agent, agentTemplate);
+            _agents.Add(agentData);
 
             onRegist?.Invoke(agent);
+            
+            return agentData;
         }
 
-        internal void Deregist(AgentUnit agent)
+        internal void Deregist(AgentBattleData agentData)
         {
-            _agents.Remove(agent);
+            _agents.Remove(agentData);
         }
         #endregion
 
@@ -74,9 +77,12 @@ namespace EvolveThisMatch.Core
             
             if ((unitType & EUnitType.Agent) != 0)
             {
-                allies.AddRange(_agents);
+                foreach (var agentData in _agents)
+                {
+                    allies.Add(agentData.agentUnit);
+                }
+                
             }
-
             if ((unitType & EUnitType.Summon) != 0)
             {
                 allies.AddRange(_summons);
@@ -107,24 +113,18 @@ namespace EvolveThisMatch.Core
 
             radius *= radius;
 
-            void GetAllAlliesInCircle(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
-                    {
-                        var distance = (unit.transform.position - unitPos).sqrMagnitude;
+                    var distance = (unit.transform.position - unitPos).sqrMagnitude;
 
-                        if (distance <= radius)
-                        {
-                            allies.Add((unit));
-                        }
+                    if (distance <= radius)
+                    {
+                        allies.Add((unit));
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetAllAlliesInCircle(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetAllAlliesInCircle(_summons);
 
             return allies;
         }
@@ -135,24 +135,18 @@ namespace EvolveThisMatch.Core
 
             radius *= radius;
 
-            void GetSortedAlliesInCircle(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
-                    {
-                        var distance = (unit.transform.position - unitPos).sqrMagnitude;
+                    var distance = (unit.transform.position - unitPos).sqrMagnitude;
 
-                        if (distance <= radius)
-                        {
-                            priorityQueue.Enqueue(unit, distance);
-                        }
+                    if (distance <= radius)
+                    {
+                        priorityQueue.Enqueue(unit, distance);
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInCircle(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInCircle(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -170,29 +164,23 @@ namespace EvolveThisMatch.Core
 
             radius *= radius;
 
-            void GetSortedAlliesInCircle(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    var distance = (unit.transform.position - unitPos).sqrMagnitude;
+
+                    if (distance <= radius)
                     {
-                        var distance = (unit.transform.position - unitPos).sqrMagnitude;
+                        priorityQueue.Enqueue(unit, distance);
 
-                        if (distance <= radius)
+                        if (priorityQueue.Count > maxCount)
                         {
-                            priorityQueue.Enqueue(unit, distance);
-
-                            if (priorityQueue.Count > maxCount)
-                            {
-                                priorityQueue.Dequeue();
-                            }
+                            priorityQueue.Dequeue();
                         }
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInCircle(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInCircle(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -228,30 +216,24 @@ namespace EvolveThisMatch.Core
             targetDir = targetDir.normalized;
             float widthThreshold = (width * 0.5f) * (width * 0.5f);
 
-            void GetAllAlliesInStraight(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    Vector3 dirVector = unit.transform.position - unitPos;
+
+                    // 유닛을 기준으로한 정면 거리
+                    float forwardDist = Vector3.Dot(targetDir, dirVector);
+                    if (forwardDist < 0 || forwardDist > range) continue;
+
+                    // 유닛을 기준으로한 측면 거리
+                    float sideDist = Vector3.Cross(targetDir, dirVector).sqrMagnitude;
+                    if (sideDist <= widthThreshold)
                     {
-                        Vector3 dirVector = unit.transform.position - unitPos;
-
-                        // 유닛을 기준으로한 정면 거리
-                        float forwardDist = Vector3.Dot(targetDir, dirVector);
-                        if (forwardDist < 0 || forwardDist > range) continue;
-
-                        // 유닛을 기준으로한 측면 거리
-                        float sideDist = Vector3.Cross(targetDir, dirVector).sqrMagnitude;
-                        if (sideDist <= widthThreshold)
-                        {
-                            allies.Add(unit);
-                        }
+                        allies.Add(unit);
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetAllAlliesInStraight(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetAllAlliesInStraight(_summons);
 
             return allies;
         }
@@ -263,30 +245,24 @@ namespace EvolveThisMatch.Core
             targetDir = targetDir.normalized;
             float widthThreshold = (width * 0.5f) * (width * 0.5f);
 
-            void GetSortedAlliesInStraight(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    Vector3 dirVector = unit.transform.position - unitPos;
+
+                    // 유닛을 기준으로한 정면 거리
+                    float forwardDist = Vector3.Dot(targetDir, dirVector);
+                    if (forwardDist < 0 || forwardDist > range) continue;
+
+                    // 유닛을 기준으로한 측면 거리
+                    float sideDist = Vector3.Cross(targetDir, dirVector).sqrMagnitude;
+                    if (sideDist <= widthThreshold)
                     {
-                        Vector3 dirVector = unit.transform.position - unitPos;
-
-                        // 유닛을 기준으로한 정면 거리
-                        float forwardDist = Vector3.Dot(targetDir, dirVector);
-                        if (forwardDist < 0 || forwardDist > range) continue;
-
-                        // 유닛을 기준으로한 측면 거리
-                        float sideDist = Vector3.Cross(targetDir, dirVector).sqrMagnitude;
-                        if (sideDist <= widthThreshold)
-                        {
-                            priorityQueue.Enqueue(unit, forwardDist + sideDist);
-                        }
+                        priorityQueue.Enqueue(unit, forwardDist + sideDist);
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInStraight(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInStraight(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -305,35 +281,29 @@ namespace EvolveThisMatch.Core
             range *= range;
             float widthThreshold = ((width * width) / 4f) * targetDir.sqrMagnitude;
 
-            void GetSortedAlliesInStraight(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    Vector3 dirVector = unit.transform.position - unitPos;
+
+                    // 유닛을 기준으로한 정면 거리
+                    float forwardDist = Vector3.Dot(targetDir, dirVector);
+                    if (forwardDist < 0 || forwardDist > range) continue;
+
+                    // 유닛을 기준으로한 측면 거리
+                    float sideDist = Vector3.Cross(targetDir, dirVector).sqrMagnitude;
+                    if (sideDist <= widthThreshold)
                     {
-                        Vector3 dirVector = unit.transform.position - unitPos;
+                        priorityQueue.Enqueue(unit, forwardDist + sideDist);
 
-                        // 유닛을 기준으로한 정면 거리
-                        float forwardDist = Vector3.Dot(targetDir, dirVector);
-                        if (forwardDist < 0 || forwardDist > range) continue;
-
-                        // 유닛을 기준으로한 측면 거리
-                        float sideDist = Vector3.Cross(targetDir, dirVector).sqrMagnitude;
-                        if (sideDist <= widthThreshold)
+                        if (priorityQueue.Count > maxCount)
                         {
-                            priorityQueue.Enqueue(unit, forwardDist + sideDist);
-
-                            if (priorityQueue.Count > maxCount)
-                            {
-                                priorityQueue.Dequeue();
-                            }
+                            priorityQueue.Dequeue();
                         }
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInStraight(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInStraight(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -371,30 +341,24 @@ namespace EvolveThisMatch.Core
             cos *= cos;
             targetDir.Normalize();
 
-            void GetAllAlliesInCone(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    Vector3 dirVector = unit.transform.position - unitPos;
+                    float distance = dirVector.sqrMagnitude;
+
+                    if (distance <= range)
                     {
-                        Vector3 dirVector = unit.transform.position - unitPos;
-                        float distance = dirVector.sqrMagnitude;
+                        float dot = Vector3.Dot(targetDir, dirVector);
 
-                        if (distance <= range)
+                        if (dot * dot >= cos * distance)
                         {
-                            float dot = Vector3.Dot(targetDir, dirVector);
-
-                            if (dot * dot >= cos * distance)
-                            {
-                                allies.Add(unit);
-                            }
+                            allies.Add(unit);
                         }
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetAllAlliesInCone(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetAllAlliesInCone(_summons);
 
             return allies;
         }
@@ -408,30 +372,24 @@ namespace EvolveThisMatch.Core
             cos *= cos;
             targetDir.Normalize();
 
-            void GetSortedAlliesInCone(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    Vector3 dirVector = unit.transform.position - unitPos;
+                    float distance = dirVector.sqrMagnitude;
+
+                    if (distance <= range)
                     {
-                        Vector3 dirVector = unit.transform.position - unitPos;
-                        float distance = dirVector.sqrMagnitude;
+                        float dot = Vector3.Dot(targetDir, dirVector);
 
-                        if (distance <= range)
+                        if (dot * dot >= cos * distance)
                         {
-                            float dot = Vector3.Dot(targetDir, dirVector);
-
-                            if (dot * dot >= cos * distance)
-                            {
-                                priorityQueue.Enqueue(unit, distance);
-                            }
+                            priorityQueue.Enqueue(unit, distance);
                         }
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInCone(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInCone(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -452,35 +410,29 @@ namespace EvolveThisMatch.Core
             cos *= cos;
             targetDir.Normalize();
 
-            void GetSortedAlliesInCone(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    Vector3 dirVector = unit.transform.position - unitPos;
+                    float distance = dirVector.sqrMagnitude;
+
+                    if (distance <= range)
                     {
-                        Vector3 dirVector = unit.transform.position - unitPos;
-                        float distance = dirVector.sqrMagnitude;
+                        float dot = Vector3.Dot(targetDir, dirVector);
 
-                        if (distance <= range)
+                        if (dot * dot >= cos * distance)
                         {
-                            float dot = Vector3.Dot(targetDir, dirVector);
+                            priorityQueue.Enqueue(unit, distance);
 
-                            if (dot * dot >= cos * distance)
+                            if (priorityQueue.Count > maxCount)
                             {
-                                priorityQueue.Enqueue(unit, distance);
-
-                                if (priorityQueue.Count > maxCount)
-                                {
-                                    priorityQueue.Dequeue();
-                                }
+                                priorityQueue.Dequeue();
                             }
                         }
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInCone(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInCone(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -513,24 +465,18 @@ namespace EvolveThisMatch.Core
         {
             List<AllyUnit> allies = new List<AllyUnit>();
 
-            void GetAllAlliesInGrid(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
-                    {
-                        var pos = unit.cellPos - unitCellPos;
+                    var pos = unit.cellPos - unitCellPos;
 
-                        if (grid.Contains(pos))
-                        {
-                            allies.Add(unit);
-                        }
+                    if (grid.Contains(pos))
+                    {
+                        allies.Add(unit);
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetAllAlliesInGrid(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetAllAlliesInGrid(_summons);
 
             return allies;
         }
@@ -539,26 +485,20 @@ namespace EvolveThisMatch.Core
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
-            void GetSortedAlliesInGrid(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    var pos = unit.cellPos - unitCellPos;
+
+                    if (grid.Contains(pos))
                     {
-                        var pos = unit.cellPos - unitCellPos;
+                        var distance = (unit.cellPos - unitCellPos).sqrMagnitude;
 
-                        if (grid.Contains(pos))
-                        {
-                            var distance = (unit.cellPos - unitCellPos).sqrMagnitude;
-
-                            priorityQueue.Enqueue(unit, distance);
-                        }
+                        priorityQueue.Enqueue(unit, distance);
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInGrid(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInGrid(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -574,31 +514,25 @@ namespace EvolveThisMatch.Core
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
-            void GetSortedAlliesInGrid(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
+                    var pos = unit.cellPos - unitCellPos;
+
+                    if (grid.Contains(pos))
                     {
-                        var pos = unit.cellPos - unitCellPos;
+                        var distance = (unit.cellPos - unitCellPos).sqrMagnitude;
 
-                        if (grid.Contains(pos))
+                        priorityQueue.Enqueue(unit, distance);
+
+                        if (priorityQueue.Count > maxCount)
                         {
-                            var distance = (unit.cellPos - unitCellPos).sqrMagnitude;
-
-                            priorityQueue.Enqueue(unit, distance);
-
-                            if (priorityQueue.Count > maxCount)
-                            {
-                                priorityQueue.Dequeue();
-                            }
+                            priorityQueue.Dequeue();
                         }
                     }
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) GetSortedAlliesInGrid(_agents);
-            if ((unitType & EUnitType.Summon) != 0) GetSortedAlliesInGrid(_summons);
 
             List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
 
@@ -644,25 +578,19 @@ namespace EvolveThisMatch.Core
         {
             var allies = new List<AllyUnit>();
 
-            void CheckAttackable(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
-                    {
-                        // 적이 공중 유닛일 떄, 원거리가 아니라면 공격 불가 (타워 디펜스라면 언덕 유닛일 때, 로 변경)
-                        if (unit.moveType == EMoveType.Sky && attackType != EAttackType.Far) continue;
+                    // 적이 공중 유닛일 떄, 원거리가 아니라면 공격 불가 (타워 디펜스라면 언덕 유닛일 때, 로 변경)
+                    if (unit.moveType == EMoveType.Sky && attackType != EAttackType.Far) continue;
 
-                        // 공격 대상이 아니라면 타겟에 추가하지 않음
-                        if (unit.GetAbility<HitAbility>().finalTargetOfAttack == false) continue;
+                    // 공격 대상이 아니라면 타겟에 추가하지 않음
+                    if (unit.GetAbility<HitAbility>().finalTargetOfAttack == false) continue;
 
-                        allies.Add(unit);
-                    }
+                    allies.Add(unit);
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) CheckAttackable(_agents);
-            if ((unitType & EUnitType.Summon) != 0) CheckAttackable(_summons);
 
             return allies;
         }
@@ -722,22 +650,16 @@ namespace EvolveThisMatch.Core
         {
             var allies = new List<AllyUnit>();
 
-            void CheckHealable(IEnumerable<AllyUnit> units)
+            foreach (var unit in GetUnits(unitType))
             {
-                foreach (var unit in units)
+                if (unit != null && unit.isActiveAndEnabled)
                 {
-                    if (unit != null && unit.isActiveAndEnabled)
-                    {
-                        // 회복 가능 유닛이 아니라면 타겟에 추가하지 않음
-                        if (unit.healthAbility.finalIsHealAble == false) continue;
+                    // 회복 가능 유닛이 아니라면 타겟에 추가하지 않음
+                    if (unit.healthAbility.finalIsHealAble == false) continue;
 
-                        allies.Add(unit);
-                    }
+                    allies.Add(unit);
                 }
             }
-
-            if ((unitType & EUnitType.Agent) != 0) CheckHealable(_agents);
-            if ((unitType & EUnitType.Summon) != 0) CheckHealable(_summons);
 
             return allies;
         }
@@ -771,7 +693,7 @@ namespace EvolveThisMatch.Core
             radius *= radius;
             float nearestDistance = Mathf.Infinity;
 
-            foreach (var agent in _agents)
+            foreach (var agent in GetUnits(EUnitType.Agent | EUnitType.Summon))
             {
                 if (agent != null && agent.isActiveAndEnabled)
                 {
@@ -785,21 +707,22 @@ namespace EvolveThisMatch.Core
                 }
             }
 
-            foreach (var summon in _summons)
-            {
-                if (summon != null && summon.isActiveAndEnabled)
-                {
-                    float distance = (summon.transform.position - unitPos).sqrMagnitude;
+            return allyUnit;
+        }
 
-                    if (distance < nearestDistance && distance <= radius)
-                    {
-                        allyUnit = summon;
-                        nearestDistance = distance;
-                    }
-                }
+        private IEnumerable<AllyUnit> GetUnits(EUnitType unitType)
+        {
+            if ((unitType & EUnitType.Agent) != 0)
+            {
+                foreach (var data in _agents)
+                    yield return data.agentUnit;
             }
 
-            return allyUnit;
+            if ((unitType & EUnitType.Summon) != 0)
+            {
+                foreach (var summon in _summons)
+                    yield return summon;
+            }
         }
         #endregion
     }

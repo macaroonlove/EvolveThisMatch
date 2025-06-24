@@ -15,7 +15,7 @@ namespace EvolveThisMatch.Core
 
         public void Initialize()
         {
-            SetCrystal(0);
+            SetCrystal(100);
         }
 
         public void Deinitialize()
@@ -27,13 +27,16 @@ namespace EvolveThisMatch.Core
             SetCrystal(_crystalVariable.Value + value);
         }
 
-        internal void PayCrystal(int value)
+        internal bool PayCrystal(int value)
         {
             int newCrystal = _crystalVariable.Value - value;
             if (newCrystal >= 0)
             {
                 SetCrystal(newCrystal);
+                return true;
             }
+
+            return false;
         }
 
         private void SetCrystal(int newCrystal)

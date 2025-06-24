@@ -9,13 +9,13 @@ namespace EvolveThisMatch.Core
         private AllySystem _allySystem;
 
         // 배치된 유닛
-        private AgentUnit _placedAgentUnit;
+        private AgentBattleData _placedAgentData;
 
         // 해당 타일의 유닛 존재 여부
-        public bool isPlaceUnit => _placedAgentUnit != null;
+        public bool isPlaceUnit => _placedAgentData != null;
 
         // 배치된 유닛의 아이디
-        public int placedAgentUnitId => _placedAgentUnit.id;
+        public int placedAgentUnitId => _placedAgentData.agentUnit.id;
 
         private void Awake()
         {
@@ -38,13 +38,13 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 유닛 배치
         /// </summary>
-        internal void PlaceUnit(AgentUnit agentUnit)
+        internal AgentBattleData PlaceUnit(AgentUnit agentUnit, AgentTemplate agentTemplate)
         {
-            _allySystem.Regist(agentUnit);
-
-            _placedAgentUnit = agentUnit;
+            _placedAgentData = _allySystem.Regist(agentUnit, agentTemplate);
 
             agentUnit.transform.position = transform.position;
+
+            return _placedAgentData;
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace EvolveThisMatch.Core
         /// </summary>
         internal void ReturnUnit()
         {
-            _allySystem.Deregist(_placedAgentUnit);
+            _allySystem.Deregist(_placedAgentData);
 
-            _placedAgentUnit = null;
+            _placedAgentData = null;
         }
         #endregion
 

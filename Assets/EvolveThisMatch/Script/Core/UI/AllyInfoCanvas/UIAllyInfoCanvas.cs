@@ -102,7 +102,7 @@ namespace EvolveThisMatch.Core
                 _synergyText.text = agentUnit.template.synergy[0].displayName;
                 _displayNameText.text = agentUnit.template.displayName;
                 _levelText.text = agentUnit.level.ToString();
-                _limitText.text = agentUnit.limit.ToString();
+                _limitText.text = agentUnit.limit.displayName.ToString();
 
                 // 공격 범위
                 _attackRangeRenderer.Show((int)Mathf.Clamp(agentUnit.template.AttackRange, 0, 4));
@@ -145,6 +145,7 @@ namespace EvolveThisMatch.Core
             if (_allyUnit is AgentUnit agentUnit)
             {
                 agentUnit.UpgradeLimit();
+                _limitText.text = agentUnit.limit.displayName.ToString();
             }
         }
 

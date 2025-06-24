@@ -17,6 +17,7 @@ namespace EvolveThisMatch.Core
         [SerializeField] private AgentLibraryTemplate _agentLibrary;
         [SerializeField] private SkinLibraryTemplate _agentSkinLibrary;
         [SerializeField] private WaveLibraryTemplate _waveLibrary;
+        [SerializeField] private AgentRarityLibrary _agentRarityLibrary;
 
         public ProfileSaveDataTemplate profileSaveData => _profileSaveData;
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
@@ -42,6 +43,16 @@ namespace EvolveThisMatch.Core
             _formationSaveData.UpdateFormation(formation);
 
             await SaveManager.Instance.Save_FormationData();
+        }
+
+        internal AgentRarityTemplate GetLimitRarity()
+        {
+            return _agentRarityLibrary.GetRandomAgentRarityTemplate();
+        }
+
+        internal AgentRarityTemplate GetUpgradeLimitRarity(AgentRarityTemplate currentAgentRarity)
+        {
+            return _agentRarityLibrary.GetUpgradeAgentRarityTemplate(currentAgentRarity);
         }
     }
 }

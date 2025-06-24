@@ -9,10 +9,15 @@ namespace EvolveThisMatch.Core
         [SerializeField] private Color _backgroundColor;
         [SerializeField] private Color _textColor;
 
+        [Header("업그레이드")]
+        [SerializeField, Range(0, 100)] private float _successProbability;
+
         #region 프로퍼티
         public EAgentRarity rarity => _rarity;
         public Color backgroundColor => _backgroundColor;
         public Color textColor => _textColor;
+
+        public float successProbability => _successProbability;
         #endregion
     }
 }

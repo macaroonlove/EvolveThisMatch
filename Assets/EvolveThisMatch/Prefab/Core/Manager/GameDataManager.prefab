@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3754980317357863866}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &586372569706075548
 MonoBehaviour:
@@ -49,4 +49,4 @@ MonoBehaviour:
   _agentLibrary: {fileID: 11400000, guid: a2d62277f65baab47aadbc5ffeea41b5, type: 2}
   _agentSkinLibrary: {fileID: 11400000, guid: 6ee7cf71a5a805244afe866242e149ec, type: 2}
   _waveLibrary: {fileID: 11400000, guid: 1518715b4424af94d8659f9cc3d1bfd6, type: 2}
-  _tooltipData: {fileID: 11400000, guid: 1fd9a878157265346902dcc155231ab1, type: 2}
+  _agentRarityLibrary: {fileID: 11400000, guid: f101581105b0f354388d46f3228c35e6, type: 2}

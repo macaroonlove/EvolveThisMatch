@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49292b5ef0e83294882acfeaff41af6d, type: 3}
+  m_Name: AgentRarityLibrary
+  m_EditorClassIdentifier: 
+  _agentRarityTemplates:
+  - {fileID: 11400000, guid: 3f5b5c01cbd48654eb24dcb18e2dad86, type: 2}
+  - {fileID: 11400000, guid: e2abef2d73980a943aa1a2f6a18c9ed1, type: 2}
+  - {fileID: 11400000, guid: 0625512b8a29c4c44930a82d24f700ca, type: 2}
+  - {fileID: 11400000, guid: 8733eeeaf3a94fb4789e0482b4dcb38d, type: 2}
+  - {fileID: 11400000, guid: fb2889f4fd9e6884ebd857fff8efefe7, type: 2}
+  _probabilityList:
+  - needCost: 0
+    myth: 0
+    legend: 1
+    epic: 4
+    rare: 15
+    common: 80
+  - needCost: 0
+    myth: 0.1
+    legend: 2
+    epic: 6
+    rare: 18
+    common: 73.9
+  - needCost: 0
+    myth: 0.3
+    legend: 3
+    epic: 8
+    rare: 20
+    common: 68.7
+  - needCost: 0
+    myth: 0.5
+    legend: 4
+    epic: 10
+    rare: 22
+    common: 63.5
+  - needCost: 0
+    myth: 0.8
+    legend: 6
+    epic: 15
+    rare: 24
+    common: 54.199997
+  - needCost: 0
+    myth: 1
+    legend: 8
+    epic: 17
+    rare: 30
+    common: 44
+  - needCost: 0
+    myth: 1.8
+    legend: 10
+    epic: 20
+    rare: 32
+    common: 36.199997
+  - needCost: 0
+    myth: 2.5
+    legend: 12
+    epic: 25
+    rare: 35
+    common: 25.5
+  - needCost: 0
+    myth: 3
+    legend: 14
+    epic: 30
+    rare: 38
+    common: 15
+  - needCost: 0
+    myth: 3.5
+    legend: 18
+    epic: 32
+    rare: 40
+    common: 6.5
+  _probabilityLevel: 0

@@ -43,10 +43,10 @@ namespace EvolveThisMatch.Core
 
             if (obj.TryGetComponent(out AgentUnit unit))
             {
-                tile.PlaceUnit(unit);
+                var agentData = tile.PlaceUnit(unit, template);
                 
                 // ¿Ø¥÷ √ ±‚»≠
-                unit.Initialize(template);
+                unit.Initialize(agentData);
             }
             else
             {
