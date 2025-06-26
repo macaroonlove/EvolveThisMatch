@@ -11,6 +11,8 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private ObscuredIntVariable _crystalVariable;
 
+        internal int currentCrystal => _crystalVariable.Value;
+
         internal event UnityAction<int> onChangedCrystal;
 
         public void Initialize()

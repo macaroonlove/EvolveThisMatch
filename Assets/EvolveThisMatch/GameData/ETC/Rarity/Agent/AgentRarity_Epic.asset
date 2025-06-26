@@ -17,5 +17,5 @@ MonoBehaviour:
   _rarity: 2
   _backgroundColor: {r: 0.5019608, g: 0, b: 0.5019608, a: 1}
   _textColor: {r: 0.9019608, g: 0.8, b: 1, a: 1}
-  _needCrystal: 0
+  _agentLevelLibrary: {fileID: 11400000, guid: ee931d09bb0223f42a52699c22a0233a, type: 2}
   _successProbability: 30

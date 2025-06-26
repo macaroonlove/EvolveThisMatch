@@ -9,6 +9,9 @@ namespace EvolveThisMatch.Core
         [SerializeField] private Color _backgroundColor;
         [SerializeField] private Color _textColor;
 
+        [Header("레벨업")]
+        [SerializeField] private AgentLevelLibrary _agentLevelLibrary;
+
         [Header("업그레이드")]
         [SerializeField, Range(0, 100)] private float _successProbability;
 
@@ -17,6 +20,7 @@ namespace EvolveThisMatch.Core
         public Color backgroundColor => _backgroundColor;
         public Color textColor => _textColor;
 
+        public AgentLevelLibrary agentLevelLibrary => _agentLevelLibrary;
         public float successProbability => _successProbability;
         #endregion
     }

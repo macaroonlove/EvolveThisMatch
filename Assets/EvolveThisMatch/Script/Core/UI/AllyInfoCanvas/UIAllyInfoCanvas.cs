@@ -1,4 +1,5 @@
 using FrameWork.UIBinding;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,15 +12,11 @@ namespace EvolveThisMatch.Core
         enum Buttons
         {
             CloseButton,
-            LevelUpgradeButton,
-            LimitUpgradeButton,
             DestinyRecastButton,
         }
         enum Texts
         {
             DisplayName,
-            LevelText,
-            LimitText,
             SynergyText,
         }
         enum Images
@@ -29,8 +26,6 @@ namespace EvolveThisMatch.Core
         #endregion
 
         private TextMeshProUGUI _displayNameText;
-        private TextMeshProUGUI _levelText;
-        private TextMeshProUGUI _limitText;
         private TextMeshProUGUI _synergyText;
         private Image _fullBodyImage;
 
@@ -40,6 +35,8 @@ namespace EvolveThisMatch.Core
 
         private UIRarityTag _rarityTag;
         private UIJobTag _jobTag;
+        private UIBattleLevelButton _levelButton;
+        private UIBattleLimitButton _limitButton;
         private UIBattleStatCanvas _battleStatCanvas;
         private UISkillCanvas _skillCanvas;
 
@@ -47,6 +44,8 @@ namespace EvolveThisMatch.Core
         {
             _rarityTag = GetComponentInChildren<UIRarityTag>();
             _jobTag = GetComponentInChildren<UIJobTag>();
+            _levelButton = GetComponentInChildren<UIBattleLevelButton>();
+            _limitButton = GetComponentInChildren<UIBattleLimitButton>();
             _battleStatCanvas = GetComponentInChildren<UIBattleStatCanvas>();
             _skillCanvas = GetComponentInChildren<UISkillCanvas>();
 
@@ -56,13 +55,9 @@ namespace EvolveThisMatch.Core
 
             _fullBodyImage = GetImage((int)Images.FullBodyImage);
             _displayNameText = GetText((int)Texts.DisplayName);
-            _levelText = GetText((int)Texts.LevelText);
-            _limitText = GetText((int)Texts.LimitText);
             _synergyText = GetText((int)Texts.SynergyText);
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
-            GetButton((int)Buttons.LevelUpgradeButton).onClick.AddListener(UpgradeLevel);
-            GetButton((int)Buttons.LimitUpgradeButton).onClick.AddListener(UpgradeLimit);
             GetButton((int)Buttons.DestinyRecastButton).onClick.AddListener(DestinyRecast);
 
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
@@ -81,7 +76,6 @@ namespace EvolveThisMatch.Core
         private void OnBattleDeinitialize()
         {
             _unitRayCastSystem.onCast -= ShowInfomation;
-
             _unitRayCastSystem = null;
         }
 
@@ -101,8 +95,6 @@ namespace EvolveThisMatch.Core
                 _fullBodyImage.sprite = agentUnit.template.sprite;
                 _synergyText.text = agentUnit.template.synergy[0].displayName;
                 _displayNameText.text = agentUnit.template.displayName;
-                _levelText.text = agentUnit.level.ToString();
-                _limitText.text = agentUnit.limit.displayName.ToString();
 
                 // 공격 범위
                 _attackRangeRenderer.Show((int)Mathf.Clamp(agentUnit.template.AttackRange, 0, 4));
@@ -112,6 +104,12 @@ namespace EvolveThisMatch.Core
 
                 // 직업 태그
                 _jobTag.Show(agentUnit.template.job);
+
+                // 레벨 버튼
+                _levelButton.Show(agentUnit);
+
+                // 재능 한계 버튼
+                _limitButton.Show(agentUnit);
 
                 // 스탯 캔버스
                 _battleStatCanvas.ShowInfomation(agentUnit);
@@ -127,26 +125,9 @@ namespace EvolveThisMatch.Core
         {
             _allyUnit = null;
             _attackRangeRenderer.Hide();
+            _levelButton.Hide();
+            _limitButton.Hide();
             Hide(true);
-        }
-
-        private void UpgradeLevel()
-        {
-            // TODO: 조건 추가
-            if (_allyUnit is AgentUnit agentUnit)
-            {
-                agentUnit.UpgradeLevel();
-            }
-        }
-
-        private void UpgradeLimit()
-        {
-            // TODO: 조건 추가
-            if (_allyUnit is AgentUnit agentUnit)
-            {
-                agentUnit.UpgradeLimit();
-                _limitText.text = agentUnit.limit.displayName.ToString();
-            }
         }
 
         private void DestinyRecast()

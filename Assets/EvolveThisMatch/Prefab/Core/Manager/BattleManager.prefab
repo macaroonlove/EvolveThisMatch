@@ -1107,7 +1107,7 @@ GameObject:
   - component: {fileID: 5721271390991021978}
   - component: {fileID: 6277267532859737193}
   m_Layer: 5
-  m_Name: LevelText
+  m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1514,6 +1514,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1356974149890648420}
+  - component: {fileID: 3517152276977797544}
+  - component: {fileID: 7329611101966753108}
+  - component: {fileID: 5837497209368350153}
+  - component: {fileID: 3508874456889617285}
   m_Layer: 5
   m_Name: Limit
   m_TagString: Untagged
@@ -1543,6 +1547,69 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -230}
   m_SizeDelta: {x: 310, y: 40}
   m_Pivot: {x: 1, y: 1}
+--- !u!114 &3517152276977797544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883546723332430940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47eb08c5e798734285f019b5cf6e202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipStyle: {fileID: 5791082997531837647, guid: 93c78f5546082cc478c361ba605bff1e, type: 3}
+  _tooltipPosition: 0
+  _tooltipOffset: {x: 0, y: 0}
+  tooltipData:
+    _stringKeys:
+    - Description
+    _spriteKeys: []
+    _stringValues:
+    - 
+    _spriteValues: []
+  prevTooltipStyle: DescriptionTooltipStyle
+--- !u!225 &7329611101966753108
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883546723332430940}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &5837497209368350153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883546723332430940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6977b915cca15264d9515e11f5ccf6f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksRaycasts: 1
+  duration: 0.25
+  ease: 9
+  _canvasGroup: {fileID: 7329611101966753108}
+--- !u!114 &3508874456889617285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883546723332430940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0256a81108c2544f997ec5e4c868523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &888369472933736846
 GameObject:
   m_ObjectHideFlags: 0
@@ -2471,7 +2538,7 @@ GameObject:
   - component: {fileID: 2711975329461284622}
   - component: {fileID: 5914436621437497609}
   m_Layer: 5
-  m_Name: LimitUpgradeButton
+  m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3903,9 +3970,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2352334192293296240}
   m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &9175005370296849255
 MonoBehaviour:
@@ -6086,6 +6153,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4724970582330285994}
+  - component: {fileID: 7398595030417373002}
+  - component: {fileID: 5842026967759656797}
+  - component: {fileID: 3100103658716246231}
+  - component: {fileID: 690559022290669141}
   m_Layer: 5
   m_Name: Level
   m_TagString: Untagged
@@ -6115,6 +6186,69 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -185}
   m_SizeDelta: {x: 310, y: 40}
   m_Pivot: {x: 1, y: 1}
+--- !u!114 &7398595030417373002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472782004929094295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47eb08c5e798734285f019b5cf6e202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipStyle: {fileID: 5791082997531837647, guid: 93c78f5546082cc478c361ba605bff1e, type: 3}
+  _tooltipPosition: 0
+  _tooltipOffset: {x: 0, y: 0}
+  tooltipData:
+    _stringKeys:
+    - Description
+    _spriteKeys: []
+    _stringValues:
+    - 
+    _spriteValues: []
+  prevTooltipStyle: DescriptionTooltipStyle
+--- !u!225 &5842026967759656797
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472782004929094295}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &3100103658716246231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472782004929094295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6977b915cca15264d9515e11f5ccf6f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksRaycasts: 1
+  duration: 0.25
+  ease: 9
+  _canvasGroup: {fileID: 5842026967759656797}
+--- !u!114 &690559022290669141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472782004929094295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1914860d5ca354584659aaf258e973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4561159605239208631
 GameObject:
   m_ObjectHideFlags: 0
@@ -9086,7 +9220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edcd092b85474f45bd18dcf09cbdfb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agents: []
   _summons: []
 --- !u!1 &6820376982150140206
 GameObject:
@@ -9790,7 +9923,7 @@ GameObject:
   - component: {fileID: 7232633799105721126}
   - component: {fileID: 2501113212211380914}
   m_Layer: 5
-  m_Name: LimitText
+  m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10883,7 +11016,7 @@ GameObject:
   - component: {fileID: 4558858432929612928}
   - component: {fileID: 6715044748968058444}
   m_Layer: 5
-  m_Name: LevelUpgradeButton
+  m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13083,6 +13216,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2192670932758461903, guid: 4990b45dbd7fefc4eb092e15612af448, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802071816375572667, guid: 4990b45dbd7fefc4eb092e15612af448, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802071816375572667, guid: 4990b45dbd7fefc4eb092e15612af448, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802071816375572667, guid: 4990b45dbd7fefc4eb092e15612af448, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802071816375572667, guid: 4990b45dbd7fefc4eb092e15612af448, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802071816375572667, guid: 4990b45dbd7fefc4eb092e15612af448, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5024085059450645141, guid: 4990b45dbd7fefc4eb092e15612af448, type: 3}

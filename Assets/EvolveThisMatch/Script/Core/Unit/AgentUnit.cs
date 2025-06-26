@@ -28,9 +28,14 @@ namespace EvolveThisMatch.Core
             allySystem.Deregist(_agentData);
         }
 
-        internal void UpgradeLevel()
+        internal int GetNeedCoinToLevelUp()
         {
-            //_level++;
+            return _agentData.GetNeedCoinToLevelUp();
+        }
+
+        internal void LevelUp()
+        {
+            _agentData.LevelUp();
         }
 
         internal void UpgradeLimit()

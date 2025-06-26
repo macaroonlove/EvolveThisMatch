@@ -42,7 +42,7 @@ namespace FrameWork.Tooltip
             TooltipManager.Instance.Show(this);
         }
 
-        internal void StopHover()
+        public void StopHover()
         {
             TooltipManager.Instance.Hide(this);
         }
