@@ -4,16 +4,16 @@ namespace EvolveThisMatch.Core
 {
     public class AgentUnit : AllyUnit
     {
-        private AgentBattleData _agentData;
+        internal AgentBattleData agentData { get; private set; }
 
-        internal AgentTemplate template => _agentData.agentTemplate;
+        internal AgentTemplate template => agentData.agentTemplate;
         internal override EMoveType moveType => template.MoveType;
-        internal int level => _agentData.level;
-        internal AgentRarityTemplate limit => _agentData.limit;
+        internal int level => agentData.level;
+        internal AgentRarityTemplate limit => agentData.limit;
 
         internal void Initialize(AgentBattleData agentData)
         {
-            _agentData = agentData;
+            this.agentData = agentData;
             _id = template.id;
 
             base.Initialize(this);
@@ -23,24 +23,29 @@ namespace EvolveThisMatch.Core
         {
             base.OnDeath();
 
-            var allySystem = BattleManager.Instance.GetSubSystem<AllySystem>();
+            //var allySystem = BattleManager.Instance.GetSubSystem<AllySystem>();
 
-            allySystem.Deregist(_agentData);
+            //allySystem.Deregist(_agentData);
         }
 
         internal int GetNeedCoinToLevelUp()
         {
-            return _agentData.GetNeedCoinToLevelUp();
+            return agentData.GetNeedCoinToLevelUp();
         }
 
         internal void LevelUp()
         {
-            _agentData.LevelUp();
+            agentData.LevelUp();
         }
 
         internal void UpgradeLimit()
         {
-            _agentData.UpgradeLimit();
+            agentData.UpgradeLimit();
+        }
+
+        internal void DestinyRecast()
+        {
+            agentData.DestinyRecast();
         }
     }
 }

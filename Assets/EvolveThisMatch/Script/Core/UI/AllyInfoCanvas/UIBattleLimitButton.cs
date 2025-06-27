@@ -1,12 +1,12 @@
 using FrameWork.Tooltip;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Core
 {
-    [RequireComponent(typeof(TooltipTrigger))]
     public class UIBattleLimitButton : UIBase
     {
         #region 바인딩
@@ -25,7 +25,6 @@ namespace EvolveThisMatch.Core
 
         private AgentUnit _agentUnit;
         private CrystalSystem _crystalSystem;
-        private TooltipTrigger _tooltipTrigger;
 
         protected override void Initialize()
         {
@@ -36,8 +35,6 @@ namespace EvolveThisMatch.Core
             _button = GetButton((int)Buttons.Button);
 
             _button.onClick.AddListener(UpgradeLimit);
-
-            _tooltipTrigger = GetComponent<TooltipTrigger>();
 
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
             BattleManager.Instance.onBattleDeinitialize += OnBattleDeinitialize;
@@ -90,27 +87,21 @@ namespace EvolveThisMatch.Core
 
         private void UpgradeLimit()
         {
-            _agentUnit.UpgradeLimit();
+            UIPopupManager.Instance.ShowConfirmCancelPopup($"<sprite name=\"Crystal\">을 1개 사용하여\n유닛의 잠재력을 향상시키시겠습니까?\n<size=28>성공 확률: {_agentUnit.limit.successProbability}</size>", (isOn) =>
+            {
+                if (isOn && _crystalSystem.PayCrystal(1))
+                {
+                    _agentUnit.UpgradeLimit();
 
-            SetText(_agentUnit);
+                    SetText(_agentUnit);
+                }
+            });            
         }
 
         private void SetText(AgentUnit agentUnit)
         {
             _text.text = agentUnit.limit.displayName.ToString();
             OnChangedCrystal(_crystalSystem.currentCrystal);
-
-            var limit = _agentUnit.limit;
-            if (limit.rarity == EAgentRarity.Myth)
-            {
-                _tooltipTrigger.enabled = false;
-                _tooltipTrigger.StopHover();
-                return;
-            }
-
-            _tooltipTrigger.enabled = true;
-            _tooltipTrigger.SetText("Description", $"재능 해금에 필요한 크리스탈 수: 1\n" +
-                $"성공 확률: {limit.successProbability}");
         }
     }
 }

@@ -42,5 +42,6 @@ MonoBehaviour:
   _maxMana: 0
   _startMana: 0
   _manaRecoveryPerSec: 0
-  _skillTreeGraph: {fileID: 0}
-  skins: []
+  _skillTemplates: []
+  skins:
+  - {fileID: 11400000, guid: 3d3bdd19a3d7c6c488a1f01511cd8b2b, type: 2}

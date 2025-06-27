@@ -1,5 +1,6 @@
+using Cysharp.Threading.Tasks;
 using FrameWork.UIBinding;
-using System;
+using FrameWork.UIPopup;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,7 @@ namespace EvolveThisMatch.Core
 
         private AllyUnit _allyUnit;
         private UnitRayCastSystem _unitRayCastSystem;
+        private CrystalSystem _crystalSystem;
         private AttackRangeRenderer _attackRangeRenderer;
 
         private UIRarityTag _rarityTag;
@@ -68,6 +70,7 @@ namespace EvolveThisMatch.Core
         private void OnBattleInitialize()
         {
             _unitRayCastSystem = BattleManager.Instance.GetSubSystem<UnitRayCastSystem>();
+            _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
             _attackRangeRenderer = BattleManager.Instance.GetSubSystem<AttackRangeRenderer>();
 
             _unitRayCastSystem.onCast += ShowInfomation;
@@ -77,6 +80,8 @@ namespace EvolveThisMatch.Core
         {
             _unitRayCastSystem.onCast -= ShowInfomation;
             _unitRayCastSystem = null;
+            _crystalSystem = null;
+            _attackRangeRenderer = null;
         }
 
         private void OnUnsubscribe()
@@ -123,16 +128,32 @@ namespace EvolveThisMatch.Core
 
         private void Hide()
         {
+            ResetCanvas();
+            Hide(true);
+        }
+
+        private void ResetCanvas()
+        {
             _allyUnit = null;
             _attackRangeRenderer.Hide();
             _levelButton.Hide();
             _limitButton.Hide();
-            Hide(true);
         }
 
         private void DestinyRecast()
         {
+            UIPopupManager.Instance.ShowConfirmCancelPopup($"<sprite name=\"Crystal\">을 1개 사용하여\n유닛의 운명을 바꾸시겠습니까?", (isOn) =>
+            {
+                if (isOn && _crystalSystem.PayCrystal(1) && _allyUnit is AgentUnit agentUnit)
+                {
+                    ResetCanvas();
 
+                    var agentData = agentUnit.agentData;
+                    agentUnit.DestinyRecast();
+
+                    ShowInfomation(agentData.agentUnit);
+                }
+            });
         }
     }
 }

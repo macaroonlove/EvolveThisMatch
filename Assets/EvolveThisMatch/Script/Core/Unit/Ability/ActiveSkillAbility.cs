@@ -36,6 +36,8 @@ namespace EvolveThisMatch.Core
 
             _unitAnimationAbility = unit.GetAbility<UnitAnimationAbility>();
             _abnormalStatusAbility = unit.GetAbility<AbnormalStatusAbility>();
+            
+            _isExecuteSkill = false;
 
             InitializeActiveSkillInstance();
         }

@@ -1,12 +1,10 @@
-using FrameWork.Tooltip;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Core
 {
-    [RequireComponent(typeof(TooltipTrigger))]
     public class UIBattleLevelButton : UIBase
     {
         #region 바인딩
@@ -25,7 +23,6 @@ namespace EvolveThisMatch.Core
 
         private AgentUnit _agentUnit;
         private CoinSystem _coinSystem;
-        private TooltipTrigger _tooltipTrigger;
 
         protected override void Initialize()
         {
@@ -36,8 +33,6 @@ namespace EvolveThisMatch.Core
             _button = GetButton((int)Buttons.Button);
 
             _button.onClick.AddListener(LevelUp);
-
-            _tooltipTrigger = GetComponent<TooltipTrigger>();
 
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
             BattleManager.Instance.onBattleDeinitialize += OnBattleDeinitialize;
@@ -52,7 +47,7 @@ namespace EvolveThisMatch.Core
         private void OnBattleDeinitialize()
         {
             _coinSystem = null;
-        }        
+        }
 
         private void OnUnsubscribe()
         {
@@ -89,26 +84,25 @@ namespace EvolveThisMatch.Core
 
         private void LevelUp()
         {
-            _agentUnit.LevelUp();
+            var needCoin = _agentUnit.GetNeedCoinToLevelUp();
 
-            SetText(_agentUnit);
+            if (needCoin == -1) return;
+
+            UIPopupManager.Instance.ShowConfirmCancelPopup($"<sprite name=\"Coin\">을 {_agentUnit.GetNeedCoinToLevelUp()}개 사용하여\n유닛의 레벨을 올리시겠습니까?", (isOn) =>
+            {
+                if (isOn && _coinSystem.PayCoin(needCoin))
+                {
+                    _agentUnit.LevelUp();
+
+                    SetText(_agentUnit);
+                }
+            });
         }
 
         private void SetText(AgentUnit agentUnit)
         {
             _text.text = agentUnit.level.ToString();
             OnChangedCoin(_coinSystem.currentCoin);
-
-            var needCoin = _agentUnit.GetNeedCoinToLevelUp();
-            if (needCoin == -1)
-            {
-                _tooltipTrigger.enabled = false;
-                _tooltipTrigger.StopHover();
-                return;
-            }
-
-            _tooltipTrigger.enabled = true;
-            _tooltipTrigger.SetText("Description", $"레벨업에 필요한 코인 수: {agentUnit.GetNeedCoinToLevelUp()}");
         }
     }
 }

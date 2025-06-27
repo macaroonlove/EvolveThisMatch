@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef68eb525becc8458ebedd6bdf47435, type: 3}
+  m_Name: "Skin_\uB9C8\uC0AC\uBB34\uB124_\uAE30\uBCF8"
+  m_EditorClassIdentifier: 
+  _id: 0
+  _rarity: {fileID: 0}
+  _displayName: "\uAE30\uBCF8"
+  _description: 
+  _faceSprite: {fileID: 0}
+  lobbyResource:
+    m_AssetGUID: 17a5aee085d0b0d468c4ae6efbfd3d0f
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  battleResource:
+    m_AssetGUID: db4c4b0c003fc9d46bafb0d5bc74c3b9
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -7,14 +8,18 @@ namespace EvolveThisMatch.Core
     {
         private PoolSystem _poolSystem;
         private TileSystem _tileSystem;
-
-        private List<Save.ProfileSaveData.Agent> _ownedAgents = new List<Save.ProfileSaveData.Agent>();
+        private List<AgentTemplate> _ownedAgentTemplates = new List<AgentTemplate>();
 
         public void Initialize()
         {
             _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
-            _ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            
+            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            foreach(var agent in ownedAgents)
+            {
+                _ownedAgentTemplates.Add(GameDataManager.Instance.GetAgentTemplateById(agent.id));
+            }
         }
 
         public void Deinitialize()
@@ -24,8 +29,8 @@ namespace EvolveThisMatch.Core
 
         internal bool CreateRandomUnit()
         {
-            int index = Random.Range(0, _ownedAgents.Count);
-            var template = GameDataManager.Instance.GetAgentTemplateById(index);
+            int index = Random.Range(0, _ownedAgentTemplates.Count);
+            var template = _ownedAgentTemplates[index];
 
             return CreateUnit(template);
         }
@@ -44,7 +49,7 @@ namespace EvolveThisMatch.Core
             if (obj.TryGetComponent(out AgentUnit unit))
             {
                 var agentData = tile.PlaceUnit(unit, template);
-                
+
                 // À¯´Ö ÃÊ±âÈ­
                 unit.Initialize(agentData);
             }
@@ -55,6 +60,24 @@ namespace EvolveThisMatch.Core
             }
 
             return true;
+        }
+
+        internal (AgentUnit, AgentTemplate) ChangeRandomUnit(AgentUnit existingUnit, AgentRarityTemplate rarityTemplate)
+        {
+            var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity <= rarityTemplate.rarity && t != existingUnit.template).ToList();
+
+            int index = Random.Range(0, filtered.Count);
+            var template = filtered[index];
+
+            var obj = _poolSystem.Spawn(template.prefab, transform);
+            if (obj.TryGetComponent(out AgentUnit unit))
+            {
+                _poolSystem.DeSpawn(existingUnit.gameObject);
+                return (unit, template);
+            }
+
+            _poolSystem.DeSpawn(obj);
+            return (null, null);
         }
     }
 }

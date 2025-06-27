@@ -41,6 +41,7 @@ namespace EvolveThisMatch.Core
         internal AgentBattleData PlaceUnit(AgentUnit agentUnit, AgentTemplate agentTemplate)
         {
             _placedAgentData = _allySystem.Regist(agentUnit, agentTemplate);
+            _placedAgentData.ComfirmTile(this);
 
             agentUnit.transform.position = transform.position;
 

@@ -4,32 +4,36 @@ namespace EvolveThisMatch.Core
 {
     public class AgentBattleData
     {
-        private AgentTemplate _agentTemplate;
-        private AgentUnit _agentUnit;
-        private int _level;
-        private AgentRarityTemplate _limit;
-        private CoinSystem _coinSystem;
-        private CrystalSystem _crystalSystem;
+        private AgentCreateSystem _agentCreateSystem;
 
-        internal AgentTemplate agentTemplate => _agentTemplate;
-        internal AgentUnit agentUnit => _agentUnit;
-        internal int level => _level;
-        internal AgentRarityTemplate limit => _limit;
+        internal AgentTemplate agentTemplate { get; private set; }
+        internal AgentUnit agentUnit { get; private set; }
+        internal int level { get; private set; }
+        internal AgentRarityTemplate limit { get; private set; }
+        internal TileController mountTile { get; private set; }
 
         public AgentBattleData(AgentUnit agentUnit, AgentTemplate agentTemplate)
         {
-            _agentUnit = agentUnit;
-            _agentTemplate = agentTemplate;
-            _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
-            _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
+            this.agentUnit = agentUnit;
+            this.agentTemplate = agentTemplate;
+            
+            this.level = 1;
+            this.limit = GameDataManager.Instance.GetLimitRarity();
 
-            _level = 1;
-            _limit = GameDataManager.Instance.GetLimitRarity();
+            _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
         }
 
+        #region 위치
+        internal void ComfirmTile(TileController tile)
+        {
+            mountTile = tile;
+        }
+        #endregion
+
+        #region 레벨업
         internal int GetNeedCoinToLevelUp()
         {
-            var data = _agentTemplate.rarity.agentLevelLibrary.GetLevelData(_level);
+            var data = agentTemplate.rarity.agentLevelLibrary.GetLevelData(level);
 
             if (data == null) return -1;
 
@@ -38,22 +42,29 @@ namespace EvolveThisMatch.Core
 
         internal void LevelUp()
         {
-            var data = _agentTemplate.rarity.agentLevelLibrary.GetLevelData(_level);
-
-            if (data == null) return;
-
-            if (_coinSystem.PayCoin(data.needCoin))
-            {
-                _level++;
-            }
+            level++;
         }
+        #endregion
 
+        #region 재능 제한
         internal void UpgradeLimit()
         {
-            if (_crystalSystem.PayCrystal(1))
-            {
-                _limit = GameDataManager.Instance.GetUpgradeLimitRarity(_limit);
-            }
+            limit = GameDataManager.Instance.GetUpgradeLimitRarity(limit);
         }
+        #endregion
+
+        #region 운명 재설정
+        internal void DestinyRecast()
+        {
+            agentUnit.Deinitialize();
+
+            var result = _agentCreateSystem.ChangeRandomUnit(agentUnit, limit);
+
+            agentTemplate = result.Item2;
+            agentUnit = result.Item1;
+            agentUnit.transform.position = mountTile.transform.position;
+            agentUnit.Initialize(this);
+        }
+        #endregion
     }
 }
