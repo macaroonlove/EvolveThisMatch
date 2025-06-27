@@ -66,7 +66,6 @@ namespace EvolveThisMatch.Save
         public List<int> ownedPassiveItemIds => _data.ownedPassiveItemIds;
         public List<int> ownedActiveItemIds => _data.ownedActiveItemIds;
 
-        [ContextMenu("초기화")]
         public override void SetDefaultValues()
         {
             _data = new ProfileSaveData();
@@ -77,6 +76,7 @@ namespace EvolveThisMatch.Save
             AddAgent(2);
             AddAgent(3);
             AddAgent(4);
+            AddAgent(5);
 
             // 초기 골드 추가
             _data.gold = 100;

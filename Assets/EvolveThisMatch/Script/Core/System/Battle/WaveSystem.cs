@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Core
 {
@@ -13,6 +14,8 @@ namespace EvolveThisMatch.Core
         private Transform _arrivalPoint;
         private int _currentWaveIndex;
         private bool _isWaveEnd;
+
+        public UnityAction<int, float> onWaveChanged;
 
         public void Initialize()
         {
@@ -44,6 +47,9 @@ namespace EvolveThisMatch.Core
             {
                 WaveTemplate currentWave = _waveLibrary.waves[_currentWaveIndex];
                 StartCoroutine(SpawnWave(currentWave));
+
+                onWaveChanged?.Invoke(_currentWaveIndex + 1, (_waveLibrary.waves.Count == _currentWaveIndex + 1) ? 0 : _waveLibrary.waves[_currentWaveIndex + 1].spawnTime - _waveLibrary.waves[_currentWaveIndex].spawnTime);
+
                 _currentWaveIndex++;
             }
         }
