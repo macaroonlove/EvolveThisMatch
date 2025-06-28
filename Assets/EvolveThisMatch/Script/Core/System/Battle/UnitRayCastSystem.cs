@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Core
         private void Awake()
         {
             _camera = Camera.main;
-            _layerMask = LayerMask.GetMask("Agent");
+            _layerMask = LayerMask.GetMask("Agent", "Summon");
         }
 
         private void Update()

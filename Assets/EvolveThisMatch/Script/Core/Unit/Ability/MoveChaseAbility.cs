@@ -75,19 +75,6 @@ namespace EvolveThisMatch.Core
                     _targetPosition = null;
                     StopMoveAnimation();
                 }
-
-                //// 3D 환경에서 장애물을 피해 이동
-                //if (_navMeshAgent != null)
-                //{
-                //    _navMeshAgent.speed = finalMoveSpeed;
-                //    _navMeshAgent.SetDestination(_targetPosition.position);
-                //}
-
-                //// 2D 환경에서 장애물을 피해 이동
-                //var astar = BattleManager.Instance.GetSubSystem<AStarSystem>();
-                //// TODO: 경로가 바뀌는 경우(장애물 생성 등)에만 Path를 재탐색하도록 수정
-                //var path = astar.SearchPath(transform.position, _targetPosition.position, AStarSystem.NodeTag.Ground);
-                //astar.Move(transform, path, finalMoveSpeed);
             }
             #endregion
 
@@ -98,9 +85,6 @@ namespace EvolveThisMatch.Core
 
                 // 2D 회전
                 FlipUnit(direction);
-
-                // 3D 회전
-                //RotateUnit(direction);
             }
             #endregion
         }

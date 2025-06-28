@@ -7,9 +7,13 @@ namespace EvolveThisMatch.Core
     public class TileSystem : MonoBehaviour, IBattleSystem
     {
         private List<TileController> _controllers = new List<TileController>();
+        
+        internal Transform sortiePoint { get; private set; }
 
         private void Awake()
         {
+            sortiePoint = transform.GetChild(0);
+
             var controllers = this.GetComponentsInChildren<TileController>(true);
 
             foreach (var controller in controllers)

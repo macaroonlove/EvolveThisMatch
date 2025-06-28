@@ -159,30 +159,6 @@ namespace EvolveThisMatch.Editor
                         template.SetHPRecoveryPerSec(hpRecoveryPerSec);
                     }
 
-                    // 마나 회복 방식
-                    if (Enum.TryParse<EManaRecoveryType>(csvDic["마나 회복 방식"][i], out var manaRecoveryType))
-                    {
-                        template.SetManaRecoveryType(manaRecoveryType);
-                    }
-
-                    // 최대 마나
-                    if (int.TryParse(csvDic["최대 마나"][i], out var maxMana))
-                    {
-                        template.SetMaxMana(maxMana);
-                    }
-
-                    // 시작 마나
-                    if (int.TryParse(csvDic["시작 마나"][i], out var startMana))
-                    {
-                        template.SetStartMana(startMana);
-                    }
-
-                    // 초당 마나 회복량
-                    if (int.TryParse(csvDic["초당 마나 회복량"][i], out var manaRecoveryPerSec))
-                    {
-                        template.SetManaRecoveryPerSec(manaRecoveryPerSec);
-                    }
-
                     EditorUtility.SetDirty(template);
                 }
                 // 템플릿이 존재하지 않는다면 생성
@@ -308,30 +284,6 @@ namespace EvolveThisMatch.Editor
                     if (int.TryParse(csvDic["초당 체력 회복량"][i], out var hpRecoveryPerSec))
                     {
                         newTemplate.SetHPRecoveryPerSec(hpRecoveryPerSec);
-                    }
-
-                    // 마나 회복 방식
-                    if (Enum.TryParse<EManaRecoveryType>(csvDic["마나 회복 방식"][i], out var manaRecoveryType))
-                    {
-                        newTemplate.SetManaRecoveryType(manaRecoveryType);
-                    }
-
-                    // 최대 마나
-                    if (int.TryParse(csvDic["최대 마나"][i], out var maxMana))
-                    {
-                        newTemplate.SetMaxMana(maxMana);
-                    }
-
-                    // 시작 마나
-                    if (int.TryParse(csvDic["시작 마나"][i], out var startMana))
-                    {
-                        newTemplate.SetStartMana(startMana);
-                    }
-
-                    // 초당 마나 회복량
-                    if (int.TryParse(csvDic["초당 마나 회복량"][i], out var manaRecoveryPerSec))
-                    {
-                        newTemplate.SetManaRecoveryPerSec(manaRecoveryPerSec);
                     }
 
                     string path = $"Assets/EvolveThisMatch/GameData/Unit/Summon/Summon_{csvDic["유닛 이름"][i]}.asset";

@@ -200,6 +200,7 @@ namespace EvolveThisMatch.Core
             }
 
             _attackCooldown = finalAttackTerm;
+            _isAttackActive = false;
 
             _attackEventHandler = GetComponentInChildren<AttackEventHandler>();
             if (_attackEventHandler != null)

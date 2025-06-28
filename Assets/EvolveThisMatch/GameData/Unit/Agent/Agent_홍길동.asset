@@ -19,29 +19,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 42ae1e4937ececa47b247a6cf68c7752, type: 2}
   _displayName: "\uD64D\uAE38\uB3D9"
   _moveType: 0
-  _moveSpeed: 0
-  _chaseRange: 0
-  _chaseFailRange: 0
+  _moveSpeed: 0.8
+  _chaseRange: 10
+  _chaseFailRange: 14
   _attackType: 0
   _damageType: 0
-  _atk: 0
-  _attackTerm: 0
-  _attackRange: 0
+  _atk: 60
+  _attackTerm: 1.8
+  _attackRange: 1
   _isProjectileAttack: 0
   _projectilePrefab: {fileID: 0}
   _spawnPoint: 0
-  _physicalPenetration: 0
-  _magicPenetration: 0
+  _physicalPenetration: 10
+  _magicPenetration: 10
   _criticalHitChance: 0
   _criticalHitDamage: 0
-  _maxHP: 0
-  _physicalResistance: 0
-  _magicResistance: 0
+  _maxHP: 3200
+  _physicalResistance: 24
+  _magicResistance: 24
   _hpRecoveryPerSec: 0
-  _manaRecoveryType: 0
-  _maxMana: 0
-  _startMana: 0
-  _manaRecoveryPerSec: 0
   _skillTemplates: []
   skins:
   - {fileID: 11400000, guid: 7d95062ea38f3a248a6dbe2f02d0f89e, type: 2}

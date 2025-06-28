@@ -13,7 +13,7 @@ namespace EvolveThisMatch.Core
             _stats = GetComponentsInChildren<IBattleStat>().ToList();
         }
 
-        internal void ShowInfomation(AllyUnit unit)
+        internal void Show(AllyUnit unit)
         {
             foreach (var stat in _stats)
             {

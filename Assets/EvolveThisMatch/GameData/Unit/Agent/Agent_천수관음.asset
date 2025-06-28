@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "Agent_\uCC9C\uC218\uAD00\uC74C"
   m_EditorClassIdentifier: 
   _id: 16
-  _rarity: {fileID: 11400000, guid: e2abef2d73980a943aa1a2f6a18c9ed1, type: 2}
+  _rarity: {fileID: 11400000, guid: 0625512b8a29c4c44930a82d24f700ca, type: 2}
   _job: {fileID: 11400000, guid: 13aa90185a908bf4a9619efab8f60ce9, type: 2}
   _synergy:
   - {fileID: 11400000, guid: 079c82f3982e2f948b8600e709b829d7, type: 2}
@@ -22,26 +22,22 @@ MonoBehaviour:
   _moveSpeed: 0
   _chaseRange: 0
   _chaseFailRange: 0
-  _attackType: 0
+  _attackType: 1
   _damageType: 0
-  _atk: 0
-  _attackTerm: 0
-  _attackRange: 0
+  _atk: 100
+  _attackTerm: 1.5
+  _attackRange: 2
   _isProjectileAttack: 0
   _projectilePrefab: {fileID: 0}
   _spawnPoint: 0
-  _physicalPenetration: 0
-  _magicPenetration: 0
+  _physicalPenetration: 10
+  _magicPenetration: 10
   _criticalHitChance: 0
   _criticalHitDamage: 0
-  _maxHP: 0
-  _physicalResistance: 0
-  _magicResistance: 0
+  _maxHP: 2400
+  _physicalResistance: 20
+  _magicResistance: 20
   _hpRecoveryPerSec: 0
-  _manaRecoveryType: 0
-  _maxMana: 0
-  _startMana: 0
-  _manaRecoveryPerSec: 0
   _skillTemplates: []
   skins:
   - {fileID: 11400000, guid: f3e94da8c6fccb74f8a2838b6a49ed73, type: 2}

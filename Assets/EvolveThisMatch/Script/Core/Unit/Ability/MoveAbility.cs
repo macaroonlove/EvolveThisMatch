@@ -13,10 +13,6 @@ namespace EvolveThisMatch.Core
         private AbnormalStatusAbility _abnormalStatusAbility;
         private UnitAnimationAbility _unitAnimationAbility;
 
-        #region 3D의 경우 (2D의 경우 삭제)
-        protected NavMeshAgent _navMeshAgent;
-        #endregion
-
         #region 계산 스탯
         protected float finalMoveSpeed
         {
@@ -67,8 +63,6 @@ namespace EvolveThisMatch.Core
         {
             base.Initialize(unit);
 
-            TryGetComponent(out _navMeshAgent);
-
             _buffAbility = unit.GetAbility<BuffAbility>();
             _abnormalStatusAbility = unit.GetAbility<AbnormalStatusAbility>();
             _unitAnimationAbility = unit.GetAbility<UnitAnimationAbility>();
@@ -89,7 +83,6 @@ namespace EvolveThisMatch.Core
         }
 
         #region 회전
-        #region 2D 회전
         private bool IsUnitLeft(Vector3 direction)
         {
             Vector3 unitRight = unit.transform.forward;
@@ -102,21 +95,9 @@ namespace EvolveThisMatch.Core
         {
             bool isLeft = IsUnitLeft(direction);
 
-            float scaleX = isLeft ? 1f : -1f;
+            float scaleX = isLeft ? -0.15f : 0.15f;
             transform.GetChild(3).DOScaleX(scaleX, 0.1f);
         }
-        #endregion
-
-        #region 3D 회전
-        protected void RotateUnit(Vector3 direction)
-        {
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2);
-            }
-        }
-        #endregion
         #endregion
 
         protected void MoveAnimation()

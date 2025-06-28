@@ -24,24 +24,20 @@ MonoBehaviour:
   _chaseFailRange: 0
   _attackType: 1
   _damageType: 1
-  _atk: 350
-  _attackTerm: 1
-  _attackRange: 3
+  _atk: 200
+  _attackTerm: 1.2
+  _attackRange: 2
   _isProjectileAttack: 0
   _projectilePrefab: {fileID: 0}
   _spawnPoint: 0
-  _physicalPenetration: 0
-  _magicPenetration: 0
+  _physicalPenetration: 10
+  _magicPenetration: 10
   _criticalHitChance: 0
   _criticalHitDamage: 0
-  _maxHP: 1000
-  _physicalResistance: 0
-  _magicResistance: 0
+  _maxHP: 4800
+  _physicalResistance: 40
+  _magicResistance: 40
   _hpRecoveryPerSec: 0
-  _manaRecoveryType: 0
-  _maxMana: 0
-  _startMana: 0
-  _manaRecoveryPerSec: 0
-  _skillTreeGraph: {fileID: 0}
+  _skillTemplates: []
   skins:
   - {fileID: 11400000, guid: bfde3b963aba0fe4a9d9a83396d61429, type: 2}

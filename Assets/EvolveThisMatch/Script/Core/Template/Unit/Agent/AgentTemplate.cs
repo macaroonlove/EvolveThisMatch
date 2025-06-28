@@ -41,11 +41,6 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private int _magicResistance;
         [HideInInspector, SerializeField] private int _hpRecoveryPerSec;
 
-        [HideInInspector, SerializeField] private EManaRecoveryType _manaRecoveryType;
-        [HideInInspector, SerializeField,] private int _maxMana;
-        [HideInInspector, SerializeField] private int _startMana;
-        [HideInInspector, SerializeField] private int _manaRecoveryPerSec;
-
         [HideInInspector, SerializeField] private List<SkillTemplate> _skillTemplates;
 
         [HideInInspector]
@@ -90,11 +85,6 @@ namespace EvolveThisMatch.Core
         public int MagicResistance => _magicResistance;
         public int HPRecoveryPerSec => _hpRecoveryPerSec;
 
-        public EManaRecoveryType ManaRecoveryType => _manaRecoveryType;
-        public int MaxMana => _maxMana;
-        public int StartMana => _startMana;
-        public int ManaRecoveryPerSec => _manaRecoveryPerSec;
-
         public IReadOnlyList<SkillTemplate> skillTemplates => _skillTemplates;
 
         public FX casterFX => skins[_selectedSkinId]?.battleTemplate.casterFX;
@@ -128,11 +118,6 @@ namespace EvolveThisMatch.Core
         internal void SetPhysicalResistance(int resistance) => _physicalResistance = resistance;
         internal void SetMagicResistance(int resistance) => _magicResistance = resistance;
         internal void SetHPRecoveryPerSec(int recovery) => _hpRecoveryPerSec = recovery;
-
-        internal void SetManaRecoveryType(EManaRecoveryType type) => _manaRecoveryType = type;
-        internal void SetMaxMana(int mana) => _maxMana = mana;
-        internal void SetStartMana(int mana) => _startMana = mana;
-        internal void SetManaRecoveryPerSec(int recovery) => _manaRecoveryPerSec = recovery;
         #endregion
 
         #region Load
@@ -272,11 +257,6 @@ namespace EvolveThisMatch.Editor
         private SerializedProperty _magicResistance;
         private SerializedProperty _hpRecoveryPerSec;
 
-        private SerializedProperty _manaRecoveryType;
-        private SerializedProperty _maxMana;
-        private SerializedProperty _startMana;
-        private SerializedProperty _manaRecoveryPerSec;
-
         private SerializedProperty _skillTemplates;
 
         private ReorderableList _skinList;
@@ -318,11 +298,6 @@ namespace EvolveThisMatch.Editor
             _physicalResistance = serializedObject.FindProperty("_physicalResistance");
             _magicResistance = serializedObject.FindProperty("_magicResistance");
             _hpRecoveryPerSec = serializedObject.FindProperty("_hpRecoveryPerSec");
-
-            _manaRecoveryType = serializedObject.FindProperty("_manaRecoveryType");
-            _maxMana = serializedObject.FindProperty("_maxMana");
-            _startMana = serializedObject.FindProperty("_startMana");
-            _manaRecoveryPerSec = serializedObject.FindProperty("_manaRecoveryPerSec");
 
             _skillTemplates = serializedObject.FindProperty("_skillTemplates");
 
@@ -492,38 +467,6 @@ namespace EvolveThisMatch.Editor
             GUILayout.Label("초당 체력 회복량", GUILayout.Width(140));
             EditorGUILayout.PropertyField(_hpRecoveryPerSec, GUIContent.none);
             GUILayout.EndHorizontal();
-
-            GUILayout.Space(10);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("마나 회복 방식", GUILayout.Width(140));
-            EditorGUILayout.PropertyField(_manaRecoveryType, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("최대 마나", GUILayout.Width(140));
-            EditorGUILayout.PropertyField(_maxMana, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("시작 마나", GUILayout.Width(140));
-            EditorGUILayout.PropertyField(_startMana, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            if (_manaRecoveryType.enumValueIndex != (int)EManaRecoveryType.None)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("초당 마나 회복량", GUILayout.Width(140));
-                EditorGUILayout.PropertyField(_manaRecoveryPerSec, GUIContent.none);
-                GUILayout.EndHorizontal();
-            }
-            else if (_manaRecoveryType.enumValueIndex == (int)EManaRecoveryType.Attack || _manaRecoveryType.enumValueIndex == (int)EManaRecoveryType.Hit)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("마나 회복량", GUILayout.Width(140));
-                EditorGUILayout.PropertyField(_manaRecoveryPerSec, GUIContent.none);
-                GUILayout.EndHorizontal();
-            }
 
             GUILayout.Space(10);
 

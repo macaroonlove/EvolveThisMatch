@@ -33,9 +33,6 @@ namespace EvolveThisMatch.Core
             #endregion
 
             //#region 회전하기
-            //Vector3 direction = (_arrivalPoint - transform.position).normalized;
-
-            //// 2D 회전
             //FlipUnit(direction);
             //#endregion
 

@@ -76,6 +76,8 @@ namespace EvolveThisMatch.Editor
 
             menu.AddItem(new GUIContent("추적 이동"), false, AddAbility, typeof(MoveChaseAbility));
             menu.AddItem(new GUIContent("특정 지점 이동"), false, AddAbility, typeof(MoveWayPointAbility));
+            
+            menu.AddItem(new GUIContent("배치 능력"), false, AddAbility, typeof(DeployAbility));
 
             menu.AddItem(new GUIContent("객체 스폰(투사체, 덫)"), false, AddAbility, typeof(EntitySpawnAbility));
             menu.AddItem(new GUIContent("목표 찾기"), false, AddAbility, typeof(FindTargetAbility));
