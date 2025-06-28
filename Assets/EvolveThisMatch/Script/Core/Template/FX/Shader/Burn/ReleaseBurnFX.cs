@@ -9,7 +9,7 @@ namespace EvolveThisMatch.Core
         public override void Play(Unit target)
         {
             var fxAbility = target.GetAbility<FXAbility>();
-            fxAbility.Fade("_FrozenFade", 0.5f, 4.0f, 0.0f);
+            fxAbility.Fade("_BurnFade", 0.5f, 4.0f, 0.0f);
             target.StartCoroutine(CoPlay(fxAbility));
         }
 

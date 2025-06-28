@@ -12,6 +12,8 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ENABLEBURN_ON
+  - _ENABLEFULLDISTORTION_ON
   - _SHADERFADING_NONE
   - _SHADERSPACE_UV
   - _TEXTURELAYER1SHEETTOGGLE_ON
@@ -237,7 +239,7 @@ Material:
     - _EnableAlphaTint: 0
     - _EnableBlackTint: 0
     - _EnableBrightness: 0
-    - _EnableBurn: 0
+    - _EnableBurn: 1
     - _EnableCamouflage: 0
     - _EnableCheckerboard: 0
     - _EnableColorReplace: 0
@@ -251,7 +253,7 @@ Material:
     - _EnableFlame: 0
     - _EnableFrozen: 0
     - _EnableFullAlphaDissolve: 0
-    - _EnableFullDistortion: 0
+    - _EnableFullDistortion: 1
     - _EnableFullGlowDissolve: 0
     - _EnableGaussianBlur: 0
     - _EnableGlitch: 0

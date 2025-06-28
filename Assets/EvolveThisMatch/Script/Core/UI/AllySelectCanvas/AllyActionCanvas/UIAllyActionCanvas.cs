@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using FrameWork.UIBinding;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +19,9 @@ namespace EvolveThisMatch.Core
             Pivot,
         }
         #endregion
+
+        [SerializeField] private FX _sortieStart;
+        [SerializeField] private FX _sortieEnd;
 
         private Transform _pivot;
         private Button _sortieButton;
@@ -63,11 +68,15 @@ namespace EvolveThisMatch.Core
             base.Show(true);
         }
 
-        private void Sortie()
+        private async void Sortie()
         {
-            _selectedData.agentUnit.transform.position = _tileSystem.sortiePoint.position;
-            _selectedData.agentUnit.GetAbility<DeployAbility>().Sortie();
             _allySelectCanvas.Hide();
+            _sortieStart.Play(_selectedData.agentUnit);
+            await UniTask.Delay(500);
+            _selectedData.agentUnit.transform.position = _tileSystem.sortiePoint.position;
+            _sortieEnd.Play(_selectedData.agentUnit);
+            await UniTask.Delay(1500);
+            _selectedData.agentUnit.GetAbility<DeployAbility>().Sortie();
         }
 
         private void Extract()

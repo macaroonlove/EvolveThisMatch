@@ -41,11 +41,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackVFX
+    uniqueID: 594492031
+    locked: 0
   - name: Unit
     uniqueID: 351196539
     locked: 0
   - name: UnitUI
     uniqueID: 2285420601
+    locked: 0
+  - name: FrontVFX
+    uniqueID: 182966263
     locked: 0
   m_RenderingLayers:
   - Default

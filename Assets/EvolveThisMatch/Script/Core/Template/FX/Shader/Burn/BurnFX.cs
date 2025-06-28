@@ -9,7 +9,7 @@ namespace EvolveThisMatch.Core
         {
             var fxAbility = target.GetAbility<FXAbility>();
             fxAbility.SetShaderKeyword("_ENABLEBURN_ON", true);
-            fxAbility.Fade("_FrozenFade", 0.5f, 0.0f, 4.0f);
+            fxAbility.Fade("_BurnFade", 0.5f, 0.0f, 4.0f);
         }
     }
 }

@@ -9270,6 +9270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50abef0a5b1ddd34ea71276de593b205, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _sortieStart: {fileID: 11400000, guid: 77a7ab1a8ec023a438e9d3ca66259f32, type: 2}
+  _sortieEnd: {fileID: 11400000, guid: 1119a89edab96bd489686ab7f56e34c1, type: 2}
 --- !u!1 &6693989740193303869
 GameObject:
   m_ObjectHideFlags: 0
