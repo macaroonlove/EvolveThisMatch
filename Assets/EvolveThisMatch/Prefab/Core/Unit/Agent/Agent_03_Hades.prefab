@@ -48,9 +48,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3411660929231993371, guid: e2f28c4210b959e48a4e5385e5ca6cc8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.65
+      objectReference: {fileID: 0}
     - target: {fileID: 7116394714028806410, guid: e2f28c4210b959e48a4e5385e5ca6cc8, type: 3}
       propertyPath: m_Name
       value: Agent_03_Hades
+      objectReference: {fileID: 0}
+    - target: {fileID: 8139392951540281616, guid: e2f28c4210b959e48a4e5385e5ca6cc8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

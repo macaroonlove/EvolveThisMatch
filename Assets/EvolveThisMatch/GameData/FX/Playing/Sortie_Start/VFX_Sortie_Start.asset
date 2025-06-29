@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isParticle: 1
   _vfxObj: {fileID: 9047993804416933808, guid: a1c0491ab6b58b945bfe4d92c2c31ad5, type: 3}
-  _spawnPoint: 4
+  _spawnPoint: 1
   _isInfinity: 0
   _duration: 2
   _isRepeat: 0
   _cycle: 0
-  _posOffset: {x: 0, y: 0.8, z: 0}
+  _posOffset: {x: 0, y: 0, z: 0}
   _rotOffset: {x: 0, y: 0, z: 0}
   _isFollowTarget: 0

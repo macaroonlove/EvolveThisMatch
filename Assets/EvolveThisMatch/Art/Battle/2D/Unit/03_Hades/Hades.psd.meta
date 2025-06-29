@@ -6890,7 +6890,7 @@ ScriptedImporter:
     androidETC2FallbackOverride: 0
   mosaicLayers: 1
   characterMode: 1
-  documentPivot: {x: 0.5, y: 0.1}
+  documentPivot: {x: 0.5, y: 0.07}
   documentAlignment: 9
   importHiddenLayers: 0
   layerMappingOption: 2

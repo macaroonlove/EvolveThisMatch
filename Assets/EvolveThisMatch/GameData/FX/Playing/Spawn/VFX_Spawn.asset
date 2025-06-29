@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbc8768d1e4b2a3488ace831a0f8ef54, type: 3}
-  m_Name: VFX_Sortie_End
+  m_Name: VFX_Spawn
   m_EditorClassIdentifier: 
   _isParticle: 1
-  _vfxObj: {fileID: 2427305996381154637, guid: 5dd32416d0c191f4e93fcfa067561aca, type: 3}
+  _vfxObj: {fileID: 5619386021293234911, guid: 05e576f134c0a5e42b20b75e9009aed6, type: 3}
   _spawnPoint: 1
   _isInfinity: 0
   _duration: 2

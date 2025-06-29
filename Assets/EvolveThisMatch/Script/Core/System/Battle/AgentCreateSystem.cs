@@ -6,6 +6,8 @@ namespace EvolveThisMatch.Core
 {
     public class AgentCreateSystem : MonoBehaviour, IBattleSystem
     {
+        [SerializeField] private FX _spawnFX;
+
         private PoolSystem _poolSystem;
         private TileSystem _tileSystem;
         private List<AgentTemplate> _ownedAgentTemplates = new List<AgentTemplate>();
@@ -49,9 +51,12 @@ namespace EvolveThisMatch.Core
             if (obj.TryGetComponent(out AgentUnit unit))
             {
                 var agentData = tile.PlaceUnit(unit, template);
-
+                
                 // À¯´Ö ÃÊ±âÈ­
                 unit.Initialize(agentData);
+
+                // ½ºÆù ÀÌÆåÆ®
+                _spawnFX.Play(unit);
             }
             else
             {
@@ -62,7 +67,21 @@ namespace EvolveThisMatch.Core
             return true;
         }
 
-        internal (AgentUnit, AgentTemplate) ChangeRandomUnit(AgentUnit existingUnit, AgentRarityTemplate rarityTemplate)
+        public struct ChangeUnitResult
+        {
+            public AgentUnit unit;
+            public AgentTemplate template;
+            public FX spawnFX;
+
+            public ChangeUnitResult(AgentUnit unit, AgentTemplate template, FX spawnFX)
+            {
+                this.unit = unit;
+                this.template = template;
+                this.spawnFX = spawnFX;
+            }
+        }
+
+        internal ChangeUnitResult ChangeRandomUnit(AgentUnit existingUnit, AgentRarityTemplate rarityTemplate)
         {
             var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity <= rarityTemplate.rarity && t != existingUnit.template).ToList();
 
@@ -73,11 +92,12 @@ namespace EvolveThisMatch.Core
             if (obj.TryGetComponent(out AgentUnit unit))
             {
                 _poolSystem.DeSpawn(existingUnit.gameObject);
-                return (unit, template);
+
+                return new ChangeUnitResult(unit, template, _spawnFX);
             }
 
             _poolSystem.DeSpawn(obj);
-            return (null, null);
+            return new ChangeUnitResult(null, null, null);
         }
     }
 }

@@ -60,10 +60,13 @@ namespace EvolveThisMatch.Core
 
             var result = _agentCreateSystem.ChangeRandomUnit(agentUnit, limit);
 
-            agentTemplate = result.Item2;
-            agentUnit = result.Item1;
+            agentTemplate = result.template;
+            agentUnit = result.unit;
             agentUnit.transform.position = mountTile.transform.position;
             agentUnit.Initialize(this);
+
+            // ½ºÆù ÀÌÆåÆ®
+            result.spawnFX.Play(agentUnit);
         }
         #endregion
     }

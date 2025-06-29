@@ -16,7 +16,7 @@ MonoBehaviour:
   _rarity: {fileID: 0}
   _displayName: "\uAE30\uBCF8"
   _description: "\uC7A5\uB09C\uAFB8\uB7EC\uAE30 \uB85C\uD0A4\uB2E4."
-  _faceSprite: {fileID: 0}
+  _faceSprite: {fileID: 21300000, guid: 93289e99145f1ef4f9447a5b83dcef90, type: 3}
   lobbyResource:
     m_AssetGUID: 832311e1dbb095e4c84947d78060abba
     m_SubObjectName: 
