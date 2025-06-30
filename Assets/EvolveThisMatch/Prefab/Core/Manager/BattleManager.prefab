@@ -6087,8 +6087,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7764921059658608065}
   - component: {fileID: 7779925810599734067}
+  - component: {fileID: 5981209525603622466}
   m_Layer: 0
-  m_Name: AgentCreateSystem
+  m_Name: AgentSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6122,6 +6123,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawnFX: {fileID: 11400000, guid: a9ba9f306ee81a346b3c56e2f478ab0d, type: 2}
+--- !u!114 &5981209525603622466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4220791289374802386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758a7ca091870b34aa73a1126535f8f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _returnFX: {fileID: 11400000, guid: 4949325cd39739747b03ced39f5d53a5, type: 2}
 --- !u!1 &4377510380074794936
 GameObject:
   m_ObjectHideFlags: 0
@@ -9666,6 +9680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edcd092b85474f45bd18dcf09cbdfb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _agents: []
   _summons: []
 --- !u!1 &6820376982150140206
 GameObject:

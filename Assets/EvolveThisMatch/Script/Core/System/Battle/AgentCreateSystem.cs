@@ -29,6 +29,7 @@ namespace EvolveThisMatch.Core
 
         }
 
+        #region ¿Ø¥÷ º“»Ø
         internal bool CreateRandomUnit()
         {
             int index = Random.Range(0, _ownedAgentTemplates.Count);
@@ -66,7 +67,9 @@ namespace EvolveThisMatch.Core
 
             return true;
         }
+        #endregion
 
+        #region ¿Ø¥÷ ±≥√º
         public struct ChangeUnitResult
         {
             public AgentUnit unit;
@@ -99,5 +102,6 @@ namespace EvolveThisMatch.Core
             _poolSystem.DeSpawn(obj);
             return new ChangeUnitResult(null, null, null);
         }
+        #endregion
     }
 }

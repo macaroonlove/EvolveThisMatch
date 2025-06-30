@@ -8,6 +8,7 @@ namespace EvolveThisMatch.Core
     public class MoveAbility : ConditionAbility
     {
         [SerializeField, ReadOnly] private float _baseMoveSpeed;
+        [SerializeField, ReadOnly] private bool _isLeft;
 
         private BuffAbility _buffAbility;
         private AbnormalStatusAbility _abnormalStatusAbility;
@@ -82,6 +83,12 @@ namespace EvolveThisMatch.Core
             return true;
         }
 
+        internal override void StopAbility()
+        {
+            StopMoveAnimation();
+            _isLeft = false;
+        }
+
         #region È¸Àü
         private bool IsUnitLeft(Vector3 direction)
         {
@@ -94,6 +101,10 @@ namespace EvolveThisMatch.Core
         protected void FlipUnit(Vector3 direction)
         {
             bool isLeft = IsUnitLeft(direction);
+
+            if (_isLeft == isLeft) return;
+
+            _isLeft = isLeft;
 
             float scaleX = isLeft ? -0.15f : 0.15f;
             transform.GetChild(3).DOScaleX(scaleX, 0.1f);

@@ -1,7 +1,8 @@
-using UnityEngine;
+using System;
 
 namespace EvolveThisMatch.Core
 {
+    [Serializable]
     public class AgentBattleData
     {
         private AgentCreateSystem _agentCreateSystem;
@@ -16,7 +17,7 @@ namespace EvolveThisMatch.Core
         {
             this.agentUnit = agentUnit;
             this.agentTemplate = agentTemplate;
-            
+
             this.level = 1;
             this.limit = GameDataManager.Instance.GetLimitRarity();
 
