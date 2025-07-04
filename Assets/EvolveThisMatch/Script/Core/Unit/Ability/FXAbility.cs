@@ -125,43 +125,6 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region ºŒ¿Ã¥ı
-        #region Mesh Renderer
-        //private MeshRenderer _renderer;
-        //private MaterialPropertyBlock _propertyBlock;
-        //private bool _isDirty;
-
-        //private void InitializeShaderFX()
-        //{
-        //    _renderer = GetComponentInChildren<MeshRenderer>();
-        //    _propertyBlock = new MaterialPropertyBlock();
-
-        //    _renderer?.SetPropertyBlock(_propertyBlock);
-        //}
-
-        //private void UpdateShaderFX()
-        //{
-        //    if (_isDirty)
-        //    {
-        //        _renderer?.SetPropertyBlock(_propertyBlock);
-        //        _isDirty = false;
-        //    }
-        //}
-
-        //public void SetShaderKeyword(string keywordName, bool isOn)
-        //{
-        //    if (isOn)
-        //    {
-        //        _renderer.material.EnableKeyword(keywordName);
-        //    }
-        //    else
-        //    {
-        //        _renderer.material.DisableKeyword(keywordName);
-        //    }
-        //    _isDirty = true;
-        //}
-        #endregion
-
-        #region Sprite Renderer (SPUM ±‚¡ÿ)
         private List<SpriteRenderer> _renderers = new List<SpriteRenderer>();
         private MaterialPropertyBlock _propertyBlock;
         private bool _isDirty;
@@ -209,7 +172,6 @@ namespace EvolveThisMatch.Core
             }
             _isDirty = true;
         }
-        #endregion
 
         public void SetShaderProperty(string propertyName, float value)
         {
