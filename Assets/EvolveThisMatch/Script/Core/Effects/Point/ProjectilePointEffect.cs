@@ -16,7 +16,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] private EActiveSkillControlType _controlType;
         [SerializeField] private ENontargetProjectileRangeType _rangeType;
         [SerializeField] private EDirectionType _directionType;
-        [SerializeField] private bool _isMaxRange;
         [SerializeField] private float _range;
         [SerializeField] private float _angleStep;
         [SerializeField] private int _spawnCount;
@@ -43,7 +42,7 @@ namespace EvolveThisMatch.Core
             else
             {
                 direction = (targetVector - casterUnit.transform.position).normalized;
-                distance = _isMaxRange ? _range : Mathf.Min(Vector3.Distance(casterUnit.transform.position, targetVector), _range);
+                distance = Mathf.Min(Vector3.Distance(casterUnit.transform.position, targetVector), _range);
             }
 
             switch (_rangeType)
@@ -110,13 +109,6 @@ namespace EvolveThisMatch.Core
                 GUI.Label(labelRect, "방향");
                 _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
             }
-            else if (_controlType == EActiveSkillControlType.Mouse)
-            {
-                labelRect.y += 20;
-                valueRect.y += 20;
-                GUI.Label(labelRect, "최대 범위까지 발사 여부");
-                _isMaxRange = EditorGUI.Toggle(valueRect, _isMaxRange);
-            }
 
             labelRect.y += 40;
             valueRect.y += 40;
@@ -149,7 +141,7 @@ namespace EvolveThisMatch.Core
         {
             int rowNum = base.GetNumRows() + 7;
 
-            if (_controlType == EActiveSkillControlType.Instant || _controlType == EActiveSkillControlType.Mouse)
+            if (_controlType == EActiveSkillControlType.Instant)
                 rowNum++;
 
             if (_rangeType == ENontargetProjectileRangeType.Cone)

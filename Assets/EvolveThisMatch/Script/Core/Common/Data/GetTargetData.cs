@@ -28,16 +28,12 @@ namespace EvolveThisMatch.Core
         [SerializeField, Label("방향")] private EDirectionType _directionType;
 
         [EnumCondition("_targetType", (int)ETarget.OneTargetInRange, (int)ETarget.NumTargetInRange, (int)ETarget.AllTargetInRange)]
-        [EnumCondition("_rangeType", (int)ERangeType.Circle, (int)ERangeType.Straight, (int)ERangeType.Cone)]
+        [EnumCondition("_rangeType", (int)ERangeType.Circle, (int)ERangeType.Straight, (int)ERangeType.Cone, (int)ERangeType.Line)]
         [SerializeField, Label("범위")] private float _range;
 
         [EnumCondition("_targetType", (int)ETarget.OneTargetInRange, (int)ETarget.NumTargetInRange, (int)ETarget.AllTargetInRange)]
         [EnumCondition("_rangeType", (int)ERangeType.Straight, (int)ERangeType.Cone)]
         [SerializeField, Label("보조 범위")] private float _assistantRange;
-
-        [EnumCondition("_targetType", (int)ETarget.OneTargetInRange, (int)ETarget.NumTargetInRange, (int)ETarget.AllTargetInRange)]
-        [EnumCondition("_rangeType", (int)ERangeType.Grid)]
-        [SerializeField, Label("범위")] private TileRangeTemplate _tileRangeTemplate;
 
         [EnumCondition("_targetType", (int)ETarget.NumTargetInRange)]
         [SerializeField, Label("공격할 적의 수")] private int _numberOfTarget;
@@ -98,8 +94,8 @@ namespace EvolveThisMatch.Core
                     return findTargetAbility.FindTargetInStraight(_directionType, _range, _assistantRange, _unitType, maxCount);
                 case ERangeType.Cone:
                     return findTargetAbility.FindTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, maxCount);
-                case ERangeType.Grid:
-                    return findTargetAbility.FindTargetInGrid(_tileRangeTemplate.range, _unitType, maxCount);
+                case ERangeType.Line:
+                    return null;
                 default:
                     return findTargetAbility.FindAllTarget(_unitType);
             }
@@ -115,8 +111,8 @@ namespace EvolveThisMatch.Core
                     return findTargetAbility.FindAttackableTargetInStraight(_directionType, _range, _assistantRange, _unitType, _attackType, maxCount);
                 case ERangeType.Cone:
                     return findTargetAbility.FindAttackableTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, _attackType, maxCount);
-                case ERangeType.Grid:
-                    return findTargetAbility.FindAttackableTargetInGrid(_tileRangeTemplate.range, _unitType, _attackType, maxCount);
+                case ERangeType.Line:
+                    return null;
                 default:
                     return findTargetAbility.FindAllAttackableTarget(_unitType, _attackType);
             }
@@ -132,8 +128,8 @@ namespace EvolveThisMatch.Core
                     return findTargetAbility.FindHealableTargetInStraight(_directionType, _range, _assistantRange, _unitType, maxCount);
                 case ERangeType.Cone:
                     return findTargetAbility.FindHealableTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, maxCount);
-                case ERangeType.Grid:
-                    return findTargetAbility.FindHealableTargetInGrid(_tileRangeTemplate.range, _unitType, maxCount);
+                case ERangeType.Line:
+                    return null;
                 default:
                     return findTargetAbility.FindAllHealableTarget(_unitType);
             }
@@ -217,12 +213,12 @@ namespace EvolveThisMatch.Core
                     GUI.Label(labelRect, "각도");
                     _assistantRange = EditorGUI.IntField(valueRect, (int)_assistantRange);
                 }
-                else if (_rangeType == ERangeType.Grid)
+                else if (_rangeType == ERangeType.Line)
                 {
                     labelRect.y += 20;
                     valueRect.y += 20;
                     GUI.Label(labelRect, "범위");
-                    _tileRangeTemplate = (TileRangeTemplate)EditorGUI.ObjectField(valueRect, _tileRangeTemplate, typeof(TileRangeTemplate), false);
+                    _range = (int)EditorGUI.FloatField(valueRect, _range);
                 }
             }
 
@@ -256,21 +252,13 @@ namespace EvolveThisMatch.Core
             {
                 rowNum++;
 
-                if (_rangeType == ERangeType.Circle)
+                if (_rangeType == ERangeType.Circle || _rangeType == ERangeType.Line)
                 {
                     rowNum++;
                 }
-                else if (_rangeType == ERangeType.Straight)
+                else if (_rangeType == ERangeType.Straight || _rangeType == ERangeType.Cone)
                 {
                     rowNum += 3;
-                }
-                else if (_rangeType == ERangeType.Cone)
-                {
-                    rowNum += 3;
-                }
-                else if (_rangeType == ERangeType.Grid)
-                {
-                    rowNum++;
                 }
             }
 

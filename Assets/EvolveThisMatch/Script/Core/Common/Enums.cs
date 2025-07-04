@@ -140,7 +140,7 @@ namespace EvolveThisMatch.Core
         Circle,
         Straight,
         Cone,
-        Grid,
+        Line,
     }
 
     #region 액티브 스킬
@@ -155,10 +155,6 @@ namespace EvolveThisMatch.Core
         /// </summary>
         InstantTargeting,
         /// <summary>
-        /// 마우스의 위치를 기준으로 "유닛"에게 스킬 발동
-        /// </summary>
-        MouseTargeting,
-        /// <summary>
         /// "위치"에 스킬 발동
         /// </summary>
         NonTargeting,
@@ -170,7 +166,6 @@ namespace EvolveThisMatch.Core
     public enum EActiveSkillControlType
     {
         Instant,
-        Mouse,
     }
 
     /// <summary>

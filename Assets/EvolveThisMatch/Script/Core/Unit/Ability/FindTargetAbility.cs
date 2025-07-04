@@ -129,31 +129,6 @@ namespace EvolveThisMatch.Core
 
             return targets;
         }
-
-        /// <summary>
-        /// 격자 범위 내에 존재하는 유닛 반환
-        /// </summary>
-        internal List<Unit> FindTargetInGrid(List<Vector2Int> grid, EUnitType unitType, int maxCount)
-        {
-            List<Unit> targets = (maxCount == int.MaxValue) ? new List<Unit>() : new List<Unit>(maxCount);
-
-            if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
-            {
-                targets.AddRange(_allySystem.GetAlliesInGrid(unit.cellPos, grid, unitType, maxCount));
-            }
-
-            if ((unitType & EUnitType.Enemy) != 0)
-            {
-                targets.AddRange(_enemySystem.GetEnemiesInGrid(unit.cellPos, grid, maxCount));
-            }
-
-            if (maxCount != int.MaxValue)
-            {
-                GetSortedUnits(targets, transform.position, maxCount);
-            }
-
-            return targets;
-        }
         #endregion
 
         #region 범위 타입에 따른 공격 가능한 유닛 반환 로직
@@ -268,28 +243,6 @@ namespace EvolveThisMatch.Core
             if ((unitType & EUnitType.Enemy) != 0)
             {
                 targets.AddRange(_enemySystem.GetAttackableEnemies(transform.position, direction, range, angle, attackType, maxCount));
-            }
-
-            if (maxCount != int.MaxValue)
-            {
-                GetSortedUnits(targets, transform.position, maxCount);
-            }
-
-            return targets;
-        }
-
-        internal List<Unit> FindAttackableTargetInGrid(List<Vector2Int> grid, EUnitType unitType, EAttackType attackType, int maxCount)
-        {
-            List<Unit> targets = (maxCount == int.MaxValue) ? new List<Unit>() : new List<Unit>(maxCount);
-
-            if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
-            {
-                targets.AddRange(_allySystem.GetAttackableAllies(unit.cellPos, grid, attackType, unitType, maxCount));
-            }
-
-            if ((unitType & EUnitType.Enemy) != 0)
-            {
-                targets.AddRange(_enemySystem.GetAttackableEnemies(unit.cellPos, grid, attackType, maxCount));
             }
 
             if (maxCount != int.MaxValue)
@@ -424,28 +377,6 @@ namespace EvolveThisMatch.Core
             if ((unitType & EUnitType.Enemy) != 0)
             {
                 targets.AddRange(_enemySystem.GetHealableEnemies(transform.position, direction, range, angle, maxCount));
-            }
-
-            if (maxCount != int.MaxValue)
-            {
-                GetSortedUnits(targets, transform.position, maxCount);
-            }
-
-            return targets;
-        }
-
-        internal List<Unit> FindHealableTargetInGrid(List<Vector2Int> grid, EUnitType unitType, int maxCount)
-        {
-            List<Unit> targets = (maxCount == int.MaxValue) ? new List<Unit>() : new List<Unit>(maxCount);
-
-            if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
-            {
-                targets.AddRange(_allySystem.GetHealableAllies(unit.cellPos, grid, unitType, maxCount));
-            }
-
-            if ((unitType & EUnitType.Enemy) != 0)
-            {
-                targets.AddRange(_enemySystem.GetHealableEnemies(unit.cellPos, grid, maxCount));
             }
 
             if (maxCount != int.MaxValue)

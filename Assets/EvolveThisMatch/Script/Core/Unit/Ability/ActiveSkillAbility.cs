@@ -136,8 +136,6 @@ namespace EvolveThisMatch.Core
             {
                 case EActiveSkillTargetingType.InstantTargeting:
                     return TryExecuteInstantTargetingSkill(template);
-                case EActiveSkillTargetingType.MouseTargeting:
-                    return TryExecuteMouseTargetingSkill(template);
                 case EActiveSkillTargetingType.NonTargeting:
                     return TryExecuteNonTargetingSkill(template);
             }
@@ -158,45 +156,6 @@ namespace EvolveThisMatch.Core
                     {
                         return SkillAnimation(template);
                     }
-                }
-            }
-
-            return false;
-        }
-
-        private bool TryExecuteMouseTargetingSkill(ActiveSkillTemplate template)
-        {
-            LayerMask layerMask = 0;
-
-            if ((template.unitType & EUnitType.Agent) != 0)
-            {
-                layerMask |= LayerMask.GetMask("Agent");
-            }
-
-            if ((template.unitType & EUnitType.Summon) != 0)
-            {
-                layerMask |= LayerMask.GetMask("Summon");
-            }
-
-            if ((template.unitType & EUnitType.Enemy) != 0)
-            {
-                layerMask |= LayerMask.GetMask("Enemy");
-            }
-
-            if (layerMask == 0)
-            {
-                return false;
-            }
-
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, layerMask))
-            {
-                var distance = Vector3.Distance(unit.transform.position, hit.point);
-
-                if (distance <= template.skillRange)
-                {
-                    _targetUnit = hit.collider.GetComponent<Unit>();
-
-                    return SkillAnimation(template);
                 }
             }
 
@@ -254,9 +213,6 @@ namespace EvolveThisMatch.Core
                 case EActiveSkillTargetingType.InstantTargeting:
                     ExecuteInstantTargetingSkill(template);
                     break;
-                case EActiveSkillTargetingType.MouseTargeting:
-                    ExecuteMouseTargetingSkill(template);
-                    break;
                 case EActiveSkillTargetingType.NonTargeting:
                     ExecuteNonTargetingSkill(template);
                     break;
@@ -276,17 +232,6 @@ namespace EvolveThisMatch.Core
                     {
                         unitEffect.Execute(unit, target);
                     }
-                }
-            }
-        }
-
-        private void ExecuteMouseTargetingSkill(ActiveSkillTemplate template)
-        {
-            foreach (var effect in template.effects)
-            {
-                if (effect is UnitEffect unitEffect)
-                {
-                    unitEffect.Execute(unit, _targetUnit);
                 }
             }
         }

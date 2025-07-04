@@ -172,19 +172,6 @@ namespace EvolveThisMatch.Editor
             EditorGUILayout.PropertyField(_skillTargetingType, GUIContent.none);
             GUILayout.EndHorizontal();
 
-            if (_skillTargetingType.intValue == (int)EActiveSkillTargetingType.MouseTargeting)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("마우스가 인식할 스킬 범위", GUILayout.Width(192));
-                EditorGUILayout.PropertyField(_skillRange, GUIContent.none);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("마우스가 인식할 유닛 타입", GUILayout.Width(192));
-                EditorGUILayout.PropertyField(_unitType, GUIContent.none);
-                GUILayout.EndHorizontal();
-            }
-
             GUILayout.BeginHorizontal();
             GUILayout.Label("소모 자원", GUILayout.Width(192));
             EditorGUILayout.PropertyField(_skillPayType, GUIContent.none);
@@ -252,10 +239,6 @@ namespace EvolveThisMatch.Editor
                 case (int)EActiveSkillTargetingType.InstantTargeting:
                     menu.AddItem(new GUIContent("즉시 스킬 (탐색 타겟팅)"), false, CreateEffectCallback, typeof(InstantGetTargetUnitEffect));
                     menu.AddItem(new GUIContent("투사체 스킬 (탐색 타겟팅)"), false, CreateEffectCallback, typeof(ProjectileGetTargetUnitEffect));
-                    break;
-                case (int)EActiveSkillTargetingType.MouseTargeting:
-                    menu.AddItem(new GUIContent("즉시 스킬 (마우스 타겟팅)"), false, CreateEffectCallback, typeof(InstantMouseTargetUnitEffect));
-                    menu.AddItem(new GUIContent("투사체 스킬 (마우스 타겟팅)"), false, CreateEffectCallback, typeof(ProjectileMouseTargetUnitEffect));
                     break;
                 case (int)EActiveSkillTargetingType.NonTargeting:
                     menu.AddItem(new GUIContent("즉시 스킬(논타겟팅)"), false, CreateEffectCallback, typeof(InstantPointEffect));

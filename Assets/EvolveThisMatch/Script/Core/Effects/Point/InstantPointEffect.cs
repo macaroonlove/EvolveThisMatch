@@ -15,7 +15,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] private EDirectionType _directionType;
         [SerializeField] private float _range;
         [SerializeField] private float _assistantRange;
-        [SerializeField] private TileRangeTemplate _tileRangeTemplate;
 
         [SerializeField] private int _numberOfTarget;
 
@@ -54,7 +53,7 @@ namespace EvolveThisMatch.Core
                 case ERangeType.Cone:
                     GetTargetCone(casterUnit, targetVector, maxCount);
                     break;
-                case ERangeType.Grid:
+                case ERangeType.Line:
                     GetTargetGrid(casterUnit, maxCount);
                     break;
                 default:
@@ -131,14 +130,14 @@ namespace EvolveThisMatch.Core
 
         private void GetTargetGrid(Unit casterUnit, int maxCount)
         {
-            var targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInGrid(_tileRangeTemplate.range, _unitType, maxCount);
+            //var targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInGrid(_tileRangeTemplate.range, _unitType, maxCount);
 
-            foreach (var target in targets)
-            {
-                SkillImpact(casterUnit, target);
+            //foreach (var target in targets)
+            //{
+            //    SkillImpact(casterUnit, target);
 
-                ExecuteTargetFX(target);
-            }
+            //    ExecuteTargetFX(target);
+            //}
         }
         #endregion
 
@@ -238,12 +237,13 @@ namespace EvolveThisMatch.Core
                     GUI.Label(labelRect, "각도");
                     _assistantRange = EditorGUI.IntField(valueRect, (int)_assistantRange);
                 }
-                else if (_rangeType == ERangeType.Grid)
+                else if (_rangeType == ERangeType.Line)
                 {
                     labelRect.y += 20;
                     valueRect.y += 20;
                     GUI.Label(labelRect, "범위");
-                    _tileRangeTemplate = (TileRangeTemplate)EditorGUI.ObjectField(valueRect, _tileRangeTemplate, typeof(TileRangeTemplate), false);
+                    _range = EditorGUI.FloatField(valueRect, _range);
+                    _range = (int)Mathf.Clamp(_range, 0, 4);
                 }
             }
 
@@ -272,25 +272,13 @@ namespace EvolveThisMatch.Core
             {
                 rowNum++;
 
-                if (_rangeType == ERangeType.Circle)
+                if (_rangeType == ERangeType.Circle || _rangeType == ERangeType.Line)
                 {
                     rowNum++;
                 }
-                else if (_rangeType == ERangeType.Straight)
+                else if (_rangeType == ERangeType.Straight || _rangeType == ERangeType.Cone)
                 {
-                    if (_controlType == EActiveSkillControlType.Instant) rowNum++;
-
                     rowNum += 3;
-                }
-                else if (_rangeType == ERangeType.Cone)
-                {
-                    if (_controlType == EActiveSkillControlType.Instant) rowNum++;
-
-                    rowNum += 3;
-                }
-                else if (_rangeType == ERangeType.Grid)
-                {
-                    rowNum++;
                 }
             }
 

@@ -31,7 +31,7 @@ namespace EvolveThisMatch.Core
         private HealthAbility _healthAbility;
 
         internal int id => _id;
-        internal Vector2Int cellPos => new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
+        internal Vector2 cellPos => new Vector2(transform.position.x, transform.position.y);
         internal HealthAbility healthAbility => _healthAbility;
         internal bool isDie => !_healthAbility.isAlive;
 

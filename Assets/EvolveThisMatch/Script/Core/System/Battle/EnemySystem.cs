@@ -407,106 +407,6 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        #region 격자 범위 안쪽의 적군 유닛을 반환(2D 전용, X, Z 좌표)
-        /// <summary>
-        /// 격자 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
-        /// </summary>
-        internal List<EnemyUnit> GetEnemiesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid, int maxCount = int.MaxValue)
-        {
-            if (maxCount == int.MaxValue)
-            {
-                return GetAllEnemiesInGrid(unitCellPos, grid);
-            }
-            else
-            {
-                return GetSortedEnemiesInGrid(unitCellPos, grid, maxCount);
-            }
-        }
-
-        private List<EnemyUnit> GetAllEnemiesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid)
-        {
-            List<EnemyUnit> enemies = new List<EnemyUnit>();
-
-            foreach (EnemyUnit enemy in _enemies)
-            {
-                if (enemy != null && enemy.isActiveAndEnabled)
-                {
-                    var pos = enemy.cellPos - unitCellPos;
-
-                    if (grid.Contains(pos))
-                    {
-                        enemies.Add((enemy));
-                    }
-                }
-            }
-
-            return enemies;
-        }
-
-        private List<EnemyUnit> GetSortedEnemiesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid)
-        {
-            PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
-
-            foreach (EnemyUnit enemy in _enemies)
-            {
-                if (enemy != null && enemy.isActiveAndEnabled)
-                {
-                    var pos = enemy.cellPos - unitCellPos;
-
-                    if (grid.Contains(pos))
-                    {
-                        var distance = (enemy.cellPos - unitCellPos).sqrMagnitude;
-
-                        priorityQueue.Enqueue(enemy, distance);
-                    }
-                }
-            }
-
-            List<EnemyUnit> enemies = new List<EnemyUnit>(priorityQueue.Count);
-
-            while (priorityQueue.Count > 0)
-            {
-                enemies.Add(priorityQueue.Dequeue());
-            }
-
-            return enemies;
-        }
-
-        private List<EnemyUnit> GetSortedEnemiesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid, int maxCount)
-        {
-            PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
-
-            foreach (EnemyUnit enemy in _enemies)
-            {
-                if (enemy != null && enemy.isActiveAndEnabled)
-                {
-                    var pos = enemy.cellPos - unitCellPos;
-
-                    if (grid.Contains(pos))
-                    {
-                        var distance = (enemy.cellPos - unitCellPos).sqrMagnitude;
-
-                        priorityQueue.Enqueue(enemy, distance);
-
-                        if (priorityQueue.Count > maxCount)
-                        {
-                            priorityQueue.Dequeue();
-                        }
-                    }
-                }
-            }
-
-            List<EnemyUnit> enemies = new List<EnemyUnit>(priorityQueue.Count);
-
-            while (priorityQueue.Count > 0)
-            {
-                enemies.Add(priorityQueue.Dequeue());
-            }
-
-            return enemies;
-        }
-        #endregion
-
         #region 라인 범위 안쪽의 적군 유닛을 반환
         /// <summary>
         /// 원 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
@@ -663,13 +563,6 @@ namespace EvolveThisMatch.Core
             return CheckAttackable(enemies, attackType, maxCount);
         }
 
-        internal List<EnemyUnit> GetAttackableEnemies(Vector2Int unitCellPos, List<Vector2Int> grid, EAttackType attackType, int maxCount = int.MaxValue)
-        {
-            var enemies = GetSortedEnemiesInGrid(unitCellPos, grid);
-
-            return CheckAttackable(enemies, attackType, maxCount);
-        }
-
         internal List<EnemyUnit> GetAttackableEnemies(Vector2 unitPos, int range, EAttackType attackType, int maxCount = int.MaxValue)
         {
             var enemies = GetSortedEnemiesInLine(unitPos, range);
@@ -738,13 +631,6 @@ namespace EvolveThisMatch.Core
         internal List<EnemyUnit> GetHealableEnemies(Vector3 unitPos, Vector3 targetDir, float range, int angle, int maxCount = int.MaxValue)
         {
             var enemies = GetSortedEnemiesInCone(unitPos, targetDir, range, angle);
-
-            return CheckHealable(enemies, maxCount);
-        }
-
-        internal List<EnemyUnit> GetHealableEnemies(Vector2Int unitCellPos, List<Vector2Int> grid, int maxCount = int.MaxValue)
-        {
-            var enemies = GetSortedEnemiesInGrid(unitCellPos, grid);
 
             return CheckHealable(enemies, maxCount);
         }

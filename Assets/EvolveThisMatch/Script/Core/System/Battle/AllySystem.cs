@@ -445,106 +445,6 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        #region 격자 범위 안쪽의 아군 유닛을 반환(2D 전용, X, Z 좌표)
-        /// <summary>
-        /// 격자 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
-        /// </summary>
-        internal List<AllyUnit> GetAlliesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid, EUnitType unitType, int maxCount = int.MaxValue)
-        {
-            if (maxCount == int.MaxValue)
-            {
-                return GetAllAlliesInGrid(unitCellPos, grid, unitType);
-            }
-            else
-            {
-                return GetSortedAlliesInGrid(unitCellPos, grid, unitType, maxCount);
-            }
-        }
-
-        private List<AllyUnit> GetAllAlliesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid, EUnitType unitType)
-        {
-            List<AllyUnit> allies = new List<AllyUnit>();
-
-            foreach (var unit in GetUnits(unitType))
-            {
-                if (unit != null && unit.isActiveAndEnabled)
-                {
-                    var pos = unit.cellPos - unitCellPos;
-
-                    if (grid.Contains(pos))
-                    {
-                        allies.Add(unit);
-                    }
-                }
-            }
-
-            return allies;
-        }
-
-        private List<AllyUnit> GetSortedAlliesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid, EUnitType unitType)
-        {
-            PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
-
-            foreach (var unit in GetUnits(unitType))
-            {
-                if (unit != null && unit.isActiveAndEnabled)
-                {
-                    var pos = unit.cellPos - unitCellPos;
-
-                    if (grid.Contains(pos))
-                    {
-                        var distance = (unit.cellPos - unitCellPos).sqrMagnitude;
-
-                        priorityQueue.Enqueue(unit, distance);
-                    }
-                }
-            }
-
-            List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
-
-            while (priorityQueue.Count > 0)
-            {
-                allies.Add(priorityQueue.Dequeue());
-            }
-
-            return allies;
-        }
-
-        private List<AllyUnit> GetSortedAlliesInGrid(Vector2Int unitCellPos, List<Vector2Int> grid, EUnitType unitType, int maxCount)
-        {
-            PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
-
-            foreach (var unit in GetUnits(unitType))
-            {
-                if (unit != null && unit.isActiveAndEnabled)
-                {
-                    var pos = unit.cellPos - unitCellPos;
-
-                    if (grid.Contains(pos))
-                    {
-                        var distance = (unit.cellPos - unitCellPos).sqrMagnitude;
-
-                        priorityQueue.Enqueue(unit, distance);
-
-                        if (priorityQueue.Count > maxCount)
-                        {
-                            priorityQueue.Dequeue();
-                        }
-                    }
-                }
-            }
-
-            List<AllyUnit> allies = new List<AllyUnit>(priorityQueue.Count);
-
-            while (priorityQueue.Count > 0)
-            {
-                allies.Add(priorityQueue.Dequeue());
-            }
-
-            return allies;
-        }
-        #endregion
-
         #region 범위 내 공격 가능한 아군 유닛을 반환
         internal List<AllyUnit> GetAttackableAllies(Vector3 unitPos, float radius, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
         {
@@ -563,13 +463,6 @@ namespace EvolveThisMatch.Core
         internal List<AllyUnit> GetAttackableAllies(Vector3 unitPos, Vector3 targetDir, float range, int angle, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInCone(unitPos, targetDir, range, angle, unitType);
-
-            return CheckAttackable(allies, attackType, maxCount);
-        }
-
-        internal List<AllyUnit> GetAttackableAllies(Vector2Int unitCellPos, List<Vector2Int> grid, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
-        {
-            var allies = GetSortedAlliesInGrid(unitCellPos, grid, unitType);
 
             return CheckAttackable(allies, attackType, maxCount);
         }
@@ -629,13 +522,6 @@ namespace EvolveThisMatch.Core
         internal List<AllyUnit> GetHealableAllies(Vector3 unitPos, Vector3 targetDir, float range, int angle, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInCone(unitPos, targetDir, range, angle, unitType);
-
-            return CheckHealable(allies, maxCount);
-        }
-
-        internal List<AllyUnit> GetHealableAllies(Vector2Int unitCellPos, List<Vector2Int> grid, EUnitType unitType, int maxCount = int.MaxValue)
-        {
-            var allies = GetSortedAlliesInGrid(unitCellPos, grid, unitType);
 
             return CheckHealable(allies, maxCount);
         }

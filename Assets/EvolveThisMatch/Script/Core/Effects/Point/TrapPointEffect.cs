@@ -16,7 +16,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] private EDirectionType _directionType;
         [SerializeField] private float _range;
         [SerializeField] private int _angle;
-        [SerializeField] private TileRangeTemplate _tileRangeTemplate;
 
         public override string GetDescription()
         {
@@ -39,8 +38,8 @@ namespace EvolveThisMatch.Core
                 case ERangeType.Cone:
                     SpawnConeTrap(casterUnit, targetVector);
                     break;
-                case ERangeType.Grid:
-                    SpawnGridTrap(casterUnit, targetVector);
+                case ERangeType.Line:
+                    SpawnLineTrap(casterUnit, targetVector);
                     break;
             }
         }
@@ -131,53 +130,59 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        #region Grid
-        private void SpawnGridTrap(Unit casterUnit, Vector3 targetVector)
+        #region Line
+        private void SpawnLineTrap(Unit casterUnit, Vector3 targetVector)
         {
             if (_controlType == EActiveSkillControlType.Instant)
             {
                 // 범위 내 랜덤한 위치에 생성
-                var finalPosition = GetRandomFinalPositionInGrid();
+                var finalPosition = GetRandomFinalPositionInLine();
                 SpawnTrap(casterUnit, finalPosition);
             }
             else
             {
-                // 마우스 위치가 범위 내에 존재하는지 여부
-                bool isInner = _tileRangeTemplate.range.Contains(new Vector2Int(Mathf.RoundToInt(targetVector.x), Mathf.RoundToInt(targetVector.z)));
-
-                if (isInner)
-                {
-                    // 마우스 위치에 생성
-                    SpawnTrap(casterUnit, targetVector);
-                }
-                else
-                {
-                    // 범위 내 가장 먼 위치에 생성
-                    var finalPosition = GetMouseFinalPositionInGrid(casterUnit, targetVector);
-                    SpawnTrap(casterUnit, finalPosition);
-                }
+                // 범위 내 가장 먼 위치에 생성
+                var finalPosition = GetFinalPositionInLine(casterUnit, targetVector);
+                SpawnTrap(casterUnit, finalPosition);
             }
         }
 
-        private Vector3 GetRandomFinalPositionInGrid()
+        private Vector3 GetRandomFinalPositionInLine()
         {
-            Vector2Int randomOffset = _tileRangeTemplate.range[Random.Range(0, _tileRangeTemplate.range.Count)];
+            var attackRangeRenderer = BattleManager.Instance.GetSubSystem<AttackRangeRenderer>();
 
-            float innerX = randomOffset.x + Random.Range(-0.5f, 0.5f);
-            float innerY = randomOffset.y + Random.Range(-0.5f, 0.5f);
+            var lines = attackRangeRenderer.lines;
+            var line = lines[Random.Range(0, lines.Count)];
+            var randomOffset = line[Random.Range(0, line.Count)];
 
-            return new Vector3(innerX, innerY, 0f);
+            Vector2 offset = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+
+            // -17.5도 회전
+            float angle = -17.5f * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(angle);
+            float sin = Mathf.Sin(angle);
+
+            Vector2 rotatedOffset = new Vector2(
+                offset.x * cos - offset.y * sin,
+                offset.x * sin + offset.y * cos
+            );
+
+            Vector2 final = randomOffset + rotatedOffset;
+            return new Vector3(final.x, final.y, 0f);
         }
 
-        private Vector3 GetMouseFinalPositionInGrid(Unit casterUnit, Vector3 targetVector)
+        private Vector3 GetFinalPositionInLine(Unit casterUnit, Vector3 targetVector)
         {
             Vector3 direction = (targetVector - casterUnit.transform.position).normalized;
 
-            Vector2Int bestTile = Vector2Int.zero;
+            var attackRangeRenderer = BattleManager.Instance.GetSubSystem<AttackRangeRenderer>();
+            var line = attackRangeRenderer.lines[3];
+
+            Vector2 bestTile = Vector2.zero;
             float bestDot = float.MinValue;
             float bestDistance = float.MinValue;
 
-            foreach (var tile in _tileRangeTemplate.range)
+            foreach (var tile in line)
             {
                 Vector3 worldPos = new Vector3(tile.x, tile.y, 0f);
                 float distance = worldPos.magnitude;
@@ -260,36 +265,31 @@ namespace EvolveThisMatch.Core
             GUI.Label(labelRect, "범위 타입");
             _rangeType = (ERangeType)EditorGUI.EnumPopup(valueRect, _rangeType);
 
-            if (_rangeType == ERangeType.Grid)
-            {
-                labelRect.y += 20;
-                valueRect.y += 20;
-                GUI.Label(labelRect, "범위");
-                _tileRangeTemplate = (TileRangeTemplate)EditorGUI.ObjectField(valueRect, _tileRangeTemplate, typeof(TileRangeTemplate), false);
-            }
-            else
-            {
-                labelRect.y += 20;
-                valueRect.y += 20;
-                GUI.Label(labelRect, "범위");
-                _range = EditorGUI.FloatField(valueRect, _range);
+            labelRect.y += 20;
+            valueRect.y += 20;
+            GUI.Label(labelRect, "범위");
+            _range = EditorGUI.FloatField(valueRect, _range);
 
-                if (_controlType == EActiveSkillControlType.Instant)
+            if (_rangeType == ERangeType.Line)
+            {
+                _range = (int)Mathf.Clamp(_range, 1, 4);
+            }
+
+            if (_controlType == EActiveSkillControlType.Instant)
+            {
+                labelRect.y += 20;
+                valueRect.y += 20;
+                GUI.Label(labelRect, "방향");
+                _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
+
+                if (_rangeType == ERangeType.Cone)
                 {
                     labelRect.y += 20;
                     valueRect.y += 20;
-                    GUI.Label(labelRect, "방향");
-                    _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
-
-                    if (_rangeType == ERangeType.Cone)
-                    {
-                        labelRect.y += 20;
-                        valueRect.y += 20;
-                        GUI.Label(labelRect, "각도");
-                        _angle = EditorGUI.IntField(valueRect, _angle);
-                    }
+                    GUI.Label(labelRect, "각도");
+                    _angle = EditorGUI.IntField(valueRect, _angle);
                 }
-            }
+            }            
 
             var listRect = new Rect(rect.x, labelRect.y + 40, rect.width, rect.height);
             _effectsList?.DoList(listRect);
@@ -301,7 +301,7 @@ namespace EvolveThisMatch.Core
 
             if (_isInfinity) rowNum++;
 
-            if (_rangeType == ERangeType.Grid)
+            if (_rangeType == ERangeType.Line)
             {
                 rowNum++;
             }
