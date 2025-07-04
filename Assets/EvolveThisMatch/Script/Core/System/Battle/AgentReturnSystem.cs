@@ -68,5 +68,13 @@ namespace EvolveThisMatch.Core
             agentData.mountTile.ReturnUnit();
         }
         #endregion
+
+        #region 출정 표지판 반환
+        internal void ReturnSignBoard(GameObject obj)
+        {
+            // 유닛 오브젝트 반환
+            _poolSystem.DeSpawn(obj);
+        }
+        #endregion
     }
 }

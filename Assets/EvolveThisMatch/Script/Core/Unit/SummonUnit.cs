@@ -8,7 +8,6 @@ namespace EvolveThisMatch.Core
         private Unit _summoner;
 
         internal SummonTemplate template => _template;
-        internal override EMoveType moveType => _template.MoveType;
 
         internal void Initialize(SummonTemplate template, Unit summoner)
         {

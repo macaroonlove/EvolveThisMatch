@@ -20,6 +20,7 @@ namespace EvolveThisMatch.Core
             else
             {
                 _isCastle = false;
+                _isSortie = false;
                 _moveAbility = unit.GetAbility<MoveChaseAbility>();
             }
 

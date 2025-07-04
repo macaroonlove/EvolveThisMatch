@@ -57,16 +57,13 @@ namespace EvolveThisMatch.Core
         {
             if (allyUnit is AgentUnit agentUnit)
             {
-                // 유닛 정보
-                _allyInfoCanvas.Show(agentUnit);
-
-                // 유닛 액션
-                _allyActionCanvas.Show(agentUnit);
-
-                if (agentUnit.template.job.job != EJob.Melee)
+                ShowAgentUnit(agentUnit);
+            }
+            else if (allyUnit is SignBoard signBoard)
+            {
+                if (signBoard.linkUnit != null)
                 {
-                    // 공격 범위
-                    _attackRangeRenderer.Show((int)Mathf.Clamp(agentUnit.template.AttackRange, 0, 4));
+                    ShowAgentUnit(signBoard.linkUnit);
                 }
             }
             else if (allyUnit is SummonUnit summonUnit)
@@ -76,6 +73,25 @@ namespace EvolveThisMatch.Core
             }
 
             base.Show(true);
+        }
+
+        private void ShowAgentUnit(AgentUnit agentUnit)
+        {
+            // 유닛 정보
+            _allyInfoCanvas.Show(agentUnit);
+
+            // 유닛 액션
+            _allyActionCanvas.Show(agentUnit);
+
+            // 공격 범위
+            if (agentUnit.template.job.job != EJob.Melee)
+            {
+                _attackRangeRenderer.Show((int)Mathf.Clamp(agentUnit.template.AttackRange, 0, 4));
+            }
+            else if (agentUnit.GetAbility<DeployAbility>().isSortie)
+            {
+                _attackRangeRenderer.Show(agentUnit, agentUnit.template.AttackRange);
+            }
         }
 
         internal void Hide()
@@ -89,6 +105,7 @@ namespace EvolveThisMatch.Core
 
         internal void DestinyRecast(AgentUnit agentUnit)
         {
+            _attackRangeRenderer.Hide();
             Show(agentUnit);
         }
     }

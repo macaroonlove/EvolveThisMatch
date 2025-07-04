@@ -10,7 +10,7 @@ namespace EvolveThisMatch.Core
 {
     public class Unit : MonoBehaviour
     {
-        #region 유닛 위치
+        #region 유닛의 부위별 위치
         [SerializeField] private Transform _headPoint;
         [SerializeField] private Transform _bodyPoint;
         [SerializeField] private Transform _leftHandPoint;
@@ -27,14 +27,13 @@ namespace EvolveThisMatch.Core
         #endregion
 
         protected int _id;
+        private BoxCollider _collider;
         private HealthAbility _healthAbility;
 
-        #region 프로퍼티
         internal int id => _id;
         internal Vector2Int cellPos => new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         internal HealthAbility healthAbility => _healthAbility;
         internal bool isDie => !_healthAbility.isAlive;
-        #endregion
 
         private Dictionary<Type, AlwaysAbility> _alwaysAbilities = new Dictionary<Type, AlwaysAbility>();
         private Dictionary<Type, ConditionAbility> _conditionAbilities = new Dictionary<Type, ConditionAbility>();
@@ -44,8 +43,10 @@ namespace EvolveThisMatch.Core
         internal event UnityAction onAbilityInitialize;
         internal event UnityAction onAbilityDeinitialize;
 
+        #region 능력 초기화 및 해제
         internal void Initialize(Unit unit)
         {
+            _collider = GetComponentInChildren<BoxCollider>();
             _healthAbility = GetComponent<HealthAbility>();
 
             var alwaysAbilities = GetComponents<AlwaysAbility>();
@@ -73,6 +74,7 @@ namespace EvolveThisMatch.Core
 
             onAbilityInitialize?.Invoke();
 
+            // Z-Floating
             Vector3 pos = transform.position;
             pos.z = pos.y;
             transform.position = pos;
@@ -91,13 +93,9 @@ namespace EvolveThisMatch.Core
 
             onAbilityDeinitialize?.Invoke();
         }
+        #endregion
 
-        internal virtual void OnDeath()
-        {
-            Deinitialize();
-            CoreManager.Instance.GetSubSystem<PoolSystem>().DeSpawn(gameObject);
-        }
-
+        #region 능력 교체 및 제어
         private void Update()
         {
             foreach (var ability in _alwaysAbilities.Values)
@@ -155,7 +153,9 @@ namespace EvolveThisMatch.Core
         {
             currentAbility = null;
         }
+        #endregion
 
+        #region 능력 불러오기
         public T GetAbility<T>() where T : Ability
         {
             if (_alwaysAbilities.TryGetValue(typeof(T), out var alwaysAbility))
@@ -169,6 +169,24 @@ namespace EvolveThisMatch.Core
             }
 
             return null;
+        }
+        #endregion
+
+        /// <summary>
+        /// 유닛의 상호작용 여부
+        /// </summary>
+        internal void SetInteraction(bool isOn)
+        {
+            _collider.enabled = isOn;
+        }
+
+        /// <summary>
+        /// 유닛 사망 시
+        /// </summary>
+        internal virtual void OnDeath()
+        {
+            Deinitialize();
+            CoreManager.Instance.GetSubSystem<PoolSystem>().DeSpawn(gameObject);
         }
     }
 }

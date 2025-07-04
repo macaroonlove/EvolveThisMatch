@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace EvolveThisMatch.Core
 {
     /// <summary>
@@ -7,6 +5,5 @@ namespace EvolveThisMatch.Core
     /// </summary>
     public abstract class AllyUnit : Unit
     {
-        internal abstract EMoveType moveType { get; }
     }
 }

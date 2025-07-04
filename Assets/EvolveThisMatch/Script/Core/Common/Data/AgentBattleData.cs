@@ -9,6 +9,7 @@ namespace EvolveThisMatch.Core
 
         internal AgentTemplate agentTemplate { get; private set; }
         internal AgentUnit agentUnit { get; private set; }
+        internal SignBoard signBoard { get; private set; }
         internal int level { get; private set; }
         internal AgentRarityTemplate limit { get; private set; }
         internal TileController mountTile { get; private set; }
@@ -28,6 +29,18 @@ namespace EvolveThisMatch.Core
         internal void ComfirmTile(TileController tile)
         {
             mountTile = tile;
+        }
+        #endregion
+
+        #region 출격 시, 표지판
+        internal void RegistSignBoard(SignBoard signBoard)
+        {
+            this.signBoard = signBoard;
+        }
+
+        internal void DeregistSignBoard()
+        {
+            signBoard = null;
         }
         #endregion
 

@@ -582,9 +582,6 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    // 적이 공중 유닛일 떄, 원거리가 아니라면 공격 불가 (타워 디펜스라면 언덕 유닛일 때, 로 변경)
-                    if (unit.moveType == EMoveType.Sky && attackType != EAttackType.Far) continue;
-
                     // 공격 대상이 아니라면 타겟에 추가하지 않음
                     if (unit.GetAbility<HitAbility>().finalTargetOfAttack == false) continue;
 
@@ -603,9 +600,6 @@ namespace EvolveThisMatch.Core
             {
                 // maxCount만큼 유닛을 찾았다면
                 if (attackableAllies.Count >= maxCount) break;
-
-                // 적이 공중 유닛일 떄, 원거리가 아니라면 공격 불가 (타워 디펜스라면 언덕 유닛일 때, 로 변경)
-                if (ally.moveType == EMoveType.Sky && attackType != EAttackType.Far) continue;
 
                 // 공격 대상이 아니라면 타겟에 추가하지 않음
                 if (ally.GetAbility<HitAbility>().finalTargetOfAttack == false) continue;

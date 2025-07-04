@@ -7,7 +7,6 @@ namespace EvolveThisMatch.Core
         internal AgentBattleData agentData { get; private set; }
 
         internal AgentTemplate template => agentData.agentTemplate;
-        internal override EMoveType moveType => template.MoveType;
         internal int level => agentData.level;
         internal AgentRarityTemplate limit => agentData.limit;
 

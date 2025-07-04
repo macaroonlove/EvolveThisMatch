@@ -35,6 +35,7 @@ namespace EvolveThisMatch.Core
 
         private UIAllySelectCanvas _allySelectCanvas;
         private TileSystem _tileSystem;
+        private AgentCreateSystem _agentCreateSystem;
         private AgentReturnSystem _agentReturnSystem;
         private Camera _camera;
         private AgentBattleData _selectedData;
@@ -45,6 +46,7 @@ namespace EvolveThisMatch.Core
             _camera = Camera.main;
             _allySelectCanvas = GetComponentInParent<UIAllySelectCanvas>();
             _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
+            _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
             _agentReturnSystem = BattleManager.Instance.GetSubSystem<AgentReturnSystem>();
 
             BindButton(typeof(Buttons));
@@ -107,35 +109,67 @@ namespace EvolveThisMatch.Core
 
         private async UniTask StartSortie()
         {
-            _sortieStart.Play(_selectedData.agentUnit);
+            var selectedData = _selectedData;
+
+            selectedData.agentUnit.SetInteraction(false);
+
+            _sortieStart.Play(selectedData.agentUnit);
 
             await UniTask.Delay(500);
 
-            SetAgentPosition(_tileSystem.sortiePoint.position);
+            // 위치 적용
+            SetAgentPosition(selectedData, _tileSystem.sortiePoint.position);
 
-            _sortieEnd.Play(_selectedData.agentUnit);
+            _sortieEnd.Play(selectedData.agentUnit);
+            
+            // 표지판 생성
+            var signBoard = _agentCreateSystem.CreateSignBoard(selectedData);
+            signBoard.SetInteraction(false);
 
             await UniTask.Delay(1500);
 
-            _deployAbility.Sortie(true);
+            // 표지판 등록
+            selectedData.RegistSignBoard(signBoard);
+
+            // 배치 설정
+            selectedData.agentUnit.GetAbility<DeployAbility>().Sortie(true);
+
+            selectedData.agentUnit.SetInteraction(true);
+            signBoard.SetInteraction(true);
         }
 
         private async UniTask ReturnSortie()
         {
+            var selectedData = _selectedData;
+
+            // 배치 해제
             _deployAbility.Sortie(false);
 
-            _sortieEnd.Play(_selectedData.agentUnit);
+            selectedData.agentUnit.SetInteraction(false);
+            selectedData.signBoard?.SetInteraction(false);
+
+            // 표지판 반환
+            if (selectedData.signBoard != null)
+            {
+                _agentReturnSystem.ReturnSignBoard(selectedData.signBoard.gameObject);
+                selectedData.DeregistSignBoard();
+            }
+
+            _sortieEnd.Play(selectedData.agentUnit);
 
             await UniTask.Delay(500);
 
-            SetAgentPosition(_selectedData.mountTile.transform.position);
+            // 위치 적용
+            SetAgentPosition(selectedData, selectedData.mountTile.transform.position);
 
-            _sortieStart.Play(_selectedData.agentUnit);
+            _sortieStart.Play(selectedData.agentUnit);
+
+            selectedData.agentUnit.SetInteraction(true);
         }
 
-        private void SetAgentPosition(Vector3 targetPosition)
+        private void SetAgentPosition(AgentBattleData selectedData, Vector3 targetPosition)
         {
-            var agentTransform = _selectedData.agentUnit.transform;
+            var agentTransform = selectedData.agentUnit.transform;
             agentTransform.position = targetPosition;
 
             var pos = agentTransform.position;
@@ -149,6 +183,13 @@ namespace EvolveThisMatch.Core
         #region 회수
         private void Extract()
         {
+            // 표지판 반환
+            if (_selectedData.signBoard != null)
+            {
+                _agentReturnSystem.ReturnSignBoard(_selectedData.signBoard.gameObject);
+                _selectedData.DeregistSignBoard();
+            }
+
             _agentReturnSystem.ReturnUnit(_selectedData);
             _selectedData = null;
             _allySelectCanvas.Hide();

@@ -6,6 +6,7 @@ namespace EvolveThisMatch.Core
 {
     public class AgentCreateSystem : MonoBehaviour, IBattleSystem
     {
+        [SerializeField] private GameObject _signBoardPrefab;
         [SerializeField] private FX _spawnFX;
 
         private PoolSystem _poolSystem;
@@ -103,5 +104,28 @@ namespace EvolveThisMatch.Core
             return new ChangeUnitResult(null, null, null);
         }
         #endregion
+
+        internal SignBoard CreateSignBoard(AgentBattleData selectedData)
+        {
+            // 위치
+            var pos = selectedData.mountTile.transform.position;
+
+            // 표지판 생성하기
+            var obj = _poolSystem.Spawn(_signBoardPrefab, transform);
+
+            if (obj.TryGetComponent(out SignBoard signBoard))
+            {
+                signBoard.transform.position = pos;
+
+                signBoard.Initialize(selectedData.agentUnit);
+
+                return signBoard;
+            }
+            else
+            {
+                _poolSystem.DeSpawn(obj);
+                return null;
+            }
+        }
     }
 }
