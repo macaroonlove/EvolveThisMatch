@@ -23,6 +23,8 @@ namespace EvolveThisMatch.Core
                 _chaseFailRange = agentUnit.template.ChaseFailRange * agentUnit.template.ChaseFailRange;
                 _stoppingDistance = agentUnit.template.AttackRange * agentUnit.template.AttackRange;
             }
+
+            transform.GetChild(3).localScale = Vector3.one * 0.15f;
         }
 
         internal override void UpdateAbility()
