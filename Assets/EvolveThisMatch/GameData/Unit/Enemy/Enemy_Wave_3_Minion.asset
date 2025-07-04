@@ -18,23 +18,19 @@ MonoBehaviour:
   _sprite: {fileID: 21300000, guid: 67f230c871d7bf64c8f4be5c2b527593, type: 3}
   _prefab: {fileID: 8211081749812428997, guid: a5ae0ca7706302442a583137bfaf7577, type: 3}
   _moveType: 0
-  _moveSpeed: 0
+  _moveSpeed: 2.6
   _damageType: 0
-  _atk: 0
-  _attackTerm: 0
-  _attackRange: 0
-  _physicalPenetration: 0
+  _atk: 21
+  _attackTerm: 1.7
+  _attackRange: 1.5
+  _physicalPenetration: 2
   _magicPenetration: 0
   _criticalHitChance: 0
   _criticalHitDamage: 0
-  _maxHP: 0
-  _physicalResistance: 0
-  _magicResistance: 0
+  _maxHP: 300
+  _physicalResistance: 3
+  _magicResistance: 1
   _hpRecoveryPerSec: 0
-  _manaRecoveryType: 0
-  _maxMana: 0
-  _startMana: 0
-  _manaRecoveryPerSec: 0
-  _skillTreeGraph: {fileID: 0}
+  _skillTemplates: []
   _casterFX: {fileID: 0}
   _targetFX: {fileID: 0}

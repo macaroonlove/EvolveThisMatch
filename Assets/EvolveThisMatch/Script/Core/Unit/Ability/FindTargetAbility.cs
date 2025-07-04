@@ -44,17 +44,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetAlliesInCircle(transform.position, radius, unitType, maxCount));
+                targets.AddRange(_allySystem.GetAlliesInCircle(unit.cellPos, radius, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetEnemiesInCircle(transform.position, radius, maxCount));
+                targets.AddRange(_enemySystem.GetEnemiesInCircle(unit.cellPos, radius, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -79,17 +79,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetAlliesInStraight(transform.position, direction, range, width, unitType, maxCount));
+                targets.AddRange(_allySystem.GetAlliesInStraight(unit.cellPos, direction, range, width, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetEnemiesInStraight(transform.position, direction, range, width, maxCount));
+                targets.AddRange(_enemySystem.GetEnemiesInStraight(unit.cellPos, direction, range, width, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -114,17 +114,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetAlliesInCone(transform.position, direction, range, angle, unitType, maxCount));
+                targets.AddRange(_allySystem.GetAlliesInCone(unit.cellPos, direction, range, angle, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetEnemiesInCone(transform.position, direction, range, angle, maxCount));
+                targets.AddRange(_enemySystem.GetEnemiesInCone(unit.cellPos, direction, range, angle, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -179,17 +179,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetAttackableAllies(transform.position, radius, attackType, unitType, maxCount));
+                targets.AddRange(_allySystem.GetAttackableAllies(unit.cellPos, radius, attackType, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetAttackableEnemies(transform.position, radius, attackType, maxCount));
+                targets.AddRange(_enemySystem.GetAttackableEnemies(unit.cellPos, radius, attackType, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -208,17 +208,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetAttackableAllies(transform.position, direction, range, width, attackType, unitType, maxCount));
+                targets.AddRange(_allySystem.GetAttackableAllies(unit.cellPos, direction, range, width, attackType, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetAttackableEnemies(transform.position, direction, range, width, attackType, maxCount));
+                targets.AddRange(_enemySystem.GetAttackableEnemies(unit.cellPos, direction, range, width, attackType, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -237,17 +237,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetAttackableAllies(transform.position, direction, range, angle, attackType, unitType, maxCount));
+                targets.AddRange(_allySystem.GetAttackableAllies(unit.cellPos, direction, range, angle, attackType, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetAttackableEnemies(transform.position, direction, range, angle, attackType, maxCount));
+                targets.AddRange(_enemySystem.GetAttackableEnemies(unit.cellPos, direction, range, angle, attackType, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -259,13 +259,12 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                Vector2 pos = transform.position;
-                targets.AddRange(_enemySystem.GetAttackableEnemies(pos, range, attackType, maxCount));
+                targets.AddRange(_enemySystem.GetAttackableEnemies(unit.cellPos, range, attackType, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -313,17 +312,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetHealableAllies(transform.position, radius, unitType, maxCount));
+                targets.AddRange(_allySystem.GetHealableAllies(unit.cellPos, radius, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetHealableEnemies(transform.position, radius, maxCount));
+                targets.AddRange(_enemySystem.GetHealableEnemies(unit.cellPos, radius, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -342,17 +341,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetHealableAllies(transform.position, direction, range, width, unitType, maxCount));
+                targets.AddRange(_allySystem.GetHealableAllies(unit.cellPos, direction, range, width, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetHealableEnemies(transform.position, direction, range, width, maxCount));
+                targets.AddRange(_enemySystem.GetHealableEnemies(unit.cellPos, direction, range, width, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -371,17 +370,17 @@ namespace EvolveThisMatch.Core
 
             if ((unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
             {
-                targets.AddRange(_allySystem.GetHealableAllies(transform.position, direction, range, angle, unitType, maxCount));
+                targets.AddRange(_allySystem.GetHealableAllies(unit.cellPos, direction, range, angle, unitType, maxCount));
             }
 
             if ((unitType & EUnitType.Enemy) != 0)
             {
-                targets.AddRange(_enemySystem.GetHealableEnemies(transform.position, direction, range, angle, maxCount));
+                targets.AddRange(_enemySystem.GetHealableEnemies(unit.cellPos, direction, range, angle, maxCount));
             }
 
             if (maxCount != int.MaxValue)
             {
-                GetSortedUnits(targets, transform.position, maxCount);
+                GetSortedUnits(targets, unit.cellPos, maxCount);
             }
 
             return targets;
@@ -389,13 +388,13 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 유틸리티
-        private void GetSortedUnits(List<Unit> targets, Vector3 unitPos, int maxCount)
+        private void GetSortedUnits(List<Unit> targets, Vector2 unitPos, int maxCount)
         {
             PriorityQueue<Unit> priorityQueue = new PriorityQueue<Unit>();
 
             foreach (Unit unit in targets)
             {
-                var distance = (unit.transform.position - unitPos).sqrMagnitude;
+                var distance = (unit.cellPos - unitPos).sqrMagnitude;
 
                 priorityQueue.Enqueue(unit, distance);
 

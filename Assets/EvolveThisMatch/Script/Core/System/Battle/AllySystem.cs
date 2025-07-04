@@ -95,7 +95,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 원 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
-        internal List<AllyUnit> GetAlliesInCircle(Vector3 unitPos, float radius, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetAlliesInCircle(Vector2 unitPos, float radius, EUnitType unitType, int maxCount = int.MaxValue)
         {
             if (maxCount == int.MaxValue)
             {
@@ -107,7 +107,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        private List<AllyUnit> GetAllAlliesInCircle(Vector3 unitPos, float radius, EUnitType unitType)
+        private List<AllyUnit> GetAllAlliesInCircle(Vector2 unitPos, float radius, EUnitType unitType)
         {
             List<AllyUnit> allies = new List<AllyUnit>();
 
@@ -117,7 +117,7 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    var distance = (unit.transform.position - unitPos).sqrMagnitude;
+                    var distance = (unit.cellPos - unitPos).sqrMagnitude;
 
                     if (distance <= radius)
                     {
@@ -129,7 +129,7 @@ namespace EvolveThisMatch.Core
             return allies;
         }
 
-        private List<AllyUnit> GetSortedAlliesInCircle(Vector3 unitPos, float radius, EUnitType unitType)
+        private List<AllyUnit> GetSortedAlliesInCircle(Vector2 unitPos, float radius, EUnitType unitType)
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
@@ -139,7 +139,7 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    var distance = (unit.transform.position - unitPos).sqrMagnitude;
+                    var distance = (unit.cellPos - unitPos).sqrMagnitude;
 
                     if (distance <= radius)
                     {
@@ -158,7 +158,7 @@ namespace EvolveThisMatch.Core
             return allies;
         }
 
-        private List<AllyUnit> GetSortedAlliesInCircle(Vector3 unitPos, float radius, EUnitType unitType, int maxCount)
+        private List<AllyUnit> GetSortedAlliesInCircle(Vector2 unitPos, float radius, EUnitType unitType, int maxCount)
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
@@ -168,7 +168,7 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    var distance = (unit.transform.position - unitPos).sqrMagnitude;
+                    var distance = (unit.cellPos - unitPos).sqrMagnitude;
 
                     if (distance <= radius)
                     {
@@ -197,7 +197,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 직선 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
-        internal List<AllyUnit> GetAlliesInStraight(Vector3 unitPos, Vector3 targetDir, float range, float width, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetAlliesInStraight(Vector2 unitPos, Vector2 targetDir, float range, float width, EUnitType unitType, int maxCount = int.MaxValue)
         {
             if (maxCount == int.MaxValue)
             {
@@ -209,7 +209,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        private List<AllyUnit> GetAllAlliesInStraight(Vector3 unitPos, Vector3 targetDir, float range, float width, EUnitType unitType)
+        private List<AllyUnit> GetAllAlliesInStraight(Vector2 unitPos, Vector2 targetDir, float range, float width, EUnitType unitType)
         {
             List<AllyUnit> allies = new List<AllyUnit>();
 
@@ -220,10 +220,10 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    Vector3 dirVector = unit.transform.position - unitPos;
+                    Vector2 dirVector = unit.cellPos - unitPos;
 
                     // 유닛을 기준으로한 정면 거리
-                    float forwardDist = Vector3.Dot(targetDir, dirVector);
+                    float forwardDist = Vector2.Dot(targetDir, dirVector);
                     if (forwardDist < 0 || forwardDist > range) continue;
 
                     // 유닛을 기준으로한 측면 거리
@@ -238,7 +238,7 @@ namespace EvolveThisMatch.Core
             return allies;
         }
 
-        private List<AllyUnit> GetSortedAlliesInStraight(Vector3 unitPos, Vector3 targetDir, float range, float width, EUnitType unitType)
+        private List<AllyUnit> GetSortedAlliesInStraight(Vector2 unitPos, Vector2 targetDir, float range, float width, EUnitType unitType)
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
@@ -249,10 +249,10 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    Vector3 dirVector = unit.transform.position - unitPos;
+                    Vector2 dirVector = unit.cellPos - unitPos;
 
                     // 유닛을 기준으로한 정면 거리
-                    float forwardDist = Vector3.Dot(targetDir, dirVector);
+                    float forwardDist = Vector2.Dot(targetDir, dirVector);
                     if (forwardDist < 0 || forwardDist > range) continue;
 
                     // 유닛을 기준으로한 측면 거리
@@ -274,7 +274,7 @@ namespace EvolveThisMatch.Core
             return allies;
         }
 
-        private List<AllyUnit> GetSortedAlliesInStraight(Vector3 unitPos, Vector3 targetDir, float range, float width, EUnitType unitType, int maxCount)
+        private List<AllyUnit> GetSortedAlliesInStraight(Vector2 unitPos, Vector2 targetDir, float range, float width, EUnitType unitType, int maxCount)
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
@@ -285,10 +285,10 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    Vector3 dirVector = unit.transform.position - unitPos;
+                    Vector2 dirVector = unit.cellPos - unitPos;
 
                     // 유닛을 기준으로한 정면 거리
-                    float forwardDist = Vector3.Dot(targetDir, dirVector);
+                    float forwardDist = Vector2.Dot(targetDir, dirVector);
                     if (forwardDist < 0 || forwardDist > range) continue;
 
                     // 유닛을 기준으로한 측면 거리
@@ -320,7 +320,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 시야각 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
-        internal List<AllyUnit> GetAlliesInCone(Vector3 unitPos, Vector3 targetDir, float range, int angle, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetAlliesInCone(Vector2 unitPos, Vector2 targetDir, float range, int angle, EUnitType unitType, int maxCount = int.MaxValue)
         {
             if (maxCount == int.MaxValue)
             {
@@ -332,7 +332,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        private List<AllyUnit> GetAllAlliesInCone(Vector3 unitPos, Vector3 targetDir, float range, int angle, EUnitType unitType)
+        private List<AllyUnit> GetAllAlliesInCone(Vector2 unitPos, Vector2 targetDir, float range, int angle, EUnitType unitType)
         {
             List<AllyUnit> allies = new List<AllyUnit>();
 
@@ -345,12 +345,12 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    Vector3 dirVector = unit.transform.position - unitPos;
+                    Vector2 dirVector = unit.cellPos - unitPos;
                     float distance = dirVector.sqrMagnitude;
 
                     if (distance <= range)
                     {
-                        float dot = Vector3.Dot(targetDir, dirVector);
+                        float dot = Vector2.Dot(targetDir, dirVector);
 
                         if (dot * dot >= cos * distance)
                         {
@@ -363,7 +363,7 @@ namespace EvolveThisMatch.Core
             return allies;
         }
 
-        private List<AllyUnit> GetSortedAlliesInCone(Vector3 unitPos, Vector3 targetDir, float range, int angle, EUnitType unitType)
+        private List<AllyUnit> GetSortedAlliesInCone(Vector2 unitPos, Vector2 targetDir, float range, int angle, EUnitType unitType)
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
@@ -376,12 +376,12 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    Vector3 dirVector = unit.transform.position - unitPos;
+                    Vector2 dirVector = unit.cellPos - unitPos;
                     float distance = dirVector.sqrMagnitude;
 
                     if (distance <= range)
                     {
-                        float dot = Vector3.Dot(targetDir, dirVector);
+                        float dot = Vector2.Dot(targetDir, dirVector);
 
                         if (dot * dot >= cos * distance)
                         {
@@ -401,7 +401,7 @@ namespace EvolveThisMatch.Core
             return allies;
         }
 
-        private List<AllyUnit> GetSortedAlliesInCone(Vector3 unitPos, Vector3 targetDir, float range, float angle, EUnitType unitType, int maxCount)
+        private List<AllyUnit> GetSortedAlliesInCone(Vector2 unitPos, Vector2 targetDir, float range, float angle, EUnitType unitType, int maxCount)
         {
             PriorityQueue<AllyUnit> priorityQueue = new PriorityQueue<AllyUnit>();
 
@@ -414,12 +414,12 @@ namespace EvolveThisMatch.Core
             {
                 if (unit != null && unit.isActiveAndEnabled)
                 {
-                    Vector3 dirVector = unit.transform.position - unitPos;
+                    Vector2 dirVector = unit.cellPos - unitPos;
                     float distance = dirVector.sqrMagnitude;
 
                     if (distance <= range)
                     {
-                        float dot = Vector3.Dot(targetDir, dirVector);
+                        float dot = Vector2.Dot(targetDir, dirVector);
 
                         if (dot * dot >= cos * distance)
                         {
@@ -446,21 +446,21 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 범위 내 공격 가능한 아군 유닛을 반환
-        internal List<AllyUnit> GetAttackableAllies(Vector3 unitPos, float radius, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetAttackableAllies(Vector2 unitPos, float radius, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInCircle(unitPos, radius, unitType);
 
             return CheckAttackable(allies, attackType, maxCount);
         }
 
-        internal List<AllyUnit> GetAttackableAllies(Vector3 unitPos, Vector3 targetDir, float range, float width, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetAttackableAllies(Vector2 unitPos, Vector2 targetDir, float range, float width, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInStraight(unitPos, targetDir, range, width, unitType);
 
             return CheckAttackable(allies, attackType, maxCount);
         }
 
-        internal List<AllyUnit> GetAttackableAllies(Vector3 unitPos, Vector3 targetDir, float range, int angle, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetAttackableAllies(Vector2 unitPos, Vector2 targetDir, float range, int angle, EAttackType attackType, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInCone(unitPos, targetDir, range, angle, unitType);
 
@@ -505,21 +505,21 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 범위 내 회복 가능한 아군 유닛을 반환
-        internal List<AllyUnit> GetHealableAllies(Vector3 unitPos, float radius, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetHealableAllies(Vector2 unitPos, float radius, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInCircle(unitPos, radius, unitType);
 
             return CheckHealable(allies, maxCount);
         }
 
-        internal List<AllyUnit> GetHealableAllies(Vector3 unitPos, Vector3 targetDir, float range, float width, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetHealableAllies(Vector2 unitPos, Vector2 targetDir, float range, float width, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInStraight(unitPos, targetDir, range, width, unitType);
 
             return CheckHealable(allies, maxCount);
         }
 
-        internal List<AllyUnit> GetHealableAllies(Vector3 unitPos, Vector3 targetDir, float range, int angle, EUnitType unitType, int maxCount = int.MaxValue)
+        internal List<AllyUnit> GetHealableAllies(Vector2 unitPos, Vector2 targetDir, float range, int angle, EUnitType unitType, int maxCount = int.MaxValue)
         {
             var allies = GetSortedAlliesInCone(unitPos, targetDir, range, angle, unitType);
 
@@ -566,7 +566,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 범위 내에 가장 가까운 아군 유닛을 반환
         /// </summary>
-        internal AllyUnit GetNearestAlly(Vector3 unitPos, float radius)
+        internal AllyUnit GetNearestAlly(Vector2 unitPos, float radius)
         {
             AllyUnit allyUnit = null;
 
@@ -577,7 +577,7 @@ namespace EvolveThisMatch.Core
             {
                 if (agent != null && agent.isActiveAndEnabled)
                 {
-                    float distance = (agent.transform.position - unitPos).sqrMagnitude;
+                    float distance = (agent.cellPos - unitPos).sqrMagnitude;
 
                     if (distance < nearestDistance && distance <= radius)
                     {
