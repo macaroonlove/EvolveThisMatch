@@ -11,10 +11,10 @@ namespace EvolveThisMatch.Core
         private WaveLibraryTemplate _waveLibrary;
 
         private Transform _spawnPoint;
-        private Transform _arrivalPoint;
         private int _currentWaveIndex;
         private bool _isWaveEnd;
 
+        internal Transform boundaryPoint { get; private set; }
         public UnityAction<int, float> onWaveChanged;
 
         public void Initialize()
@@ -23,7 +23,7 @@ namespace EvolveThisMatch.Core
             _timeSystem = BattleManager.Instance.GetSubSystem<TimeSystem>();
             _waveLibrary = GameDataManager.Instance.waveLibrary;
             _spawnPoint = transform.GetChild(0);
-            _arrivalPoint = transform.GetChild(1);
+            boundaryPoint = transform.GetChild(1);
         }
 
         public void Deinitialize()
@@ -66,17 +66,9 @@ namespace EvolveThisMatch.Core
                 for (int i = 0; i < waveInfo.spawnCount; i++)
                 {
                     Vector3 spawnPos = _spawnPoint.position;
-                    spawnPos.y = Random.Range(-4, 4);
+                    spawnPos.y = Random.Range(-4f, 4f);
 
-                    Vector3 arrivalPos = _arrivalPoint.position;
-                    float offset = Random.Range(-0.4f, 0.2f);
-                    arrivalPos.x += offset;
-                    arrivalPos.y += offset * 2;
-
-                    var unit = _enemySpawnSystem.SpawnUnit(waveInfo.template, spawnPos, waveInfo.coin, waveInfo.crystal);
-
-                    // 경로 초기화
-                    unit.GetAbility<MoveWayPointAbility>().InitializeArrivalPoint(arrivalPos);
+                    _enemySpawnSystem.SpawnUnit(waveInfo.template, spawnPos, waveInfo.coin, waveInfo.crystal);
 
                     if (i < waveInfo.spawnCount - 1)
                     {

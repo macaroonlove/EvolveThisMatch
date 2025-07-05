@@ -74,7 +74,7 @@ namespace EvolveThisMatch.Editor
             menu.AddItem(new GUIContent("패시브 스킬"), false, AddAbility, typeof(PassiveSkillAbility));
 
             menu.AddItem(new GUIContent("추적 이동"), false, AddAbility, typeof(MoveChaseAbility));
-            menu.AddItem(new GUIContent("특정 지점 이동"), false, AddAbility, typeof(MoveWayPointAbility));
+            menu.AddItem(new GUIContent("경계선까지 이동"), false, AddAbility, typeof(MoveBoundaryAbility));
             
             menu.AddItem(new GUIContent("배치 능력"), false, AddAbility, typeof(DeployAbility));
 
