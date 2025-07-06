@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 733e2e25bf57b31409e4e29b3b8699ca, type: 3}
   m_Name: SkillType_Thunder
   m_EditorClassIdentifier: 
-  _displayName: "\uBC88\uAC1C"
+  _displayName: "\uC804\uAE30"
   _type: 6
   _backgroundColor: {r: 1, g: 0.8509804, b: 0.23137255, a: 1}
   _textColor: {r: 1, g: 1, b: 1, a: 1}

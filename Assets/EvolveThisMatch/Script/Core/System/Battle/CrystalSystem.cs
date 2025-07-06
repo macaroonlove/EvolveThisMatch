@@ -41,6 +41,11 @@ namespace EvolveThisMatch.Core
             return false;
         }
 
+        internal bool CheckCrystal(int value)
+        {
+            return _crystalVariable.Value >= value;
+        }
+
         private void SetCrystal(int newCrystal)
         {
             _crystalVariable.Value = newCrystal;

@@ -40,6 +40,11 @@ namespace EvolveThisMatch.Core
             return false;
         }
 
+        internal bool CheckCoin(int value)
+        {
+            return _coinVariable.Value >= value;
+        }
+
         private void SetCoin(int newCoin)
         {
             _coinVariable.Value = newCoin;

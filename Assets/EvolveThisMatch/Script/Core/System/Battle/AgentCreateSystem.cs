@@ -31,10 +31,26 @@ namespace EvolveThisMatch.Core
         }
 
         #region 유닛 소환
+        /// <summary>
+        /// 등급 제한 없이 랜덤 유닛
+        /// </summary>
         internal bool CreateRandomUnit()
         {
             int index = Random.Range(0, _ownedAgentTemplates.Count);
             var template = _ownedAgentTemplates[index];
+
+            return CreateUnit(template);
+        }
+
+        /// <summary>
+        /// 최소 등급 제한 랜덤 유닛
+        /// </summary>
+        internal bool CreateRandomUnit(EAgentRarity rarity)
+        {
+            var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity <= rarity).ToList();
+
+            int index = Random.Range(0, filtered.Count);
+            var template = filtered[index];
 
             return CreateUnit(template);
         }
@@ -105,6 +121,7 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+        #region 표지판 생성
         internal SignBoard CreateSignBoard(AgentBattleData selectedData)
         {
             // 위치
@@ -127,5 +144,6 @@ namespace EvolveThisMatch.Core
                 return null;
             }
         }
+        #endregion
     }
 }

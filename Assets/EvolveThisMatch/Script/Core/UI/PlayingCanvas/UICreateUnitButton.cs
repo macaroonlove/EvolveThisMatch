@@ -26,21 +26,25 @@ namespace EvolveThisMatch.Core
         private CoinSystem _coinSystem;
         private int _needCoin;
 
-        internal new void Initialize()
+        protected override void Initialize()
+        {
+            BindButton(typeof(Buttons));
+            BindText(typeof(Texts));
+
+            _needCostText = GetText((int)Texts.NeedCostText);
+            _button = GetButton((int)Buttons.CraeteUnitButton);
+
+            _button.onClick.AddListener(Create);
+        }
+
+        internal void InitializeBattle()
         {
             _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
             _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
             _coinSystem.onChangedCoin += OnChangeCoin;
 
-            BindButton(typeof(Buttons));
-            BindText(typeof(Texts));
-
             _needCoin = 20;
-            _needCostText = GetText((int)Texts.NeedCostText);
             _needCostText.text = _needCoin.ToString();
-
-            _button = GetButton((int)Buttons.CraeteUnitButton);
-            _button.onClick.AddListener(Create);
         }
 
         private void OnDestroy()
@@ -64,12 +68,21 @@ namespace EvolveThisMatch.Core
 
         private void Create()
         {
+            if (!_coinSystem.CheckCoin(_needCoin))
+            {
+                // TODO: 코인이 부족하다고 알림 주기
+            }
+
             if (_agentCreateSystem.CreateRandomUnit())
             {
                 _coinSystem.PayCoin(_needCoin);
                 _needCoin++;
                 _needCostText.text = _needCoin.ToString();
-            }            
+            }
+            else
+            {
+                // TODO: 자리가 부족하다고 알림 주기
+            }
         }
     }
 }
