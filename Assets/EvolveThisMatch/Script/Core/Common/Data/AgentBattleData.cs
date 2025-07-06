@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Core
             this.agentTemplate = agentTemplate;
 
             this.level = 1;
-            this.limit = GameDataManager.Instance.GetLimitRarity();
+            this.limit = GameDataManager.Instance.GetAgentRandomRarity();
 
             _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
         }

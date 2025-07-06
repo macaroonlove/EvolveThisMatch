@@ -7,11 +7,13 @@ namespace EvolveThisMatch.Core
     {
         private UICreateUnitButton _uiCreateUnitButton;
         private UITrainingSchoolCanvas _uiTrainingSchoolCanvas;
+        private UIEngraveCanvas _uiEngraveCanvas;
 
         protected override void Initialize()
         {
             _uiCreateUnitButton = GetComponentInChildren<UICreateUnitButton>();
             _uiTrainingSchoolCanvas = GetComponentInChildren<UITrainingSchoolCanvas>();
+            _uiEngraveCanvas = GetComponentInChildren<UIEngraveCanvas>();
 
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
         }
@@ -25,6 +27,7 @@ namespace EvolveThisMatch.Core
         {
             _uiCreateUnitButton.InitializeBattle();
             _uiTrainingSchoolCanvas.InitializeBattle();
+            _uiEngraveCanvas.InitializeBattle();
         }
     }
 }

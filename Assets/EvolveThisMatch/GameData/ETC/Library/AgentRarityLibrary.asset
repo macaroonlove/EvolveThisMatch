@@ -19,64 +19,63 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8733eeeaf3a94fb4789e0482b4dcb38d, type: 2}
   - {fileID: 11400000, guid: fb2889f4fd9e6884ebd857fff8efefe7, type: 2}
   _probabilityList:
-  - needCost: 0
+  - needCoin: 75
     myth: 0
     legend: 1
     epic: 4
     rare: 15
     common: 80
-  - needCost: 0
+  - needCoin: 150
     myth: 0.1
     legend: 2
     epic: 6
     rare: 18
     common: 73.9
-  - needCost: 0
+  - needCoin: 225
     myth: 0.3
     legend: 3
     epic: 8
     rare: 20
     common: 68.7
-  - needCost: 0
+  - needCoin: 300
     myth: 0.5
     legend: 4
     epic: 10
     rare: 22
     common: 63.5
-  - needCost: 0
+  - needCoin: 400
     myth: 0.8
     legend: 6
     epic: 15
     rare: 24
     common: 54.199997
-  - needCost: 0
+  - needCoin: 500
     myth: 1
     legend: 8
     epic: 17
     rare: 30
     common: 44
-  - needCost: 0
+  - needCoin: 650
     myth: 1.8
     legend: 10
     epic: 20
     rare: 32
     common: 36.199997
-  - needCost: 0
+  - needCoin: 800
     myth: 2.5
     legend: 12
     epic: 25
     rare: 35
     common: 25.5
-  - needCost: 0
+  - needCoin: 1000
     myth: 3
     legend: 14
     epic: 30
     rare: 38
     common: 15
-  - needCost: 0
+  - needCoin: -1
     myth: 3.5
     legend: 18
     epic: 32
     rare: 40
     common: 6.5
-  _probabilityLevel: 0

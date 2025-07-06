@@ -65,6 +65,9 @@ namespace EvolveThisMatch.Core
                 system.Initialize();
             }
 
+            // 각 템플릿 초기화
+            GameDataManager.Instance.InitializeData();
+
             onBattleInitialize?.Invoke();
         }
 

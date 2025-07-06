@@ -36,8 +36,11 @@ namespace EvolveThisMatch.Core
         /// </summary>
         internal bool CreateRandomUnit()
         {
-            int index = Random.Range(0, _ownedAgentTemplates.Count);
-            var template = _ownedAgentTemplates[index];
+            var rand = GameDataManager.Instance.GetAgentRandomRarity();
+            var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity == rand.rarity).ToList();
+
+            int index = Random.Range(0, filtered.Count);
+            var template = filtered[index];
 
             return CreateUnit(template);
         }
@@ -47,7 +50,9 @@ namespace EvolveThisMatch.Core
         /// </summary>
         internal bool CreateRandomUnit(EAgentRarity rarity)
         {
-            var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity <= rarity).ToList();
+            var rand = GameDataManager.Instance.GetAgentRandomRarity();
+            var finalRarity = (rand.rarity < rarity) ? rand.rarity : rarity;
+            var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity == finalRarity).ToList();
 
             int index = Random.Range(0, filtered.Count);
             var template = filtered[index];

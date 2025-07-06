@@ -182,17 +182,26 @@ namespace EvolveThisMatch.Core
         #region Fade
         public void FadeIn(string propertyName, float duration)
         {
-            StartCoroutine(CoFade(propertyName, 0f, 1f, duration));
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(CoFade(propertyName, 0f, 1f, duration));
+            }
         }
 
         public void FadeOut(string propertyName, float duration)
         {
-            StartCoroutine(CoFade(propertyName, 1f, 0f, duration));
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(CoFade(propertyName, 1f, 0f, duration));
+            }
         }
 
         public void Fade(string propertyName, float duration, float startValue, float endValue)
         {
-            StartCoroutine(CoFade(propertyName, startValue, endValue, duration));
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(CoFade(propertyName, startValue, endValue, duration));
+            }
         }
 
         private IEnumerator CoFade(string propertyName, float startValue, float endValue, float duration)

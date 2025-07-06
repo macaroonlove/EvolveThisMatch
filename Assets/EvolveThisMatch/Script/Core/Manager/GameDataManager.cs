@@ -29,6 +29,12 @@ namespace EvolveThisMatch.Core
             return _agentLibrary.templates.Where(x => x.id == id).FirstOrDefault();
         }
 
+        internal void InitializeData()
+        {
+            _agentRarityLibrary.Initialize();
+        }
+
+        #region 배치 상태
         internal async UniTask<FormationSaveDataTemplate> GetFormationSaveData()
         {
             if (_formationSaveData.isLoaded == false)
@@ -44,8 +50,10 @@ namespace EvolveThisMatch.Core
 
             await SaveManager.Instance.Save_FormationData();
         }
+        #endregion
 
-        internal AgentRarityTemplate GetLimitRarity()
+        #region 등급별 유닛 소환 확률
+        internal AgentRarityTemplate GetAgentRandomRarity()
         {
             return _agentRarityLibrary.GetRandomAgentRarityTemplate();
         }
@@ -54,5 +62,16 @@ namespace EvolveThisMatch.Core
         {
             return _agentRarityLibrary.GetUpgradeAgentRarityTemplate(currentAgentRarity);
         }
+
+        internal AgentRarityProbabilityList GetProbabilityList()
+        {
+            return _agentRarityLibrary.GetProbabilityList();
+        }
+
+        internal bool UpgradeProbabilityLevel()
+        {
+            return _agentRarityLibrary.UpgradeProbabilityLevel();
+        }
+        #endregion
     }
 }

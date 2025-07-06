@@ -10,11 +10,16 @@ namespace EvolveThisMatch.Core
         [SerializeField] private List<AgentRarityTemplate> _agentRarityTemplates = new List<AgentRarityTemplate>();
         [SerializeField] private List<AgentRarityProbabilityList> _probabilityList = new List<AgentRarityProbabilityList>();
 
-        [SerializeField, ReadOnly] private int _probabilityLevel;
+        public int probabilityLevel { get; private set; }
+
+        public void Initialize()
+        {
+            probabilityLevel = 0;
+        }
 
         public AgentRarityTemplate GetRandomAgentRarityTemplate()
         {
-            var prob = _probabilityList[_probabilityLevel];
+            var prob = _probabilityList[probabilityLevel];
 
             float[] probabilities = new float[]
             {
@@ -54,6 +59,19 @@ namespace EvolveThisMatch.Core
             {
                 return currentAgentRarity;
             }
+        }
+
+        public AgentRarityProbabilityList GetProbabilityList()
+        {
+            return _probabilityList[probabilityLevel];
+        }
+
+        public bool UpgradeProbabilityLevel()
+        {
+            if (probabilityLevel >= _probabilityList.Count - 1) return false;
+            
+            probabilityLevel++;
+            return true;
         }
 
 #if UNITY_EDITOR

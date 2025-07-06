@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Crystal
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1237927757
-    hiddenValue: 1237927757
-    fakeValue: 0
-    fakeValueActive: 0
+    currentCryptoKey: 1974291641
+    hiddenValue: 1974291644
+    fakeValue: 5
+    fakeValueActive: 1
     inited: 1
   _readOnly: 0
   _raiseWarning: 1
