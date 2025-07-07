@@ -8,7 +8,7 @@ namespace EvolveThisMatch.Core
     public class AgentRarityLibrary : ScriptableObject
     {
         [SerializeField] private List<AgentRarityTemplate> _agentRarityTemplates = new List<AgentRarityTemplate>();
-        [SerializeField] private List<AgentRarityProbabilityList> _probabilityList = new List<AgentRarityProbabilityList>();
+        [SerializeField] private List<AgentRarityProbabilityData> _probabilityList = new List<AgentRarityProbabilityData>();
 
         public int probabilityLevel { get; private set; }
 
@@ -61,7 +61,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        public AgentRarityProbabilityList GetProbabilityList()
+        public AgentRarityProbabilityData GetProbabilityList()
         {
             return _probabilityList[probabilityLevel];
         }
@@ -86,7 +86,7 @@ namespace EvolveThisMatch.Core
     }
 
     [System.Serializable]
-    public class AgentRarityProbabilityList
+    public class AgentRarityProbabilityData
     {
         public int needCoin;
         [Range(0, 100)] public float myth;

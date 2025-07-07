@@ -1,7 +1,5 @@
 using FrameWork;
 using FrameWork.UIBinding;
-using TMPro;
-using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
@@ -12,21 +10,6 @@ namespace EvolveThisMatch.Core
         {
             EngraveToggle,
         }
-        enum Buttons
-        {
-            LuckEngraveButton,
-            DivineEngraveButton,
-            DarkEngraveButton,
-            FireEngraveButton,
-            WaterEngraveButton,
-            EarthEngraveButton,
-            WindEngraveButton,
-            ThunderEngraveButton,
-        }
-        enum Texts
-        {
-            PayCoinText,
-        }
         enum CanvasGroup
         {
             EngravePanel,
@@ -34,33 +17,37 @@ namespace EvolveThisMatch.Core
         #endregion
 
         private CanvasGroupController _panel;
-        private TextMeshProUGUI _payCoinText;
-
-        private CoinSystem _coinSystem;
 
         private UIProbabilityTable _uiProbabilityTable;
+        private UIEngraveButton[] _uiEngraveButtons;
 
         protected override void Initialize()
         {
             _uiProbabilityTable = GetComponentInChildren<UIProbabilityTable>();
+            _uiEngraveButtons = GetComponentsInChildren<UIEngraveButton>();
 
             BindToggle(typeof(Toggles));
-            BindButton(typeof(Buttons));
-            BindText(typeof(Texts));
             BindCanvasGroupController(typeof(CanvasGroup));
 
             _panel = GetCanvasGroupController((int)CanvasGroup.EngravePanel);
-            _payCoinText = GetText((int)Texts.PayCoinText);
 
             GetToggle((int)Toggles.EngraveToggle).onValueChanged.AddListener(ActivePanel);
-            GetButton((int)Buttons.LuckEngraveButton).onClick.AddListener(LuckEngrave);
         }
 
         internal void InitializeBattle()
         {
-            _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
+            foreach (var button in _uiEngraveButtons)
+            {
+                button.InitializeBattle(this);
+            }
+        }
 
-            RefrashLuckEngrave();
+        internal void DeinitializeBattle()
+        {
+            foreach (var button in _uiEngraveButtons)
+            {
+                button.DeinitializeBattle();
+            }
         }
 
         private void ActivePanel(bool isOn)
@@ -75,34 +62,9 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        private void LuckEngrave()
+        internal void ProbabilityRefrash(AgentRarityProbabilityData data)
         {
-            var needCoin = GameDataManager.Instance.GetProbabilityList().needCoin;
-            
-            if (!_coinSystem.CheckCoin(needCoin)) return;
-
-            if (GameDataManager.Instance.UpgradeProbabilityLevel())
-            {
-                _coinSystem.PayCoin(needCoin);
-
-                RefrashLuckEngrave();
-            }
-        }
-
-        private void RefrashLuckEngrave()
-        {
-            var probability = GameDataManager.Instance.GetProbabilityList();
-
-            if (probability.needCoin == -1)
-            {
-                _payCoinText.text = "Max";
-            }
-            else
-            {
-                _payCoinText.text = probability.needCoin.ToString();
-            }
-
-            _uiProbabilityTable.Show(probability);
+            _uiProbabilityTable.Show(data);
         }
     }
 }

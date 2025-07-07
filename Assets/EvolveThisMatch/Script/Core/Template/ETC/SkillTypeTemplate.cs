@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -21,11 +23,40 @@ namespace EvolveThisMatch.Core
         [SerializeField] private Color _backgroundColor;
         [SerializeField] private Color _textColor;
 
+        [SerializeField] private TypeEngraveData[] _engraveDatas = new TypeEngraveData[5];
+
         #region 프로퍼티
         public string displayName => _displayName;
         public ESkillType type => _type;
         public Color backgroundColor => _backgroundColor;
         public Color textColor => _textColor;
+
+        public int engraveLevel { get; private set; }
         #endregion
+
+        public void Initialize()
+        {
+            engraveLevel = 0;
+        }
+
+        public TypeEngraveData GetEngraveData()
+        {
+            return _engraveDatas[engraveLevel];
+        }
+
+        public bool UpgradeEngraveLevel()
+        {
+            if (engraveLevel >= _engraveDatas.Length - 1) return false;
+
+            engraveLevel++;
+            return true;
+        }
+    }
+
+    [Serializable]
+    public class TypeEngraveData
+    {
+        public int needCrystal;
+        public GlobalStatusTemplate statusTemplate;
     }
 }

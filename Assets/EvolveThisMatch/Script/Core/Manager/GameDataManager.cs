@@ -23,6 +23,7 @@ namespace EvolveThisMatch.Core
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
         public IReadOnlyDictionary<SkinTemplate, AgentTemplate> agentSkinTemplates => _agentSkinLibrary.templates;
         internal WaveLibraryTemplate waveLibrary => _waveLibrary;
+        internal int probabilityLevel => _agentRarityLibrary.probabilityLevel;
 
         internal AgentTemplate GetAgentTemplateById(int id)
         {
@@ -63,7 +64,7 @@ namespace EvolveThisMatch.Core
             return _agentRarityLibrary.GetUpgradeAgentRarityTemplate(currentAgentRarity);
         }
 
-        internal AgentRarityProbabilityList GetProbabilityList()
+        internal AgentRarityProbabilityData GetProbabilityList()
         {
             return _agentRarityLibrary.GetProbabilityList();
         }

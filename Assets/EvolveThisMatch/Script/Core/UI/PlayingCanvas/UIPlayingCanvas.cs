@@ -16,11 +16,13 @@ namespace EvolveThisMatch.Core
             _uiEngraveCanvas = GetComponentInChildren<UIEngraveCanvas>();
 
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
+            BattleManager.Instance.onBattleDeinitialize += OnBattleDeinitialize;
         }
 
         private void OnDestroy()
         {
             BattleManager.Instance.onBattleInitialize -= OnBattleInitialize;
+            BattleManager.Instance.onBattleDeinitialize -= OnBattleDeinitialize;
         }
 
         private void OnBattleInitialize()
@@ -28,6 +30,11 @@ namespace EvolveThisMatch.Core
             _uiCreateUnitButton.InitializeBattle();
             _uiTrainingSchoolCanvas.InitializeBattle();
             _uiEngraveCanvas.InitializeBattle();
+        }
+
+        private void OnBattleDeinitialize()
+        {
+            _uiEngraveCanvas.DeinitializeBattle();
         }
     }
 }

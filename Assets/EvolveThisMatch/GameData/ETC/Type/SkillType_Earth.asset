@@ -16,3 +16,14 @@ MonoBehaviour:
   _type: 4
   _backgroundColor: {r: 0.47843137, g: 0.36862746, b: 0.24313726, a: 1}
   _textColor: {r: 1, g: 1, b: 1, a: 1}
+  _engraveDatas:
+  - needCrystal: 1
+    statusTemplate: {fileID: 0}
+  - needCrystal: 2
+    statusTemplate: {fileID: 0}
+  - needCrystal: 3
+    statusTemplate: {fileID: 0}
+  - needCrystal: 4
+    statusTemplate: {fileID: 0}
+  - needCrystal: -1
+    statusTemplate: {fileID: 0}

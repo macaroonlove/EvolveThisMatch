@@ -40,7 +40,7 @@ namespace EvolveThisMatch.Core
 
         internal void ApplyGlobalStatus(GlobalStatusTemplate template, float duration)
         {
-            if (this == null || gameObject == null) return;
+            if (this == null || gameObject == null || template == null) return;
 
             var isContained = false;
 

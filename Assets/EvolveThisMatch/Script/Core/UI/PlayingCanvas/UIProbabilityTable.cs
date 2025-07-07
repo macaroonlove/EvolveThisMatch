@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Core
             _mythText = GetText((int)Texts.MythProbability);
         }
 
-        internal void Show(AgentRarityProbabilityList probability)
+        internal void Show(AgentRarityProbabilityData probability)
         {
             _commonText.text = (probability.common).ToString("0.###") + "%";
             _rareText.text = (probability.rare).ToString("0.###") + "%";
