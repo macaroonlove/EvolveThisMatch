@@ -190,6 +190,8 @@ namespace EvolveThisMatch.Core
                 _selectedData.DeregistSignBoard();
             }
 
+            _selectedData.agentUnit.SetInteraction(false);
+
             _agentReturnSystem.ReturnUnit(_selectedData);
             _selectedData = null;
             _allySelectCanvas.Hide();

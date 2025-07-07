@@ -78,6 +78,9 @@ namespace EvolveThisMatch.Core
             Vector3 pos = transform.position;
             pos.z = pos.y;
             transform.position = pos;
+
+            // 콜라이더 활성화
+            SetInteraction(true);
         }
 
         internal void Deinitialize()
