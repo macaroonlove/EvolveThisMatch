@@ -57,6 +57,5 @@ namespace EvolveThisMatch.Core
     public class TypeEngraveData
     {
         public int needCrystal;
-        public GlobalStatusTemplate statusTemplate;
     }
 }

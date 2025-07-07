@@ -23,7 +23,6 @@ MonoBehaviour:
     _directionType: 0
     _range: 0
     _assistantRange: 0
-    _tileRangeTemplate: {fileID: 0}
     _numberOfTarget: 5
   _targetFX: {fileID: 0}
 --- !u!114 &11400000
@@ -75,6 +74,7 @@ MonoBehaviour:
   _tickCycle: 1
   _tickCount: 0
   _damageType: 1
+  _skillType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
   _applyTypeByAmountDatas:
   - applyType: 2
     amount: 2000

@@ -7,14 +7,12 @@ namespace EvolveThisMatch.Core
         [SerializeField] private SkillTypeTemplate _skillTypeTemplate;
 
         private CrystalSystem _crystalSystem;
-        private GlobalStatusSystem _globalStatusSystem;
 
         internal override void InitializeBattle(UIEngraveCanvas engraveCanvas)
         {
             _skillTypeTemplate.Initialize();
 
             _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
-            _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
             _crystalSystem.onChangedCrystal += OnChangedCrystal;
 
             OnChangedCrystal(_crystalSystem.currentCrystal);
@@ -71,8 +69,6 @@ namespace EvolveThisMatch.Core
             }
 
             _levelText.text = (_skillTypeTemplate.engraveLevel + 1).ToString();
-
-            _globalStatusSystem.ApplyGlobalStatus(data.statusTemplate, int.MaxValue);
         }
     }
 }

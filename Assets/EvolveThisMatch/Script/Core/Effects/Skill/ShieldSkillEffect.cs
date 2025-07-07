@@ -13,12 +13,36 @@ namespace EvolveThisMatch.Core
         [SerializeField] private int _tickCount;
         [SerializeField] private bool _isInfinity;
         [SerializeField] private float _duration;
+        [SerializeField] private SkillTypeTemplate _skillType;
 
         [SerializeField] private List<ApplyTypeByAmountData> _applyTypeByAmountDatas = new List<ApplyTypeByAmountData>();
 
         public override string GetDescription()
         {
             return "보호막";
+        }
+
+        private float GetLevelAmount(int engraveLevel)
+        {
+            switch (engraveLevel)
+            {
+                case 1: return 1.0f;
+                case 2: return 1.4f;
+                case 3: return 1.8f;
+                case 4: return 2.3f;
+                case 5: return 3.0f;
+                default: return 1.0f;
+            }
+        }
+
+        private int GetEngraveAmount(float totalAmount)
+        {
+            if (_skillType != null)
+            {
+                totalAmount += (totalAmount * GetLevelAmount(_skillType.engraveLevel));
+            }
+
+            return (int)totalAmount;
         }
 
         public int GetAmount(Unit casterUnit, Unit targetUnit)
@@ -56,7 +80,7 @@ namespace EvolveThisMatch.Core
                 totalAmount += typeValue * applyTypeByAmountData.amount;
             }
 
-            return (int)totalAmount;
+            return GetEngraveAmount(totalAmount);
         }
 
         internal override void SkillImpact(Unit casterUnit, Unit targetUnit)
@@ -159,6 +183,11 @@ namespace EvolveThisMatch.Core
                 _duration = EditorGUI.FloatField(valueRect, _duration);
             }
 
+            labelRect.y += 40;
+            valueRect.y += 40;
+            GUI.Label(labelRect, "속성");
+            _skillType = (SkillTypeTemplate)EditorGUI.ObjectField(valueRect, _skillType, typeof(SkillTypeTemplate), false);
+
             labelRect.y += 20;
             valueRect.y += 20;
             GUI.Label(labelRect, "적용 방식");
@@ -195,7 +224,7 @@ namespace EvolveThisMatch.Core
         {
             int rowNum = base.GetNumRows();
 
-            rowNum += 4;
+            rowNum += 6;
 
             if (_isTick)
             {
