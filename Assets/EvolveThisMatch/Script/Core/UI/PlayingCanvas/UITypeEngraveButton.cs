@@ -65,10 +65,10 @@ namespace EvolveThisMatch.Core
             }
             else
             {
-                _payText.text = data.needCrystal.ToString();
+                _payText.text = $"<sprite name=\"Crystal\"> {data.needCrystal}";
             }
 
-            _levelText.text = (_skillTypeTemplate.engraveLevel + 1).ToString();
+            _levelText.text = $"LV. {_skillTypeTemplate.engraveLevel + 1}";
         }
     }
 }

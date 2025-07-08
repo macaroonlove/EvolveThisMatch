@@ -67,10 +67,10 @@ namespace EvolveThisMatch.Core
             }
             else
             {
-                _payText.text = probability.needCoin.ToString();
+                _payText.text = $"<sprite name=\"Coin\"> {probability.needCoin}";
             }
 
-            _levelText.text = probabilityLevel.ToString();
+            _levelText.text = $"LV. {probabilityLevel}";
             _engraveCanvas.ProbabilityRefrash(probability);
         }
     }
