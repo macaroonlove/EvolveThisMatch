@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Core
 {
@@ -9,12 +10,16 @@ namespace EvolveThisMatch.Core
         [SerializeField] private GameObject _signBoardPrefab;
         [SerializeField] private FX _spawnFX;
 
+        private AgentReturnSystem _agentReturnSystem;
         private PoolSystem _poolSystem;
         private TileSystem _tileSystem;
         private List<AgentTemplate> _ownedAgentTemplates = new List<AgentTemplate>();
 
+        internal event UnityAction<AgentBattleData> onInitializedUnit;
+
         public void Initialize()
         {
+            _agentReturnSystem = BattleManager.Instance.GetSubSystem<AgentReturnSystem>();
             _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
             
@@ -80,6 +85,8 @@ namespace EvolveThisMatch.Core
 
                 // ½ºÆù ÀÌÆåÆ®
                 _spawnFX.Play(unit);
+
+                onInitializedUnit?.Invoke(agentData);
             }
             else
             {
@@ -106,9 +113,9 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        internal ChangeUnitResult ChangeRandomUnit(AgentUnit existingUnit, AgentRarityTemplate rarityTemplate)
+        internal ChangeUnitResult ChangeRandomUnit(AgentBattleData agentData)
         {
-            var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity <= rarityTemplate.rarity && t != existingUnit.template).ToList();
+            var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity <= agentData.limit.rarity && t != agentData.agentUnit.template).ToList();
 
             int index = Random.Range(0, filtered.Count);
             var template = filtered[index];
@@ -116,7 +123,13 @@ namespace EvolveThisMatch.Core
             var obj = _poolSystem.Spawn(template.prefab, transform);
             if (obj.TryGetComponent(out AgentUnit unit))
             {
-                _poolSystem.DeSpawn(existingUnit.gameObject);
+                _agentReturnSystem.ReturnUnit_Change(agentData);
+                _poolSystem.DeSpawn(agentData.agentUnit.gameObject);
+
+                agentData.agentUnit.transform.position = agentData.mountTile.transform.position;
+                unit.Initialize(agentData);
+
+                onInitializedUnit?.Invoke(agentData);
 
                 return new ChangeUnitResult(unit, template, _spawnFX);
             }

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Core
 {
@@ -12,6 +13,8 @@ namespace EvolveThisMatch.Core
         private PoolSystem _poolSystem;
         private CrystalSystem _crystalSystem;
         private List<AgentTemplate> _ownedAgentTemplates = new List<AgentTemplate>();
+
+        internal event UnityAction<AgentBattleData> onDeinitializedUnit;
 
         public void Initialize()
         {
@@ -66,6 +69,16 @@ namespace EvolveThisMatch.Core
 
             // 유닛을 타일에서 반환
             agentData.mountTile.ReturnUnit();
+
+            onDeinitializedUnit?.Invoke(agentData);
+        }
+
+        internal void ReturnUnit_Change(AgentBattleData agentData)
+        {
+            // 유닛 오브젝트 반환
+            _poolSystem.DeSpawn(agentData.agentUnit.gameObject);
+
+            onDeinitializedUnit?.Invoke(agentData);
         }
         #endregion
 

@@ -72,12 +72,10 @@ namespace EvolveThisMatch.Core
         {
             agentUnit.Deinitialize();
 
-            var result = _agentCreateSystem.ChangeRandomUnit(agentUnit, limit);
+            var result = _agentCreateSystem.ChangeRandomUnit(this);
 
             agentTemplate = result.template;
             agentUnit = result.unit;
-            agentUnit.transform.position = mountTile.transform.position;
-            agentUnit.Initialize(this);
 
             // ½ºÆù ÀÌÆåÆ®
             result.spawnFX.Play(agentUnit);
