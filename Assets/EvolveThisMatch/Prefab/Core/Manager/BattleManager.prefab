@@ -11714,6 +11714,7 @@ GameObject:
   - component: {fileID: 7764921059658608065}
   - component: {fileID: 7779925810599734067}
   - component: {fileID: 5981209525603622466}
+  - component: {fileID: 4690849884617939593}
   m_Layer: 0
   m_Name: AgentSystem
   m_TagString: Untagged
@@ -11763,6 +11764,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _returnFX: {fileID: 11400000, guid: 4949325cd39739747b03ced39f5d53a5, type: 2}
+--- !u!114 &4690849884617939593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4220791289374802386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e4abca561b9784a95082f30937f403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4228052842758799626
 GameObject:
   m_ObjectHideFlags: 0

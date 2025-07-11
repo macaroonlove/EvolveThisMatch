@@ -1,6 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +10,6 @@ namespace EvolveThisMatch.Core
 
         private PoolSystem _poolSystem;
         private CrystalSystem _crystalSystem;
-        private List<AgentTemplate> _ownedAgentTemplates = new List<AgentTemplate>();
 
         internal event UnityAction<AgentBattleData> onDeinitializedUnit;
 
@@ -20,12 +17,6 @@ namespace EvolveThisMatch.Core
         {
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
             _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
-            
-            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
-            foreach(var agent in ownedAgents)
-            {
-                _ownedAgentTemplates.Add(GameDataManager.Instance.GetAgentTemplateById(agent.id));
-            }
         }
 
         public void Deinitialize()
@@ -72,9 +63,21 @@ namespace EvolveThisMatch.Core
 
             onDeinitializedUnit?.Invoke(agentData);
         }
+        #endregion
 
+        #region 유닛 교체
         internal void ReturnUnit_Change(AgentBattleData agentData)
         {
+            // 유닛의 능력 종료
+            agentData.agentUnit.Deinitialize();
+
+            // 표지판 반환
+            if (agentData.signBoard != null)
+            {
+                ReturnSignBoard(agentData.signBoard.gameObject);
+                agentData.DeregistSignBoard();
+            }
+
             // 유닛 오브젝트 반환
             _poolSystem.DeSpawn(agentData.agentUnit.gameObject);
 

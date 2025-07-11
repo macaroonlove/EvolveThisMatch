@@ -5,7 +5,7 @@ namespace EvolveThisMatch.Core
     [Serializable]
     public class AgentBattleData
     {
-        private AgentCreateSystem _agentCreateSystem;
+        private AgentChangeSystem _agentChangeSystem;
 
         internal AgentTemplate agentTemplate { get; private set; }
         internal AgentUnit agentUnit { get; private set; }
@@ -22,7 +22,7 @@ namespace EvolveThisMatch.Core
             this.level = 1;
             this.limit = GameDataManager.Instance.GetAgentRandomRarity();
 
-            _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
+            _agentChangeSystem = BattleManager.Instance.GetSubSystem<AgentChangeSystem>();
         }
 
         #region 위치
@@ -70,15 +70,14 @@ namespace EvolveThisMatch.Core
         #region 운명 재설정
         internal void DestinyRecast()
         {
-            agentUnit.Deinitialize();
+            var result = _agentChangeSystem.ChangeRandomUnit(this);
 
-            var result = _agentCreateSystem.ChangeRandomUnit(this);
-
-            agentTemplate = result.template;
-            agentUnit = result.unit;
-
-            // 스폰 이펙트
-            result.spawnFX.Play(agentUnit);
+            if (result.HasValue)
+            {
+                agentTemplate = result.Value.agentTemplate;
+                agentUnit = result.Value.agentUnit;
+                result.Value.action?.Invoke(this);
+            }
         }
         #endregion
     }

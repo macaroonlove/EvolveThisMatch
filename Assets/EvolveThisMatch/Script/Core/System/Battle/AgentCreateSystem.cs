@@ -10,7 +10,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] private GameObject _signBoardPrefab;
         [SerializeField] private FX _spawnFX;
 
-        private AgentReturnSystem _agentReturnSystem;
         private PoolSystem _poolSystem;
         private TileSystem _tileSystem;
         private List<AgentTemplate> _ownedAgentTemplates = new List<AgentTemplate>();
@@ -19,12 +18,11 @@ namespace EvolveThisMatch.Core
 
         public void Initialize()
         {
-            _agentReturnSystem = BattleManager.Instance.GetSubSystem<AgentReturnSystem>();
             _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
-            
+
             var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
-            foreach(var agent in ownedAgents)
+            foreach (var agent in ownedAgents)
             {
                 _ownedAgentTemplates.Add(GameDataManager.Instance.GetAgentTemplateById(agent.id));
             }
@@ -79,7 +77,7 @@ namespace EvolveThisMatch.Core
             if (obj.TryGetComponent(out AgentUnit unit))
             {
                 var agentData = tile.PlaceUnit(unit, template);
-                
+
                 // À¯´Ö ÃÊ±âÈ­
                 unit.Initialize(agentData);
 
@@ -99,21 +97,7 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region À¯´Ö ±³Ã¼
-        public struct ChangeUnitResult
-        {
-            public AgentUnit unit;
-            public AgentTemplate template;
-            public FX spawnFX;
-
-            public ChangeUnitResult(AgentUnit unit, AgentTemplate template, FX spawnFX)
-            {
-                this.unit = unit;
-                this.template = template;
-                this.spawnFX = spawnFX;
-            }
-        }
-
-        internal ChangeUnitResult ChangeRandomUnit(AgentBattleData agentData)
+        internal ChangeAgentData? CreateUnit_Change(AgentBattleData agentData)
         {
             var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity <= agentData.limit.rarity && t != agentData.agentUnit.template).ToList();
 
@@ -121,21 +105,26 @@ namespace EvolveThisMatch.Core
             var template = filtered[index];
 
             var obj = _poolSystem.Spawn(template.prefab, transform);
+
             if (obj.TryGetComponent(out AgentUnit unit))
             {
-                _agentReturnSystem.ReturnUnit_Change(agentData);
-                _poolSystem.DeSpawn(agentData.agentUnit.gameObject);
-
-                agentData.agentUnit.transform.position = agentData.mountTile.transform.position;
-                unit.Initialize(agentData);
-
-                onInitializedUnit?.Invoke(agentData);
-
-                return new ChangeUnitResult(unit, template, _spawnFX);
+                return new ChangeAgentData(unit, template, OnChangedComplete);
             }
 
             _poolSystem.DeSpawn(obj);
-            return new ChangeUnitResult(null, null, null);
+            return null;
+        }
+
+        private void OnChangedComplete(AgentBattleData agentData)
+        {
+            var agentUnit = agentData.agentUnit;
+            agentUnit.transform.position = agentData.mountTile.transform.position;
+            agentUnit.Initialize(agentData);
+
+            // ½ºÆù ÀÌÆåÆ®
+            _spawnFX.Play(agentUnit);
+
+            onInitializedUnit?.Invoke(agentData);
         }
         #endregion
 
