@@ -208,7 +208,7 @@ namespace EvolveThisMatch.Core
 
         private void ExecuteSkill()
         {
-            if (_skillInstance.CanExecute() == false) return;
+            if (_skillInstance == null ||  _skillInstance.CanExecute() == false) return;
 
             if (_unit.GetAbility<ActiveSkillAbility>().TryExecuteSkill(_template))
             {

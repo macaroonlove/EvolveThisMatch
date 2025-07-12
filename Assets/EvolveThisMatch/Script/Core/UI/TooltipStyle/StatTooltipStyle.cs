@@ -1,8 +1,9 @@
 using Cysharp.Threading.Tasks;
+using FrameWork.Tooltip;
 using TMPro;
 using UnityEngine;
 
-namespace FrameWork.Tooltip
+namespace EvolveThisMatch.Core
 {
     public class StatTooltipStyle : TooltipStyle
     {
@@ -18,7 +19,7 @@ namespace FrameWork.Tooltip
         private TextMeshProUGUI _detailStatText;
 
 #if UNITY_EDITOR
-        internal override TooltipData CreateField()
+        public override TooltipData CreateField()
         {
             var data = new TooltipData();
 
@@ -29,7 +30,7 @@ namespace FrameWork.Tooltip
         }
 #endif
 
-        internal override async void ApplyData(TooltipData data)
+        public override async void ApplyData(TooltipData data)
         {
             _baseStatText.text = data.GetString("BaseStat");
             _detailStatText.text = data.GetString("DetailStat");

@@ -72,6 +72,24 @@ namespace FrameWork.Tooltip
             return instance;
         }
 
+        internal TooltipStyle GetTooltipStyle(TooltipTrigger trigger)
+        {
+            var key = trigger.tooltipStyle.gameObject;
+
+            if (_tooltip.ContainsKey(key))
+            {
+                return _tooltip[key];
+            }
+
+            var instance = CreateTooltip(trigger.tooltipStyle);
+            var style = instance.GetComponent<TooltipStyle>();
+            style.Hide(true);
+
+            _tooltip.Add(key, style);
+
+            return style;
+        }
+
         private void SetAnchorPivot(RectTransform rectTransform, TipPosition tipPosition)
         {
             Vector2 anchorPosition = Vector2.zero;

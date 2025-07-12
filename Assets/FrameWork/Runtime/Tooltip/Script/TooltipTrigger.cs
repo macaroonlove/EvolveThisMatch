@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace FrameWork.Tooltip
@@ -25,6 +26,7 @@ namespace FrameWork.Tooltip
             tooltipData.InitializeData();
         }
 
+#if UNITY_EDITOR || UNITY_STANDALONE
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (isHover == false) return;
@@ -36,6 +38,21 @@ namespace FrameWork.Tooltip
             if (isHover == false) return;
             StopHover();
         }
+#else
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (isHover)
+            {
+                StopHover();
+                isHover = false;
+            }
+            else
+            {
+                StartHover();
+                isHover = true;
+            }
+        }
+#endif
 
         internal void StartHover()
         {
@@ -45,6 +62,11 @@ namespace FrameWork.Tooltip
         public void StopHover()
         {
             TooltipManager.Instance.Hide(this);
+        }
+
+        public TooltipStyle GetTooltipStyle()
+        {
+            return TooltipManager.Instance.GetTooltipStyle(this);
         }
 
         public void SetText(string parameterName, string text)
@@ -58,6 +80,34 @@ namespace FrameWork.Tooltip
             }
 
             tooltipData.SetString(parameterName, text);
+            TooltipManager.Instance.ReShow(this);
+        }
+
+        public void SetSprite(string parameterName, Sprite sprite)
+        {
+            if (tooltipData == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError("TooltipData가 초기화되지 않았습니다.");
+#endif
+                return;
+            }
+
+            tooltipData.SetSprite(parameterName, sprite);
+            TooltipManager.Instance.ReShow(this);
+        }
+
+        public void SetAction(UnityAction action)
+        {
+            if (tooltipData == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError("TooltipData가 초기화되지 않았습니다.");
+#endif
+                return;
+            }
+
+            tooltipData.SetAction(action);
             TooltipManager.Instance.ReShow(this);
         }
     }

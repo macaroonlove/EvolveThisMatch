@@ -5,8 +5,8 @@ namespace FrameWork.Tooltip
     public abstract class TooltipStyle : UIBase
     {
 #if UNITY_EDITOR
-        internal abstract TooltipData CreateField();
+        public abstract TooltipData CreateField();
 #endif
-        internal abstract void ApplyData(TooltipData data);
+        public abstract void ApplyData(TooltipData data);
     }
 }

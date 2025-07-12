@@ -23,7 +23,7 @@ namespace FrameWork.Tooltip
         private Image _assistanceImage;
 
 #if UNITY_EDITOR
-        internal override TooltipData CreateField()
+        public override TooltipData CreateField()
         {
             var data = new TooltipData();
 
@@ -34,7 +34,7 @@ namespace FrameWork.Tooltip
         }
 #endif
 
-        internal override async void ApplyData(TooltipData data)
+        public override async void ApplyData(TooltipData data)
         {
             _descriptionText.text = data.GetString("Description");
             _assistanceImage.sprite = data.GetSprite("AssistanceImage");

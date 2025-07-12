@@ -14,4 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 1
   _displayName: "\uC544\uC2A4\uAC00\uB974\uB4DC"
+  _description: "\uC885\uB9D0\uC744 \uC608\uC5B8\uBC1B\uC740 \uC2E0\uB4E4\uC740 \uC8FD\uC74C\uC744
+    \uB450\uB824\uC6CC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. 5\uCD08\uB9C8\uB2E4
+    \uC804\uD22C\uB825\uC774 5% \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
+  _icon: {fileID: 0}
   _textColor: {r: 1, g: 1, b: 1, a: 1}
+  _synergyDatas:
+  - count: 2
+    description: "\uCD5C\uB300 \uC0C1\uC2B9\uB7C9 15%"
+    buff: {fileID: 0}
+  - count: 3
+    description: "\uCD5C\uB300 \uC0C1\uC2B9\uB7C9 30%"
+    buff: {fileID: 0}

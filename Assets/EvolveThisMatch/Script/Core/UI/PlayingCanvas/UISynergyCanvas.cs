@@ -1,5 +1,6 @@
 using FrameWork.UIBinding;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,8 @@ namespace EvolveThisMatch.Core
 
         private UISynergyItem[] _synergyItems;
         private List<SynergyTemplate> _synergyTemplates = new List<SynergyTemplate>();
+        private Dictionary<SynergyTemplate, List<AgentTemplate>> _synergyDic = new Dictionary<SynergyTemplate, List<AgentTemplate>>();
+        private Dictionary<SynergyTemplate, HashSet<AgentBattleData>> _activeSynergyDic = new Dictionary<SynergyTemplate, HashSet<AgentBattleData>>();
 
         private int _pageSize;
         private int _currentPage = 1;
@@ -35,7 +38,7 @@ namespace EvolveThisMatch.Core
             {
                 item.Hide(true);
             }
-            _pageSize = 1;//_synergyItems.Length;
+            _pageSize = _synergyItems.Length;
 
             BindButton(typeof(Buttons));
 
@@ -52,6 +55,9 @@ namespace EvolveThisMatch.Core
             _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
             _agentReturnSystem = BattleManager.Instance.GetSubSystem<AgentReturnSystem>();
 
+            InitializeSynergy();
+            Refrash();
+
             _agentCreateSystem.onInitializedUnit += AddSynergy;
             _agentReturnSystem.onDeinitializedUnit += DeleteSynergy;
         }
@@ -62,14 +68,32 @@ namespace EvolveThisMatch.Core
             _agentReturnSystem.onDeinitializedUnit -= DeleteSynergy;
         }
 
+        private void InitializeSynergy()
+        {
+            var templates = GameDataManager.Instance.agentTemplates;
+            foreach (var template in templates)
+            {
+                foreach (var synergy in template.synergy)
+                {
+                    if (_synergyDic.ContainsKey(synergy) == false)
+                        _synergyDic[synergy] = new List<AgentTemplate>();
+
+                    _synergyDic[synergy].Add(template);
+                }
+            }
+        }
+
         private void AddSynergy(AgentBattleData data)
         {
             foreach (var synergy in data.agentTemplate.synergy)
             {
-                if (!_synergyTemplates.Contains(synergy))
+                if (_activeSynergyDic.TryGetValue(synergy, out var unitSet) == false)
                 {
-                    _synergyTemplates.Add(synergy);
+                    unitSet = new HashSet<AgentBattleData>();
+                    _activeSynergyDic[synergy] = unitSet;
                 }
+
+                unitSet.Add(data);
             }
 
             Refrash();
@@ -77,19 +101,15 @@ namespace EvolveThisMatch.Core
 
         private void DeleteSynergy(AgentBattleData data)
         {
-            var agents = _allySystem.GetAllAllies(EUnitType.Agent);
-
-            _synergyTemplates.Clear();
-            foreach (var agent in agents)
+            foreach (var synergy in data.agentTemplate.synergy)
             {
-                if (agent is AgentUnit agentUnit)
+                if (_activeSynergyDic.TryGetValue(synergy, out var unitSet))
                 {
-                    foreach (var synergy in agentUnit.template.synergy)
+                    unitSet.Remove(data);
+
+                    if (unitSet.Count == 0)
                     {
-                        if (!_synergyTemplates.Contains(synergy))
-                        {
-                            _synergyTemplates.Add(synergy);
-                        }
+                        _activeSynergyDic.Remove(synergy);
                     }
                 }
             }
@@ -99,6 +119,8 @@ namespace EvolveThisMatch.Core
 
         private void Refrash()
         {
+            _synergyTemplates = _activeSynergyDic.Keys.ToList();
+
             int synergyCount = _synergyTemplates.Count;
             int totalPage = Mathf.CeilToInt((float)synergyCount / _pageSize);
 
@@ -118,7 +140,10 @@ namespace EvolveThisMatch.Core
             {
                 if (synergyCount > synergyIndex)
                 {
-                    _synergyItems[itemIndex].Show(_synergyTemplates[synergyIndex]);
+                    var synergyTemplate = _synergyTemplates[synergyIndex];
+                    var allUnits = _synergyDic[synergyTemplate];
+                    var activeUnits = _activeSynergyDic[synergyTemplate];
+                    _synergyItems[itemIndex].Show(synergyTemplate, allUnits, activeUnits);
                 }
                 else
                 {
@@ -131,7 +156,7 @@ namespace EvolveThisMatch.Core
 
         private void NextPage()
         {
-            int totalPage = Mathf.CeilToInt((float)_synergyTemplates.Count / _pageSize);
+            int totalPage = Mathf.CeilToInt((float)_activeSynergyDic.Count / _pageSize);
             
             if (_currentPage < totalPage)
             {

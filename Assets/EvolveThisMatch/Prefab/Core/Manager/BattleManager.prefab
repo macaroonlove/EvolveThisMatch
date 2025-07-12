@@ -1182,6 +1182,7 @@ GameObject:
   - component: {fileID: 8749589504738207290}
   - component: {fileID: 6333201107415101896}
   - component: {fileID: 2679634631395852822}
+  - component: {fileID: 6039045743114551280}
   m_Layer: 5
   m_Name: SynergyItem
   m_TagString: Untagged
@@ -1288,6 +1289,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103bb337485926247857741a04b1387b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6039045743114551280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461688866314963191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47eb08c5e798734285f019b5cf6e202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipStyle: {fileID: 4284876021506993467, guid: 959c4470c5355254591401769c7db712, type: 3}
+  _tooltipPosition: 6
+  _tooltipOffset: {x: 0, y: 0}
+  tooltipData:
+    _stringKeys:
+    - DisplayName
+    - Description
+    _spriteKeys:
+    - Icon
+    _stringValues:
+    - 
+    - 
+    _spriteValues:
+    - {fileID: 0}
+  prevTooltipStyle: SynergyTooltipStyle
 --- !u!1 &485054701187553257
 GameObject:
   m_ObjectHideFlags: 0
@@ -8414,6 +8442,7 @@ GameObject:
   - component: {fileID: 853999017863625495}
   - component: {fileID: 6374245078223554762}
   - component: {fileID: 383208584442904083}
+  - component: {fileID: 8352524179095536126}
   m_Layer: 5
   m_Name: SynergyItem
   m_TagString: Untagged
@@ -8520,6 +8549,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103bb337485926247857741a04b1387b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8352524179095536126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3015115271867905314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47eb08c5e798734285f019b5cf6e202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipStyle: {fileID: 4284876021506993467, guid: 959c4470c5355254591401769c7db712, type: 3}
+  _tooltipPosition: 6
+  _tooltipOffset: {x: 0, y: 0}
+  tooltipData:
+    _stringKeys:
+    - DisplayName
+    - Description
+    _spriteKeys:
+    - Icon
+    _stringValues:
+    - 
+    - 
+    _spriteValues:
+    - {fileID: 0}
+  prevTooltipStyle: SynergyTooltipStyle
 --- !u!1 &3021723123224897187
 GameObject:
   m_ObjectHideFlags: 0
@@ -14962,6 +15018,7 @@ GameObject:
   - component: {fileID: 259164309068133465}
   - component: {fileID: 7851741664604089600}
   - component: {fileID: 6117647476224560334}
+  - component: {fileID: 5666454668712850532}
   m_Layer: 5
   m_Name: SynergyItem
   m_TagString: Untagged
@@ -15068,6 +15125,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103bb337485926247857741a04b1387b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5666454668712850532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5667912825770182445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47eb08c5e798734285f019b5cf6e202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipStyle: {fileID: 4284876021506993467, guid: 959c4470c5355254591401769c7db712, type: 3}
+  _tooltipPosition: 6
+  _tooltipOffset: {x: 0, y: 0}
+  tooltipData:
+    _stringKeys:
+    - DisplayName
+    - Description
+    _spriteKeys:
+    - Icon
+    _stringValues:
+    - 
+    - 
+    _spriteValues:
+    - {fileID: 0}
+  prevTooltipStyle: SynergyTooltipStyle
 --- !u!1 &5752649351066726291
 GameObject:
   m_ObjectHideFlags: 0
@@ -17937,6 +18021,7 @@ GameObject:
   - component: {fileID: 5920111347926677199}
   - component: {fileID: 5048883464399503538}
   - component: {fileID: 3384065776358198587}
+  - component: {fileID: 4986222230876164821}
   m_Layer: 5
   m_Name: SynergyItem
   m_TagString: Untagged
@@ -18043,6 +18128,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103bb337485926247857741a04b1387b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4986222230876164821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6613427978344556851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47eb08c5e798734285f019b5cf6e202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipStyle: {fileID: 4284876021506993467, guid: 959c4470c5355254591401769c7db712, type: 3}
+  _tooltipPosition: 6
+  _tooltipOffset: {x: 0, y: 0}
+  tooltipData:
+    _stringKeys:
+    - DisplayName
+    - Description
+    _spriteKeys:
+    - Icon
+    _stringValues:
+    - 
+    - 
+    _spriteValues:
+    - {fileID: 0}
+  prevTooltipStyle: SynergyTooltipStyle
 --- !u!1 &6629419386567684398
 GameObject:
   m_ObjectHideFlags: 0
@@ -18908,6 +19020,7 @@ GameObject:
   - component: {fileID: 2912473527743412385}
   - component: {fileID: 1761431169956397226}
   - component: {fileID: 9002287713031645494}
+  - component: {fileID: 7763587997087854174}
   m_Layer: 5
   m_Name: SynergyItem
   m_TagString: Untagged
@@ -19014,6 +19127,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103bb337485926247857741a04b1387b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7763587997087854174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6877375248988522767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47eb08c5e798734285f019b5cf6e202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipStyle: {fileID: 4284876021506993467, guid: 959c4470c5355254591401769c7db712, type: 3}
+  _tooltipPosition: 6
+  _tooltipOffset: {x: 0, y: 0}
+  tooltipData:
+    _stringKeys:
+    - DisplayName
+    - Description
+    _spriteKeys:
+    - Icon
+    _stringValues:
+    - 
+    - 
+    _spriteValues:
+    - {fileID: 0}
+  prevTooltipStyle: SynergyTooltipStyle
 --- !u!1 &6906017212667460412
 GameObject:
   m_ObjectHideFlags: 0
@@ -19527,9 +19667,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

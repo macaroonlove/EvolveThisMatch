@@ -14,5 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 0
   _displayName: "\uC62C\uB9BC\uD3EC\uC2A4"
+  _description: "\uD06C\uB85C\uB178\uC2A4\uC758 \uC790\uC2DD\uB4E4\uC774 \uBAA8\uC5EC
+    \uC2DC\uAC04\uC744 \uC65C\uACE1\uC2DC\uD0B5\uB2C8\uB2E4."
   _icon: {fileID: 21300000, guid: c14c99a99c059ea4190f08947aa64fb8, type: 3}
   _textColor: {r: 1, g: 1, b: 1, a: 1}
+  _synergyDatas:
+  - count: 2
+    description: "\uC62C\uB9BC\uD478\uC2A4 \uC720\uB2DB\uC758 \uC2A4\uD0AC \uAC00\uC18D\uB3C4
+      20% \uC99D\uAC00"
+    buff: {fileID: 0}
+  - count: 3
+    description: "\uC62C\uB9BC\uD478\uC2A4 \uC720\uB2DB\uC758 \uC2A4\uD0AC \uAC00\uC18D\uB3C4
+      30% \uC99D\uAC00"
+    buff: {fileID: 0}

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace FrameWork.Tooltip
 {
@@ -18,6 +19,8 @@ namespace FrameWork.Tooltip
 
         internal Dictionary<string, string> getAllString => _stringData;
         internal Dictionary<string, Sprite> getAllSprite => _spriteData;
+
+        public UnityAction action { get; private set; }
 
         public void InitializeData()
         {
@@ -37,11 +40,16 @@ namespace FrameWork.Tooltip
         {
             _spriteData[key] = value;
         }
+
+        internal void SetAction(UnityAction action)
+        {
+            this.action = action;
+        }
         #endregion
 
 #if UNITY_EDITOR
         #region 데이터 추가(Editor)
-        internal void AddString(string key, string value)
+        public void AddString(string key, string value)
         {
             if (_stringData.ContainsKey(key)) return;
 
@@ -49,7 +57,7 @@ namespace FrameWork.Tooltip
             _stringValues.Add(value);
         }
 
-        internal void AddSprite(string key, Sprite value)
+        public void AddSprite(string key, Sprite value)
         {
             if (_spriteData.ContainsKey(key)) return;
 
@@ -93,8 +101,8 @@ namespace FrameWork.Tooltip
         #endregion
 #endif
 
-        internal string GetString(string key) => _stringData.ContainsKey(key) ? _stringData[key] : string.Empty;
-        internal Sprite GetSprite(string key) => _spriteData.ContainsKey(key) ? _spriteData[key] : null;
+        public string GetString(string key) => _stringData.ContainsKey(key) ? _stringData[key] : string.Empty;
+        public Sprite GetSprite(string key) => _spriteData.ContainsKey(key) ? _spriteData[key] : null;
 
         internal bool IsInitialize()
         {
