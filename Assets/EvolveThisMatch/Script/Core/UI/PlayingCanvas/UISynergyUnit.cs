@@ -29,9 +29,10 @@ namespace EvolveThisMatch.Core
             _dim = GetImage((int)Images.Dim);
         }
 
-        internal void Show(Sprite fullBody, bool isActive)
+        internal void Show(AgentTemplate template, bool isActive)
         {
-            _fullBody.sprite = fullBody;
+            _fullBody.sprite = template.sprite;
+            _fullBody.rectTransform.anchoredPosition = template.faceCenterPosition;
             _dim.enabled = !isActive;
 
             base.Show(true);

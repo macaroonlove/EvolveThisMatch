@@ -1,6 +1,7 @@
 using FrameWork.Tooltip;
 using FrameWork.UIBinding;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,13 +46,24 @@ namespace EvolveThisMatch.Core
             _name.text = template.displayName;
             _icon.sprite = template.icon;
 
+            var activeTemplates = new HashSet<AgentTemplate>(activeUnits.Select(data => data.agentTemplate));
+            int activeCount = allUnits.Count(unit => activeTemplates.Contains(unit));
+
+            foreach (var data in template.synergyDatas)
+            {
+                if (data.count == activeCount)
+                {
+                    
+                }
+            }
+
             _trigger.SetAction(() =>
             {
                 if (_trigger.GetTooltipStyle() is SynergyTooltipStyle synergyTooltip)
                 {
                     synergyTooltip.CustomData(template, allUnits, activeUnits);
                 }
-            });            
+            });
 
             base.Show(true);
         }

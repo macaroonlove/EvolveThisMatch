@@ -57,6 +57,7 @@ namespace EvolveThisMatch.Core
         public string displayName => _displayName;
 
         public Sprite sprite => (skins.Count == 0) ? null : skins[0]?.faceSprite;
+        public Vector2 faceCenterPosition => (skins.Count == 0) ? Vector2.zero : skins[0].faceCenterPosition;
         public GameObject prefab => skins[_selectedSkinId]?.battleTemplate.prefab;
 
         public EMoveType MoveType => _moveType;
@@ -532,7 +533,7 @@ namespace EvolveThisMatch.Editor
                     var element = _target.skins[index];
                     if (element == null) return 30;
 
-                    return 190;
+                    return 210;
                 }
             };
         }

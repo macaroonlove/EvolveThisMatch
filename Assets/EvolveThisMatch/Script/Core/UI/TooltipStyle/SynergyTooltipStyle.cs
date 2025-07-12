@@ -94,7 +94,7 @@ namespace EvolveThisMatch.Core
                 {
                     var agentTemplate = allUnits[i];
                     bool isActive = activeUnits.Any(data => data.agentTemplate == agentTemplate);
-                    _units[i].Show(agentTemplate.sprite, isActive);
+                    _units[i].Show(agentTemplate, isActive);
                 }
                 else
                 {

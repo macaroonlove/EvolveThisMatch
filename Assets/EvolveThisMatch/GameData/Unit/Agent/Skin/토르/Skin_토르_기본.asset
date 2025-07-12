@@ -17,6 +17,7 @@ MonoBehaviour:
   _displayName: "\uAE30\uBCF8"
   _description: "\uCC9C\uB465\uACFC \uBC88\uAC1C\uC758 \uC2E0 \uD1A0\uB974\uC774\uB2E4."
   _faceSprite: {fileID: 21300000, guid: 1a2695c90cf427641b4ec0b773d5a2ee, type: 3}
+  _faceCenterPosition: {x: -5, y: -53}
   lobbyResource:
     m_AssetGUID: 154729a996e5ed540bcc21ca910e7bac
     m_SubObjectName: 

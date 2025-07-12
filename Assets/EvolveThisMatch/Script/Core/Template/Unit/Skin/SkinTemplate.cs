@@ -15,6 +15,7 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private string _displayName;
         [HideInInspector, SerializeField] private string _description;
         [HideInInspector, SerializeField] private Sprite _faceSprite;
+        [HideInInspector, SerializeField] private Vector2 _faceCenterPosition;
 
         public AssetReference lobbyResource;
         public AssetReference battleResource;
@@ -31,6 +32,7 @@ namespace EvolveThisMatch.Core
         public string displayName => _displayName;
         public string description => _description;
         public Sprite faceSprite => _faceSprite;
+        public Vector2 faceCenterPosition => _faceCenterPosition;
 
         public SkinLobbyTemplate lobbyTemplate => _lobbyTemplate;
         public SkinBattleTemplate battleTemplate => _battleTemplate;
@@ -122,11 +124,17 @@ namespace EvolveThisMatch.Core
             valueRect.height = 60;
             GUI.Label(labelRect, "스킨 설명");
             _description = EditorGUI.TextArea(valueRect, _description);
-
+            
             labelRect.x = rect.x;
             labelRect.y += 80;
             valueRect.y += 80;
+            labelRect.width = 210;
             valueRect.height = rect.height;
+            GUI.Label(labelRect, "이미지 시너지 위치");
+            _faceCenterPosition = EditorGUI.Vector2Field(valueRect, GUIContent.none, _faceCenterPosition);
+
+            labelRect.y += 20;
+            valueRect.y += 20;
             GUI.Label(labelRect, "로비 리소스");
             SerializedProperty lobbyProperty = serializedObject.FindProperty("lobbyResource");
             EditorGUI.PropertyField(valueRect, lobbyProperty, GUIContent.none);
