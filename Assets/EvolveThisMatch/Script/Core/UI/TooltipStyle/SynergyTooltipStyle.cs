@@ -78,11 +78,11 @@ namespace EvolveThisMatch.Core
             {
                 if (effect.count != activeCount)
                 {
-                    _description.Append($"\n<color=#888888>({effect.count}) {effect.description}</color>");
+                    _description.Append($"\n<color=#888888>({effect.count}) {effect.buff.description}</color>");
                 }
                 else
                 {
-                    _description.Append($"\n({effect.count}) {effect.description}");
+                    _description.Append($"\n({effect.count}) {effect.buff.description}");
                 }
             }
             

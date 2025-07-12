@@ -49,11 +49,23 @@ namespace EvolveThisMatch.Core
             var activeTemplates = new HashSet<AgentTemplate>(activeUnits.Select(data => data.agentTemplate));
             int activeCount = allUnits.Count(unit => activeTemplates.Contains(unit));
 
-            foreach (var data in template.synergyDatas)
+            for (int i = 0; i < template.synergyDatas.Count; i++)
             {
-                if (data.count == activeCount)
+                var data = template.synergyDatas[i];
+                var units = GetTarget(data, activeUnits);
+
+                foreach (var unit in units)
                 {
-                    
+                    var buffAbility = unit.GetAbility<BuffAbility>();
+
+                    if (data.count == activeCount)
+                    {
+                        buffAbility.ApplyBuff(data.buff, int.MaxValue);
+                    }
+                    else
+                    {
+                        buffAbility.RemoveBuff(data.buff);
+                    }
                 }
             }
 
@@ -66,6 +78,33 @@ namespace EvolveThisMatch.Core
             });
 
             base.Show(true);
+        }
+
+        private List<Unit> GetTarget(SynergyData data, HashSet<AgentBattleData> activeUnits)
+        {
+            List<Unit> units = new List<Unit>();
+
+            if (data.isSynergyUnit)
+            {
+                foreach (var unitData in activeUnits)
+                {
+                    units.Add(unitData.agentUnit);
+                }
+            }
+            else
+            {
+                if ((data.unitType & (EUnitType.Agent | EUnitType.Summon)) != 0)
+                {
+                    units.AddRange(BattleManager.Instance.GetSubSystem<AllySystem>().GetAllAllies(data.unitType));
+                }
+
+                if ((data.unitType & EUnitType.Enemy) != 0)
+                {
+                    units.AddRange(BattleManager.Instance.GetSubSystem<EnemySystem>().GetAllEnemies());
+                }
+            }
+
+            return units;
         }
     }
 }

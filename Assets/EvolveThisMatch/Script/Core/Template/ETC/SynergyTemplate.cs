@@ -1,3 +1,4 @@
+using FrameWork.Editor;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,8 +32,9 @@ namespace EvolveThisMatch.Core
     [Serializable]
     public class SynergyData
     {
-        public int count;
-        [TextArea(2, 5)] public string description;
-        public BuffTemplate buff;
+        [Label("시너지 수")] public int count;
+        [Label("시너지 유닛에 적용")] public bool isSynergyUnit;
+        [Label("유닛 타입")] public EUnitType unitType;
+        [Label("버프")] public BuffTemplate buff;
     }
 }

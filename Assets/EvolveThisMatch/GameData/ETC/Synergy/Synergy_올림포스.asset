@@ -20,10 +20,10 @@ MonoBehaviour:
   _textColor: {r: 1, g: 1, b: 1, a: 1}
   _synergyDatas:
   - count: 2
-    description: "\uC62C\uB9BC\uD478\uC2A4 \uC720\uB2DB\uC758 \uC2A4\uD0AC \uAC00\uC18D\uB3C4
-      20% \uC99D\uAC00"
-    buff: {fileID: 0}
+    isSynergyUnit: 1
+    unitType: 0
+    buff: {fileID: 11400000, guid: 835c61636026ca44f97300582779d5da, type: 2}
   - count: 3
-    description: "\uC62C\uB9BC\uD478\uC2A4 \uC720\uB2DB\uC758 \uC2A4\uD0AC \uAC00\uC18D\uB3C4
-      30% \uC99D\uAC00"
-    buff: {fileID: 0}
+    isSynergyUnit: 1
+    unitType: 0
+    buff: {fileID: 11400000, guid: eddbad7850d762a4d89f239e8129bdfc, type: 2}

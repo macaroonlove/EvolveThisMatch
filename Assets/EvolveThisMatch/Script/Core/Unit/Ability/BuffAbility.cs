@@ -439,18 +439,7 @@ namespace EvolveThisMatch.Core
                 yield return null;
             }
 
-            RemoveStatus(template.effects);
-
-            if (statusDic.ContainsKey(template))
-            {
-                statusDic.Remove(template);
-
-#if UNITY_EDITOR
-                statusList.Remove(template);
-#endif
-
-                ExecuteRemoveFX(template);
-            }
+            RemoveBuff(template);
         }
 
         #region 콜백 메서드
@@ -519,6 +508,22 @@ namespace EvolveThisMatch.Core
 #endif
         }
         #endregion
+
+        internal void RemoveBuff(BuffTemplate template)
+        {
+            RemoveStatus(template.effects);
+
+            if (statusDic.ContainsKey(template))
+            {
+                statusDic.Remove(template);
+
+#if UNITY_EDITOR
+                statusList.Remove(template);
+#endif
+
+                ExecuteRemoveFX(template);
+            }
+        }
 
         /// <summary>
         /// 버프 제거
