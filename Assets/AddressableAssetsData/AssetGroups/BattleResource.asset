@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: BattleResource
+  m_EditorClassIdentifier: 
+  m_GroupName: BattleResource
+  m_GUID: 22232f8f0f19be6429ebeb883bf567e2
+  m_SerializeEntries:
+  - m_GUID: 09e13c9e145f3ed4ebd8b298324db7c0
+    m_Address: VictoryBG
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e326d5a102271648bbf0b530b0574e3
+    m_Address: VictoryDesc
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f2da341479f23747b123c79fea92efc
+    m_Address: VictoryTitle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 729ce8fd3c00f8a4da00c7ef96df92f2
+    m_Address: DefeatIcon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 758734d3495a6744aab4b3d10e1583aa
+    m_Address: DefeatDesc
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3afe5b886593d44b87194e168de8bec
+    m_Address: DefeatBG
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbcf9afcd264fd74583ac58440736fa4
+    m_Address: DefeatTitle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: faaf7d4cc249c5447a09157c7ed012d6
+    m_Address: VictoryIcon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 9dbfa78e93c17e14d9a9b1505239b656, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ef7d1f38aca73bf4c839d78cb9839001, type: 2}
+    - {fileID: 11400000, guid: 7c35fc330eaedd744aa91d2b7e93ff7b, type: 2}

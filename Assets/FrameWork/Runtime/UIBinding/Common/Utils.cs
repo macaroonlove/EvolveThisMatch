@@ -23,7 +23,7 @@ namespace FrameWork.UIBinding
             else
             {
                 foreach (T component in obj.GetComponentsInChildren<T>())
-                    if (string.IsNullOrEmpty(name) || component.name.StartsWith(name))
+                    if (string.IsNullOrEmpty(name) || component.name == name)
                         return component;
             }
             return null;

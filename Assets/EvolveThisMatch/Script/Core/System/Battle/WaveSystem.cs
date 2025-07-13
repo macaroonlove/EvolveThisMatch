@@ -12,10 +12,12 @@ namespace EvolveThisMatch.Core
 
         private Transform _spawnPoint;
         private int _currentWaveIndex;
-        private bool _isWaveEnd;
 
+        internal bool isWaveEnd { get; private set; }
+        internal bool isSpawnEnd { get; private set; }
         internal Transform boundaryPoint { get; private set; }
-        public UnityAction<int, float> onWaveChanged;
+
+        public event UnityAction<int, float> onWaveChanged;
 
         public void Initialize()
         {
@@ -24,22 +26,32 @@ namespace EvolveThisMatch.Core
             _waveLibrary = GameDataManager.Instance.waveLibrary;
             _spawnPoint = transform.GetChild(0);
             boundaryPoint = transform.GetChild(1);
+
+            isWaveEnd = false;
         }
 
         public void Deinitialize()
         {
             _enemySpawnSystem = null;
             _timeSystem = null;
+            isWaveEnd = true;
+
+            StopAllCoroutines();
+        }
+
+        internal void ForceEndWave()
+        {
+            Deinitialize();
         }
 
         private void Update()
         {
             if (_timeSystem == null) return;
-            if (_isWaveEnd) return;
+            if (isWaveEnd) return;
 
             if (_currentWaveIndex >= _waveLibrary.waves.Count)
             {
-                _isWaveEnd = true;
+                isWaveEnd = true;
                 return;
             }
 
@@ -56,6 +68,8 @@ namespace EvolveThisMatch.Core
 
         private IEnumerator SpawnWave(WaveTemplate wave)
         {
+            isSpawnEnd = false;
+
             foreach (var waveInfo in wave.waveInfo)
             {
                 // 딜레이 후 적 스폰
@@ -77,6 +91,8 @@ namespace EvolveThisMatch.Core
                     }
                 }
             }
+
+            isSpawnEnd = true;
         }
     }
 }

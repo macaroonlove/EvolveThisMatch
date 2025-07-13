@@ -49,7 +49,10 @@ namespace EvolveThisMatch.Core
 
         private void OnDestroy()
         {
-            _coinSystem.onChangedCoin -= OnChangeCoin;
+            if (_coinSystem != null)
+            {
+                _coinSystem.onChangedCoin -= OnChangeCoin;
+            }
         }
 
         private void OnChangeCoin(int currentCoin)

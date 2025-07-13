@@ -16,7 +16,10 @@ namespace EvolveThisMatch.Core
 
         private AttackRangeRenderer _attackRangeRenderer;
 
+        internal int enemyCount => _enemies.Count;
+        
         internal event UnityAction<Unit> onRegist;
+        internal event UnityAction<Unit> onDeregist;
 
         public void Initialize()
         {
@@ -42,6 +45,8 @@ namespace EvolveThisMatch.Core
         internal void Deregist(EnemyUnit enemy)
         {
             _enemies.Remove(enemy);
+
+            onDeregist?.Invoke(enemy);
         }
 
         #region 유틸리티 메서드
