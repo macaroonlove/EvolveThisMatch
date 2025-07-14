@@ -4,16 +4,15 @@ namespace EvolveThisMatch.Core
 {
     public class EnemyUnit : Unit
     {
-        private EnemyTemplate _template;
         private int _gainCoin;
         private int _gainCrystal;
 
-        internal EnemyTemplate template => _template;
+        internal EnemyTemplate template { get; private set; }
 
         internal void Initialize(EnemyTemplate template, int coin, int crystal)
         {
-            _id = template.id;
-            _template = template;
+            id = template.id;
+            this.template = template;
 
             _gainCoin = coin;
             _gainCrystal = crystal;

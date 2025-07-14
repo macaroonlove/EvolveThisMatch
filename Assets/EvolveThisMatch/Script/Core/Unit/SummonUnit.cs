@@ -4,15 +4,14 @@ namespace EvolveThisMatch.Core
 {
     public class SummonUnit : AllyUnit
     {
-        private SummonTemplate _template;
         private Unit _summoner;
 
-        internal SummonTemplate template => _template;
+        internal SummonTemplate template { get; private set; }
 
         internal void Initialize(SummonTemplate template, Unit summoner)
         {
-            _id = template.id;
-            _template = template;
+            id = template.id;
+            this.template = template;
             _summoner = summoner;
 
             summoner.healthAbility.onDeath += OnDeath;

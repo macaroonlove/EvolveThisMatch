@@ -13,6 +13,7 @@ namespace EvolveThisMatch.Core
         private PoolSystem _poolSystem;
 
         private PassiveSkillAbility _passiveSkillAbility;
+        private DeployAbility _deployAbility;
         private BuffAbility _buffAbility;
         private AbnormalStatusAbility _abnormalStatusAbility;
 
@@ -22,9 +23,7 @@ namespace EvolveThisMatch.Core
         private float _hpRecoveryCooldown = 1;
 
         internal int currentHP => _currentHP;
-
         internal bool isAlive => _currentHP > 0;
-
 
         #region 보호막 필드
         private class ShieldInstance
@@ -195,9 +194,6 @@ namespace EvolveThisMatch.Core
         {
             get
             {
-                // 유닛이 죽었으면
-                if (isAlive == false) return false;
-
                 // 풀피라면
                 if (_currentHP == finalMaxHP) return false;
 
@@ -223,6 +219,7 @@ namespace EvolveThisMatch.Core
             {
                 _baseMaxHP = agentUnit.template.MaxHP;
                 _baseHPRecoveryPerSec = agentUnit.template.HPRecoveryPerSec;
+                _deployAbility = unit.GetAbility<DeployAbility>();
             }
             else if (unit is EnemyUnit enemyUnit)
             {
@@ -235,6 +232,8 @@ namespace EvolveThisMatch.Core
 
         internal override void UpdateAbility()
         {
+            if (_deployAbility != null && _deployAbility.isSortie == true) return;
+
             // 초당 회복 쿨타임 감소
             if (_hpRecoveryCooldown > 0)
             {
@@ -247,7 +246,7 @@ namespace EvolveThisMatch.Core
             if (hpRecoveryAmount > 0)
             {
                 // 회복 불가인 상태라면 무시
-                if (finalIsHealAble) return;
+                if (finalIsHealAble == false) return;
 
                 SetHP(_currentHP + hpRecoveryAmount);
                 _hpRecoveryCooldown = 1;

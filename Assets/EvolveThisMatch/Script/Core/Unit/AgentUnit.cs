@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -5,6 +6,7 @@ namespace EvolveThisMatch.Core
     public class AgentUnit : AllyUnit
     {
         internal AgentBattleData agentData { get; private set; }
+        internal DeployAbility deployAbility { get; private set; }
 
         internal AgentTemplate template => agentData.agentTemplate;
         internal int level => agentData.level;
@@ -13,18 +15,15 @@ namespace EvolveThisMatch.Core
         internal void Initialize(AgentBattleData agentData)
         {
             this.agentData = agentData;
-            _id = template.id;
+            id = template.id;
 
             base.Initialize(this);
+            deployAbility = GetAbility<DeployAbility>();
         }
 
         internal override void OnDeath()
         {
-            base.OnDeath();
-
-            //var allySystem = BattleManager.Instance.GetSubSystem<AllySystem>();
-
-            //allySystem.Deregist(_agentData);
+            deployAbility.ReturnSortie().Forget();
         }
 
         internal int GetNeedCoinToLevelUp()

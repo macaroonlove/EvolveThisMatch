@@ -14,15 +14,12 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        [SerializeField] private float visibleTime = 5;
-
         private Unit _unit;
         private HealthAbility _healthAbility;
 
         private Image _hp;
         private Image _shield;
         private Vector2 _shieldPos = new Vector2(0, -0.5f);
-        private float _visibleTime;
 
         protected override void Awake()
         {
@@ -37,7 +34,7 @@ namespace EvolveThisMatch.Core
             _unit.onAbilityInitialize += OnAbilityInitialize;
             _unit.onAbilityDeinitialize += OnAbilityDeinitialize;
 
-            Hide(true);
+            ShowOrHide();
         }
 
         private void OnDestroy()
@@ -63,15 +60,15 @@ namespace EvolveThisMatch.Core
             _healthAbility.onChangedShield -= OnChangedShield;
         }
 
-        private void Update()
+        private void ShowOrHide()
         {
-            if (_visibleTime >= 0)
+            if (_healthAbility.shieldCount > 0 || _healthAbility.currentHP != _healthAbility.finalMaxHP)
             {
-                _visibleTime -= Time.deltaTime;
-                if (_visibleTime <= 0)
-                {
-                    Hide(true);
-                }
+                Show(true);
+            }
+            else
+            {
+                Hide(true);
             }
         }
 
@@ -81,8 +78,7 @@ namespace EvolveThisMatch.Core
             var per = hp / (float)maxHp;
             _hp.fillAmount = per;
 
-            _visibleTime = visibleTime;
-            Show(true);
+            ShowOrHide();
         }
 
         private void OnChangedShield(int shield)
@@ -106,8 +102,7 @@ namespace EvolveThisMatch.Core
                 _shield.fillOrigin = 1;
             }
 
-            _visibleTime = visibleTime;
-            Show(true);
+            ShowOrHide();
         }
     }
 }

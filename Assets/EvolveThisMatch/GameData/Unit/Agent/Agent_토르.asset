@@ -37,7 +37,7 @@ MonoBehaviour:
   _maxHP: 9600
   _physicalResistance: 72
   _magicResistance: 72
-  _hpRecoveryPerSec: 0
+  _hpRecoveryPerSec: 200
   _skillTemplates: []
   skins:
   - {fileID: 11400000, guid: e5963ec51f9378147a0fca795cfac831, type: 2}

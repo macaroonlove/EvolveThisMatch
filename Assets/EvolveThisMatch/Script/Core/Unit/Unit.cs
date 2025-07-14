@@ -26,14 +26,12 @@ namespace EvolveThisMatch.Core
         internal Transform projectileHitPoint => _projectileHitPoint;
         #endregion
 
-        protected int _id;
         private BoxCollider _collider;
-        private HealthAbility _healthAbility;
 
-        internal int id => _id;
+        public int id { get; protected set; }
+        internal HealthAbility healthAbility { get; private set; }
         internal Vector2 cellPos => new Vector2(transform.position.x, transform.position.y);
-        internal HealthAbility healthAbility => _healthAbility;
-        internal bool isDie => !_healthAbility.isAlive;
+        internal bool isDie => !healthAbility.isAlive;
 
         private Dictionary<Type, AlwaysAbility> _alwaysAbilities = new Dictionary<Type, AlwaysAbility>();
         private Dictionary<Type, ConditionAbility> _conditionAbilities = new Dictionary<Type, ConditionAbility>();
@@ -47,7 +45,7 @@ namespace EvolveThisMatch.Core
         internal void Initialize(Unit unit)
         {
             _collider = GetComponentInChildren<BoxCollider>();
-            _healthAbility = GetComponent<HealthAbility>();
+            healthAbility = GetComponent<HealthAbility>();
 
             var alwaysAbilities = GetComponents<AlwaysAbility>();
             var conditionAbilities = GetComponents<ConditionAbility>();

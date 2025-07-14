@@ -457,6 +457,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _priority: 0
   _baseMoveSpeed: 0
+  _isLeft: 0
   _chaseRange: 0
   _chaseFailRange: 0
   _stoppingDistance: 0
@@ -486,6 +487,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _priority: 3
+  _sortieStart: {fileID: 11400000, guid: 77a7ab1a8ec023a438e9d3ca66259f32, type: 2}
+  _sortieEnd: {fileID: 11400000, guid: 1119a89edab96bd489686ab7f56e34c1, type: 2}
+  _isCastle: 0
   _isSortie: 0
 --- !u!1 &8806907120543262263
 GameObject:

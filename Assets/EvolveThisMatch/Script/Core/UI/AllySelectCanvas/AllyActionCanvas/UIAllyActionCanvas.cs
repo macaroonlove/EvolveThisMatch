@@ -25,9 +25,6 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        [SerializeField] private FX _sortieStart;
-        [SerializeField] private FX _sortieEnd;
-
         private Transform _pivot;
         private TextMeshProUGUI _sortieText;
         private Button _sortieButton;
@@ -35,7 +32,6 @@ namespace EvolveThisMatch.Core
 
         private UIAllySelectCanvas _allySelectCanvas;
         private TileSystem _tileSystem;
-        private AgentCreateSystem _agentCreateSystem;
         private AgentReturnSystem _agentReturnSystem;
         private Camera _camera;
         private AgentBattleData _selectedData;
@@ -46,7 +42,6 @@ namespace EvolveThisMatch.Core
             _camera = Camera.main;
             _allySelectCanvas = GetComponentInParent<UIAllySelectCanvas>();
             _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
-            _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
             _agentReturnSystem = BattleManager.Instance.GetSubSystem<AgentReturnSystem>();
 
             BindButton(typeof(Buttons));
@@ -98,85 +93,13 @@ namespace EvolveThisMatch.Core
             if (_deployAbility.isSortie)
             {
                 // 복귀하기
-                await ReturnSortie();
+                await _selectedData.agentUnit.GetAbility<DeployAbility>().ReturnSortie();
             }
             else
             {
                 // 출격하기
-                await StartSortie();
+                await _selectedData.agentUnit.GetAbility<DeployAbility>().StartSortie(_tileSystem.sortiePoint.position);
             }
-        }
-
-        private async UniTask StartSortie()
-        {
-            var selectedData = _selectedData;
-
-            selectedData.agentUnit.SetInteraction(false);
-
-            _sortieStart.Play(selectedData.agentUnit);
-
-            await UniTask.Delay(500);
-
-            // 위치 적용
-            SetAgentPosition(selectedData, _tileSystem.sortiePoint.position);
-
-            _sortieEnd.Play(selectedData.agentUnit);
-            
-            // 표지판 생성
-            var signBoard = _agentCreateSystem.CreateSignBoard(selectedData);
-            signBoard.SetInteraction(false);
-
-            await UniTask.Delay(1500);
-
-            // 표지판 등록
-            selectedData.RegistSignBoard(signBoard);
-
-            // 배치 설정
-            selectedData.agentUnit.GetAbility<DeployAbility>().Sortie(true);
-
-            selectedData.agentUnit.SetInteraction(true);
-            signBoard.SetInteraction(true);
-        }
-
-        private async UniTask ReturnSortie()
-        {
-            var selectedData = _selectedData;
-
-            // 배치 해제
-            _deployAbility.Sortie(false);
-
-            selectedData.agentUnit.SetInteraction(false);
-            selectedData.signBoard?.SetInteraction(false);
-
-            // 표지판 반환
-            if (selectedData.signBoard != null)
-            {
-                _agentReturnSystem.ReturnSignBoard(selectedData.signBoard.gameObject);
-                selectedData.DeregistSignBoard();
-            }
-
-            _sortieEnd.Play(selectedData.agentUnit);
-
-            await UniTask.Delay(500);
-
-            // 위치 적용
-            SetAgentPosition(selectedData, selectedData.mountTile.transform.position);
-
-            _sortieStart.Play(selectedData.agentUnit);
-
-            selectedData.agentUnit.SetInteraction(true);
-        }
-
-        private void SetAgentPosition(AgentBattleData selectedData, Vector3 targetPosition)
-        {
-            var agentTransform = selectedData.agentUnit.transform;
-            agentTransform.position = targetPosition;
-
-            var pos = agentTransform.position;
-            pos.z = pos.y;
-            agentTransform.position = pos;
-
-            agentTransform.GetChild(3).localScale = Vector3.one * 0.15f;
         }
         #endregion
 
