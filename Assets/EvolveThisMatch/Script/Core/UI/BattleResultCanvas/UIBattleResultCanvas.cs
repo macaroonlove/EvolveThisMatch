@@ -18,10 +18,6 @@ namespace EvolveThisMatch.Core
             ResultTitle,
             ResultDesc,
         }
-        enum CanvasGroups
-        {
-            BattleResultWindow,
-        }
         #endregion
 
         private Button _button;
@@ -31,8 +27,8 @@ namespace EvolveThisMatch.Core
         private Image _icon;
         private Image _resultTitle;
         private Image _resultDesc;
-        private CanvasGroupController _battleResultWindow;
 
+        private UIBattleResultWindow _battleResultWindow;
         private VictorySystem _victorySystem;
         private DefeatSystem _defeatSystem;
 
@@ -50,10 +46,9 @@ namespace EvolveThisMatch.Core
 
         protected override void Initialize()
         {
-            BindCanvasGroupController(typeof(CanvasGroups));
+            _battleResultWindow = GetComponentInChildren<UIBattleResultWindow>();
             BindImage(typeof(Images));
 
-            _battleResultWindow = GetCanvasGroupController((int)CanvasGroups.BattleResultWindow);
             _background = GetImage((int)Images.Background);
             _lSpear = GetImage((int)Images.LSpear);
             _rSpear = GetImage((int)Images.RSpear);

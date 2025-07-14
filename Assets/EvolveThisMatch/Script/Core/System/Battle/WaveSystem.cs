@@ -11,8 +11,8 @@ namespace EvolveThisMatch.Core
         private WaveLibraryTemplate _waveLibrary;
 
         private Transform _spawnPoint;
-        private int _currentWaveIndex;
 
+        internal int currentWaveIndex { get; private set; }
         internal bool isWaveEnd { get; private set; }
         internal bool isSpawnEnd { get; private set; }
         internal Transform boundaryPoint { get; private set; }
@@ -23,7 +23,7 @@ namespace EvolveThisMatch.Core
         {
             _enemySpawnSystem = BattleManager.Instance.GetSubSystem<EnemySpawnSystem>();
             _timeSystem = BattleManager.Instance.GetSubSystem<TimeSystem>();
-            _waveLibrary = GameDataManager.Instance.waveLibrary;
+            _waveLibrary = GameDataManager.Instance.battleData.waveLibrary;
             _spawnPoint = transform.GetChild(0);
             boundaryPoint = transform.GetChild(1);
 
@@ -49,20 +49,20 @@ namespace EvolveThisMatch.Core
             if (_timeSystem == null) return;
             if (isWaveEnd) return;
 
-            if (_currentWaveIndex >= _waveLibrary.waves.Count)
+            if (currentWaveIndex >= _waveLibrary.waves.Count)
             {
                 isWaveEnd = true;
                 return;
             }
 
-            if (_timeSystem.currentTime >= _waveLibrary.waves[_currentWaveIndex].spawnTime)
+            if (_timeSystem.currentTime >= _waveLibrary.waves[currentWaveIndex].spawnTime)
             {
-                WaveTemplate currentWave = _waveLibrary.waves[_currentWaveIndex];
+                WaveTemplate currentWave = _waveLibrary.waves[currentWaveIndex];
                 StartCoroutine(SpawnWave(currentWave));
 
-                onWaveChanged?.Invoke(_currentWaveIndex + 1, (_waveLibrary.waves.Count == _currentWaveIndex + 1) ? 0 : _waveLibrary.waves[_currentWaveIndex + 1].spawnTime - _waveLibrary.waves[_currentWaveIndex].spawnTime);
+                onWaveChanged?.Invoke(currentWaveIndex + 1, (_waveLibrary.waves.Count == currentWaveIndex + 1) ? 0 : _waveLibrary.waves[currentWaveIndex + 1].spawnTime - _waveLibrary.waves[currentWaveIndex].spawnTime);
 
-                _currentWaveIndex++;
+                currentWaveIndex++;
             }
         }
 

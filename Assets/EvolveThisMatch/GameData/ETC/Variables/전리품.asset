@@ -10,31 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c058bd575b53b804db17b9459309b6ee, type: 3}
-  m_Name: Crystal
+  m_Name: "\uC804\uB9AC\uD488"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1974291641
-    hiddenValue: 1974291644
-    fakeValue: 5
+    currentCryptoKey: 1508073811
+    hiddenValue: 1508073599
+    fakeValue: 300
     fakeValueActive: 1
     inited: 1
   _readOnly: 0
   _raiseWarning: 1
   _isClamped: 0
   _minClampedValue:
-    currentCryptoKey: 0
-    hiddenValue: 0
+    currentCryptoKey: 1746283771
+    hiddenValue: 1746283771
     fakeValue: 0
     fakeValueActive: 0
-    inited: 0
+    inited: 1
   _maxClampedValue:
-    currentCryptoKey: 0
-    hiddenValue: 0
+    currentCryptoKey: 1425297634
+    hiddenValue: 1425297634
     fakeValue: 0
     fakeValueActive: 0
-    inited: 0
+    inited: 1
   _event:
     m_PersistentCalls:
       m_Calls: []
-  _displayName: "\uC7AC\uB2A5\uC758 \uD30C\uD3B8"
-  _icon: {fileID: 21300000, guid: 271b194886c397343b51f8c15a91950f, type: 3}
+  _displayName: "\uC804\uB9AC\uD488"
+  _icon: {fileID: 21300000, guid: ec9cf0462f4a242478d04a84abbec388, type: 3}

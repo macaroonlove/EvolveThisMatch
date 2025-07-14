@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c058bd575b53b804db17b9459309b6ee, type: 3}
-  m_Name: "\uACE8\uB4DC"
+  m_Name: "\uC7AC\uB2A5\uC758\uC815\uC218"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1783753296
-    hiddenValue: 1783752268
-    fakeValue: 3100
+    currentCryptoKey: 1908039471
+    hiddenValue: 1908039171
+    fakeValue: 300
     fakeValueActive: 1
     inited: 1
   _readOnly: 0
@@ -36,5 +36,5 @@ MonoBehaviour:
   _event:
     m_PersistentCalls:
       m_Calls: []
-  _displayName: "\uACE8\uB4DC"
-  _icon: {fileID: 21300000, guid: 6b5662003c3b29846afa9d458a4d6dc4, type: 3}
+  _displayName: "\uC7AC\uB2A5\uC758 \uC815\uC218"
+  _icon: {fileID: 21300000, guid: 5392060fc2910ab489fff40f29d876c3, type: 3}

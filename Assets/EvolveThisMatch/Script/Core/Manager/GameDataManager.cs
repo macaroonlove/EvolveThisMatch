@@ -14,15 +14,15 @@ namespace EvolveThisMatch.Core
         [SerializeField] private FormationSaveDataTemplate _formationSaveData;
 
         [Header("Library")]
+        [SerializeField] private BattleDataTemplate _battleData;
         [SerializeField] private AgentLibraryTemplate _agentLibrary;
         [SerializeField] private SkinLibraryTemplate _agentSkinLibrary;
-        [SerializeField] private WaveLibraryTemplate _waveLibrary;
         [SerializeField] private AgentRarityLibrary _agentRarityLibrary;
 
         public ProfileSaveDataTemplate profileSaveData => _profileSaveData;
+        internal BattleDataTemplate battleData => _battleData;
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
         public IReadOnlyDictionary<SkinTemplate, AgentTemplate> agentSkinTemplates => _agentSkinLibrary.templates;
-        internal WaveLibraryTemplate waveLibrary => _waveLibrary;
         internal int probabilityLevel => _agentRarityLibrary.probabilityLevel;
 
         internal AgentTemplate GetAgentTemplateById(int id)

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1567333d816a9094b9c0a23ca079e624, type: 3}
+  m_Name: "BattleData_\uBCF4\uD1B5"
+  m_EditorClassIdentifier: 
+  _displayName: "\uBCF4\uD1B5"
+  _startCoin: 100
+  _startCrystal: 0
+  _defeatCondition: 100
+  _goldVariable: {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}
+  _essenceVariable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
+  _lootVariable: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
+  _goldPerWave: 1000
+  _essencePerWave: 100
+  _lootPerWave: 100
+  _waveLibrary: {fileID: 11400000, guid: 1518715b4424af94d8659f9cc3d1bfd6, type: 2}
