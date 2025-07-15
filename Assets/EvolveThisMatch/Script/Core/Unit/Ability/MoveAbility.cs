@@ -5,14 +5,16 @@ using UnityEngine.AI;
 
 namespace EvolveThisMatch.Core
 {
-    public class MoveAbility : ConditionAbility
+    public abstract class MoveAbility : ConditionAbility
     {
+        [SerializeField] private bool _isLookingLeft;
         [SerializeField, ReadOnly] private float _baseMoveSpeed;
         [SerializeField, ReadOnly] private bool _isLeft;
 
         private BuffAbility _buffAbility;
         private AbnormalStatusAbility _abnormalStatusAbility;
         private UnitAnimationAbility _unitAnimationAbility;
+        protected float _scaleX;
 
         #region 계산 스탯
         protected float finalMoveSpeed
@@ -76,6 +78,8 @@ namespace EvolveThisMatch.Core
             {
                 _baseMoveSpeed = enemyUnit.template.MoveSpeed;
             }
+
+            _scaleX = transform.GetChild(3).localScale.x;
         }
 
         internal override bool IsExecute()
@@ -92,7 +96,7 @@ namespace EvolveThisMatch.Core
         #region 회전
         private bool IsUnitLeft(Vector3 direction)
         {
-            Vector3 unitRight = unit.transform.forward;
+            Vector3 unitRight = _isLookingLeft ? -unit.transform.forward : unit.transform.forward;
             float angle = Vector3.SignedAngle(direction, unitRight, Vector3.up);
 
             return angle > 0f;
@@ -106,10 +110,15 @@ namespace EvolveThisMatch.Core
 
             _isLeft = isLeft;
 
-            float scaleX = isLeft ? -0.15f : 0.15f;
+            float scaleX = isLeft ? -_scaleX : _scaleX;
             transform.GetChild(3).DOScaleX(scaleX, 0.1f);
         }
         #endregion
+
+        protected void AttackAnimation()
+        {
+            _unitAnimationAbility.Attack();
+        }
 
         protected void MoveAnimation()
         {

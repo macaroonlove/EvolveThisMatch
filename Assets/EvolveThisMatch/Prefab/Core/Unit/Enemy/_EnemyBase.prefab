@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 7415324553390672476}
   - component: {fileID: -1030165394725568450}
   - component: {fileID: -7132471313836108199}
+  - component: {fileID: 6499476120074428051}
   m_Layer: 7
   m_Name: _EnemyBase
   m_TagString: Untagged
@@ -79,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d59764afdacfb4189195b6d55cd485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _priority: 1
+  _priority: 2
 --- !u!114 &1201786375016263730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7de6ed1f89b284a9b802b194c78c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _priority: 2
+  _priority: 3
 --- !u!114 &7415324553390672476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,7 +243,7 @@ SortingGroup:
   m_GameObject: {fileID: 1736555264916169751}
   m_Enabled: 1
   m_SortingLayerID: 351196539
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_SortAtRoot: 0
 --- !u!114 &-7132471313836108199
@@ -258,7 +259,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _priority: 0
+  _isLookingLeft: 1
   _baseMoveSpeed: 0
+  _isLeft: 0
+  _arrivalPoint: {x: 0, y: 0, z: 0}
+--- !u!114 &6499476120074428051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736555264916169751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deafc562d3a81940bc604a894188b2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _priority: 1
+  _isLookingLeft: 1
+  _baseMoveSpeed: 0
+  _isLeft: 0
+  _chaseRange: 0
+  _chaseFailRange: 0
+  _stoppingDistance: 0
+  _targetPosition: {fileID: 0}
 --- !u!1 &3905504116318330056
 GameObject:
   m_ObjectHideFlags: 0

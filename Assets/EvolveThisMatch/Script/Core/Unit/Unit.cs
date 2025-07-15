@@ -124,8 +124,6 @@ namespace EvolveThisMatch.Core
 
             foreach (var ability in _conditionAbilities.Values)
             {
-                if (ability == currentAbility) continue;
-
                 // 해당 능력이 실행 가능한 상황이라면
                 if (ability.IsExecute())
                 {
@@ -139,14 +137,9 @@ namespace EvolveThisMatch.Core
 
             if (newAbility != currentAbility)
             {
-                if (currentAbility != null)
-                {
-                    currentAbility.StopAbility();
-                }
-
+                currentAbility?.StopAbility();
                 currentAbility = newAbility;
-
-                currentAbility.StartAbility();
+                currentAbility?.StartAbility();
             }
         }
 

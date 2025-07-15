@@ -13,6 +13,8 @@ namespace EvolveThisMatch.Core
         [SerializeField, ReadOnly] private float _stoppingDistance;
         [SerializeField, ReadOnly] private Transform _targetPosition;
 
+        private bool _isChaseActive;
+
         internal override void Initialize(Unit unit)
         {
             base.Initialize(unit);
@@ -23,15 +25,29 @@ namespace EvolveThisMatch.Core
                 _chaseFailRange = agentUnit.template.ChaseFailRange * agentUnit.template.ChaseFailRange;
                 _stoppingDistance = agentUnit.template.AttackRange * agentUnit.template.AttackRange;
             }
+            else if (unit is EnemyUnit enemyUnit)
+            {
+                float range = enemyUnit.template.AttackRange;
 
-            transform.GetChild(3).localScale = Vector3.one * 0.15f;
+                _chaseRange = range;
+                _stoppingDistance = range * range;
+                _chaseFailRange = _stoppingDistance * 4;
+            }
+
+            _isChaseActive = false;
+
+            transform.GetChild(3).localScale = Vector3.one * _scaleX;
         }
 
-        internal override void UpdateAbility()
+        internal override bool IsExecute()
         {
-            if (finalIsMoveAble == false) return;
+            if (_targetPosition == null)
+            {
+                _isChaseActive = false;
+            }
 
-            // 목표 타겟이 없을 경우
+            if (_isChaseActive) return true;
+
             if (_targetPosition == null)
             {
                 if (unit is AgentUnit)
@@ -41,6 +57,7 @@ namespace EvolveThisMatch.Core
                     if (target != null)
                     {
                         _targetPosition = target.transform;
+                        _isChaseActive = true;
                     }
                 }
                 else if (unit is EnemyUnit)
@@ -50,9 +67,18 @@ namespace EvolveThisMatch.Core
                     if (target != null)
                     {
                         _targetPosition = target.transform;
+                        _isChaseActive = true;
                     }
                 }
             }
+            
+            // 타겟이 있다면 True, 없다면 False
+            return _targetPosition != null;
+        }
+
+        internal override void UpdateAbility()
+        {
+            if (finalIsMoveAble == false) return;
 
             #region 이동하기
             if (_targetPosition != null)
@@ -89,6 +115,11 @@ namespace EvolveThisMatch.Core
                 FlipUnit(direction);
             }
             #endregion
+
+            if (_isChaseActive == false)
+            {
+                unit.ReleaseCurrentAbility();
+            }
         }
     }
 }

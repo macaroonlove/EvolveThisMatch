@@ -73,17 +73,13 @@ namespace EvolveThisMatch.Core
             // 목표 위치에 도달하면
             if (distance < 0.01f)
             {
+                AttackAnimation();
                 return;
             }
 
             #region 이동하기
             // 장애물이 없을 때, 직진 이동
             transform.position = Vector3.MoveTowards(transform.position, _arrivalPoint, finalMoveSpeed * Time.deltaTime);
-            #endregion
-
-            #region 회전하기
-            //Vector3 direction = (_arrivalPoint - transform.position).normalized;
-            //FlipUnit(direction);
             #endregion
 
             MoveAnimation();
