@@ -14,19 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnTime: 15
   waveInfo:
-  - template: {fileID: 11400000, guid: 488272b4c18cf52429f18b69754b76b4, type: 2}
+  - template: {fileID: 11400000, guid: ea74d75f05896f1498f332d3d4d89de9, type: 2}
     delayTime: 0
     spawnCount: 3
     spawnInterval: 0
     coin: 6
     crystal: 0
-  - template: {fileID: 11400000, guid: 488272b4c18cf52429f18b69754b76b4, type: 2}
+  - template: {fileID: 11400000, guid: 7e2029143b628994cae9cf83e8b23c37, type: 2}
     delayTime: 2
     spawnCount: 5
     spawnInterval: 0
     coin: 6
     crystal: 0
-  - template: {fileID: 11400000, guid: 488272b4c18cf52429f18b69754b76b4, type: 2}
+  - template: {fileID: 11400000, guid: 7123518bb856c6b49af548fe0dcd9097, type: 2}
     delayTime: 4
     spawnCount: 7
     spawnInterval: 0

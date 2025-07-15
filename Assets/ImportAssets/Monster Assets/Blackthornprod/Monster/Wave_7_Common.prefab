@@ -97,6 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1353126760883398344}
   - component: {fileID: 2585906464451238961}
+  - component: {fileID: 5667175753489390400}
   m_Layer: 0
   m_Name: Wave_7_Common
   m_TagString: Untagged
@@ -132,7 +133,7 @@ Animator:
   m_GameObject: {fileID: 941268837100407246}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 87bbafa59e8d49f43bf0a6bb931ced39, type: 2}
+  m_Controller: {fileID: 22100000, guid: a8ae0e22ab806cb479af3df4ea0214ef, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -144,6 +145,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5667175753489390400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941268837100407246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e2ef1f0363e5d4abb963d96b74d510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2649193665139937324
 GameObject:
   m_ObjectHideFlags: 0

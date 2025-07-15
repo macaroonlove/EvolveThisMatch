@@ -20,13 +20,13 @@ MonoBehaviour:
     spawnInterval: 1
     coin: 5
     crystal: 0
-  - template: {fileID: 11400000, guid: 488272b4c18cf52429f18b69754b76b4, type: 2}
+  - template: {fileID: 11400000, guid: cb491ce35ad31614d93a3eed9c76c76f, type: 2}
     delayTime: 2
     spawnCount: 5
     spawnInterval: 1
     coin: 5
     crystal: 0
-  - template: {fileID: 11400000, guid: 488272b4c18cf52429f18b69754b76b4, type: 2}
+  - template: {fileID: 11400000, guid: f2c4e5c86b81885479d53f5fc2766da0, type: 2}
     delayTime: 4
     spawnCount: 7
     spawnInterval: 1

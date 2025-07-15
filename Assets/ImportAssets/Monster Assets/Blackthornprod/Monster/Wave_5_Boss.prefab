@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5418006847409466875}
   - component: {fileID: 2173225677955910140}
+  - component: {fileID: -811315520583891639}
   m_Layer: 0
   m_Name: Wave_5_Boss
   m_TagString: Untagged
@@ -45,7 +46,7 @@ Animator:
   m_GameObject: {fileID: 216430871469407111}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 72d41e5b280ca024fb3673c074d8da05, type: 2}
+  m_Controller: {fileID: 22100000, guid: 22dfe93ee9ad9e7429c1e66cbedd5108, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -57,6 +58,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-811315520583891639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216430871469407111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e2ef1f0363e5d4abb963d96b74d510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2983197330978391302
 GameObject:
   m_ObjectHideFlags: 0

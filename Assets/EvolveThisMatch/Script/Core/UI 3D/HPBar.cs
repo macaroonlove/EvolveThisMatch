@@ -34,7 +34,7 @@ namespace EvolveThisMatch.Core
             _unit.onAbilityInitialize += OnAbilityInitialize;
             _unit.onAbilityDeinitialize += OnAbilityDeinitialize;
 
-            ShowOrHide();
+            Hide(true);
         }
 
         private void OnDestroy()
