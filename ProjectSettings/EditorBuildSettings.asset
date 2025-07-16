@@ -6,8 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/EvolveThisMatch/Scenes/Login.unity
+    guid: 66d4bde931df4da4a9d50c4875593207
+  - enabled: 1
+    path: Assets/EvolveThisMatch/Scenes/Lobby.unity
+    guid: 5ffe0063891edd0499ab5d2b888fcd9a
+  - enabled: 1
+    path: Assets/EvolveThisMatch/Scenes/Tutorial.unity
+    guid: e9d863b54f093b84792fa23468e954ef
+  - enabled: 1
+    path: Assets/EvolveThisMatch/Scenes/Battle.unity
+    guid: 10ae6de4d7b9d02439ccb542f2a02f51
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: b22efe209ae665140ae51bb1fe02d6ed, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: c926ddaa0bfc5114f9d5dc53e3698570, type: 2}

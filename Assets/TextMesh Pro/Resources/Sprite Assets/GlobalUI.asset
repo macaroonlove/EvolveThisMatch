@@ -85,27 +85,27 @@ MonoBehaviour:
     m_Unicode: 128522
     m_GlyphIndex: 0
     m_Scale: 1
-    m_Name: Coin
+    m_Name: Gold
   - m_ElementType: 2
     m_Unicode: 128523
     m_GlyphIndex: 1
     m_Scale: 1
-    m_Name: Crystal
+    m_Name: Coin
   - m_ElementType: 2
     m_Unicode: 128525
     m_GlyphIndex: 2
     m_Scale: 1
-    m_Name: 1f60d
+    m_Name: Essence
   - m_ElementType: 2
     m_Unicode: 128526
     m_GlyphIndex: 3
     m_Scale: 1
-    m_Name: 1f60e
+    m_Name: Crystal
   - m_ElementType: 2
     m_Unicode: 128512
     m_GlyphIndex: 4
     m_Scale: 1
-    m_Name: Grinning face
+    m_Name: Loot
   - m_ElementType: 2
     m_Unicode: 128513
     m_GlyphIndex: 5

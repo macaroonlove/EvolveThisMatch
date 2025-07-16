@@ -129,8 +129,8 @@ namespace EvolveThisMatch.Core
             else if (_currentPage > totalPage) _currentPage = totalPage;
 
             // 버튼 상태 적용
-            _prevButton.interactable = _currentPage > 1;
-            _nextButton.interactable = _currentPage < totalPage;
+            _prevButton.gameObject.SetActive(_currentPage > 1);
+            _nextButton.gameObject.SetActive(_currentPage < totalPage);
 
             int startIndex = _pageSize * (_currentPage - 1);
             int endIndex = startIndex + _pageSize;

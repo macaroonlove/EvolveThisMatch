@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 9
   _displayName: "\uC131\uBC30\uC758 \uC218\uD638\uC790"
+  _description: 
+  _icon: {fileID: 21300000, guid: 7f1747c2ba4de56408d130dc18af79ba, type: 3}
   _textColor: {r: 1, g: 1, b: 1, a: 1}
+  _synergyDatas: []
