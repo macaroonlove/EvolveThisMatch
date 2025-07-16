@@ -63,9 +63,7 @@ namespace EvolveThisMatch.Core
         private List<HealingIncreaseDataEffect> _healingIncreaseDataEffects = new List<HealingIncreaseDataEffect>();
         private List<HealingMultiplierDataEffect> _healingMultiplierDataEffects = new List<HealingMultiplierDataEffect>();
 
-        private List<ManaRecoveryPerSecAdditionalDataEffect> _manaRecoveryPerSecAdditionalDataEffects = new List<ManaRecoveryPerSecAdditionalDataEffect>();
-        private List<ManaRecoveryPerSecIncreaseDataEffect> _manaRecoveryPerSecIncreaseDataEffects = new List<ManaRecoveryPerSecIncreaseDataEffect>();
-        private List<ManaRecoveryPerSecMultiplierDataEffect> _manaRecoveryPerSecMultiplierDataEffects = new List<ManaRecoveryPerSecMultiplierDataEffect>();
+        private Dictionary<SkillCooldownIncreaseDataEffect, string> _skillCooldownIncreaseDataEffects = new Dictionary<SkillCooldownIncreaseDataEffect, string>();
 
         private List<SetMinHPEffect> _setMinHPEffects = new List<SetMinHPEffect>();
         private List<SetAttackTypeEffect> _setAttackTypeEffects = new List<SetAttackTypeEffect>();
@@ -125,9 +123,7 @@ namespace EvolveThisMatch.Core
         internal IReadOnlyList<HealingIncreaseDataEffect> HealingIncreaseDataEffects => _healingIncreaseDataEffects;
         internal IReadOnlyList<HealingMultiplierDataEffect> HealingMultiplierDataEffects => _healingMultiplierDataEffects;
 
-        internal IReadOnlyList<ManaRecoveryPerSecAdditionalDataEffect> ManaRecoveryPerSecAdditionalDataEffects => _manaRecoveryPerSecAdditionalDataEffects;
-        internal IReadOnlyList<ManaRecoveryPerSecIncreaseDataEffect> ManaRecoveryPerSecIncreaseDataEffects => _manaRecoveryPerSecIncreaseDataEffects;
-        internal IReadOnlyList<ManaRecoveryPerSecMultiplierDataEffect> ManaRecoveryPerSecMultiplierDataEffects => _manaRecoveryPerSecMultiplierDataEffects;
+        internal IReadOnlyDictionary<SkillCooldownIncreaseDataEffect, string> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
 
         internal IReadOnlyList<SetMinHPEffect> SetMinHPEffects => _setMinHPEffects;
         internal IReadOnlyList<SetAttackTypeEffect> SetAttackTypeEffects => _setAttackTypeEffects;
@@ -398,17 +394,9 @@ namespace EvolveThisMatch.Core
                         _healingMultiplierDataEffects.Add(healingMultiplierDataEffect);
                     }
                     
-                    else if (effect is ManaRecoveryPerSecAdditionalDataEffect manaRecoveryPerSecAdditionalDataEffect)
+                    else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)
                     {
-                        _manaRecoveryPerSecAdditionalDataEffects.Add(manaRecoveryPerSecAdditionalDataEffect);
-                    }
-                    else if (effect is ManaRecoveryPerSecIncreaseDataEffect manaRecoveryPerSecIncreaseDataEffect)
-                    {
-                        _manaRecoveryPerSecIncreaseDataEffects.Add(manaRecoveryPerSecIncreaseDataEffect);
-                    }
-                    else if (effect is ManaRecoveryPerSecMultiplierDataEffect manaRecoveryPerSecMultiplierDataEffect)
-                    {
-                        _manaRecoveryPerSecMultiplierDataEffects.Add(manaRecoveryPerSecMultiplierDataEffect);
+                        _skillCooldownIncreaseDataEffects.Add(skillCooldownIncreaseDataEffect, template.displayName);
                     }
 
                     else if (effect is SetMinHPEffect setMinHPEffect)
@@ -694,17 +682,9 @@ namespace EvolveThisMatch.Core
                     _healingMultiplierDataEffects.Remove(healingMultiplierDataEffect);
                 }
 
-                else if (effect is ManaRecoveryPerSecAdditionalDataEffect manaRecoveryPerSecAdditionalDataEffect)
+                else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)
                 {
-                    _manaRecoveryPerSecAdditionalDataEffects.Remove(manaRecoveryPerSecAdditionalDataEffect);
-                }
-                else if (effect is ManaRecoveryPerSecIncreaseDataEffect manaRecoveryPerSecIncreaseDataEffect)
-                {
-                    _manaRecoveryPerSecIncreaseDataEffects.Remove(manaRecoveryPerSecIncreaseDataEffect);
-                }
-                else if (effect is ManaRecoveryPerSecMultiplierDataEffect manaRecoveryPerSecMultiplierDataEffect)
-                {
-                    _manaRecoveryPerSecMultiplierDataEffects.Remove(manaRecoveryPerSecMultiplierDataEffect);
+                    _skillCooldownIncreaseDataEffects.Remove(skillCooldownIncreaseDataEffect);
                 }
 
                 else if (effect is SetMinHPEffect setMinHPEffect)

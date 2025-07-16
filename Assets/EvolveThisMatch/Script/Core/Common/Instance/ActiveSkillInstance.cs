@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace EvolveThisMatch.Core
@@ -6,6 +7,7 @@ namespace EvolveThisMatch.Core
     {
         private ActiveSkillAbility _activeSkillAbility;
         private HealthAbility _healthAbility;
+        private BuffAbility _buffAbility;
         private bool _isEnoughPayAmount;
 
         public ActiveSkillTemplate template { get; private set; }
@@ -18,7 +20,18 @@ namespace EvolveThisMatch.Core
             {
                 float result = template.cooldownTime;
 
-                return result;
+                #region 증가·감소
+                float increase = 1;
+
+                foreach (var effect in _buffAbility.SkillCooldownIncreaseDataEffects.Keys)
+                {
+                    increase -= effect.value;
+                }
+
+                result *= increase;
+                #endregion
+
+                return Mathf.Max(0.01f, result);
             }
         }
 
@@ -29,6 +42,7 @@ namespace EvolveThisMatch.Core
             this.template = template;
             _activeSkillAbility = activeSkillAbility;
             _healthAbility = _activeSkillAbility.unit.healthAbility;
+            _buffAbility = _activeSkillAbility.unit.GetAbility<BuffAbility>();
 
             _isEnoughPayAmount = true;
             isAutoSkill = true;

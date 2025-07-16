@@ -201,6 +201,8 @@ namespace EvolveThisMatch.Editor
 
             menu.AddItem(new GUIContent("초당 회복량 증감"), false, CreateEffectCallback, typeof(HPRecoveryPerSecByMaxHPIncreaseDataEffect));
 
+            menu.AddItem(new GUIContent("스킬 가속도 증감"), false, CreateEffectCallback, typeof(SkillCooldownIncreaseDataEffect));
+
             menu.AddItem(new GUIContent("최소 체력 설정"), false, CreateEffectCallback, typeof(SetMinHPEffect));
             menu.AddItem(new GUIContent("공격 방식 설정"), false, CreateEffectCallback, typeof(SetAttackTypeEffect));
             menu.AddItem(new GUIContent("피해량 적용 방식 설정"), false, CreateEffectCallback, typeof(SetDamageTypeEffect));
