@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61019b4a3432d2f41b6ec93ff3fa5119, type: 3}
+  m_Name: "ActiveItem_\uD14C\uC2A4\uD2B8"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: 4da8eb77ac1838341b33994dad96c078, type: 3}
+  _id: 0
+  _displayName: "\uD14C\uC2A4\uD2B8"
+  _description: "\uC9C4\uC9DC \uD14C\uC2A4\uD2B8, \uBC94\uC704 \uB0B4 \uC544\uAD70
+    \uC720\uB2DB \uD68C\uBCF5 +300"
+  _needCoin: 20
+  _cooldownTime: 10
+  _delay: 0
+  _rangeType: 1
+  _range: 2
+  _unitType: 1
+  _itemFX: {fileID: 0}
+  _afterDelayFX: {fileID: 0}
+  effects:
+  - {fileID: 2392555672086500775}
+--- !u!114 &2392555672086500775
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db54c497bacdb54c906ddf94677fa24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _repeatCount: 1
+  _isTick: 0
+  _tickCycle: 0
+  _tickCount: 0
+  _applyTypeByAmountDatas:
+  - applyType: 0
+    amount: 300

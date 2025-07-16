@@ -14,7 +14,7 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private string _displayName;
         [HideInInspector, SerializeField] private string _description;
 
-        [HideInInspector, SerializeField] private int _needCost;
+        [HideInInspector, SerializeField] private int _needCoin;
         [HideInInspector, SerializeField] private float _cooldownTime;
         [HideInInspector, SerializeField] private float _delay;
         
@@ -36,7 +36,7 @@ namespace EvolveThisMatch.Core
         public string displayName => _displayName;
         public string description => _description;
 
-        public int needCost => _needCost;
+        public int needCoin => _needCoin;
         public float cooldownTime => _cooldownTime;
         public float delay => _delay;
         
@@ -52,7 +52,7 @@ namespace EvolveThisMatch.Core
         internal void SetId(int id) => _id = id;
         public void SetDisplayName(string name) => _displayName = name;
         internal void SetDescription(string desc) => _description = desc;
-        internal void SetNeedCost(int needCost) => _needCost = needCost;
+        internal void SetNeedCoin(int needCoin) => _needCoin = needCoin;
         internal void SetCooldownTime(float cooldownTime) => _cooldownTime = cooldownTime;
         internal void SetDelay(float delay) => _delay = delay;
         internal void SetUnitType(EUnitType unitType) => _unitType = unitType;
@@ -79,7 +79,7 @@ namespace EvolveThisMatch.Editor
         private SerializedProperty _id;
         private SerializedProperty _displayName;
         private SerializedProperty _description;
-        private SerializedProperty _needCost;
+        private SerializedProperty _needCoin;
         private SerializedProperty _cooldownTime;
         private SerializedProperty _delay;
         private SerializedProperty _rangeType;
@@ -99,7 +99,7 @@ namespace EvolveThisMatch.Editor
             _id = serializedObject.FindProperty("_id");
             _displayName = serializedObject.FindProperty("_displayName");
             _description = serializedObject.FindProperty("_description");
-            _needCost = serializedObject.FindProperty("_needCost");
+            _needCoin = serializedObject.FindProperty("_needCoin");
             _cooldownTime = serializedObject.FindProperty("_cooldownTime");
             _delay = serializedObject.FindProperty("_delay");
             _rangeType = serializedObject.FindProperty("_rangeType");
@@ -143,8 +143,8 @@ namespace EvolveThisMatch.Editor
             GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("필요 코스트", GUILayout.Width(192));
-            EditorGUILayout.PropertyField(_needCost, GUIContent.none);
+            GUILayout.Label("필요 코인", GUILayout.Width(192));
+            EditorGUILayout.PropertyField(_needCoin, GUIContent.none);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -164,7 +164,7 @@ namespace EvolveThisMatch.Editor
             EditorGUILayout.PropertyField(_unitType, GUIContent.none);
             GUILayout.EndHorizontal();
 
-            if (_unitType.enumValueIndex != (int)EUnitType.None)
+            if (_unitType.enumValueFlag != (int)EUnitType.None)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("범위 방식", GUILayout.Width(192));

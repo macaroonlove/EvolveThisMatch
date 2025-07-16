@@ -18,7 +18,7 @@ namespace EvolveThisMatch.Core
         }
         enum Texts
         {
-            NeedCost,
+            NeedCoin,
             CooldownTimeText,
         }
         #endregion
@@ -34,7 +34,7 @@ namespace EvolveThisMatch.Core
 
         private Image _cooldownTimeImage;
 
-        private TextMeshProUGUI _needCostText;
+        private TextMeshProUGUI _needCoinText;
         private TextMeshProUGUI _coolDownTimeText;
 
         private Color _lackCostColor = new Color(1, 0.27f, 0);
@@ -44,7 +44,7 @@ namespace EvolveThisMatch.Core
         private ActiveItemRangeRenderer _rangeRenderer;
         private ActiveItemTemplate _template;
 
-        private int _currentCost;
+        private int _currentCoin;
         private float _inverseMaxCoolDownTime;
         private float _currentCoolDownTime;
 
@@ -66,11 +66,11 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        private int finalNeedCost
+        private int finalNeedCoin
         {
             get
             {
-                int result = _template.needCost;
+                int result = _template.needCoin;
 
                 return result;
             }
@@ -93,28 +93,15 @@ namespace EvolveThisMatch.Core
             BindText(typeof(Texts));
 
             _cooldownTimeImage = GetImage((int)Images.CooldownTimeImage);
-            _needCostText = GetText((int)Texts.NeedCost);
+            _needCoinText = GetText((int)Texts.NeedCoin);
             _coolDownTimeText = GetText((int)Texts.CooldownTimeText);
 
             _cooldownTimeImage.gameObject.SetActive(false);
 
             _threshold *= _threshold;
-
-            BattleManager.Instance.onBattleInitialize += GetActiveItem;
-            BattleManager.Instance.onBattleDeinitialize += Hide;
-            BattleManager.Instance.onBattleManagerDestroy += Unsubscribe;
         }
 
-        private void Unsubscribe()
-        {
-            if (BattleManager.Instance == null) return;
-
-            BattleManager.Instance.onBattleInitialize -= GetActiveItem;
-            BattleManager.Instance.onBattleDeinitialize -= Hide;
-            BattleManager.Instance.onBattleManagerDestroy -= Unsubscribe;
-        }
-
-        private void GetActiveItem()
+        internal void GetActiveItem()
         {
             var template = CoreManager.Instance.GetSubSystem<ActiveItemSystem>().GetSelectedItem((int)_actionType);
             if (template != null)
@@ -133,16 +120,17 @@ namespace EvolveThisMatch.Core
 
             _template = template;
 
-            _needCostText.text = $"Cost: {finalNeedCost}";
+            _needCoinText.text = $"<sprite name=\"Coin\"> {finalNeedCoin}";
 
             _rangeRenderer = BattleManager.Instance.GetSubSystem<ActiveItemRangeRenderer>();
             _inputSystem = BattleManager.Instance.GetSubSystem<InputSystem>();
             _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
             _coinSystem.onChangedCoin += OnChangeCoin;
-
+            _currentCoin = _coinSystem.currentCoin;
+            
             CalcMaxCoolDownTime();
             _currentCoolDownTime = 0;
-
+            
             CheckInteractable();
 
             InputBinding();
@@ -291,9 +279,9 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 아이템 사용 조건 로직
-        private void OnChangeCoin(int cost)
+        private void OnChangeCoin(int coin)
         {
-            _currentCost = cost;
+            _currentCoin = coin;
             CheckInteractable();
         }
 
@@ -341,11 +329,11 @@ namespace EvolveThisMatch.Core
                 _cooldownTimeImage.gameObject.SetActive(true);
                 ResetPointer();
             }
-            if (_currentCost < finalNeedCost)
+            if (_currentCoin < finalNeedCoin)
             {
                 isInteractable = false;
                 _isInteractable = false;
-                _needCostText.color = _lackCostColor;
+                _needCoinText.color = _lackCostColor;
                 ResetPointer();
             }
 
@@ -353,7 +341,7 @@ namespace EvolveThisMatch.Core
             {
                 _isInteractable = true;
                 _cooldownTimeImage.gameObject.SetActive(false);
-                _needCostText.color = Color.white;
+                _needCoinText.color = Color.white;
             }
         }
         #endregion
@@ -526,7 +514,7 @@ namespace EvolveThisMatch.Core
             CalcMaxCoolDownTime();
 
             // 코스트 지불
-            _coinSystem.PayCoin(finalNeedCost);
+            _coinSystem.PayCoin(finalNeedCoin);
 
             CheckInteractable();
         }

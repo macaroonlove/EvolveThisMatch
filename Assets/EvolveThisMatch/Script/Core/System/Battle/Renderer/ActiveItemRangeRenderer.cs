@@ -30,7 +30,7 @@ namespace EvolveThisMatch.Core
             _enemySystem = BattleManager.Instance.GetSubSystem<EnemySystem>();
 
             _camera = Camera.main;
-            _plane = new Plane(Vector3.up, new Vector3(0, 0.3f, 0));
+            _plane = new Plane(Vector3.forward, 0.3f);
 
             _parent = transform.GetChild(0);
             _circle = _parent.GetChild(0);

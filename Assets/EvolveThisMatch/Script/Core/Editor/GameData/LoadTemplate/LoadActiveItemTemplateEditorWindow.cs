@@ -42,10 +42,10 @@ namespace EvolveThisMatch.Editor
                     // 아이템 설명
                     template.SetDescription(csvDic["아이템 설명"][i]);
 
-                    // 필요 코스트
-                    if (int.TryParse(csvDic["필요 코스트"][i], out var needCost))
+                    // 필요 코인
+                    if (int.TryParse(csvDic["필요 코인"][i], out var needCoin))
                     {
-                        template.SetNeedCost(needCost);
+                        template.SetNeedCoin(needCoin);
                     }
 
                     // 쿨타임
@@ -98,10 +98,10 @@ namespace EvolveThisMatch.Editor
                     // 아이템 설명
                     newTemplate.SetDescription(csvDic["아이템 설명"][i]);
 
-                    // 필요 코스트
-                    if (int.TryParse(csvDic["필요 코스트"][i], out var needCost))
+                    // 필요 코인
+                    if (int.TryParse(csvDic["필요 코인"][i], out var needCoin))
                     {
-                        newTemplate.SetNeedCost(needCost);
+                        newTemplate.SetNeedCoin(needCoin);
                     }
 
                     // 쿨타임
