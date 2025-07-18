@@ -33,6 +33,8 @@ namespace EvolveThisMatch.Save
         {
             public int id;
             public int unitCount;
+            public int tier;
+            public int exp;
             public int level;
 
             public int selectedSkinId;
@@ -41,8 +43,10 @@ namespace EvolveThisMatch.Save
             public Agent(int id)
             {
                 this.id = id;
-                this.unitCount = 1;
-                this.level = 1;
+                this.unitCount = 0;
+                this.tier = 0;
+                this.exp = 0;
+                this.level = 0;
                 this.selectedSkinId = 0;
             }
         }
@@ -199,28 +203,28 @@ namespace EvolveThisMatch.Save
         }
         #endregion
 
-        #region 레벨업
+        #region 유닛 티어 상승
         /// <summary>
-        /// 유닛을 레벨업 하는데 요구하는 개수
+        /// 유닛의 티어를 올리는데 요구하는 개수
         /// </summary>
-        private static readonly ObscuredInt[] _agentLevelUpRequirements = { 0, 1, 3, 5, 7, 10, 15, 30, 50, 90, 150 };
+        private static readonly ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10, 15, 30, 50, 90, 150 };
 
         /// <summary>
-        /// 유닛 레벨업
+        /// 유닛 티어 상승
         /// </summary>
-        public bool LevelUpAgent(int id)
+        public bool TierUpAgent(int id)
         {
             var modifyUnit = FindAgent(_data.ownedAgents, id);
 
-            // 유닛이 있다면 && 최대 레벨이 아니라면
-            if (modifyUnit != null && modifyUnit.level < _agentLevelUpRequirements.Length - 1)
+            // 유닛이 있다면 && 최대 티어가 아니라면
+            if (modifyUnit != null && modifyUnit.tier < _agentTierUpRequirements.Length - 1)
             {
-                int requiredCount = _agentLevelUpRequirements[modifyUnit.level];
+                int requiredCount = _agentTierUpRequirements[modifyUnit.tier];
 
                 if (modifyUnit.unitCount >= requiredCount)
                 {
                     modifyUnit.unitCount -= requiredCount;
-                    modifyUnit.level++;
+                    modifyUnit.tier++;
 
                     return true;
                 }
@@ -230,15 +234,106 @@ namespace EvolveThisMatch.Save
         }
 
         /// <summary>
-        /// 레벨업 가능한 유닛인지 판별
+        /// 티어 상승 가능한 유닛인지 판별
         /// </summary>
-        public bool GetLevelUpAbleUnit(int id)
+        public bool GetTierUpAbleUnit(int id)
         {
             var modifyUnit = FindAgent(_data.ownedAgents, id);
 
             return modifyUnit != null
-                && modifyUnit.level < _agentLevelUpRequirements.Length - 1
-                && modifyUnit.unitCount >= _agentLevelUpRequirements[modifyUnit.level];
+                && modifyUnit.tier < _agentTierUpRequirements.Length - 1
+                && modifyUnit.unitCount >= _agentTierUpRequirements[modifyUnit.tier];
+        }
+        
+        /// <summary>
+        /// 유닛의 티어 별 최대 유닛 개수 반환
+        /// </summary>
+        public int GetMaxUnitCountByTier(int tier)
+        {
+            return _agentTierUpRequirements[tier];
+        }
+        #endregion
+
+        #region 유닛 레벨업
+        /// <summary>
+        /// 티어에 따라 제한되는 최대 레벨
+        /// </summary>
+        private static readonly int[] _agentMaxLevelPerTier = { 50, 70, 100, 120, 150, 180, 210, 240, 270, 300, 330 };
+
+        /// <summary>
+        /// 유닛 레벨업
+        /// </summary>
+        public bool LevelUpAgent(int id, int gainedExp)
+        {
+            var unit = FindAgent(_data.ownedAgents, id);
+            if (unit == null)
+                return false;
+
+            int maxLevel = _agentMaxLevelPerTier[unit.tier];
+            bool leveledUp = false;
+
+            unit.exp += gainedExp;
+
+            while (unit.level < maxLevel)
+            {
+                int requiredExp = GetRequiredExpForLevel(unit.level);
+                if (unit.exp >= requiredExp)
+                {
+                    unit.exp -= requiredExp;
+                    unit.level++;
+                    leveledUp = true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return leveledUp;
+        }
+
+        /// <summary>
+        /// 현재 레벨 기준 필요한 경험치 반환
+        /// </summary>
+        private int GetRequiredExpForLevel(int level)
+        {
+            if (level <= 0) return 0;
+
+            const double baseExp = 450.0;
+            const double growthRate = 1.09;
+
+            return (int)Math.Round(baseExp * Math.Pow(growthRate, level - 1));
+        }
+
+        /// <summary>
+        /// 레벨업이 가능한지 여부
+        /// </summary>
+        public bool CanLevelUp(int id)
+        {
+            var modifyUnit = FindAgent(_data.ownedAgents, id);
+
+            if (modifyUnit == null)
+                return false;
+
+            int maxLevel = GetMaxLevelByTier(modifyUnit.tier);
+
+            if (modifyUnit.level >= maxLevel)
+                return false;
+
+            int requiredExp = GetRequiredExpForLevel(modifyUnit.level);
+
+            return modifyUnit.exp >= requiredExp;
+        }
+
+        /// <summary>
+        /// 해당 티어에서의 최대 레벨 반환
+        /// </summary>
+        public int GetMaxLevelByTier(int tier)
+        {
+            if (tier < 0 || tier >= _agentMaxLevelPerTier.Length)
+                return _agentMaxLevelPerTier[_agentMaxLevelPerTier.Length - 1];
+
+            return _agentMaxLevelPerTier[tier];
         }
         #endregion
 

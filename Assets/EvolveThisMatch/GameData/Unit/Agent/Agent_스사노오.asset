@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 315827f885b2bdb4db10ec962e833c34, type: 3}
   m_Name: "Agent_\uC2A4\uC0AC\uB178\uC624"
   m_EditorClassIdentifier: 
-  _id: 8
+  _id: 7
   _rarity: {fileID: 11400000, guid: e2abef2d73980a943aa1a2f6a18c9ed1, type: 2}
   _job: {fileID: 11400000, guid: 68be10d7a2cf1664db54e8f2f75e1081, type: 2}
   _synergy:
@@ -39,5 +39,4 @@ MonoBehaviour:
   _magicResistance: 54
   _hpRecoveryPerSec: 0
   _skillTemplates: []
-  skins:
-  - {fileID: 11400000, guid: 4774d21e0af6d3941af25dfbdb6e642e, type: 2}
+  skins: []
