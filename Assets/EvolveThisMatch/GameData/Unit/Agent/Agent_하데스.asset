@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "Agent_\uD558\uB370\uC2A4"
   m_EditorClassIdentifier: 
   _id: 2
-  _rarity: {fileID: 11400000, guid: 3f5b5c01cbd48654eb24dcb18e2dad86, type: 2}
+  _rarity: {fileID: 11400000, guid: 0625512b8a29c4c44930a82d24f700ca, type: 2}
   _job: {fileID: 11400000, guid: 48c32fea8eb7a0e4192a3135cdc6515e, type: 2}
   _synergy:
   - {fileID: 11400000, guid: e6231b32ea6b3674b898885ebf73427c, type: 2}

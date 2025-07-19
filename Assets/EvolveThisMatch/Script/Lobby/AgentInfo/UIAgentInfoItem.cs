@@ -32,6 +32,10 @@ namespace EvolveThisMatch.Lobby
         private Image _dim;
         private UIAgentTier _tierGroup;
 
+        private UIAgentInfoCanvas _agentInfoCanvas;
+        private AgentTemplate _template;
+        private ProfileSaveData.Agent _owned;
+
         protected override void Initialize()
         {
             BindText(typeof(Texts));
@@ -45,10 +49,17 @@ namespace EvolveThisMatch.Lobby
             _dim = GetImage((int)Images.Dim);
 
             _tierGroup = GetComponentInChildren<UIAgentTier>();
+
+            var button = GetComponent<Button>();
+            button?.onClick.AddListener(OnClick);
         }
 
-        internal void Show(AgentTemplate template, ProfileSaveData.Agent owned)
+        internal void Show(AgentTemplate template, ProfileSaveData.Agent owned, UIAgentInfoCanvas agentInfoCanvas)
         {
+            _template = template;
+            _owned = owned;
+            _agentInfoCanvas = agentInfoCanvas;
+
             _displayName.text = template.displayName;
             _fullBody.sprite = template.sprite;
             
@@ -70,6 +81,11 @@ namespace EvolveThisMatch.Lobby
             _counterText.text = $"{unitCount}/{maxUnitCount}";
             _counterImage.fillAmount = unitCount / maxUnitCount;
             _tierGroup.Show(owned.tier);
+        }
+
+        internal void OnClick()
+        {
+            _agentInfoCanvas?.Show(_template, _owned);
         }
     }
 }

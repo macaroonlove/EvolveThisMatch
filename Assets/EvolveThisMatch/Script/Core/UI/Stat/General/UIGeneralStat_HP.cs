@@ -4,12 +4,12 @@ namespace EvolveThisMatch.Core
     {
         public void Initialize(AgentTemplate template)
         {
-            Apply(template.ATK);
+            Apply(template.MaxHP);
         }
 
         public void Initialize(EnemyTemplate template)
         {
-            Apply(template.ATK);
+            Apply(template.MaxHP);
         }
 
         protected override string GetDiscription()

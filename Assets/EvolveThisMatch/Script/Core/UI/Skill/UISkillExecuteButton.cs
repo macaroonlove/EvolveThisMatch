@@ -65,6 +65,11 @@ namespace EvolveThisMatch.Core
             GetButton((int)Buttons.ActiveSkillButton).onClick.AddListener(ExecuteSkill);
         }
 
+        internal void Show(SkillTemplate template)
+        {
+            GetImage((int)Images.Icon).sprite = template.sprite;
+        }
+
         internal void Show(AgentUnit unit, SkillTemplate template)
         {
             GetImage((int)Images.Icon).sprite = template.sprite;

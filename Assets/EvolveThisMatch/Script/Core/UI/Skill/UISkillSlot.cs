@@ -53,6 +53,26 @@ namespace EvolveThisMatch.Core
             _autoSkillToggle.onValueChanged.AddListener(AutoSkill);
         }
 
+        internal void ShowSkillSlot(SkillTemplate template)
+        {
+            _skillName.text = template.displayName;
+            _skillDescription.text = template.description;
+
+            _skillExecuteButton.Show(template);
+
+            if (template is ActiveSkillTemplate activeSkillTemplate)
+            {
+                _typeTag.Show(activeSkillTemplate.skillType);
+                _typeTag.gameObject.SetActive(true);
+            }
+            else
+            {
+                _typeTag.gameObject.SetActive(false);
+            }
+
+            base.Show(true);
+        }
+
         internal void ShowSkillSlot(AgentUnit unit, SkillTemplate template)
         {
             _skillName.text = template.displayName;
