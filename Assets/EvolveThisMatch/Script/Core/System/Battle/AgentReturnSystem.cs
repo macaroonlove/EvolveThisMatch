@@ -11,7 +11,7 @@ namespace EvolveThisMatch.Core
         private PoolSystem _poolSystem;
         private CrystalSystem _crystalSystem;
 
-        internal event UnityAction<AgentBattleData> onDeinitializedUnit;
+        public event UnityAction<AgentBattleData> onDeinitializedUnit;
 
         public void Initialize()
         {
@@ -25,7 +25,7 @@ namespace EvolveThisMatch.Core
         }
 
         #region 유닛 반환
-        internal async void ReturnUnit(AgentBattleData agentData)
+        public async void ReturnUnit(AgentBattleData agentData)
         {
             // 유닛 반환 FX
             _returnFX.Play(agentData.agentUnit);
@@ -86,7 +86,7 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 출정 표지판 반환
-        internal void ReturnSignBoard(GameObject obj)
+        public void ReturnSignBoard(GameObject obj)
         {
             // 유닛 오브젝트 반환
             _poolSystem.DeSpawn(obj);

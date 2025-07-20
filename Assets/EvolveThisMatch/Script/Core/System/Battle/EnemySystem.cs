@@ -16,10 +16,10 @@ namespace EvolveThisMatch.Core
 
         private AttackRangeRenderer _attackRangeRenderer;
 
-        internal int enemyCount => _enemies.Count;
-        
-        internal event UnityAction<Unit> onRegist;
-        internal event UnityAction<Unit> onDeregist;
+        public int enemyCount => _enemies.Count;
+
+        public event UnityAction<Unit> onRegist;
+        public event UnityAction<Unit> onDeregist;
 
         public void Initialize()
         {
@@ -53,7 +53,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 등록된 모든 적 유닛을 반환
         /// </summary>
-        internal List<EnemyUnit> GetAllEnemies()
+        public List<EnemyUnit> GetAllEnemies()
         {
             return _enemies;
         }
@@ -62,7 +62,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 원 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
-        internal List<EnemyUnit> GetEnemiesInCircle(Vector2 unitPos, float radius, int maxCount = int.MaxValue)
+        public List<EnemyUnit> GetEnemiesInCircle(Vector2 unitPos, float radius, int maxCount = int.MaxValue)
         {
             if (maxCount == int.MaxValue)
             {

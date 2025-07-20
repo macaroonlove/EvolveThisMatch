@@ -1,5 +1,4 @@
 using TMPro;
-using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
@@ -7,14 +6,14 @@ namespace EvolveThisMatch.Core
     {
         private TextMeshProUGUI _sortieName;
 
-        internal AgentUnit linkUnit { get; private set; }
+        public AgentUnit linkUnit { get; private set; }
 
         private void Awake()
         {
             _sortieName = GetComponentInChildren<TextMeshProUGUI>();
         }
 
-        internal void Initialize(AgentUnit agentUnit)
+        public void Initialize(AgentUnit agentUnit)
         {
             linkUnit = agentUnit;
             _sortieName.text = agentUnit.template.displayName;

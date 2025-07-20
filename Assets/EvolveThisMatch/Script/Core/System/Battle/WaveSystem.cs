@@ -12,10 +12,10 @@ namespace EvolveThisMatch.Core
 
         private Transform _spawnPoint;
 
-        internal int currentWaveIndex { get; private set; }
-        internal bool isWaveEnd { get; private set; }
-        internal bool isSpawnEnd { get; private set; }
-        internal Transform boundaryPoint { get; private set; }
+        public int currentWaveIndex { get; private set; }
+        public bool isWaveEnd { get; private set; }
+        public bool isSpawnEnd { get; private set; }
+        public Transform boundaryPoint { get; private set; }
 
         public event UnityAction<int, float> onWaveChanged;
 
@@ -39,7 +39,7 @@ namespace EvolveThisMatch.Core
             StopAllCoroutines();
         }
 
-        internal void ForceEndWave()
+        public void ForceEndWave()
         {
             Deinitialize();
         }

@@ -16,9 +16,9 @@ namespace EvolveThisMatch.Core
 
         internal Transform canvas { get; private set; }
 
-        internal event UnityAction onBattleInitialize;
-        internal event UnityAction onBattleDeinitialize;
-        internal event UnityAction onBattleManagerDestroy;
+        public event UnityAction onBattleInitialize;
+        public event UnityAction onBattleDeinitialize;
+        public event UnityAction onBattleManagerDestroy;
 
         protected override void Awake()
         {

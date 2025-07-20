@@ -11,9 +11,9 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private ObscuredIntVariable _coinVariable;
 
-        internal int currentCoin => _coinVariable.Value;
+        public int currentCoin => _coinVariable.Value;
 
-        internal event UnityAction<int> onChangedCoin;
+        public event UnityAction<int> onChangedCoin;
 
         public void Initialize()
         {
@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Core
             SetCoin(_coinVariable.Value + value);
         }
 
-        internal bool PayCoin(int value)
+        public bool PayCoin(int value)
         {
             int newCost = _coinVariable.Value - value;
             if (newCost >= 0)
@@ -40,7 +40,7 @@ namespace EvolveThisMatch.Core
             return false;
         }
 
-        internal bool CheckCoin(int value)
+        public bool CheckCoin(int value)
         {
             return _coinVariable.Value >= value;
         }

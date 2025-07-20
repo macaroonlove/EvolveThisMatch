@@ -1,5 +1,4 @@
 using FrameWork.Editor;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -75,14 +74,14 @@ namespace EvolveThisMatch.Core
         internal IReadOnlyList<MoveIncreaseDataEffect> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
         internal IReadOnlyList<MoveMultiplierDataEffect> MoveMultiplierDataEffects => _moveMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<ATKAdditionalDataEffect, string> ATKAdditionalDataEffects => _atkAdditionalDataEffects;
-        internal IReadOnlyDictionary<ATKIncreaseDataEffect, string> ATKIncreaseDataEffects => _atkIncreaseDataEffects;
-        internal IReadOnlyDictionary<ATKMultiplierDataEffect, string> ATKMultiplierDataEffects => _atkMultiplierDataEffects;
+        public IReadOnlyDictionary<ATKAdditionalDataEffect, string> ATKAdditionalDataEffects => _atkAdditionalDataEffects;
+        public IReadOnlyDictionary<ATKIncreaseDataEffect, string> ATKIncreaseDataEffects => _atkIncreaseDataEffects;
+        public IReadOnlyDictionary<ATKMultiplierDataEffect, string> ATKMultiplierDataEffects => _atkMultiplierDataEffects;
 
         internal IReadOnlyList<AttackCountAdditionalDataEffect> AttackCountAdditionalDataEffects => _attackCountAdditionalDataEffects;
 
-        internal IReadOnlyDictionary<AttackSpeedIncreaseDataEffect, string> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
-        internal IReadOnlyDictionary<AttackSpeedMultiplierDataEffect, string> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
+        public IReadOnlyDictionary<AttackSpeedIncreaseDataEffect, string> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
+        public IReadOnlyDictionary<AttackSpeedMultiplierDataEffect, string> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
 
         internal IReadOnlyList<AvoidanceAdditionalDataEffect> AvoidanceAdditionalDataEffects => _avoidanceAdditionalDataEffects;
 
@@ -90,17 +89,17 @@ namespace EvolveThisMatch.Core
         internal IReadOnlyList<PhysicalPenetrationIncreaseDataEffect> PhysicalPenetrationIncreaseDataEffects => _physicalPenetrationIncreaseDataEffects;
         internal IReadOnlyList<PhysicalPenetrationMultiplierDataEffect> PhysicalPenetrationMultiplierDataEffects => _physicalPenetrationMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<PhysicalResistanceAdditionalDataEffect, string> PhysicalResistanceAdditionalDataEffects => _physicalResistanceAdditionalDataEffects;
-        internal IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, string> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
-        internal IReadOnlyDictionary<PhysicalResistanceMultiplierDataEffect, string> PhysicalResistanceMultiplierDataEffects => _physicalResistanceMultiplierDataEffects;
+        public IReadOnlyDictionary<PhysicalResistanceAdditionalDataEffect, string> PhysicalResistanceAdditionalDataEffects => _physicalResistanceAdditionalDataEffects;
+        public IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, string> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
+        public IReadOnlyDictionary<PhysicalResistanceMultiplierDataEffect, string> PhysicalResistanceMultiplierDataEffects => _physicalResistanceMultiplierDataEffects;
 
         internal IReadOnlyList<MagicPenetrationAdditionalDataEffect> MagicPenetrationAdditionalDataEffects => _magicPenetrationAdditionalDataEffects;
         internal IReadOnlyList<MagicPenetrationIncreaseDataEffect> MagicPenetrationIncreaseDataEffects => _magicPenetrationIncreaseDataEffects;
         internal IReadOnlyList<MagicPenetrationMultiplierDataEffect> MagicPenetrationMultiplierDataEffects => _magicPenetrationMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<MagicResistanceAdditionalDataEffect, string> MagicResistanceAdditionalDataEffects => _magicResistanceAdditionalDataEffects;
-        internal IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, string> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
-        internal IReadOnlyDictionary<MagicResistanceMultiplierDataEffect, string> MagicResistanceMultiplierDataEffects => _magicResistanceMultiplierDataEffects;
+        public IReadOnlyDictionary<MagicResistanceAdditionalDataEffect, string> MagicResistanceAdditionalDataEffects => _magicResistanceAdditionalDataEffects;
+        public IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, string> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
+        public IReadOnlyDictionary<MagicResistanceMultiplierDataEffect, string> MagicResistanceMultiplierDataEffects => _magicResistanceMultiplierDataEffects;
 
         internal IReadOnlyList<DamageAdditionalDataEffect> DamageAdditionalDataEffects => _damageAdditionalDataEffects;
         internal IReadOnlyList<DamageIncreaseDataEffect> DamageIncreaseDataEffects => _damageIncreaseDataEffects;
@@ -123,7 +122,7 @@ namespace EvolveThisMatch.Core
         internal IReadOnlyList<HealingIncreaseDataEffect> HealingIncreaseDataEffects => _healingIncreaseDataEffects;
         internal IReadOnlyList<HealingMultiplierDataEffect> HealingMultiplierDataEffects => _healingMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<SkillCooldownIncreaseDataEffect, string> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
+        public IReadOnlyDictionary<SkillCooldownIncreaseDataEffect, string> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
 
         internal IReadOnlyList<SetMinHPEffect> SetMinHPEffects => _setMinHPEffects;
         internal IReadOnlyList<SetAttackTypeEffect> SetAttackTypeEffects => _setAttackTypeEffects;
@@ -153,7 +152,7 @@ namespace EvolveThisMatch.Core
             unit.GetAbility<HealthAbility>().onDeath -= ClearStatusEffects;
         }
 
-        internal void ApplyBuff(BuffTemplate template, float duration)
+        public void ApplyBuff(BuffTemplate template, float duration)
         {
             if (this == null || gameObject == null) return;
 
@@ -204,14 +203,14 @@ namespace EvolveThisMatch.Core
         private void AddStatus(BuffTemplate template, float duration, bool isContained)
         {
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
-            
+
             // 무한지속이 아니라면
             if (duration != int.MaxValue)
             {
                 var corutine = StartCoroutine(CoStatus(statusInstance, template));
                 statusInstance.corutine = corutine;
             }
-            
+
             // 공격시 상태이상이 해제되야 한다면
             if (template.useAttackCountLimit)
             {
@@ -393,7 +392,7 @@ namespace EvolveThisMatch.Core
                     {
                         _healingMultiplierDataEffects.Add(healingMultiplierDataEffect);
                     }
-                    
+
                     else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)
                     {
                         _skillCooldownIncreaseDataEffects.Add(skillCooldownIncreaseDataEffect, template.displayName);
@@ -446,7 +445,7 @@ namespace EvolveThisMatch.Core
                     if (instance.count == 0)
                     {
                         RemoveStatus(template.effects);
-                        
+
                         if (instance.corutine != null)
                         {
                             StopCoroutine(instance.corutine);
@@ -497,7 +496,7 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        internal void RemoveBuff(BuffTemplate template)
+        public void RemoveBuff(BuffTemplate template)
         {
             RemoveStatus(template.effects);
 

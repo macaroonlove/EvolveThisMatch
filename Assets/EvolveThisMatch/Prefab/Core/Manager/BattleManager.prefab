@@ -16389,7 +16389,7 @@ GameObject:
   - component: {fileID: 7040487438470302410}
   - component: {fileID: 278820104462225103}
   - component: {fileID: 1135212263491041719}
-  - component: {fileID: 661574837560772115}
+  - component: {fileID: 7999867461597460149}
   m_Layer: 5
   m_Name: Skills
   m_TagString: Untagged
@@ -16447,7 +16447,7 @@ MonoBehaviour:
   duration: 0.25
   ease: 9
   _canvasGroup: {fileID: 278820104462225103}
---- !u!114 &661574837560772115
+--- !u!114 &7999867461597460149
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16456,7 +16456,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5575710465827178603}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6211987c94ab4f646a44227fcf93fdc1, type: 3}
+  m_Script: {fileID: 11500000, guid: 48b0fc9138ab14545a7ffc33ef72ca40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5577270493667934421

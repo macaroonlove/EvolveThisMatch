@@ -43,7 +43,7 @@ namespace EvolveThisMatch.Core
             _agents.Add(agentData);
 
             onRegist?.Invoke(agent);
-            
+
             return agentData;
         }
 
@@ -71,17 +71,17 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 등록된 모든 아군 유닛을 반환
         /// </summary>
-        internal List<AllyUnit> GetAllAllies(EUnitType unitType)
+        public List<AllyUnit> GetAllAllies(EUnitType unitType)
         {
             List<AllyUnit> allies = new List<AllyUnit>();
-            
+
             if ((unitType & EUnitType.Agent) != 0)
             {
                 foreach (var agentData in _agents)
                 {
                     allies.Add(agentData.agentUnit);
                 }
-                
+
             }
             if ((unitType & EUnitType.Summon) != 0)
             {
@@ -95,7 +95,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 원 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
-        internal List<AllyUnit> GetAlliesInCircle(Vector2 unitPos, float radius, EUnitType unitType, int maxCount = int.MaxValue)
+        public List<AllyUnit> GetAlliesInCircle(Vector2 unitPos, float radius, EUnitType unitType, int maxCount = int.MaxValue)
         {
             if (maxCount == int.MaxValue)
             {

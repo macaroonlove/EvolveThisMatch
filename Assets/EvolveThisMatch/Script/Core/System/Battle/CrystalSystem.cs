@@ -11,9 +11,9 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private ObscuredIntVariable _crystalVariable;
 
-        internal int currentCrystal => _crystalVariable.Value;
+        public int currentCrystal => _crystalVariable.Value;
 
-        internal event UnityAction<int> onChangedCrystal;
+        public event UnityAction<int> onChangedCrystal;
 
         public void Initialize()
         {
@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Core
             SetCrystal(_crystalVariable.Value + value);
         }
 
-        internal bool PayCrystal(int value)
+        public bool PayCrystal(int value)
         {
             int newCrystal = _crystalVariable.Value - value;
             if (newCrystal >= 0)
@@ -41,7 +41,7 @@ namespace EvolveThisMatch.Core
             return false;
         }
 
-        internal bool CheckCrystal(int value)
+        public bool CheckCrystal(int value)
         {
             return _crystalVariable.Value >= value;
         }

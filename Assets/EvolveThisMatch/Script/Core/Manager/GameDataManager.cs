@@ -1,8 +1,8 @@
 using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Save;
 using FrameWork;
 using System.Collections.Generic;
 using System.Linq;
-using EvolveThisMatch.Save;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -20,12 +20,12 @@ namespace EvolveThisMatch.Core
         [SerializeField] private AgentRarityLibrary _agentRarityLibrary;
 
         public ProfileSaveDataTemplate profileSaveData => _profileSaveData;
-        internal BattleDataTemplate battleData => _battleData;
+        public BattleDataTemplate battleData => _battleData;
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
         public IReadOnlyDictionary<SkinTemplate, AgentTemplate> agentSkinTemplates => _agentSkinLibrary.templates;
-        internal int probabilityLevel => _agentRarityLibrary.probabilityLevel;
+        public int probabilityLevel => _agentRarityLibrary.probabilityLevel;
 
-        internal AgentTemplate GetAgentTemplateById(int id)
+        public AgentTemplate GetAgentTemplateById(int id)
         {
             return _agentLibrary.templates.Where(x => x.id == id).FirstOrDefault();
         }
@@ -36,7 +36,7 @@ namespace EvolveThisMatch.Core
         }
 
         #region 배치 상태
-        internal async UniTask<FormationSaveDataTemplate> GetFormationSaveData()
+        public async UniTask<FormationSaveDataTemplate> GetFormationSaveData()
         {
             if (_formationSaveData.isLoaded == false)
             {
@@ -45,7 +45,7 @@ namespace EvolveThisMatch.Core
             return _formationSaveData;
         }
 
-        internal async void SetFormationSaveData(List<FormationSlot> formation)
+        public async void SetFormationSaveData(List<FormationSlot> formation)
         {
             _formationSaveData.UpdateFormation(formation);
 
@@ -54,22 +54,22 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 등급별 유닛 소환 확률
-        internal AgentRarityTemplate GetAgentRandomRarity()
+        public AgentRarityTemplate GetAgentRandomRarity()
         {
             return _agentRarityLibrary.GetRandomAgentRarityTemplate();
         }
 
-        internal AgentRarityTemplate GetUpgradeLimitRarity(AgentRarityTemplate currentAgentRarity)
+        public AgentRarityTemplate GetUpgradeLimitRarity(AgentRarityTemplate currentAgentRarity)
         {
             return _agentRarityLibrary.GetUpgradeAgentRarityTemplate(currentAgentRarity);
         }
 
-        internal AgentRarityProbabilityData GetProbabilityList()
+        public AgentRarityProbabilityData GetProbabilityList()
         {
             return _agentRarityLibrary.GetProbabilityList();
         }
 
-        internal bool UpgradeProbabilityLevel()
+        public bool UpgradeProbabilityLevel()
         {
             return _agentRarityLibrary.UpgradeProbabilityLevel();
         }

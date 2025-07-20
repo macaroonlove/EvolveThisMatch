@@ -8,6 +8,7 @@ namespace EvolveThisMatch.Core
         [SerializeField] private EAgentRarity _rarity;
         [SerializeField] private Color _backgroundColor;
         [SerializeField] private Color _textColor;
+        [SerializeField] private Sprite _agentInfoSprite;
 
         [Header("·¹º§¾÷")]
         [SerializeField] private AgentLevelLibrary _agentLevelLibrary;
@@ -19,6 +20,7 @@ namespace EvolveThisMatch.Core
         public EAgentRarity rarity => _rarity;
         public Color backgroundColor => _backgroundColor;
         public Color textColor => _textColor;
+        public Sprite agentInfoSprite => _agentInfoSprite;
 
         public AgentLevelLibrary agentLevelLibrary => _agentLevelLibrary;
         public float successProbability => _successProbability;

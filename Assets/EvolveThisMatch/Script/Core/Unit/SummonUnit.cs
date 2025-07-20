@@ -6,7 +6,7 @@ namespace EvolveThisMatch.Core
     {
         private Unit _summoner;
 
-        internal SummonTemplate template { get; private set; }
+        public SummonTemplate template { get; private set; }
 
         internal void Initialize(SummonTemplate template, Unit summoner)
         {

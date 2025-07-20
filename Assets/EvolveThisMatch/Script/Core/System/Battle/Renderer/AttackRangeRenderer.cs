@@ -29,17 +29,17 @@ namespace EvolveThisMatch.Core
 
         }
 
-        internal void Show(int lineCount)
+        public void Show(int lineCount)
         {
             _lineRangeRenderer.Show(lineCount);
         }
 
-        internal void Show(Unit unit, float range)
+        public void Show(Unit unit, float range)
         {
             _circleRangeRenderer.Show(unit, range);
         }
 
-        internal void Hide()
+        public void Hide()
         {
             _lineRangeRenderer.Hide();
             _circleRangeRenderer.Hide();

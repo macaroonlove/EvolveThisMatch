@@ -12,9 +12,9 @@ namespace EvolveThisMatch.Core
 
         public ActiveSkillTemplate template { get; private set; }
         public float coolDownTime { get; private set; }
-        internal bool isAutoSkill { get; set; }
+        public bool isAutoSkill { get; set; }
 
-        internal float finalCoolDownTime
+        public float finalCoolDownTime
         {
             get
             {

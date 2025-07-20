@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -38,7 +37,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// À¯´Ö ¹èÄ¡
         /// </summary>
-        internal AgentBattleData PlaceUnit(AgentUnit agentUnit, AgentTemplate agentTemplate)
+        public AgentBattleData PlaceUnit(AgentUnit agentUnit, AgentTemplate agentTemplate)
         {
             _placedAgentData = _allySystem.Regist(agentUnit, agentTemplate);
             _placedAgentData.ComfirmTile(this);
@@ -51,7 +50,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// À¯´Ö ¹ÝÈ¯
         /// </summary>
-        internal void ReturnUnit()
+        public void ReturnUnit()
         {
             _allySystem.Deregist(_placedAgentData);
 

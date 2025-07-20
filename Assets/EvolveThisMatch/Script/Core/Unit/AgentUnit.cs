@@ -5,14 +5,14 @@ namespace EvolveThisMatch.Core
 {
     public class AgentUnit : AllyUnit
     {
-        internal AgentBattleData agentData { get; private set; }
+        public AgentBattleData agentData { get; private set; }
         internal DeployAbility deployAbility { get; private set; }
 
-        internal AgentTemplate template => agentData.agentTemplate;
-        internal int level => agentData.level;
-        internal AgentRarityTemplate limit => agentData.limit;
+        public AgentTemplate template => agentData.agentTemplate;
+        public int level => agentData.level;
+        public AgentRarityTemplate limit => agentData.limit;
 
-        internal void Initialize(AgentBattleData agentData)
+        public void Initialize(AgentBattleData agentData)
         {
             this.agentData = agentData;
             id = template.id;
@@ -21,27 +21,32 @@ namespace EvolveThisMatch.Core
             deployAbility = GetAbility<DeployAbility>();
         }
 
+        public void Deinitialize()
+        {
+            base.Deinitialize();
+        }
+
         internal override void OnDeath()
         {
             deployAbility.ReturnSortie().Forget();
         }
 
-        internal int GetNeedCoinToLevelUp()
+        public int GetNeedCoinToLevelUp()
         {
             return agentData.GetNeedCoinToLevelUp();
         }
 
-        internal void LevelUp()
+        public void LevelUp()
         {
             agentData.LevelUp();
         }
 
-        internal void UpgradeLimit()
+        public void UpgradeLimit()
         {
             agentData.UpgradeLimit();
         }
 
-        internal void DestinyRecast()
+        public void DestinyRecast()
         {
             agentData.DestinyRecast();
         }
@@ -74,7 +79,7 @@ namespace EvolveThisMatch.Editor
 
             menu.AddItem(new GUIContent("추적 이동"), false, AddAbility, typeof(MoveChaseAbility));
             menu.AddItem(new GUIContent("경계선까지 이동"), false, AddAbility, typeof(MoveBoundaryAbility));
-            
+
             menu.AddItem(new GUIContent("배치 능력"), false, AddAbility, typeof(DeployAbility));
 
             menu.AddItem(new GUIContent("객체 스폰(투사체, 덫)"), false, AddAbility, typeof(EntitySpawnAbility));

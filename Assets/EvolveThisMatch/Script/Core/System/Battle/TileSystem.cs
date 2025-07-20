@@ -7,8 +7,8 @@ namespace EvolveThisMatch.Core
     public class TileSystem : MonoBehaviour, IBattleSystem
     {
         private List<TileController> _controllers = new List<TileController>();
-        
-        internal Transform sortiePoint { get; private set; }
+
+        public Transform sortiePoint { get; private set; }
 
         private void Awake()
         {
@@ -42,7 +42,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 배치 가능한 타일 찾기
         /// </summary>
-        internal TileController GetPlaceAbleTile(int id)
+        public TileController GetPlaceAbleTile(int id)
         {
             return _controllers.FirstOrDefault(controller => !controller.isPlaceUnit);
         }

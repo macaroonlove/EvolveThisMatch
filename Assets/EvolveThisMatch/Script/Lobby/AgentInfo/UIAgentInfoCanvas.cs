@@ -1,5 +1,6 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork;
 using FrameWork.UIBinding;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +25,25 @@ namespace EvolveThisMatch.Lobby
         enum Images
         {
             FullBody,
-            Synergy,
         }
         enum Buttons
         {
             CloseButton,
+            StatButton,
+            SynergyButton,
+            SkillButton,
+            LevelUpButton,
+            TierUpButton,
+            AwakenedButton,
+        }
+        enum CanvasGroup
+        {
+            StatPanel,
+            SynergyPanel,
+            Skillpanel,
+            LevelUpPanel,
+            TierUpPanel,
+            AwakenedPanel,
         }
         #endregion
 
@@ -37,11 +52,11 @@ namespace EvolveThisMatch.Lobby
         private UIJobTag _jobTag;
         private UIAgentTier _tierGroup;
         private UIGeneralStatCanvas _generalStatCanvas;
-        private UISkillCanvas _skillCanvas;
+        private UISkillCanvas_Lobby _skillCanvas;
         private TextMeshProUGUI _displayName;
         private TextMeshProUGUI _level;
         private Image _fullBody;
-        private Image _synergy;
+        private CanvasGroupController[] _panels = new CanvasGroupController[6];
         
         private List<UIAgentInfoItem> _agentInfoItems;
 
@@ -51,20 +66,33 @@ namespace EvolveThisMatch.Lobby
             BindText(typeof(Texts));
             BindImage(typeof(Images));
             BindButton(typeof(Buttons));
+            BindCanvasGroupController(typeof(CanvasGroup));
 
             _parent = GetObject((int)Objects.Content).transform;
             _rarityTag = GetComponentInChildren<UIRarityTag>();
             _jobTag = GetComponentInChildren<UIJobTag>();
             _tierGroup = GetComponentInChildren<UIAgentTier>();
             _generalStatCanvas = GetComponentInChildren<UIGeneralStatCanvas>();
-            _skillCanvas = GetComponentInChildren<UISkillCanvas>();
+            _skillCanvas = GetComponentInChildren<UISkillCanvas_Lobby>();
 
             _displayName = GetText((int)Texts.DisplayName);
             _level = GetText((int)Texts.Level);
             _fullBody = GetImage((int)Images.FullBody);
-            _synergy = GetImage((int)Images.Synergy);
+
+            _panels[0] = GetCanvasGroupController((int)CanvasGroup.StatPanel);
+            _panels[1] = GetCanvasGroupController((int)CanvasGroup.SynergyPanel);
+            _panels[2] = GetCanvasGroupController((int)CanvasGroup.Skillpanel);
+            _panels[3] = GetCanvasGroupController((int)CanvasGroup.LevelUpPanel);
+            _panels[4] = GetCanvasGroupController((int)CanvasGroup.TierUpPanel);
+            _panels[5] = GetCanvasGroupController((int)CanvasGroup.AwakenedPanel);
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
+            GetButton((int)Buttons.StatButton).onClick.AddListener(() => ShowPanel(0));
+            GetButton((int)Buttons.SynergyButton).onClick.AddListener(() => ShowPanel(1));
+            GetButton((int)Buttons.SkillButton).onClick.AddListener(() => ShowPanel(2));
+            GetButton((int)Buttons.LevelUpButton).onClick.AddListener(() => ShowPanel(3));
+            GetButton((int)Buttons.TierUpButton).onClick.AddListener(() => ShowPanel(4));
+            GetButton((int)Buttons.AwakenedButton).onClick.AddListener(() => ShowPanel(5));
         }
 
         private void Start()
@@ -76,7 +104,6 @@ namespace EvolveThisMatch.Lobby
         {
             _displayName.text = template.displayName;
             _fullBody.sprite = template.sprite;
-            _synergy.sprite = template.synergy[0].icon;
 
             if (owned != null)
             {
@@ -98,6 +125,15 @@ namespace EvolveThisMatch.Lobby
 
             // 스킬 캔버스
             _skillCanvas.ShowSkill(template);
+        }
+
+        private void ShowPanel(int i)
+        {
+            foreach (var panel in _panels)
+            {
+                panel.Hide(false);
+            }
+            _panels[i].Show(false);
         }
 
         #region 유닛 리스트 만들기

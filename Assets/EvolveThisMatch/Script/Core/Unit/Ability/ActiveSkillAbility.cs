@@ -70,7 +70,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        internal ActiveSkillInstance GetSkillInstance(ActiveSkillTemplate template)
+        public ActiveSkillInstance GetSkillInstance(ActiveSkillTemplate template)
         {
             return _skills[template.id];
         }
@@ -115,7 +115,7 @@ namespace EvolveThisMatch.Core
         }
 
         #region 스킬 발동
-        internal bool TryExecuteSkill(ActiveSkillTemplate template)
+        public bool TryExecuteSkill(ActiveSkillTemplate template)
         {
             return TryExecuteSkill(_skills[template.id]);
         }

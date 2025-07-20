@@ -39,12 +39,12 @@ namespace EvolveThisMatch.Core
         private FX _targetFX;
 
         #region 프로퍼티
-        internal int baseATK => _baseATK;
-        internal float baseAttackTerm => _baseAttackTerm;
+        public int baseATK => _baseATK;
+        public float baseAttackTerm => _baseAttackTerm;
         #endregion
 
         #region 스탯 계산
-        internal int finalATK
+        public int finalATK
         {
             get
             {
@@ -79,7 +79,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        internal float finalAttackTerm
+        public float finalAttackTerm
         {
             get
             {

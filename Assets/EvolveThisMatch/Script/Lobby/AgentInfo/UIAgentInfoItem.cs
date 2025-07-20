@@ -18,6 +18,7 @@ namespace EvolveThisMatch.Lobby
         }
         enum Images
         {
+            Background,
             FullBody,
             CounterImage,
             Dim,
@@ -27,6 +28,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _level;
         private TextMeshProUGUI _displayName;
         private TextMeshProUGUI _counterText;
+        private Image _background;
         private Image _fullBody;
         private Image _counterImage;
         private Image _dim;
@@ -44,6 +46,7 @@ namespace EvolveThisMatch.Lobby
             _level = GetText((int)Texts.Level);
             _displayName = GetText((int)Texts.DisplayName);
             _counterText = GetText((int)Texts.CounterText);
+            _background = GetImage((int)Images.Background);
             _fullBody = GetImage((int)Images.FullBody);
             _counterImage = GetImage((int)Images.CounterImage);
             _dim = GetImage((int)Images.Dim);
@@ -62,7 +65,9 @@ namespace EvolveThisMatch.Lobby
 
             _displayName.text = template.displayName;
             _fullBody.sprite = template.sprite;
-            
+            _fullBody.rectTransform.anchoredPosition = template.faceCenterPosition + new Vector2(0, -100);
+            _background.sprite = template.rarity.agentInfoSprite;
+
             if (owned == null)
             {
                 _level.text = "¹Ìº¸À¯";

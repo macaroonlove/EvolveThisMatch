@@ -17,7 +17,7 @@ namespace EvolveThisMatch.Core
         private AgentCreateSystem _agentCreateSystem;
         private AgentReturnSystem _agentReturnSystem;
 
-        internal bool isSortie => _isSortie;
+        public bool isSortie => _isSortie;
 
         internal override void Initialize(Unit unit)
         {
@@ -48,7 +48,7 @@ namespace EvolveThisMatch.Core
             return !_isSortie;
         }
 
-        internal async UniTask StartSortie(Vector3 sortiePosition)
+        public async UniTask StartSortie(Vector3 sortiePosition)
         {
             var agentData = _agentUnit.agentData;
 
@@ -83,7 +83,7 @@ namespace EvolveThisMatch.Core
             unit.ReleaseCurrentAbility();
         }
 
-        internal async UniTask ReturnSortie()
+        public async UniTask ReturnSortie()
         {
             var agentData = _agentUnit.agentData;
 

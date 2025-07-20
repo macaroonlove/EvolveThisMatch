@@ -7,12 +7,12 @@ namespace EvolveThisMatch.Core
     {
         private AgentChangeSystem _agentChangeSystem;
 
-        internal AgentTemplate agentTemplate { get; private set; }
-        internal AgentUnit agentUnit { get; private set; }
-        internal SignBoard signBoard { get; private set; }
-        internal int level { get; private set; }
-        internal AgentRarityTemplate limit { get; private set; }
-        internal TileController mountTile { get; private set; }
+        public AgentTemplate agentTemplate { get; private set; }
+        public AgentUnit agentUnit { get; private set; }
+        public SignBoard signBoard { get; private set; }
+        public int level { get; private set; }
+        public AgentRarityTemplate limit { get; private set; }
+        public TileController mountTile { get; private set; }
 
         public AgentBattleData(AgentUnit agentUnit, AgentTemplate agentTemplate)
         {
@@ -38,7 +38,7 @@ namespace EvolveThisMatch.Core
             this.signBoard = signBoard;
         }
 
-        internal void DeregistSignBoard()
+        public void DeregistSignBoard()
         {
             signBoard = null;
         }

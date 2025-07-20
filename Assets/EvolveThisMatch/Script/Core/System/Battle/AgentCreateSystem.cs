@@ -14,7 +14,7 @@ namespace EvolveThisMatch.Core
         private TileSystem _tileSystem;
         private List<AgentTemplate> _ownedAgentTemplates = new List<AgentTemplate>();
 
-        internal event UnityAction<AgentBattleData> onInitializedUnit;
+        public event UnityAction<AgentBattleData> onInitializedUnit;
 
         public void Initialize()
         {
@@ -37,7 +37,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// µî±Þ Á¦ÇÑ ¾øÀÌ ·£´ý À¯´Ö
         /// </summary>
-        internal bool CreateRandomUnit()
+        public bool CreateRandomUnit()
         {
             var rand = GameDataManager.Instance.GetAgentRandomRarity();
             var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity == rand.rarity).ToList();
@@ -51,7 +51,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// ÃÖ¼Ò µî±Þ Á¦ÇÑ ·£´ý À¯´Ö
         /// </summary>
-        internal bool CreateRandomUnit(EAgentRarity rarity)
+        public bool CreateRandomUnit(EAgentRarity rarity)
         {
             var rand = GameDataManager.Instance.GetAgentRandomRarity();
             var finalRarity = (rand.rarity < rarity) ? rand.rarity : rarity;

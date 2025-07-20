@@ -16,8 +16,8 @@ namespace EvolveThisMatch.Core
         private AbnormalStatusAbility _abnormalStatusAbility;
 
         #region 프로퍼티
-        internal int basePhysicalResistance => _basePhysicalResistance;
-        internal int baseMagicResistance => _baseMagicResistance;
+        public int basePhysicalResistance => _basePhysicalResistance;
+        public int baseMagicResistance => _baseMagicResistance;
         #endregion
 
         #region 계산 스탯
@@ -137,7 +137,7 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 저항력
-        internal int finalPhysicalResistance
+        public int finalPhysicalResistance
         {
             get
             {
@@ -176,7 +176,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        internal int finalMagicResistance
+        public int finalMagicResistance
         {
             get
             {

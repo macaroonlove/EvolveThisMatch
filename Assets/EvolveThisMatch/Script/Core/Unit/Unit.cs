@@ -169,7 +169,7 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 유닛의 상호작용 여부
         /// </summary>
-        internal void SetInteraction(bool isOn)
+        public void SetInteraction(bool isOn)
         {
             _collider.enabled = isOn;
         }
