@@ -295,7 +295,7 @@ namespace EvolveThisMatch.Save
         /// <summary>
         /// 현재 레벨 기준 필요한 경험치 반환
         /// </summary>
-        private int GetRequiredExpForLevel(int level)
+        public int GetRequiredExpForLevel(int level)
         {
             if (level <= 0) return 0;
 

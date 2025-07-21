@@ -11,5 +11,6 @@ namespace EvolveThisMatch.Core
         void Initialize(AgentTemplate template);
         void Initialize(EnemyTemplate template);
         void Clear();
+        void Deinitialize();
     }
 }

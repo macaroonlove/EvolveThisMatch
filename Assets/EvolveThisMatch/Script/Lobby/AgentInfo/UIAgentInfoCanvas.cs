@@ -52,12 +52,14 @@ namespace EvolveThisMatch.Lobby
         private UIJobTag _jobTag;
         private UIAgentTier _tierGroup;
         private UIGeneralStatCanvas _generalStatCanvas;
+        private UISynergyItem _synergyItem;
         private UISkillCanvas_Lobby _skillCanvas;
+        private UILevelupPanel _levelupPanel;
         private TextMeshProUGUI _displayName;
         private TextMeshProUGUI _level;
         private Image _fullBody;
         private CanvasGroupController[] _panels = new CanvasGroupController[6];
-        
+
         private List<UIAgentInfoItem> _agentInfoItems;
 
         protected override void Initialize()
@@ -73,7 +75,9 @@ namespace EvolveThisMatch.Lobby
             _jobTag = GetComponentInChildren<UIJobTag>();
             _tierGroup = GetComponentInChildren<UIAgentTier>();
             _generalStatCanvas = GetComponentInChildren<UIGeneralStatCanvas>();
+            _synergyItem = GetComponentInChildren<UISynergyItem>();
             _skillCanvas = GetComponentInChildren<UISkillCanvas_Lobby>();
+            _levelupPanel = GetComponentInChildren<UILevelupPanel>();
 
             _displayName = GetText((int)Texts.DisplayName);
             _level = GetText((int)Texts.Level);
@@ -98,6 +102,8 @@ namespace EvolveThisMatch.Lobby
         private void Start()
         {
             InitializeAgentInfoItem();
+
+            _agentInfoItems[0].OnClick();
         }
 
         internal void Show(AgentTemplate template, ProfileSaveData.Agent owned)
@@ -123,17 +129,25 @@ namespace EvolveThisMatch.Lobby
             // 스탯 캔버스
             _generalStatCanvas.ShowInfomation(template);
 
+            // 시너지 적용
+            _synergyItem.Show(template.synergy[0]);
+
             // 스킬 캔버스
             _skillCanvas.ShowSkill(template);
+
+            // 레벨업 패널
+            _levelupPanel.Show(owned, () => { Show(template, owned); RegistAgentInfoItem(); });
         }
 
         private void ShowPanel(int i)
         {
-            foreach (var panel in _panels)
+            for (int j = 0; j < _panels.Length; j++)
             {
-                panel.Hide(false);
+                if (i == j)
+                    _panels[j].Show(false);
+                else
+                    _panels[j].Hide(false);
             }
-            _panels[i].Show(false);
         }
 
         #region 유닛 리스트 만들기
@@ -181,8 +195,6 @@ namespace EvolveThisMatch.Lobby
                     _agentInfoItems[i].Show(template, null, this);
                 }
             }
-
-            _agentInfoItems[0].OnClick();
         }
         #endregion
     }

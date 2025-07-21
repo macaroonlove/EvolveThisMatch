@@ -24,6 +24,14 @@ namespace EvolveThisMatch.Core
             {
                 stat.Initialize(template);
             }
+
+            if (template.job.job != EJob.Melee)
+            {
+                _stats[3].Deinitialize();
+                _stats[4].Deinitialize();
+                _stats[7].Deinitialize();
+                _stats[8].Deinitialize();
+            }
         }
 
         public void ShowInfomation(EnemyTemplate template)

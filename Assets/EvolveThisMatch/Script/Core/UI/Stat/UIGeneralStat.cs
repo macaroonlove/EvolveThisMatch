@@ -39,6 +39,12 @@ namespace EvolveThisMatch.Core
             {
                 _valueText.text = value.ToString($"F{decimalPoint}");
             }
+            gameObject.SetActive(true);
+        }
+
+        public void Deinitialize()
+        {
+            gameObject.SetActive(false);
         }
 
         public void Clear()

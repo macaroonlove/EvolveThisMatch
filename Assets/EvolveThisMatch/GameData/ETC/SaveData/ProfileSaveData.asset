@@ -16,9 +16,9 @@ MonoBehaviour:
     displayName: 
     isClearTutorial: 0
     gold:
-      currentCryptoKey: 1894576398
-      hiddenValue: 1894571594
-      fakeValue: 12100
+      currentCryptoKey: 1738378135
+      hiddenValue: 1738387819
+      fakeValue: 15100
       fakeValueActive: 1
       inited: 1
     ownedAgents:
@@ -32,36 +32,36 @@ MonoBehaviour:
     - id: 1
       unitCount: 1
       tier: 0
-      exp: 0
-      level: 1
+      exp: 8229
+      level: 42
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 2
       unitCount: 1
       tier: 0
-      exp: 0
-      level: 1
+      exp: 1360
+      level: 18
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 3
       unitCount: 1
       tier: 0
-      exp: 0
-      level: 1
+      exp: 786
+      level: 16
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 4
       unitCount: 1
       tier: 0
-      exp: 0
-      level: 1
+      exp: 139
+      level: 10
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 5
       unitCount: 1
       tier: 0
-      exp: 0
-      level: 1
+      exp: 614
+      level: 7
       selectedSkinId: 0
       ownedSkinIds: 00000000
     ownedPassiveItemIds: 
