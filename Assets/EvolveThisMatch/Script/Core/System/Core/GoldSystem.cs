@@ -63,12 +63,24 @@ namespace EvolveThisMatch.Core
             gold = (int)result;
             #endregion
 
-            SetGold(_goldVariable.Value + gold);
+            SetGold(currentGold + gold);
         }
 
-        internal void PayGold(int gold)
+        public bool PayGold(int value)
         {
+            int newValue = currentGold - value;
+            if (newValue >= 0)
+            {
+                SetGold(newValue);
+                return true;
+            }
 
+            return false;
+        }
+
+        public bool CheckGold(int value)
+        {
+            return currentGold >= value;
         }
 
         private void SetGold(int gold)

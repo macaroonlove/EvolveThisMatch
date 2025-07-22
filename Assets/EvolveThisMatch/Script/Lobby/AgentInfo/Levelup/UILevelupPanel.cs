@@ -248,8 +248,6 @@ namespace EvolveThisMatch.Lobby
             }
 
             _reShow?.Invoke();
-
-            _ = SaveManager.Instance.Save_ProfileData();
         }
 
         private void Clear()

@@ -55,6 +55,7 @@ namespace EvolveThisMatch.Lobby
         private UISynergyItem _synergyItem;
         private UISkillCanvas_Lobby _skillCanvas;
         private UILevelupPanel _levelupPanel;
+        private UITierUpPanel _tierUpPanel;
         private TextMeshProUGUI _displayName;
         private TextMeshProUGUI _level;
         private Image _fullBody;
@@ -78,6 +79,7 @@ namespace EvolveThisMatch.Lobby
             _synergyItem = GetComponentInChildren<UISynergyItem>();
             _skillCanvas = GetComponentInChildren<UISkillCanvas_Lobby>();
             _levelupPanel = GetComponentInChildren<UILevelupPanel>();
+            _tierUpPanel = GetComponentInChildren<UITierUpPanel>();
 
             _displayName = GetText((int)Texts.DisplayName);
             _level = GetText((int)Texts.Level);
@@ -114,7 +116,7 @@ namespace EvolveThisMatch.Lobby
             if (owned != null)
             {
                 // 유닛 레벨
-                _level.text = $"Lv. {owned.level}";
+                _level.text = $"Lv. {owned.level} / {GameDataManager.Instance.profileSaveData.GetMaxLevelByTier(owned.tier)}";
 
                 // 유닛 티어
                 _tierGroup.Show(owned.tier);
@@ -136,7 +138,10 @@ namespace EvolveThisMatch.Lobby
             _skillCanvas.ShowSkill(template);
 
             // 레벨업 패널
-            _levelupPanel.Show(owned, () => { Show(template, owned); RegistAgentInfoItem(); });
+            _levelupPanel.Show(owned, () => { ReShowAndSave(template, owned); });
+
+            // 승격 패널
+            _tierUpPanel.Show(owned, () => { ReShowAndSave(template, owned); });
         }
 
         private void ShowPanel(int i)
@@ -148,6 +153,13 @@ namespace EvolveThisMatch.Lobby
                 else
                     _panels[j].Hide(false);
             }
+        }
+
+        private void ReShowAndSave(AgentTemplate template, ProfileSaveData.Agent owned)
+        {
+            Show(template, owned);
+            RegistAgentInfoItem();
+            _ = SaveManager.Instance.Save_ProfileData();
         }
 
         #region 유닛 리스트 만들기

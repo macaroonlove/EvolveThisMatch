@@ -11,6 +11,11 @@ namespace EvolveThisMatch.Lobby
                 var tier = transform.GetChild(i).gameObject;
                 tier.SetActive(i < count);
             }
+
+            RectTransform rect = transform as RectTransform;
+            Vector2 size = rect.sizeDelta;
+            size.x = count * 54;
+            rect.sizeDelta = size;
         }
     }
 }
