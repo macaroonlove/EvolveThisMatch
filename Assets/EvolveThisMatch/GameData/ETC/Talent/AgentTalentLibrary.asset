@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c45f6848aa20024aac3df5f436e999c, type: 3}
+  m_Name: AgentTalentLibrary
+  m_EditorClassIdentifier: 
+  _talentData:
+  - id: 0
+    effect: {fileID: 11400000, guid: 8fa1bc04f2f2cf5419c89c41894a7eea, type: 2}
+    minValue: 10
+    maxValue: 200
+    rareLimit: 40
+    epicLimit: 80
+    legendLimit: 120
+    mythLimit: 160
+  - id: 1
+    effect: {fileID: 11400000, guid: 988a116943be81a469700f11c27825fe, type: 2}
+    minValue: 10
+    maxValue: 200
+    rareLimit: 40
+    epicLimit: 80
+    legendLimit: 120
+    mythLimit: 160
+  - id: 2
+    effect: {fileID: 11400000, guid: 124fda4670bb1f749a9b47c07c0b6303, type: 2}
+    minValue: 5
+    maxValue: 30
+    rareLimit: 10
+    epicLimit: 15
+    legendLimit: 20
+    mythLimit: 25
+  - id: 3
+    effect: {fileID: 11400000, guid: 6ff4c36af5b43a546bb197bd90e397ea, type: 2}
+    minValue: 10
+    maxValue: 200
+    rareLimit: 40
+    epicLimit: 80
+    legendLimit: 120
+    mythLimit: 160
+  _mythRarity: 1
+  _legendRarity: 5
+  _epicRarity: 20
+  _rareRarity: 44
+  _commonRarity: 30

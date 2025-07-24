@@ -37,6 +37,8 @@ namespace EvolveThisMatch.Save
             public int exp;
             public int level;
 
+            public Talent[] talent;
+
             public int selectedSkinId;
             public List<int> ownedSkinIds = new List<int>() { 0 };
 
@@ -46,9 +48,18 @@ namespace EvolveThisMatch.Save
                 this.unitCount = 0;
                 this.tier = 0;
                 this.exp = 0;
-                this.level = 0;
+                this.level = 1;
                 this.selectedSkinId = 0;
+                talent = new Talent[5];
             }
+        }
+
+        [Serializable]
+        public class Talent
+        {
+            public int id = -1;
+            public int value;
+            public bool isLock;
         }
         #endregion
     }

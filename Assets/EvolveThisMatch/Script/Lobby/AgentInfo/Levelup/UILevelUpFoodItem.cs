@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIFoodItem : UIBase, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+    public class UILevelUpFoodItem : UIBase, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     {
         #region ¹ÙÀÎµù
         enum Images

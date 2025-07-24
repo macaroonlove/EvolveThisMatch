@@ -1,6 +1,5 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -32,8 +31,8 @@ namespace EvolveThisMatch.Core
 #if UNITY_EDITOR
 namespace EvolveThisMatch.Editor
 {
-    using System;
     using EvolveThisMatch.Core;
+    using System;
     using UnityEditor;
     using UnityEditorInternal;
 

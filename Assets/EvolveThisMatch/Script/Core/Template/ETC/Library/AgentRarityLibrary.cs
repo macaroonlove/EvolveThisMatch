@@ -11,6 +11,7 @@ namespace EvolveThisMatch.Core
         [SerializeField] private List<AgentRarityProbabilityData> _probabilityList = new List<AgentRarityProbabilityData>();
 
         public int probabilityLevel { get; private set; }
+        public IReadOnlyList<AgentRarityTemplate> agentRarityTemplates => _agentRarityTemplates;
 
         public void Initialize()
         {

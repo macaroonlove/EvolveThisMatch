@@ -41,8 +41,8 @@ namespace EvolveThisMatch.Lobby
         private GameObject _arrow;
         private UILevelupAutoSelectButton _autoSelectButton;
 
-        private UIFoodItem[] _eats;
-        private UIFoodItem[] _stocks;
+        private UILevelUpFoodItem[] _eats;
+        private UILevelUpFoodItem[] _stocks;
 
         private ProfileSaveDataTemplate _profileData;
         private ProfileSaveData.Agent _owned;
@@ -65,8 +65,8 @@ namespace EvolveThisMatch.Lobby
             _expSlider = GetImage((int)Images.ExpSlider);
             _arrow = GetObject((int)Objects.Arrow);
 
-            _eats = GetObject((int)Objects.EatFood).GetComponentsInChildren<UIFoodItem>();
-            _stocks = GetObject((int)Objects.StockFood).GetComponentsInChildren<UIFoodItem>();
+            _eats = GetObject((int)Objects.EatFood).GetComponentsInChildren<UILevelUpFoodItem>();
+            _stocks = GetObject((int)Objects.StockFood).GetComponentsInChildren<UILevelUpFoodItem>();
 
             _autoSelectButton = GetComponentInChildren<UILevelupAutoSelectButton>();
             _autoSelectButton.Initialize(AutoSelect);

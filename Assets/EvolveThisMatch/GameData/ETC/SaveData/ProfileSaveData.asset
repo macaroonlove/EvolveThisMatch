@@ -16,52 +16,148 @@ MonoBehaviour:
     displayName: 
     isClearTutorial: 0
     gold:
-      currentCryptoKey: 1738378135
-      hiddenValue: 1738387819
-      fakeValue: 15100
+      currentCryptoKey: 1885012549
+      hiddenValue: 1885012513
+      fakeValue: 100
       fakeValueActive: 1
       inited: 1
     ownedAgents:
     - id: 0
-      unitCount: 1
+      unitCount: 0
       tier: 0
       exp: 0
       level: 1
+      talent:
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 1
-      unitCount: 1
+      unitCount: 0
       tier: 0
-      exp: 8229
-      level: 42
+      exp: 0
+      level: 1
+      talent:
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 2
-      unitCount: 1
+      unitCount: 0
       tier: 0
-      exp: 1360
-      level: 18
+      exp: 0
+      level: 1
+      talent:
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 3
-      unitCount: 1
+      unitCount: 0
       tier: 0
-      exp: 786
-      level: 16
+      exp: 0
+      level: 1
+      talent:
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 4
-      unitCount: 1
+      unitCount: 0
       tier: 0
-      exp: 139
-      level: 10
+      exp: 0
+      level: 1
+      talent:
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 5
-      unitCount: 1
+      unitCount: 0
       tier: 0
-      exp: 614
-      level: 7
+      exp: 0
+      level: 1
+      talent:
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     ownedPassiveItemIds: 

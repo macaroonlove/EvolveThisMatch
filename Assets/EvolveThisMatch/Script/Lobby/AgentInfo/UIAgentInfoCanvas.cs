@@ -34,7 +34,7 @@ namespace EvolveThisMatch.Lobby
             SkillButton,
             LevelUpButton,
             TierUpButton,
-            AwakenedButton,
+            TalentButton,
         }
         enum CanvasGroup
         {
@@ -43,7 +43,7 @@ namespace EvolveThisMatch.Lobby
             Skillpanel,
             LevelUpPanel,
             TierUpPanel,
-            AwakenedPanel,
+            TalentPanel,
         }
         #endregion
 
@@ -56,6 +56,8 @@ namespace EvolveThisMatch.Lobby
         private UISkillCanvas_Lobby _skillCanvas;
         private UILevelupPanel _levelupPanel;
         private UITierUpPanel _tierUpPanel;
+        private UITalentPanel _talentPanel;
+        private UITalentFilterPanel _talentFileterPanel;
         private TextMeshProUGUI _displayName;
         private TextMeshProUGUI _level;
         private Image _fullBody;
@@ -80,6 +82,9 @@ namespace EvolveThisMatch.Lobby
             _skillCanvas = GetComponentInChildren<UISkillCanvas_Lobby>();
             _levelupPanel = GetComponentInChildren<UILevelupPanel>();
             _tierUpPanel = GetComponentInChildren<UITierUpPanel>();
+            _talentPanel = GetComponentInChildren<UITalentPanel>();
+            _talentFileterPanel = GetComponentInChildren<UITalentFilterPanel>();
+            _talentFileterPanel.Show(_talentPanel);
 
             _displayName = GetText((int)Texts.DisplayName);
             _level = GetText((int)Texts.Level);
@@ -90,7 +95,7 @@ namespace EvolveThisMatch.Lobby
             _panels[2] = GetCanvasGroupController((int)CanvasGroup.Skillpanel);
             _panels[3] = GetCanvasGroupController((int)CanvasGroup.LevelUpPanel);
             _panels[4] = GetCanvasGroupController((int)CanvasGroup.TierUpPanel);
-            _panels[5] = GetCanvasGroupController((int)CanvasGroup.AwakenedPanel);
+            _panels[5] = GetCanvasGroupController((int)CanvasGroup.TalentPanel);
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
             GetButton((int)Buttons.StatButton).onClick.AddListener(() => ShowPanel(0));
@@ -98,7 +103,7 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.SkillButton).onClick.AddListener(() => ShowPanel(2));
             GetButton((int)Buttons.LevelUpButton).onClick.AddListener(() => ShowPanel(3));
             GetButton((int)Buttons.TierUpButton).onClick.AddListener(() => ShowPanel(4));
-            GetButton((int)Buttons.AwakenedButton).onClick.AddListener(() => ShowPanel(5));
+            GetButton((int)Buttons.TalentButton).onClick.AddListener(() => ShowPanel(5));
         }
 
         private void Start()
@@ -142,6 +147,9 @@ namespace EvolveThisMatch.Lobby
 
             // 승격 패널
             _tierUpPanel.Show(owned, () => { ReShowAndSave(template, owned); });
+
+            // 재능 패널
+            _talentPanel.Show(owned, () => { Save(); }, () => { _talentFileterPanel.Show(true); });
         }
 
         private void ShowPanel(int i)
@@ -159,6 +167,11 @@ namespace EvolveThisMatch.Lobby
         {
             Show(template, owned);
             RegistAgentInfoItem();
+            Save();
+        }
+
+        private void Save()
+        {
             _ = SaveManager.Instance.Save_ProfileData();
         }
 

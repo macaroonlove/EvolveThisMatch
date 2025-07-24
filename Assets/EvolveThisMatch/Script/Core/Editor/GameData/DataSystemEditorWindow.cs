@@ -1,13 +1,11 @@
+using EvolveThisMatch.Core;
 using FrameWork;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using EvolveThisMatch.Core;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
-using XNodeEditor;
 
 namespace EvolveThisMatch.Editor
 {
@@ -20,6 +18,7 @@ namespace EvolveThisMatch.Editor
 
         #region 유닛
         private int selectedUnitTitle = 0;
+        private int prevUnitTitle = -1;
 
         #region 아군 유닛
         private UnityEditor.Editor agentEditor;
@@ -43,11 +42,25 @@ namespace EvolveThisMatch.Editor
 
         #region 상태
         private int selectedStatusTitle = 0;
+        private int prevStatusTitle = -1;
+
         #region 버프
+        private int selectedBuffTitle = 0;
+        private int prevBuffTitle = -1;
         private UnityEditor.Editor buffEditor;
         private int selectedBuffIndex = 0;
         private Vector2 buffScrollPosition;
         private List<BuffTemplate> buffTemplates = new List<BuffTemplate>();
+
+        private static readonly string[] buffPaths = new[]
+        {
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Global",
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/ActiveSkill",
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/PassiveSkill",
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/ActiveItem",
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/PassiveItem",
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Synergy",
+        };
         #endregion
         #region 상태이상
         private UnityEditor.Editor abnormalStatusEditor;
@@ -65,6 +78,7 @@ namespace EvolveThisMatch.Editor
 
         #region 스킬
         private int selectedSkillTitle = 0;
+        private int prevSkillTitle = -1;
         #region 액티브 스킬
         private UnityEditor.Editor activeSkillEditor;
         private int selectedActiveSkillIndex = 0;
@@ -81,6 +95,8 @@ namespace EvolveThisMatch.Editor
 
         #region 아이템
         private int selectedItemTitle = 0;
+        private int prevItemTitle = -1;
+
         #region 액티브 아이템
         private UnityEditor.Editor activeItemEditor;
         private int selectedActiveItemIndex = 0;
@@ -226,8 +242,20 @@ namespace EvolveThisMatch.Editor
         }
 
         #region 유닛
+        private void AutoLoadUnit<T>(ref List<T> templates, string assetPrefix) where T : ScriptableObject, IDataWindowEntry
+        {
+            if (prevUnitTitle != selectedUnitTitle)
+            {
+                prevUnitTitle = selectedUnitTitle;
+
+                LoadTemplates(ref templates, $"Assets/EvolveThisMatch/GameData/Unit/{assetPrefix}", assetPrefix);
+            }
+        }
+
         private void DrawAgentTab()
         {
+            AutoLoadUnit(ref agentTemplates, "Agent");
+
             DrawTemplateTab<AgentTemplate>(
                 ref agentTemplates,
                 ref selectedAgentIndex,
@@ -248,6 +276,8 @@ namespace EvolveThisMatch.Editor
 
         private void DrawSummonTab()
         {
+            AutoLoadUnit(ref summonTemplates, "Summon");
+
             DrawTemplateTab<SummonTemplate>(
                 ref summonTemplates,
                 ref selectedSummonIndex,
@@ -268,6 +298,8 @@ namespace EvolveThisMatch.Editor
 
         private void DrawEnemyTab()
         {
+            AutoLoadUnit(ref enemyTemplates, "Enemy");
+
             DrawTemplateTab<EnemyTemplate>(
                 ref enemyTemplates,
                 ref selectedEnemyIndex,
@@ -288,21 +320,49 @@ namespace EvolveThisMatch.Editor
         #endregion
 
         #region 상태
+        private void AutoLoadStatus<T>(ref List<T> templates, string assetPrefix) where T : ScriptableObject, IDataWindowEntry
+        {
+            if (prevStatusTitle != selectedStatusTitle)
+            {
+                prevStatusTitle = selectedStatusTitle;
+
+                LoadTemplates(ref templates, $"Assets/EvolveThisMatch/GameData/Status/{assetPrefix}", assetPrefix);
+            }
+        }
+
         private void DrawBuffTab()
         {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Toggle(selectedBuffTitle == 0, "공용", "Button")) selectedBuffTitle = 0;
+            if (GUILayout.Toggle(selectedBuffTitle == 1, "액티브 스킬", "Button")) selectedBuffTitle = 1;
+            if (GUILayout.Toggle(selectedBuffTitle == 2, "패시브 스킬", "Button")) selectedBuffTitle = 2;
+            if (GUILayout.Toggle(selectedBuffTitle == 3, "액티브 아이템", "Button")) selectedBuffTitle = 3;
+            if (GUILayout.Toggle(selectedBuffTitle == 4, "패시브 아이템", "Button")) selectedBuffTitle = 4;
+            if (GUILayout.Toggle(selectedBuffTitle == 5, "시너지", "Button")) selectedBuffTitle = 5;
+            GUILayout.EndHorizontal();
+
+            if (prevBuffTitle != selectedBuffTitle)
+            {
+                prevBuffTitle = selectedBuffTitle;
+
+                LoadTemplates(ref buffTemplates, buffPaths[selectedBuffTitle], "BuffStatus");
+            }
+
             DrawTemplateTab<BuffTemplate>(
-                ref buffTemplates,
-                ref selectedBuffIndex,
-                ref buffScrollPosition,
-                ref buffEditor,
-                "버프",
-                "Assets/EvolveThisMatch/GameData/Status/BuffStatus",
-                "BuffStatus"
-            );
+                    ref buffTemplates,
+                    ref selectedBuffIndex,
+                    ref buffScrollPosition,
+                    ref buffEditor,
+                    "버프",
+                    buffPaths[selectedBuffTitle],
+                    "BuffStatus"
+                );
         }
 
         private void DrawAbnormalStatusTab()
         {
+            AutoLoadStatus(ref abnormalStatusTemplates, "AbnormalStatus");
+
             DrawTemplateTab<AbnormalStatusTemplate>(
                 ref abnormalStatusTemplates,
                 ref selectedAbnormalStatusIndex,
@@ -316,6 +376,8 @@ namespace EvolveThisMatch.Editor
 
         private void DrawGlobalStatusTab()
         {
+            AutoLoadStatus(ref globalStatusTemplates, "GlobalStatus");
+
             DrawTemplateTab<GlobalStatusTemplate>(
                 ref globalStatusTemplates,
                 ref selectedGlobalStatusIndex,
@@ -329,8 +391,20 @@ namespace EvolveThisMatch.Editor
         #endregion
 
         #region 스킬
+        private void AutoLoadSkill<T>(ref List<T> templates, string assetPrefix) where T : ScriptableObject, IDataWindowEntry
+        {
+            if (prevSkillTitle != selectedSkillTitle)
+            {
+                prevSkillTitle = selectedSkillTitle;
+
+                LoadTemplates(ref templates, $"Assets/EvolveThisMatch/GameData/Skill/{assetPrefix}", assetPrefix);
+            }
+        }
+
         private void DrawActiveSkillTab()
         {
+            AutoLoadSkill(ref activeSkillTemplates, "ActiveSkill");
+
             DrawTemplateTab<ActiveSkillTemplate>(
                 ref activeSkillTemplates,
                 ref selectedActiveSkillIndex,
@@ -351,6 +425,8 @@ namespace EvolveThisMatch.Editor
 
         private void DrawPassiveSkillTab()
         {
+            AutoLoadSkill(ref passiveSkillTemplates, "PassiveSkill");
+
             DrawTemplateTab<PassiveSkillTemplate>(
                 ref passiveSkillTemplates,
                 ref selectedPassiveSkillIndex,
@@ -371,8 +447,20 @@ namespace EvolveThisMatch.Editor
         #endregion
 
         #region 아이템
+        private void AutoLoadItem<T>(ref List<T> templates, string assetPrefix) where T : ScriptableObject, IDataWindowEntry
+        {
+            if (prevItemTitle != selectedItemTitle)
+            {
+                prevItemTitle = selectedItemTitle;
+
+                LoadTemplates(ref templates, $"Assets/EvolveThisMatch/GameData/Item/{assetPrefix}", assetPrefix);
+            }
+        }
+
         private void DrawActiveItemTab()
         {
+            AutoLoadItem(ref activeItemTemplates, "ActiveItem");
+
             DrawTemplateTab<ActiveItemTemplate>(
                 ref activeItemTemplates,
                 ref selectedActiveItemIndex,
@@ -393,6 +481,8 @@ namespace EvolveThisMatch.Editor
 
         private void DrawPassiveItemTab()
         {
+            AutoLoadItem(ref passiveItemTemplates, "PassiveItem");
+
             DrawTemplateTab<PassiveItemTemplate>(
                 ref passiveItemTemplates,
                 ref selectedPassiveItemIndex,
@@ -432,7 +522,7 @@ namespace EvolveThisMatch.Editor
             }
             if (GUILayout.Button($"{titleText} 탐색"))
             {
-                LoadTemplates(ref templates, assetPrefix);
+                LoadTemplates(ref templates, defaultPath, assetPrefix);
             }
 
             DrawLine();
@@ -505,7 +595,7 @@ namespace EvolveThisMatch.Editor
 
                 AssetDatabase.CreateAsset(newTemplate, path);
                 AssetDatabase.SaveAssets();
-                LoadTemplates<T>(ref templates, assetPrefix);
+                LoadTemplates<T>(ref templates, defaultPath, assetPrefix);
             }
         }
 
@@ -524,10 +614,10 @@ namespace EvolveThisMatch.Editor
             }
         }
 
-        private void LoadTemplates<T>(ref List<T> templates, string assetPrefix) where T : ScriptableObject, IDataWindowEntry
+        private void LoadTemplates<T>(ref List<T> templates, string defaultPath, string assetPrefix) where T : ScriptableObject, IDataWindowEntry
         {
             templates.Clear();
-            string[] guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+            string[] guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}", new[] { defaultPath });
             foreach (var guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);

@@ -18,11 +18,13 @@ namespace EvolveThisMatch.Core
         [SerializeField] private AgentLibraryTemplate _agentLibrary;
         [SerializeField] private SkinLibraryTemplate _agentSkinLibrary;
         [SerializeField] private AgentRarityLibrary _agentRarityLibrary;
+        [SerializeField] private AgentTalentLibrary _agentTalentLibrary;
 
         public ProfileSaveDataTemplate profileSaveData => _profileSaveData;
         public BattleDataTemplate battleData => _battleData;
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
         public IReadOnlyDictionary<SkinTemplate, AgentTemplate> agentSkinTemplates => _agentSkinLibrary.templates;
+        public IReadOnlyList<AgentRarityTemplate> agentRarityTemplates => _agentRarityLibrary.agentRarityTemplates;
         public int probabilityLevel => _agentRarityLibrary.probabilityLevel;
 
         public AgentTemplate GetAgentTemplateById(int id)
@@ -30,6 +32,17 @@ namespace EvolveThisMatch.Core
             return _agentLibrary.templates.Where(x => x.id == id).FirstOrDefault();
         }
 
+        /// <summary>
+        /// 게임을 시작할 때 초기화
+        /// </summary>
+        protected override void Initialize()
+        {
+            _agentTalentLibrary.Initialize();
+        }
+
+        /// <summary>
+        /// 전투가 시작할 때 마다 초기화
+        /// </summary>
         internal void InitializeData()
         {
             _agentRarityLibrary.Initialize();
@@ -72,6 +85,28 @@ namespace EvolveThisMatch.Core
         public bool UpgradeProbabilityLevel()
         {
             return _agentRarityLibrary.UpgradeProbabilityLevel();
+        }
+        #endregion
+
+        #region 유닛의 재능 불러오기 및 설정
+        public List<AgentTalentData> GetAllTalentEffect()
+        {
+            return _agentTalentLibrary.GetAllTalentEffect();
+        }
+
+        public AgentTalentData GetTalentEffect(int id)
+        {
+            return _agentTalentLibrary.GetTalentEffect(id);
+        }
+
+        public AgentTalentData GetRandomTalentEffect()
+        {
+            return _agentTalentLibrary.GetRandomTalentEffect();
+        }
+
+        public AgentRarityTemplate GetRandomRarity()
+        {
+            return _agentTalentLibrary.GetRandomRarity();
         }
         #endregion
     }

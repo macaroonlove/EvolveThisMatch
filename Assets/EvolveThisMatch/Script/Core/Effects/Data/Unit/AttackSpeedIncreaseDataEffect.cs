@@ -10,15 +10,15 @@ namespace EvolveThisMatch.Core
         {
             if (value == 0)
             {
-                return $"공격속도를 증가·감소 시켜주세요.";
+                return $"공격간격를 증가·감소 시켜주세요.";
             }
             else if (value > 0)
             {
-                return $"공격속도  {value * 100}% 증가";
+                return $"공격간격  {value * 100}% 감소";
             }
             else
             {
-                return $"공격속도  {Mathf.Abs(value) * 100}% 감소";
+                return $"공격간격  {Mathf.Abs(value) * 100}% 증가";
             }
         }
     }
