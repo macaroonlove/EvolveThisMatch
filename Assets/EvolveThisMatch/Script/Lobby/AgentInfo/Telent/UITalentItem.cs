@@ -5,6 +5,7 @@ using FrameWork.UIBinding;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -30,6 +31,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _talentText;
         private UIRarityTag _rarityTag;
         private CanvasGroupController _empty;
+        private UnityAction _action;
 
         internal ProfileSaveData.Talent talent { get; private set; }
         internal bool isLock => _toggle.isOn;
@@ -54,12 +56,15 @@ namespace EvolveThisMatch.Lobby
             if (talent == null) return;
 
             talent.isLock = isOn;
+            _action?.Invoke();
+
             _ = SaveManager.Instance.Save_ProfileData();
         }
 
-        internal void Show(ProfileSaveData.Talent talent)
+        internal void Show(ProfileSaveData.Talent talent, UnityAction action)
         {
             this.talent = talent;
+            _action = action;
 
             _toggle.isOn = talent.isLock;
 

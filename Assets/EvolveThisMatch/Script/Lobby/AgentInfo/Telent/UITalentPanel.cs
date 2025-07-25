@@ -1,100 +1,192 @@
 using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork;
 using FrameWork.UIBinding;
 using System.Collections.Generic;
-using UnityEngine;
+using TMPro;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
     public class UITalentPanel : UIBase
     {
         #region 바인딩
+        enum Texts
+        {
+            ChangeTalentText,
+        }
         enum Buttons
         {
-            ResettingButton,
-            ResettingFilterButton,
+            ChangeTalentButton,
+            OpenTalentFilterButton,
+        }
+        enum CanvasGroups
+        {
+            Dim,
         }
         #endregion
 
+        private TextMeshProUGUI _changeTalentText;
+        private Button _changeTalentButton;
+        private Button _openTalentFilterButton;
+        private CanvasGroupController _dim;
         private UITalentItem[] _items;
 
-        private ProfileSaveData.Agent _owned;
+        private CurrencySystem _currencySystem;
+
         private UnityAction _action;
         private UnityAction _openFilterPanel;
 
-        protected override void Initialize()
+        private bool _isStopResetting;
+        private int _cachedPowderCount;
+
+        protected override async void Initialize()
         {
             _items = GetComponentsInChildren<UITalentItem>();
 
+            BindText(typeof(Texts));
             BindButton(typeof(Buttons));
+            BindCanvasGroupController(typeof(CanvasGroups));
 
-            GetButton((int)Buttons.ResettingButton).onClick.AddListener(Resetting);
-            GetButton((int)Buttons.ResettingFilterButton).onClick.AddListener(ResettingFilterOpen);
+            _changeTalentText = GetText((int)Texts.ChangeTalentText);
+            _changeTalentButton = GetButton((int)Buttons.ChangeTalentButton);
+            _openTalentFilterButton = GetButton((int)Buttons.OpenTalentFilterButton);
+            _dim = GetCanvasGroupController((int)CanvasGroups.Dim);
+
+            _isStopResetting = false;
+
+            _changeTalentButton.onClick.AddListener(ChangeTalent);
+            _openTalentFilterButton.onClick.AddListener(() => _openFilterPanel?.Invoke());
+
+            await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
+
+            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
         }
 
         internal void Show(ProfileSaveData.Agent owned, UnityAction action, UnityAction openFilterPanel)
         {
             if (owned == null) return;
 
-            _owned = owned;
+            if (owned.tier <= 1)
+            {
+                _dim.Show(true);
+                return;
+            }
+
+            _dim.Hide(true);
+
             _action = action;
             _openFilterPanel = openFilterPanel;
 
             for (int i = 0; i < _items.Length; i++)
             {
-                _items[i].Show(owned.talent[i]);
+                _items[i].Show(owned.talent[i], () => SetChangeTalentText());
             }
+
+            SetChangeTalentText();
+
+            bool isAble = _currencySystem.CheckCurrency(CurrencyType.Powder, _cachedPowderCount);
+
+            _changeTalentButton.interactable = isAble;
+            _openTalentFilterButton.interactable = isAble;
         }
 
-        private void Resetting()
+        private void ChangeTalent()
         {
-            // TODO: 재능의 가루 사용하도록 구현
+            // 재설정이 불가능하다면
+            if (IsAbleResetting() == false) return;
 
-            for (int i = 0; i < _items.Length; i++)
+            foreach (var item in _items)
             {
-                var item = _items[i];
-
-                if (item.isLock == false)
-                {
-                    item.Resetting();
-                }
+                TryChangeTalentItem(item);
             }
 
             _action?.Invoke();
         }
 
-        private void ResettingFilterOpen()
+        internal async void ChangeTalent(int rarity, List<int> talents)
         {
-            _openFilterPanel?.Invoke();
-        }
+            _changeTalentText.text = "중지";
+            _isStopResetting = false;
 
-        internal async void ResettingFilter(int rarity, List<int> talents)
-        {
-            while (true)
+            while (_isStopResetting == false)
             {
-                bool isBreak = false;
-                for (int i = 0; i < _items.Length; i++)
-                {
-                    var item = _items[i];
+                // 재설정이 불가능하다면
+                if (IsAbleResetting() == false) break;
 
-                    if (item.isLock == false)
+                bool isBreak = false;
+
+                foreach (var item in _items)
+                {
+                    if (TryChangeTalentItem(item, rarity, talents))
                     {
-                        var data = item.Resetting();
-                        if (rarity >= ((int)data.GetRarity(item.talent.value).rarity) && talents.Contains(item.talent.id))
-                        {
-                            isBreak = true;
-                        }
+                        isBreak = true;
                     }
                 }
-                
+
                 if (isBreak) break;
-                
+
                 await UniTask.Yield();
             }
 
+            SetChangeTalentText();
             _action?.Invoke();
+        }
+
+        private bool IsAbleResetting()
+        {
+            if (_currencySystem.PayCurrency(CurrencyType.Powder, _cachedPowderCount) == false)
+            {
+                _changeTalentButton.interactable = false;
+                _openTalentFilterButton.interactable = false;
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool TryChangeTalentItem(UITalentItem item, int rarity = -1, List<int> talents = null)
+        {
+            if (item.isLock) return false;
+
+            var data = item.Resetting();
+
+            // 조건 없이 재설정
+            if (rarity == -1 || talents == null)
+                return false;
+
+            // 조건에 만족하면 루프 중단 (true)
+            return rarity >= (int)data.GetRarity(item.talent.value).rarity && talents.Contains(item.talent.id);
+        }
+
+        internal void StopFilter()
+        {
+            _isStopResetting = true;
+        }
+
+        private void SetChangeTalentText()
+        {
+            _changeTalentText.text = GetChangeTalentText();
+        }
+
+        internal string GetChangeTalentText()
+        {
+            int powderCount = 5;
+
+            foreach (var item in _items)
+            {
+                if (item.isLock)
+                {
+                    powderCount += 5;
+                }
+            }
+
+            _cachedPowderCount = powderCount;
+
+            return $"<sprite name=Powder> {powderCount}\n개화";
         }
     }
 }

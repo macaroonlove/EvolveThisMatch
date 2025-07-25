@@ -35,12 +35,10 @@ namespace EvolveThisMatch.Battle
             transform.localScale = Vector3.zero;
         }
 
-        internal void Show(ObscuredIntVariable variable, int count, UnityAction action)
+        internal void Show(Sprite icon, int count, UnityAction action)
         {
-            _icon.sprite = variable.Icon;
+            _icon.sprite = icon;
             _text.text = count.ToString();
-
-            variable.AddValue(count);
 
             transform.DOScale(1, 0.5f).OnComplete(() => { action?.Invoke(); });
         }

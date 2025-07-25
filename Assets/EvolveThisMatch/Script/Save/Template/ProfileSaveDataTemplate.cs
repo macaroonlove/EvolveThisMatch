@@ -218,7 +218,7 @@ namespace EvolveThisMatch.Save
         /// <summary>
         /// 유닛의 티어를 올리는데 요구하는 개수
         /// </summary>
-        private static readonly ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10, 15, 30, 50, 90, 150 };
+        private static readonly ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10 }; // , 15, 30, 50, 90, 150
 
         /// <summary>
         /// 유닛 티어 상승
@@ -261,6 +261,9 @@ namespace EvolveThisMatch.Save
         /// </summary>
         public int GetMaxUnitCountByTier(int tier)
         {
+            if (tier < 0 || tier >= _agentTierUpRequirements.Length)
+                return -1;
+
             return _agentTierUpRequirements[tier];
         }
         #endregion
@@ -269,7 +272,7 @@ namespace EvolveThisMatch.Save
         /// <summary>
         /// 티어에 따라 제한되는 최대 레벨
         /// </summary>
-        private static readonly int[] _agentMaxLevelPerTier = { 50, 70, 100, 120, 150, 180, 210, 240, 270, 300, 330 };
+        private static readonly int[] _agentMaxLevelPerTier = { 50, 70, 100, 120, 150, 180 }; //, 210, 240, 270, 300, 330
 
         /// <summary>
         /// 유닛 레벨업

@@ -1,5 +1,6 @@
 using FrameWork.Editor;
-using ScriptableObjectArchitecture;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -14,17 +15,11 @@ namespace EvolveThisMatch.Core
         [SerializeField, Label("시작 재능의 파편")] private int _startCrystal;
         [SerializeField, Label("패배 조건 유닛 수")] private int _defeatCondition;
 
-        [Header("보상")]
-        [SerializeField, Label("골드")] private ObscuredIntVariable _goldVariable;
-        [SerializeField, Label("재능의 정수")] private ObscuredIntVariable _essenceVariable;
-        [SerializeField, Label("전리품")] private ObscuredIntVariable _lootVariable;
-
-        [SerializeField, Label("웨이브 당 골드 획득량")] private int _goldPerWave;
-        [SerializeField, Label("웨이브 당 재능의 정수 획득량")] private int _essencePerWave;
-        [SerializeField, Label("웨이브 당 전리품 획득량")] private int _lootPerWave;
-
         [Header("웨이브")]
         [SerializeField] private WaveLibraryTemplate _waveLibrary;
+
+        [Header("보상")]
+        [SerializeField] private List<RewardData> _rewardsPerWave;
 
         #region 프로퍼티
         public string displayName => _displayName;
@@ -33,15 +28,16 @@ namespace EvolveThisMatch.Core
         public int startCrystal => _startCrystal;
         public int defeatCondition => _defeatCondition;
 
-        public ObscuredIntVariable goldVariable => _goldVariable;
-        public ObscuredIntVariable essenceVariable => _essenceVariable;
-        public ObscuredIntVariable lootVariable => _lootVariable;
-
-        public int goldPerWave => _goldPerWave;
-        public int essencePerWave => _essencePerWave;
-        public int lootPerWave => _lootPerWave;
-
         public WaveLibraryTemplate waveLibrary => _waveLibrary;
+
+        public IReadOnlyList<RewardData> rewardsPerWave => _rewardsPerWave;
         #endregion
+    }
+
+    [Serializable]
+    public class RewardData
+    {
+        public CurrencyType type;
+        public int amount;
     }
 }

@@ -81,10 +81,19 @@ namespace EvolveThisMatch.Lobby
             int unitCount = owned.unitCount;
             int maxUnitCount = GameDataManager.Instance.profileSaveData.GetMaxUnitCountByTier(owned.tier);
 
+            if (maxUnitCount == -1)
+            {
+                _counterText.text = $"{unitCount}";
+                _counterImage.fillAmount = 1;
+            }
+            else
+            {
+                _counterText.text = $"{unitCount}/{maxUnitCount}";
+                _counterImage.fillAmount = unitCount / maxUnitCount;
+            }
+
             _dim.enabled = false;
             _level.text = $"Lv. {owned.level}";
-            _counterText.text = $"{unitCount}/{maxUnitCount}";
-            _counterImage.fillAmount = unitCount / maxUnitCount;
             _tierGroup.Show(owned.tier);
         }
 

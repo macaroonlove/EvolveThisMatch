@@ -44,6 +44,7 @@ namespace EvolveThisMatch.Lobby
             LevelUpPanel,
             TierUpPanel,
             TalentPanel,
+            PowderVariableDisplay,
         }
         #endregion
 
@@ -62,6 +63,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _level;
         private Image _fullBody;
         private CanvasGroupController[] _panels = new CanvasGroupController[6];
+        private CanvasGroupController _PowderVariableDisplay;
 
         private List<UIAgentInfoItem> _agentInfoItems;
 
@@ -84,7 +86,7 @@ namespace EvolveThisMatch.Lobby
             _tierUpPanel = GetComponentInChildren<UITierUpPanel>();
             _talentPanel = GetComponentInChildren<UITalentPanel>();
             _talentFileterPanel = GetComponentInChildren<UITalentFilterPanel>();
-            _talentFileterPanel.Show(_talentPanel);
+            _talentFileterPanel.Initialize(_talentPanel);
 
             _displayName = GetText((int)Texts.DisplayName);
             _level = GetText((int)Texts.Level);
@@ -96,6 +98,7 @@ namespace EvolveThisMatch.Lobby
             _panels[3] = GetCanvasGroupController((int)CanvasGroup.LevelUpPanel);
             _panels[4] = GetCanvasGroupController((int)CanvasGroup.TierUpPanel);
             _panels[5] = GetCanvasGroupController((int)CanvasGroup.TalentPanel);
+            _PowderVariableDisplay = GetCanvasGroupController((int)CanvasGroup.PowderVariableDisplay);
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
             GetButton((int)Buttons.StatButton).onClick.AddListener(() => ShowPanel(0));
@@ -149,17 +152,20 @@ namespace EvolveThisMatch.Lobby
             _tierUpPanel.Show(owned, () => { ReShowAndSave(template, owned); });
 
             // 재능 패널
-            _talentPanel.Show(owned, () => { Save(); }, () => { _talentFileterPanel.Show(true); });
+            _talentPanel.Show(owned, () => { Save(); _talentFileterPanel.Hide(true); }, () => { _talentFileterPanel.Show(); });
         }
 
         private void ShowPanel(int i)
         {
+            if (i == 5) _PowderVariableDisplay.Show(true);
+            else _PowderVariableDisplay.Hide(true);
+
             for (int j = 0; j < _panels.Length; j++)
             {
                 if (i == j)
-                    _panels[j].Show(false);
+                    _panels[j].Show(true);
                 else
-                    _panels[j].Hide(false);
+                    _panels[j].Hide(true);
             }
         }
 

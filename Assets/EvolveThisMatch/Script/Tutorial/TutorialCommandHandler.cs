@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Tutorial
             switch (itemType)
             {
                 case ItemType.Gold:
-                    CoreManager.Instance.GetSubSystem<GoldSystem>().AddGold(amount);
+                    CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Gold, amount);
                     break;
                 case ItemType.ActiveItem:
                     AddressableAssetManager.Instance.GetScriptableObject<ActiveItemTemplate>(name, (template) =>

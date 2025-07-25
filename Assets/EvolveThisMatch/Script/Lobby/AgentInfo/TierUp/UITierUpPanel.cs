@@ -2,6 +2,7 @@ using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -22,11 +23,16 @@ namespace EvolveThisMatch.Lobby
         {
             TierUpButton,
         }
+        enum Objects
+        {
+            Arrow,
+        }
         #endregion
 
         private TextMeshProUGUI _counterText;
         private Image _counterImage;
         private Button _tierUpButton;
+        private GameObject _arrow;
 
         private UIAgentTier[] _tierGroups;
         private UITierAdvantageItem[] _tierAdvantageItems;
@@ -43,10 +49,12 @@ namespace EvolveThisMatch.Lobby
             BindText(typeof(Texts));
             BindImage(typeof(Images));
             BindButton(typeof(Buttons));
+            BindObject(typeof(Objects));
 
             _counterText = GetText((int)Texts.CounterText);
             _counterImage = GetImage((int)Images.CounterImage);
             _tierUpButton = GetButton((int)Buttons.TierUpButton);
+            _arrow = GetObject((int)Objects.Arrow);
 
             _tierUpButton.onClick.AddListener(TierUp);
         }
@@ -70,16 +78,34 @@ namespace EvolveThisMatch.Lobby
                 return;
             }
 
-            _tierGroups[0].Show(_owned.tier);
-            _tierGroups[1].Show(_owned.tier + 1);
+            
 
             int tier = owned.tier;
             int unitCount = owned.unitCount;
             int maxUnitCount = GameDataManager.Instance.profileSaveData.GetMaxUnitCountByTier(tier);
 
-            _counterText.text = $"{unitCount}/{maxUnitCount}";
-            _counterImage.fillAmount = (float)unitCount / maxUnitCount;
+            if (maxUnitCount == -1)
+            {
+                _counterText.text = $"{unitCount}";
+                _counterImage.fillAmount = 1;
 
+                _tierGroups[1].gameObject.SetActive(false);
+                _arrow.SetActive(false);
+
+                _tierGroups[0].Show(_owned.tier);
+            }
+            else
+            {
+                _counterText.text = $"{unitCount}/{maxUnitCount}";
+                _counterImage.fillAmount = (float)unitCount / maxUnitCount;
+
+                _tierGroups[1].gameObject.SetActive(true);
+                _arrow.SetActive(true);
+
+                _tierGroups[0].Show(_owned.tier);
+                _tierGroups[1].Show(_owned.tier + 1);
+            }
+            
             for (int i = 0; i < _tierAdvantageItems.Length; i++)
             {
                 _tierAdvantageItems[i].ShowItem(i < tier);

@@ -1,6 +1,17 @@
 namespace EvolveThisMatch.Core
 {
     /// <summary>
+    /// 재화 관리
+    /// </summary>
+    public enum CurrencyType
+    {
+        Gold,
+        Essence,
+        Powder,
+        Loot,
+    }
+
+    /// <summary>
     /// 이동 방식
     /// (지상, 공중)
     /// </summary>

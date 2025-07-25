@@ -4,6 +4,13 @@ namespace EvolveThisMatch.Lobby
 {
     public class UIAgentTier : MonoBehaviour
     {
+        private float _tierSize;
+
+        private void Awake()
+        {
+            _tierSize = (transform.GetChild(0) as RectTransform).sizeDelta.x + 3;
+        }
+
         public void Show(int count)
         {
             for (int i = 0; i < transform.childCount; i++)
@@ -14,7 +21,7 @@ namespace EvolveThisMatch.Lobby
 
             RectTransform rect = transform as RectTransform;
             Vector2 size = rect.sizeDelta;
-            size.x = count * 54;
+            size.x = count * _tierSize;
             rect.sizeDelta = size;
         }
     }

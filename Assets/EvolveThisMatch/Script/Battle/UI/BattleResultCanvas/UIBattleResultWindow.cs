@@ -1,6 +1,7 @@
 using EvolveThisMatch.Core;
 using FrameWork.Loading;
 using FrameWork.UIBinding;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -63,17 +64,31 @@ namespace EvolveThisMatch.Battle
         {
             var battleData = GameDataManager.Instance.battleData;
             var finalWave = BattleManager.Instance.GetSubSystem<WaveSystem>().currentWaveIndex;
+            var currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
 
             _difficultyText.text = battleData.displayName;
             _finalWaveText.text = finalWave.ToString();
 
-            _rewardItems[0].Show(battleData.goldVariable, battleData.goldPerWave * finalWave, () =>
+            foreach (var reward in battleData.rewardsPerWave)
             {
-                _rewardItems[1].Show(battleData.essenceVariable, battleData.essencePerWave * finalWave, () =>
+                int amount = reward.amount * finalWave;
+                currencySystem.AddCurrency(reward.type, amount);
+            }
+
+            void ShowRewardItems(IReadOnlyList<RewardData> rewards, int index)
+            {
+                if (index >= rewards.Count) return;
+
+                var reward = rewards[index];
+                int totalAmount = reward.amount * finalWave;
+
+                _rewardItems[index].Show(currencySystem.GetIcon(reward.type), totalAmount, () =>
                 {
-                    _rewardItems[2].Show(battleData.lootVariable, battleData.lootPerWave * finalWave, null);
+                    ShowRewardItems(rewards, index + 1);
                 });
-            });
+            }
+
+            ShowRewardItems(battleData.rewardsPerWave, 0);
 
             base.Show();
         }

@@ -1989,9 +1989,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9109597192144070429}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &7690692522910546729
 MonoBehaviour:
@@ -2029,6 +2029,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4316002127470949569}
     m_Modifications:
+    - target: {fileID: 5950899081288556382, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
+      propertyPath: m_text
+      value: "\uCE58\uBA85\uD0C0 \uD655\uB960 20% \uC99D\uAC00"
+      objectReference: {fileID: 0}
     - target: {fileID: 8974058877364980053, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2131,6 +2135,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4316002127470949569}
     m_Modifications:
+    - target: {fileID: 5950899081288556382, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
+      propertyPath: m_text
+      value: "\uC7AC\uB2A5 \uAC1C\uBC29"
+      objectReference: {fileID: 0}
     - target: {fileID: 8974058877364980053, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2233,6 +2241,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4316002127470949569}
     m_Modifications:
+    - target: {fileID: 5950899081288556382, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
+      propertyPath: m_text
+      value: "\uC2A4\uD0AC \uAC00\uC18D 10% \uC99D\uAC00"
+      objectReference: {fileID: 0}
     - target: {fileID: 8974058877364980053, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2437,6 +2449,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4316002127470949569}
     m_Modifications:
+    - target: {fileID: 5950899081288556382, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
+      propertyPath: m_text
+      value: "\uC804\uD22C\uB825 20% \uC0C1\uC2B9"
+      objectReference: {fileID: 0}
     - target: {fileID: 8974058877364980053, guid: 6d43bcbd022771a45bcf21662edab81a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

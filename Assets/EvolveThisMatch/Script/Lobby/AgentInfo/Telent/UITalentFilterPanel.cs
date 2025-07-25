@@ -19,21 +19,37 @@ namespace EvolveThisMatch.Lobby
         }
         enum Buttons
         {
+            CloseButton,
             ConditionResetting,
+        }
+        enum Texts
+        {
+            ConditionResettingText,
+        }
+        enum CanvasGroups
+        {
+            Panel,
         }
         #endregion
 
         private Toggle[] _rarityToggles;
         private List<Toggle> _talentToggles = new List<Toggle>();
         private UITalentPanel _talentPanel;
+        private TextMeshProUGUI _buttonText;
+        private CanvasGroupController _panel;
 
         protected override void Initialize()
         {
             BindObject(typeof(Objects));
             BindButton(typeof(Buttons));
+            BindText(typeof(Texts));
+            BindCanvasGroupController(typeof(CanvasGroups));
 
             _rarityToggles = GetObject((int)Objects.RarityConditionGroup).GetComponentsInChildren<Toggle>();
+            _buttonText = GetText((int)Texts.ConditionResettingText);
+            _panel = GetCanvasGroupController((int)CanvasGroups.Panel);
 
+            GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
             GetButton((int)Buttons.ConditionResetting).onClick.AddListener(ConditionResetting);
             InitializeTalentToggle();
         }
@@ -62,14 +78,31 @@ namespace EvolveThisMatch.Lobby
             Destroy(prefab);
         }
 
-        internal void Show(UITalentPanel talentPanel)
+        internal void Initialize(UITalentPanel talentPanel)
         {
             _talentPanel = talentPanel;
         }
 
+        internal void Show()
+        {
+            _buttonText.text = _talentPanel.GetChangeTalentText();
+
+            _panel.Show(true);
+            Show(true);
+        }
+
         private void ConditionResetting()
         {
-            _talentPanel?.ResettingFilter(GetActiveRarityToggle(), GetActiveTalentToggle());
+            _talentPanel?.ChangeTalent(GetActiveRarityToggle(), GetActiveTalentToggle());
+
+            _panel.Hide(true);
+        }
+
+        private void Hide()
+        {
+            _talentPanel?.StopFilter();
+
+            Hide(true);
         }
 
         /// <summary>

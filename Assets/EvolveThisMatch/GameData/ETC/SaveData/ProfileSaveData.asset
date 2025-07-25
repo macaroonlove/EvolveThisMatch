@@ -23,26 +23,26 @@ MonoBehaviour:
       inited: 1
     ownedAgents:
     - id: 0
-      unitCount: 0
-      tier: 0
-      exp: 0
-      level: 1
+      unitCount: 13
+      tier: 5
+      exp: 62951
+      level: 50
       talent:
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
+      - id: 0
+        value: 174
+        isLock: 1
+      - id: 0
+        value: 172
+        isLock: 1
+      - id: 0
+        value: 185
+        isLock: 1
+      - id: 0
+        value: 164
+        isLock: 1
+      - id: 0
+        value: 195
+        isLock: 1
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 1
@@ -51,20 +51,20 @@ MonoBehaviour:
       exp: 0
       level: 1
       talent:
-      - id: -1
-        value: 0
+      - id: 0
+        value: 193
+        isLock: 1
+      - id: 1
+        value: 72
         isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
+      - id: 0
+        value: 173
+        isLock: 1
+      - id: 0
+        value: 191
+        isLock: 1
+      - id: 1
+        value: 27
         isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
@@ -74,21 +74,21 @@ MonoBehaviour:
       exp: 0
       level: 1
       talent:
-      - id: -1
-        value: 0
+      - id: 0
+        value: 167
+        isLock: 1
+      - id: 2
+        value: 23
         isLock: 0
-      - id: -1
-        value: 0
+      - id: 1
+        value: 57
         isLock: 0
-      - id: -1
-        value: 0
+      - id: 1
+        value: 81
         isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
+      - id: 0
+        value: 164
+        isLock: 1
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 3

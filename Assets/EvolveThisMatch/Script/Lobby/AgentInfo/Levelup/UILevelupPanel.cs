@@ -262,6 +262,7 @@ namespace EvolveThisMatch.Lobby
             int maxExp = _profileData.GetRequiredExpForLevel(level);
             float percent = (float)_owned.exp / maxExp;
 
+            _expValue = 0;
             _originLevel.text = $"Lv. {level}";
             _expText.text = $"{_owned.exp} / {maxExp}";
             _expSlider.fillAmount = percent;
