@@ -69,7 +69,7 @@ namespace EvolveThisMatch.Lobby
         {
             if (owned == null) return;
 
-            if (owned.tier <= 1)
+            if (owned.tier <= 2)
             {
                 _dim.Show(true);
                 return;

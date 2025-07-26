@@ -9,7 +9,7 @@ namespace EvolveThisMatch.Core
 
         public void SetValue(float value)
         {
-            _value = value * 0.01f;
+            _value = Mathf.Round(value * 0.01f * 10000f) / 10000f;
         }
     }
 }

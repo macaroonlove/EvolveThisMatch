@@ -25,8 +25,8 @@ MonoBehaviour:
     - id: 0
       unitCount: 13
       tier: 5
-      exp: 62951
-      level: 50
+      exp: 32730
+      level: 59
       talent:
       - id: 0
         value: 174
@@ -46,8 +46,8 @@ MonoBehaviour:
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 1
-      unitCount: 0
-      tier: 0
+      unitCount: 2
+      tier: 2
       exp: 0
       level: 1
       talent:
@@ -69,22 +69,22 @@ MonoBehaviour:
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 2
-      unitCount: 0
-      tier: 0
-      exp: 0
-      level: 1
+      unitCount: 6
+      tier: 2
+      exp: 25
+      level: 70
       talent:
       - id: 0
         value: 167
         isLock: 1
-      - id: 2
-        value: 23
+      - id: 0
+        value: 66
         isLock: 0
       - id: 1
-        value: 57
+        value: 61
         isLock: 0
-      - id: 1
-        value: 81
+      - id: 3
+        value: 35
         isLock: 0
       - id: 0
         value: 164
@@ -92,26 +92,26 @@ MonoBehaviour:
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 3
-      unitCount: 0
-      tier: 0
-      exp: 0
-      level: 1
+      unitCount: 1
+      tier: 3
+      exp: 48214
+      level: 61
       talent:
-      - id: -1
-        value: 0
+      - id: 3
+        value: 98
         isLock: 0
-      - id: -1
-        value: 0
+      - id: 0
+        value: 180
+        isLock: 1
+      - id: 0
+        value: 172
+        isLock: 1
+      - id: 3
+        value: 84
         isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
-      - id: -1
-        value: 0
-        isLock: 0
+      - id: 0
+        value: 186
+        isLock: 1
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 4

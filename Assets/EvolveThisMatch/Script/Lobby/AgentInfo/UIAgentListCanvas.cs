@@ -1,0 +1,174 @@
+using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
+using FrameWork.UIBinding;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
+namespace EvolveThisMatch.Lobby
+{
+    public class UIAgentListCanvas : UIBase
+    {
+        #region 바인딩
+        enum Objects
+        {
+            Content,
+        }
+        enum Dropdowns
+        {
+            Filter,
+        }
+        enum Toggles
+        {
+            Order,
+        }
+        #endregion
+
+        private Transform _orderIcon;
+
+        private Transform _parent;
+        private List<UIAgentListItem> _agentListItems;
+        public List<AgentTemplate> _agentTemplates;
+        
+        private bool _isAsc;
+        private int _filterIndex;
+
+        private UnityAction<AgentTemplate, ProfileSaveData.Agent> _action;
+
+        internal void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        {
+            _action = action;
+
+            BindObject(typeof(Objects));
+            BindDropdown(typeof(Dropdowns));
+            BindToggle(typeof(Toggles));
+
+            _parent = GetObject((int)Objects.Content).transform;
+            var filter = GetDropdown((int)Dropdowns.Filter);
+            var order = GetToggle((int)Toggles.Order);
+            _orderIcon = order.transform.GetChild(0);
+
+            order.onValueChanged.AddListener(ChangeSortOrder);
+            filter.onValueChanged.AddListener(ChangeFilterOrder);
+        }
+
+        private void Start()
+        {
+            InitializeAgentListItem();
+
+            _agentListItems[0].OnClick();
+        }
+
+        #region 리스트 아이템 생성
+        private void InitializeAgentListItem()
+        {
+            _agentTemplates = GameDataManager.Instance.agentTemplates.ToList();
+            int count = _agentTemplates.Count;
+
+            _agentListItems = new List<UIAgentListItem>(count);
+
+            var agentInfoItem = GetComponentInChildren<UIAgentListItem>();
+
+            // 나머지 프리팹 인스턴스 생성
+            for (int i = 0; i < count; i++)
+            {
+                var item = Instantiate(agentInfoItem.gameObject, _parent).GetComponent<UIAgentListItem>();
+                item.Initialize(_action);
+                _agentListItems.Add(item);
+            }
+
+            Destroy(agentInfoItem.gameObject);
+
+            ChangeFilterOrder(0);
+        }
+
+        internal void RegistAgentListItem()
+        {
+            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            int count = _agentTemplates.Count;
+
+            // 보유한 유닛의 아이디
+            var ownedAgentDic = ownedAgents.ToDictionary(a => a.id);
+
+            for (int i = 0; i < count; i++)
+            {
+                var template = _agentTemplates[i];
+
+                if (ownedAgentDic.TryGetValue(template.id, out var owned))
+                {
+                    // 보유한 유닛 → level, unitCount 전달
+                    _agentListItems[i].Show(template, owned);
+                }
+                else
+                {
+                    // 미보유 유닛
+                    _agentListItems[i].Show(template, null);
+                }
+            }
+        }
+        #endregion
+
+        private void ChangeSortOrder(bool isOn)
+        {
+            // 아이콘 돌리기
+            Vector3 rotation = _orderIcon.localEulerAngles;
+            rotation.z = (isOn) ? 0 : 180;
+            _orderIcon.localEulerAngles = rotation;
+
+            // 오름차순이면 True, 내림차순이면 False
+            _isAsc = isOn;
+
+            ChangeFilterOrder(_filterIndex);
+        }
+
+        private void ChangeFilterOrder(int index)
+        {
+            _filterIndex = index;
+
+            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+
+            // 보유한 유닛의 아이디
+            var ownedAgentDic = ownedAgents.ToDictionary(a => a.id);
+
+            switch (index)
+            {
+                case 0:
+                    SortBy(t => -(int)t.rarity.rarity);
+                    break;
+                case 1:
+                    SortBy(t => t.ATK);
+                    break;
+                case 2:
+                    SortBy(t => ownedAgentDic.TryGetValue(t.id, out var o) ? o.level : int.MinValue);
+                    break;
+                case 3:
+                    SortBy(t => ownedAgentDic.TryGetValue(t.id, out var o) ? o.tier : int.MinValue);
+                    break;
+            }
+
+            RegistAgentListItem();
+        }
+
+        private void SortBy<T>(Func<AgentTemplate, T> primaryKey) where T : IComparable<T>
+        {
+            if (_isAsc)
+            {
+                _agentTemplates = _agentTemplates
+                    .OrderBy(primaryKey)
+                    .ThenBy(t => t.id)
+                    .ToList();
+            }
+            else
+            {
+                _agentTemplates = _agentTemplates
+                    .OrderByDescending(primaryKey)
+                    .ThenBy(t => t.id)
+                    .ToList();
+            }
+        }
+    }
+}

@@ -10,7 +10,7 @@ namespace EvolveThisMatch.Lobby
         {
             BattleStartButton,
             AgentInfoButton,
-            DinerButton,
+            ManagementButton,
             ArtifactButton,
             TomeButton,
             StoreButton,
@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Lobby
 
             GetButton((int)Buttons.BattleStartButton).onClick.AddListener(BattleStart);
             GetButton((int)Buttons.AgentInfoButton).onClick.AddListener(ShowAgentInfo);
-            GetButton((int)Buttons.DinerButton).onClick.AddListener(ShowDiner);
+            GetButton((int)Buttons.ManagementButton).onClick.AddListener(ShowManagement);
             GetButton((int)Buttons.ArtifactButton).onClick.AddListener(ShowArtifact);
             GetButton((int)Buttons.TomeButton).onClick.AddListener(ShowTome);
             GetButton((int)Buttons.StoreButton).onClick.AddListener(ShowStore);
@@ -47,7 +47,7 @@ namespace EvolveThisMatch.Lobby
             _agentInfoCanvas.Show();
         }
 
-        private void ShowDiner()
+        private void ShowManagement()
         {
 
         }
