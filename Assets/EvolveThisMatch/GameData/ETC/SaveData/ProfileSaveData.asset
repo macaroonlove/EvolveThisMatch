@@ -160,6 +160,7 @@ MonoBehaviour:
         isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
+    departments: []
     ownedPassiveItemIds: 
     ownedActiveItemIds: 
   _goldVariable: {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}

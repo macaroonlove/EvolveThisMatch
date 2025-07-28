@@ -13,9 +13,11 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField] private ProfileSaveDataTemplate _profileData;
         [SerializeField] private FormationSaveDataTemplate _formationData;
+        [SerializeField] private DepartmentSaveDataTemplate _departmentData;
 
         public ProfileSaveDataTemplate profileData => _profileData;
         public FormationSaveDataTemplate formationData => _formationData;
+        public DepartmentSaveDataTemplate departmentData => _departmentData;
 
         protected override void Initialize()
         {
@@ -25,6 +27,7 @@ namespace EvolveThisMatch.Save
             // 데이터 지우기
             profileData.Clear();
             formationData.Clear();
+            departmentData.Clear();
         }
 
         #region Profile Data
@@ -120,6 +123,55 @@ namespace EvolveThisMatch.Save
             else
             {
                 return ClearPlayerPrefs("FormationData");
+            }
+        }
+        #endregion
+
+        #region Department Data
+        public async UniTask<bool> Load_DepartmentData()
+        {
+            bool isSuccess;
+
+            if (PlayFabAuthService.IsLoginState)
+            {
+                isSuccess = await LoadPlayFab(departmentData, "DepartmentData");
+            }
+            else
+            {
+                isSuccess = LoadPlayerPrefs(departmentData, "DepartmentData");
+            }
+
+            if (isSuccess == false)
+            {
+                departmentData.SetDefaultValues();
+                await Save_DepartmentData();
+            }
+
+            return true;
+        }
+
+        public async UniTask<bool> Save_DepartmentData()
+        {
+            if (PlayFabAuthService.IsLoginState)
+            {
+                return await SavePlayFab(departmentData, "DepartmentData");
+            }
+            else
+            {
+                return SavePlayerPrefs(departmentData, "DepartmentData");
+            }
+        }
+
+        [ContextMenu("부서 초기화")]
+        public async UniTask<bool> Clear_DepartmentData()
+        {
+            if (PlayFabAuthService.IsLoginState)
+            {
+                return await ClearPlayFab("DepartmentData");
+            }
+            else
+            {
+                return ClearPlayerPrefs("DepartmentData");
             }
         }
         #endregion

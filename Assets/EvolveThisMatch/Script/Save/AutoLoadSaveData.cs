@@ -37,6 +37,7 @@ namespace EvolveThisMatch.Save
             {
                 await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
                 await SaveManager.Instance.Load_ProfileData();
+                await SaveManager.Instance.Load_DepartmentData();
             }
         }
     }

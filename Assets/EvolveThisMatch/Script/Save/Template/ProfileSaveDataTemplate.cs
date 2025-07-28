@@ -28,6 +28,7 @@ namespace EvolveThisMatch.Save
         public List<int> ownedActiveItemIds = new List<int>();
 
         #region 데이터 모델
+        #region 유닛
         [Serializable]
         public class Agent
         {
@@ -61,6 +62,7 @@ namespace EvolveThisMatch.Save
             public int value;
             public bool isLock;
         }
+        #endregion
         #endregion
     }
 
@@ -214,60 +216,6 @@ namespace EvolveThisMatch.Save
         }
         #endregion
 
-        #region 유닛 티어 상승
-        /// <summary>
-        /// 유닛의 티어를 올리는데 요구하는 개수
-        /// </summary>
-        private static readonly ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10 }; // , 15, 30, 50, 90, 150
-
-        /// <summary>
-        /// 유닛 티어 상승
-        /// </summary>
-        public bool TierUpAgent(int id)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            // 유닛이 있다면 && 최대 티어가 아니라면
-            if (modifyUnit != null && modifyUnit.tier < _agentTierUpRequirements.Length - 1)
-            {
-                int requiredCount = _agentTierUpRequirements[modifyUnit.tier];
-
-                if (modifyUnit.unitCount >= requiredCount)
-                {
-                    modifyUnit.unitCount -= requiredCount;
-                    modifyUnit.tier++;
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 티어 상승 가능한 유닛인지 판별
-        /// </summary>
-        public bool GetTierUpAbleUnit(int id)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            return modifyUnit != null
-                && modifyUnit.tier < _agentTierUpRequirements.Length - 1
-                && modifyUnit.unitCount >= _agentTierUpRequirements[modifyUnit.tier];
-        }
-        
-        /// <summary>
-        /// 유닛의 티어 별 최대 유닛 개수 반환
-        /// </summary>
-        public int GetMaxUnitCountByTier(int tier)
-        {
-            if (tier < 0 || tier >= _agentTierUpRequirements.Length)
-                return -1;
-
-            return _agentTierUpRequirements[tier];
-        }
-        #endregion
-
         #region 유닛 레벨업
         /// <summary>
         /// 티어에 따라 제한되는 최대 레벨
@@ -351,7 +299,66 @@ namespace EvolveThisMatch.Save
         }
         #endregion
 
+        #region 유닛 승격
+        /// <summary>
+        /// 유닛이 승격하는데 요구하는 개수
+        /// </summary>
+        private static readonly ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10 }; // , 15, 30, 50, 90, 150
+
+        /// <summary>
+        /// 유닛 승격
+        /// </summary>
+        public bool TierUpAgent(int id)
+        {
+            var modifyUnit = FindAgent(_data.ownedAgents, id);
+
+            // 유닛이 있다면 && 최대 티어가 아니라면
+            if (modifyUnit != null && modifyUnit.tier < _agentTierUpRequirements.Length - 1)
+            {
+                int requiredCount = _agentTierUpRequirements[modifyUnit.tier];
+
+                if (modifyUnit.unitCount >= requiredCount)
+                {
+                    modifyUnit.unitCount -= requiredCount;
+                    modifyUnit.tier++;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 승격 가능한 유닛인지 판별
+        /// </summary>
+        public bool GetTierUpAbleUnit(int id)
+        {
+            var modifyUnit = FindAgent(_data.ownedAgents, id);
+
+            return modifyUnit != null
+                && modifyUnit.tier < _agentTierUpRequirements.Length - 1
+                && modifyUnit.unitCount >= _agentTierUpRequirements[modifyUnit.tier];
+        }
+        
+        /// <summary>
+        /// 유닛의 격에 따른 최대 유닛 개수 반환
+        /// </summary>
+        public int GetMaxUnitCountByTier(int tier)
+        {
+            if (tier < 0 || tier >= _agentTierUpRequirements.Length)
+                return -1;
+
+            return _agentTierUpRequirements[tier];
+        }
+        #endregion
+
         #region 유틸리티
+        public ProfileSaveData.Agent GetAgent(int id)
+        {
+            return FindAgent(_data.ownedAgents, id);
+        }
+
         private ProfileSaveData.Agent FindAgent(List<ProfileSaveData.Agent> agents, int agentId)
         {
             for (int i = 0; i < agents.Count; i++)

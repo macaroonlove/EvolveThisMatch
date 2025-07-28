@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b28e849c0780924ca97cd74f8cd8f76, type: 3}
+  m_Name: "Department_\uC2DD\uD488\uBD80"
+  m_EditorClassIdentifier: 
+  _departmentName: "\uC2DD\uD488\uBD80"
+  _departmentDescription: "\uC7AC\uB2A5\uC758 \uD798\uC774 \uC2A4\uBA70\uB4E0 \uC801\uC758
+    \uC721\uCCB4\uB97C \uC0AC\uC6A9\uD558\uC5EC \uC694\uB9AC\uB97C\n\uB9CC\uB4DC\uB294
+    \uBD80\uC11C\uC785\uB2C8\uB2E4."
+  _departmentBackground: {fileID: 21300000, guid: a2d1dca2937dcd24a896dc60b2ef938e, type: 3}
+  _craftItems:
+  - _variable: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
+    _craftTime: 60
+    _weight: 10
+    _requiredItems:
+    - _item: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
+      _amount: 1
+  - _variable: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
+    _craftTime: 300
+    _weight: 100
+    _requiredItems:
+    - _item: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
+      _amount: 2
+    - _item: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
+      _amount: 1
+  - _variable: {fileID: 11400000, guid: e68af46fe6436f147850398607880a5b, type: 2}
+    _craftTime: 900
+    _weight: 1000
+    _requiredItems:
+    - _item: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
+      _amount: 4
+    - _item: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
+      _amount: 2
+    - _item: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
+      _amount: 1
+  - _variable: {fileID: 11400000, guid: 31e216b00ab0ca049b33c3b60b509a23, type: 2}
+    _craftTime: 3600
+    _weight: 5000
+    _requiredItems:
+    - _item: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
+      _amount: 12
+    - _item: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
+      _amount: 4
+    - _item: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
+      _amount: 2
+    - _item: {fileID: 11400000, guid: e68af46fe6436f147850398607880a5b, type: 2}
+      _amount: 1
+  _levelDatas:
+  - maxUnits: 1
+    storageWeight: 10
+    speed: 1
+  - maxUnits: 2
+    storageWeight: 10
+    speed: 1
+  - maxUnits: 2
+    storageWeight: 30
+    speed: 2
+  - maxUnits: 3
+    storageWeight: 30
+    speed: 2
+  - maxUnits: 3
+    storageWeight: 50
+    speed: 2.5
