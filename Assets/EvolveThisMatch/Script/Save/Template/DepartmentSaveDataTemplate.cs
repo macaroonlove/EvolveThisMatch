@@ -30,9 +30,33 @@ namespace EvolveThisMatch.Save
 
             public CraftingJob GetActiveJob(int i)
             {
-                if (i <= 0 || i > activeJobs.Count) return null;
+                if (i < 0 || i >= activeJobs.Count) return null;
 
                 return activeJobs[i];
+            }
+
+            public bool SetActiveJob(int i, int unitId, int itemId, int maxAmount)
+            {
+                if (i < 0) return false;
+
+                if (i >= activeJobs.Count)
+                {
+                    var newJob = new CraftingJob();
+                    newJob.chargeUnitId = unitId;
+                    newJob.craftItemId = itemId;
+                    newJob.maxAmount = maxAmount;
+                    newJob.startTime = DateTime.UtcNow;
+                    activeJobs.Add(newJob);
+                }
+                else
+                {
+                    activeJobs[i].chargeUnitId = unitId;
+                    activeJobs[i].craftItemId = itemId;
+                    activeJobs[i].maxAmount = maxAmount;
+                    activeJobs[i].startTime = DateTime.UtcNow;
+                }
+
+                return true;
             }
         }
 
@@ -42,7 +66,13 @@ namespace EvolveThisMatch.Save
             public int chargeUnitId;
             public int craftItemId;
             public int maxAmount;
-            public DateTime startTime;
+            [SerializeField] private long startTimeTicks;
+
+            public DateTime startTime
+            {
+                get => new DateTime(startTimeTicks);
+                set => startTimeTicks = value.Ticks;
+            }
         }
         #endregion
     }
@@ -74,8 +104,6 @@ namespace EvolveThisMatch.Save
             if (_data != null)
             {
                 isLoaded = departments.Count > 0;
-
-                _departmentDic = departments.ToDictionary(d => d.departmentId);
             }
 
             return isLoaded;
@@ -93,14 +121,5 @@ namespace EvolveThisMatch.Save
             _data = null;
             isLoaded = false;
         }
-
-        #region ¡¶¿€
-        private Dictionary<string, DepartmentSaveData.Department> _departmentDic;
-
-        public void SetDepartment(DepartmentSaveData.Department department)
-        {
-            _departmentDic[department.departmentId] = department;
-        }
-        #endregion
     }
 }

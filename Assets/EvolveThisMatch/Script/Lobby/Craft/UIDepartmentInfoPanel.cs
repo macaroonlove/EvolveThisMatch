@@ -85,7 +85,7 @@ namespace EvolveThisMatch.Lobby
             _levelText.text = level.ToString();
             _personnelText.text = $"{departmentData.activeJobCount}/{levelData.maxUnits} Έν";
             _storageWeightText.text = $"{totalWeight}/{levelData.storageWeight} kg";
-            _speedText.text = $"{(levelData.speed * 100).ToString("F0")} %";
+            _speedText.text = $"{levelData.speed * 100:F0} %";
         }
 
         private void OpenDisposePanel()

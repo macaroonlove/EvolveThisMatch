@@ -1,6 +1,5 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
-using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +7,7 @@ using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIAgentListItem : UIBase
+    public class UIAgentListItem_AgentInfo : UIAgentListItem
     {
         #region ¹ÙÀÎµù
         enum Texts
@@ -23,6 +22,7 @@ namespace EvolveThisMatch.Lobby
             FullBody,
             CounterImage,
             Dim,
+            SelectDim,
         }
         #endregion
 
@@ -33,16 +33,12 @@ namespace EvolveThisMatch.Lobby
         private Image _fullBody;
         private Image _counterImage;
         private Image _dim;
+        private Image _selectDim;
         private UIAgentTier _tierGroup;
 
-        internal AgentTemplate template { get; private set; }
-        internal ProfileSaveData.Agent owned { get; private set; }
-
-        private UnityAction<AgentTemplate, ProfileSaveData.Agent> _action;
-
-        internal void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal override void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
         {
-            _action = action;
+            base.Initialize(action);
 
             BindText(typeof(Texts));
             BindImage(typeof(Images));
@@ -54,17 +50,14 @@ namespace EvolveThisMatch.Lobby
             _fullBody = GetImage((int)Images.FullBody);
             _counterImage = GetImage((int)Images.CounterImage);
             _dim = GetImage((int)Images.Dim);
+            _selectDim = GetImage((int)Images.SelectDim);
 
             _tierGroup = GetComponentInChildren<UIAgentTier>();
-
-            var button = GetComponent<Button>();
-            button?.onClick.AddListener(OnClick);
         }
 
-        internal void Show(AgentTemplate template, ProfileSaveData.Agent owned)
+        internal override void Show(AgentTemplate template, ProfileSaveData.Agent owned)
         {
-            this.template = template;
-            this.owned = owned;
+            base.Show(template, owned);
 
             _displayName.text = template.displayName;
             _fullBody.sprite = template.sprite;
@@ -100,9 +93,16 @@ namespace EvolveThisMatch.Lobby
             _tierGroup.Show(owned.tier);
         }
 
-        internal void OnClick()
+        internal override void SelectItem()
         {
-            _action?.Invoke(template, owned);
+            base.SelectItem();
+
+            _selectDim.enabled = true;
+        }
+
+        internal override void DeSelectItem()
+        {
+            _selectDim.enabled = false;
         }
     }
 }

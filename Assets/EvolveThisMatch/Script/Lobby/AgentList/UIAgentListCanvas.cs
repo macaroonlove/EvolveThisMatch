@@ -4,63 +4,43 @@ using FrameWork.UIBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIAgentListCanvas : UIBase
+    public abstract class UIAgentListCanvas : UIBase
     {
         #region 바인딩
         enum Objects
         {
             Content,
         }
-        enum Dropdowns
-        {
-            Filter,
-        }
-        enum Toggles
-        {
-            Order,
-        }
         #endregion
 
-        private Transform _orderIcon;
+        protected Transform _parent;
+        protected List<UIAgentListItem> _agentListItems;
+        protected List<AgentTemplate> _agentTemplates;
 
-        private Transform _parent;
-        private List<UIAgentListItem> _agentListItems;
-        public List<AgentTemplate> _agentTemplates;
-        
-        private bool _isAsc;
-        private int _filterIndex;
+        protected bool _isAsc;
+        protected int _filterIndex;
 
-        private UnityAction<AgentTemplate, ProfileSaveData.Agent> _action;
+        protected UnityAction<AgentTemplate, ProfileSaveData.Agent> _action;
 
-        internal void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal virtual void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
         {
             _action = action;
 
             BindObject(typeof(Objects));
-            BindDropdown(typeof(Dropdowns));
-            BindToggle(typeof(Toggles));
 
             _parent = GetObject((int)Objects.Content).transform;
-            var filter = GetDropdown((int)Dropdowns.Filter);
-            var order = GetToggle((int)Toggles.Order);
-            _orderIcon = order.transform.GetChild(0);
-
-            order.onValueChanged.AddListener(ChangeSortOrder);
-            filter.onValueChanged.AddListener(ChangeFilterOrder);
         }
 
-        private void Start()
+        protected void Start()
         {
             InitializeAgentListItem();
 
-            _agentListItems[0].OnClick();
+            _agentListItems[0].SelectItem();
         }
 
         #region 리스트 아이템 생성
@@ -77,13 +57,21 @@ namespace EvolveThisMatch.Lobby
             for (int i = 0; i < count; i++)
             {
                 var item = Instantiate(agentInfoItem.gameObject, _parent).GetComponent<UIAgentListItem>();
-                item.Initialize(_action);
+                item.Initialize(ChangeAgent);
                 _agentListItems.Add(item);
             }
 
             Destroy(agentInfoItem.gameObject);
 
             ChangeFilterOrder(0);
+        }
+
+        private void ChangeAgent(AgentTemplate template, ProfileSaveData.Agent owned)
+        {
+            // 모든 아이템 선택 취소
+            foreach (var item in _agentListItems) item.DeSelectItem();
+
+            _action?.Invoke(template, owned);
         }
 
         internal void RegistAgentListItem()
@@ -112,20 +100,7 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        private void ChangeSortOrder(bool isOn)
-        {
-            // 아이콘 돌리기
-            Vector3 rotation = _orderIcon.localEulerAngles;
-            rotation.z = (isOn) ? 0 : 180;
-            _orderIcon.localEulerAngles = rotation;
-
-            // 오름차순이면 True, 내림차순이면 False
-            _isAsc = isOn;
-
-            ChangeFilterOrder(_filterIndex);
-        }
-
-        private void ChangeFilterOrder(int index)
+        protected void ChangeFilterOrder(int index)
         {
             _filterIndex = index;
 
