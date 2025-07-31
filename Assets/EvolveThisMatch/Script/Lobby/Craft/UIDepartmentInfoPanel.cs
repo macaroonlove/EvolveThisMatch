@@ -1,9 +1,6 @@
-using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
-using System;
 using TMPro;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
@@ -35,8 +32,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _storageWeightText;
         private TextMeshProUGUI _speedText;
 
-        private DepartmentTemplate _template;
-        private UnityAction _action;
+        private UnityAction _openDisposePanelAction;
 
         protected override void Initialize()
         {
@@ -55,32 +51,16 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.BundleGainButton).onClick.AddListener(BundleGain);
         }
 
-        internal void Show(DepartmentTemplate template, DepartmentSaveData.Department departmentData, UnityAction action)
+        internal void Initialize(DepartmentTemplate template, DepartmentSaveData.Department departmentData, int totalWeight, UnityAction openDisposePanelAction)
         {
             if (template == null) return;
 
-            _action = action;
-            _template = template;
+            _openDisposePanelAction = openDisposePanelAction;
             _title.text = template.departmentName;
             _description.text = template.departmentDescription;
 
             int level = departmentData == null ? 1 : departmentData.level;
             var levelData = template.GetLevelData(level);
-
-            int totalWeight = 0;
-
-            for (int i = 0; i < departmentData.activeJobCount; i++)
-            {
-                var job = departmentData.GetActiveJob(i);
-
-                TimeSpan elapsed = DateTime.UtcNow - job.startTime;
-                float second = (float)elapsed.TotalSeconds;
-                var item = template.craftItems[job.craftItemId];
-                var unitSpeed = GameDataManager.Instance.profileSaveData.GetAgent(job.chargeUnitId).level + levelData.speed;
-                float timePerItem = item.craftTime / unitSpeed;
-                int count = Mathf.Min(job.maxAmount, Mathf.FloorToInt(second / timePerItem));
-                totalWeight += (int)(item.weight * count);
-            }
 
             _levelText.text = level.ToString();
             _personnelText.text = $"{departmentData.activeJobCount}/{levelData.maxUnits} Έν";
@@ -88,9 +68,17 @@ namespace EvolveThisMatch.Lobby
             _speedText.text = $"{levelData.speed * 100:F0} %";
         }
 
+        internal void UpdateWeightInfo(DepartmentTemplate template, DepartmentSaveData.Department departmentData, int totalWeight)
+        {
+            int level = departmentData == null ? 1 : departmentData.level;
+            var levelData = template.GetLevelData(level);
+
+            _storageWeightText.text = $"{totalWeight}/{levelData.storageWeight} kg";
+        }
+
         private void OpenDisposePanel()
         {
-            _action?.Invoke();
+            _openDisposePanelAction?.Invoke();
         }
 
         private void DepartmentLevelUp()

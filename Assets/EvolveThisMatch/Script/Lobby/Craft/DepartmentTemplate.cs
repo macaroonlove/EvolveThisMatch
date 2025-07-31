@@ -79,7 +79,7 @@ namespace EvolveThisMatch.Lobby
         public int maxUnits;
 
         [Tooltip("보관 가능한 총 무게")]
-        public float storageWeight;
+        public int storageWeight;
 
         [Tooltip("생산 속도 배율")]
         public float speed;

@@ -13,4 +13,21 @@ MonoBehaviour:
   m_Name: DepartmentSaveData
   m_EditorClassIdentifier: 
   _data:
-    departments: []
+    departments:
+    - departmentId: "\uC2DD\uD488\uBD80"
+      level: 1
+      activeJobs:
+      - chargeUnitId: 2
+        craftItemId: 0
+        maxAmount: 510
+        startTimeTicks: 638895366994792425
+    - departmentId: "\uAC00\uACF5\uBD80"
+      level: 1
+      activeJobs:
+      - chargeUnitId: 4
+        craftItemId: 3
+        maxAmount: 487
+        startTimeTicks: 638894626785618562
+    - departmentId: "\uAC74\uC124\uBD80"
+      level: 1
+      activeJobs: []

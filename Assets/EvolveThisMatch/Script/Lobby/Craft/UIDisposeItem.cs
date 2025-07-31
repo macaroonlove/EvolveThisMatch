@@ -52,12 +52,10 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _lockText;
         private CanvasGroupController _lock;
 
-        private DepartmentSaveData.CraftingJob _job;
-        private CraftItemData _craftItem;
-        private float _timePerItem;
         private int _prevProductionCount;
 
-        private UnityAction _action;
+        private UnityAction _showDisposeSettingPanel;
+        private UnityAction<int> _updateInfoPanel;
 
         protected override void Initialize()
         {
@@ -78,122 +76,167 @@ namespace EvolveThisMatch.Lobby
             _sliderText = GetText((int)Texts.SliderText);
             _lockText = GetText((int)Texts.LockText);
             _lock = GetCanvasGroupController((int)CanvasGroups.Lock);
+
+            _prevProductionCount = -1;
         }
 
-        internal void Show(DepartmentTemplate template, DepartmentSaveData.CraftingJob job, DepartmentLevelData levelData, UnityAction action)
+        /// <summary>
+        /// 해당 작업대가 해금되지 않았을 때 실행
+        /// </summary>
+        internal void Lock(int unLockIndex)
         {
+            _showDisposeSettingPanel = null;
+            _updateInfoPanel = null;
+
+            // 잠금 이미지 켜기
+            _lock.Show(true);
+
+            _lockText.text = $"Lv. {unLockIndex}에\n해금됩니다.";
+        }
+
+        /// <summary>
+        /// 해당 작업대가 비어있을 때 초기화
+        /// </summary>
+        internal void Initialize(UnityAction showDisposeSettingPanel)
+        {
+            _showDisposeSettingPanel = showDisposeSettingPanel;
+
+            // 잠금 이미지 끄기
             _lock.Hide(true);
 
-            _job = job;
-            _action = action;
-            
-            if (job == null)
-            {
-                _agentBG.color = Color.black;
-                _fullBody.enabled = false;
-                _craftIcon.enabled = false;
-                _slider.fillAmount = 0;
-                _craftName.text = "생산품을";
-                _speedText.text = "설정해주세요.";
-                _weightText.text = "";
-                _productionCount.text = "";
-                _waitCount.text = "";
-                _remainTime.text = "";
-                _sliderText.text = "0%";
-                
-                return;
-            }
+            _agentBG.color = Color.black;
+            _fullBody.enabled = false;
+            _craftIcon.enabled = false;
+            _slider.fillAmount = 0;
+            _craftName.text = "생산품을";
+            _speedText.text = "설정해주세요.";
+            _weightText.text = "";
+            _productionCount.text = "";
+            _waitCount.text = "";
+            _remainTime.text = "";
+            _sliderText.text = "0%";
+        }
+
+        /// <summary>
+        /// 해당 작업대에 작업이 있었을 때 초기화
+        /// </summary>
+        /// <param name="levelData">부서 정보</param>
+        /// <param name="job">작업대 사용정보</param>
+        /// <param name="craftItem">생산중이던 아이템</param>
+        /// <param name="craftResult">현재까지 생산 정보</param>
+        internal void Initialize(DepartmentSaveData.CraftingJob job, CraftItemData craftItem, CraftResult craftResult, float craftSpeed, UnityAction showDisposeSettingPanel, UnityAction<int> updateInfoPanel)
+        {
+            _showDisposeSettingPanel = showDisposeSettingPanel;
+
+            // 잠금 이미지 끄기
+            _lock.Hide(true);
+
+            _showDisposeSettingPanel = showDisposeSettingPanel;
+            _updateInfoPanel = updateInfoPanel;
 
             var agentTemplate = GameDataManager.Instance.GetAgentTemplateById(job.chargeUnitId);
-            _craftItem = template.craftItems[job.craftItemId];
-
-            // 속도
-            float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.chargeUnitId).level;
-            float craftSpeed = agentLevel * 0.01f + levelData.speed;
-
-            // 아이템 1개 만드는데 걸리는 시간
-            _timePerItem = _craftItem.craftTime / craftSpeed;
-
-            // 경과 시간
-            TimeSpan elapsed = DateTime.UtcNow - job.startTime;
-            float second = (float)elapsed.TotalSeconds;
 
             // 생산 개수
-            int productionCount = Mathf.Min(job.maxAmount, Mathf.FloorToInt(second / _timePerItem));
-            _prevProductionCount = productionCount;
+            int productionCount = craftResult.productionCount;
 
             // 대기 개수
             int waitCount = job.maxAmount - productionCount;
-
+            
+            #region 잠시 접기
             _agentBG.color = Color.white;
             _agentBG.sprite = agentTemplate.rarity.agentInfoSprite;
             _fullBody.enabled = true;
             _fullBody.sprite = agentTemplate.sprite;
             _fullBody.rectTransform.anchoredPosition = agentTemplate.faceCenterPosition + new Vector2(0, -40);
             _craftIcon.enabled = true;
-            _craftIcon.sprite = _craftItem.variable.Icon;
-            _craftName.text = _craftItem.variable.DisplayName;
+            _craftIcon.sprite = craftItem.variable.Icon;
+            _craftName.text = craftItem.variable.DisplayName;
             _speedText.text = $"속도  <color=white>{craftSpeed * 100}%</color>";
-            _weightText.text = $"무게  <color=white>{_craftItem.weight}kg</color>";
+            _weightText.text = $"무게  <color=white>{craftItem.weight}kg</color>";
             _productionCount.text = $"생산  <color=white>{productionCount}개</color>";
             _waitCount.text = $"대기  <color=white>{waitCount}개</color>";
+            #endregion
         }
 
-        internal void Lock(int unLockIndex)
+        internal void FullStorageWeight()
         {
-            _lockText.text = $"Lv. {unLockIndex}에\n해금됩니다.";
-            _lock.Show(true);
-
-            _action = null;
+            _remainTime.text = "보관 창고가\n가득찼습니다.";
+            _slider.fillAmount = 0f;
+            _sliderText.text = "0%";
         }
 
-        private void Update()
+        internal bool UpdateItem(DepartmentLevelData levelData, CraftItemData craftItem, DepartmentSaveData.CraftingJob job, float timePerItem)
         {
-            if (_job == null) return;
-
             // 경과 시간
-            TimeSpan elapsed = DateTime.UtcNow - _job.startTime;
+            TimeSpan elapsed = DateTime.UtcNow - job.startTime;
             float second = (float)elapsed.TotalSeconds;
 
+            // 최대 생산량
+            int maxAmount = job.maxAmount;
+
             // 생산 개수
-            int productionCount = Mathf.Min(_job.maxAmount, Mathf.FloorToInt(second / _timePerItem));
+            int productionCount = Mathf.Min(maxAmount, Mathf.FloorToInt(second / timePerItem));
 
             // 생산 개수 갱신
-            if (productionCount  != _prevProductionCount)
+            if (productionCount != _prevProductionCount)
             {
-                int waitCount = _job.maxAmount - productionCount;
+                // 대기 개수
+                int waitCount = maxAmount - productionCount;
 
                 _productionCount.text = $"생산  <color=white>{productionCount}개</color>";
                 _waitCount.text = $"대기  <color=white>{waitCount}개</color>";
                 _prevProductionCount = productionCount;
+                
+                _updateInfoPanel?.Invoke(craftItem.weight);
+            }
+
+            // 무게 초과로 인한 생산 중단
+            int totalWeight = productionCount * craftItem.weight;
+            if (totalWeight >= levelData.storageWeight)
+            {
+                _remainTime.text = "보관 창고가\n가득찼습니다.";
+                _slider.fillAmount = 0f;
+                _sliderText.text = "0%";
+
+                _updateInfoPanel?.Invoke(craftItem.weight);
+                return false;
             }
 
             // 생산 완료
-            if (productionCount >= _job.maxAmount)
+            if (productionCount >= maxAmount)
             {
                 _remainTime.text = "생산 완료";
                 _slider.fillAmount = 1f;
                 _sliderText.text = "100%";
-                return;
+                return false;
+            }
+            else
+            {
+                // 남은 시간 계산
+                float remainTime = Mathf.Clamp((productionCount + 1) * timePerItem - second, 0, timePerItem);
+                int remainMinute = Mathf.FloorToInt(remainTime / 60f);
+                int remainSecond = Mathf.FloorToInt(remainTime % 60f);
+
+                // 진행도 계산
+                float currentItemElapsed = second - (productionCount * timePerItem);
+                float progress = Mathf.Clamp01(currentItemElapsed / timePerItem);
+
+                _remainTime.text = $"남은 시간\n<color=white>{remainMinute}분 {remainSecond}초</color>";
+                _slider.fillAmount = progress;
+                _sliderText.text = $"{progress * 100f:F0}%";
             }
 
-            // 남은 시간 계산
-            float remainTime = Mathf.Clamp((productionCount + 1) * _timePerItem - second, 0, _timePerItem);
-            int remainMinute = Mathf.FloorToInt(remainTime / 60f);
-            int remainSecond = Mathf.FloorToInt(remainTime % 60f);
+            
 
-            // 진행도 계산
-            float currentItemElapsed = second - (productionCount * _timePerItem);
-            float progress = Mathf.Clamp01(currentItemElapsed / _timePerItem);
-
-            _remainTime.text = $"남은 시간\n<color=white>{remainMinute}분 {remainSecond}초</color>";
-            _slider.fillAmount = progress;
-            _sliderText.text = $"{progress * 100f:F0}%";
+            return true;
         }
 
+        /// <summary>
+        /// 배치 설정창 열기
+        /// </summary>
         public void OnPointerClick(PointerEventData eventData)
         {
-            _action?.Invoke();
+            _showDisposeSettingPanel?.Invoke();
         }
     }
 }

@@ -20,12 +20,14 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         private UIAgentInfoCanvas _agentInfoCanvas;
+        private UIDepartmentCanvas _departmentCanvas;
 
         protected override void Initialize()
         {
             BindButton(typeof(Buttons));
 
             _agentInfoCanvas = transform.parent.GetComponentInChildren<UIAgentInfoCanvas>();
+            _departmentCanvas = transform.parent.GetComponentInChildren<UIDepartmentCanvas>();
 
             GetButton((int)Buttons.BattleStartButton).onClick.AddListener(BattleStart);
             GetButton((int)Buttons.AgentInfoButton).onClick.AddListener(ShowAgentInfo);
@@ -44,12 +46,12 @@ namespace EvolveThisMatch.Lobby
 
         private void ShowAgentInfo()
         {
-            _agentInfoCanvas.Show();
+            _agentInfoCanvas?.Show(true);
         }
 
         private void ShowManagement()
         {
-
+            _departmentCanvas?.Show(true);
         }
 
         private void ShowArtifact()

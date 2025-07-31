@@ -69,8 +69,8 @@ namespace EvolveThisMatch.Lobby
             _action = action;
 
             var job = departmentData.GetActiveJob(id);
-            if (job != null) ChangeCounter(job.maxAmount);
-            else ChangeCounter(1);
+            if (job != null) _counterSlider.value = job.maxAmount;
+            else _counterSlider.value = 1;
 
             _craftListPanel.Show(template);
             

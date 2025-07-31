@@ -56,17 +56,17 @@ MonoBehaviour:
       _amount: 1
   _levelDatas:
   - maxUnits: 1
-    storageWeight: 10
+    storageWeight: 100
     speed: 1
   - maxUnits: 2
-    storageWeight: 10
+    storageWeight: 100
     speed: 1
   - maxUnits: 2
-    storageWeight: 30
+    storageWeight: 300
     speed: 2
   - maxUnits: 3
-    storageWeight: 30
+    storageWeight: 300
     speed: 2
   - maxUnits: 3
-    storageWeight: 50
+    storageWeight: 500
     speed: 2.5
