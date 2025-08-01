@@ -11,6 +11,7 @@ namespace EvolveThisMatch.Lobby
         #region ¹ÙÀÎµù
         enum Images
         {
+            CraftBackground,
             CraftIcon,
             SelectDim,
         }
@@ -22,6 +23,7 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
+        private Image _craftBackground;
         private Image _craftIcon;
         private Image _selectDim;
         private TextMeshProUGUI _craftTime;
@@ -42,6 +44,7 @@ namespace EvolveThisMatch.Lobby
             BindImage(typeof(Images));
             BindText(typeof(Texts));
 
+            _craftBackground = GetImage((int)Images.CraftBackground);
             _craftIcon = GetImage((int)Images.CraftIcon);
             _selectDim = GetImage((int)Images.SelectDim);
             _craftTime = GetText((int)Texts.CraftTime);
@@ -56,6 +59,7 @@ namespace EvolveThisMatch.Lobby
             int minutes = itemData.craftTime / 60;
             int seconds = itemData.craftTime % 60;
 
+            _craftBackground.sprite = itemData.background;
             _craftIcon.sprite = itemData.variable.Icon;
             _craftTime.text = $"{minutes:D2}:{seconds:D2}";
             _craftName.text = itemData.variable.DisplayName;

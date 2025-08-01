@@ -17,6 +17,8 @@ namespace EvolveThisMatch.Lobby
             base.Start();
 
             ChangeFilterOrder(2);
+
+            _agentListItems[0].SelectItem();
         }
     }
 }

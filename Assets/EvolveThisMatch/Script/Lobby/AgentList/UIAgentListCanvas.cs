@@ -1,3 +1,4 @@
+using DG.Tweening;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
@@ -100,7 +101,7 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        protected void ChangeFilterOrder(int index)
+        protected virtual void ChangeFilterOrder(int index)
         {
             _filterIndex = index;
 
@@ -126,6 +127,8 @@ namespace EvolveThisMatch.Lobby
             }
 
             RegistAgentListItem();
+
+            _parent.DOLocalMoveY(0, 0.1f);
         }
 
         private void SortBy<T>(Func<AgentTemplate, T> primaryKey) where T : IComparable<T>

@@ -47,5 +47,12 @@ namespace EvolveThisMatch.Lobby
 
             ChangeFilterOrder(_filterIndex);
         }
+
+        protected override void ChangeFilterOrder(int index)
+        {
+            base.ChangeFilterOrder(index);
+
+            _agentListItems[0].SelectItem();
+        }
     }
 }

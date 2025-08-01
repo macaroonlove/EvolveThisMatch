@@ -1252,19 +1252,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2898832309034554130, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
       propertyPath: m_Spacing.x
-      value: 2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2898832309034554130, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
       propertyPath: m_CellSize.x
-      value: 158
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2898832309034554130, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
       propertyPath: m_CellSize.y
-      value: 230
+      value: 225
       objectReference: {fileID: 0}
     - target: {fileID: 2898832309034554130, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
       propertyPath: m_Padding.m_Top
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2898832309034554130, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
       propertyPath: m_Padding.m_Left
@@ -1277,6 +1277,10 @@ PrefabInstance:
     - target: {fileID: 2898832309034554130, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
       propertyPath: m_Padding.m_Right
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2898832309034554130, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
+      propertyPath: m_Padding.m_Bottom
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3881616612014277123, guid: 93a667bf98341844b861c7d47e5bf9fb, type: 3}
       propertyPath: m_Name

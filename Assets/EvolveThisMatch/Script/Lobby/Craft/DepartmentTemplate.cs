@@ -52,11 +52,13 @@ namespace EvolveThisMatch.Lobby
     public class CraftItemData
     {
         [SerializeField, Label("제작품")] private ObscuredIntVariable _variable;
+        [SerializeField, Label("배경")] private Sprite _background;
         [SerializeField, Label("제작 시간(초)")] private int _craftTime;
         [SerializeField, Label("무게(g)")] private int _weight;
         [SerializeField] private RequiredItem[] _requiredItems;
 
         internal ObscuredIntVariable variable => _variable;
+        internal Sprite background => _background;
         internal int craftTime => _craftTime;
         internal int weight => _weight;
         internal IReadOnlyList<RequiredItem> requiredItems => _requiredItems;

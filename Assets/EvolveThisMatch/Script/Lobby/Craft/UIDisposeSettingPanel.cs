@@ -2,6 +2,7 @@ using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ namespace EvolveThisMatch.Lobby
         {
             ConfilmButton,
             CloseButton,
+            MinusButton,
+            PlusButton,
         }
         enum Texts
         {
@@ -33,6 +36,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _counterText;
         private Slider _counterSlider;
 
+        private DepartmentTemplate _departmentTemplate;
         private DepartmentSaveData.Department _departmentData;
         private int _id;
         private int _agentId;
@@ -59,20 +63,29 @@ namespace EvolveThisMatch.Lobby
 
             GetButton((int)Buttons.ConfilmButton).onClick.AddListener(Confilm);
             GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
+            GetButton((int)Buttons.MinusButton).onClick.AddListener(() => _counterSlider.value--);
+            GetButton((int)Buttons.PlusButton).onClick.AddListener(() => _counterSlider.value++);
+
             _counterSlider.onValueChanged.AddListener(ChangeCounter);
         }
 
-        internal void Show(int id, DepartmentTemplate template, DepartmentSaveData.Department departmentData, UnityAction action)
+        internal void Show(int id, DepartmentTemplate departmentTemplate, DepartmentSaveData.Department departmentData, UnityAction action)
         {
             _id = id;
+            _departmentTemplate = departmentTemplate;
             _departmentData = departmentData;
             _action = action;
 
             var job = departmentData.GetActiveJob(id);
             if (job != null) _counterSlider.value = job.maxAmount;
-            else _counterSlider.value = 1;
+            else
+            {
+                _craftAmount = 1;
+                _counterSlider.value = 1;
+                _counterText.text = $"1 개";
+            }
 
-            _craftListPanel.Show(template);
+            _craftListPanel.Show(departmentTemplate);
             
             Show(true);
         }
@@ -85,6 +98,23 @@ namespace EvolveThisMatch.Lobby
         private void ChangeCraft(UICraftListItem item)
         {
             _itemIndex = item.index;
+
+            if (_departmentTemplate == null) return;
+
+            var requiredItems = _departmentTemplate.craftItems[item.index].requiredItems;
+
+            int maxCraftableCount = 999;
+
+            foreach (var required in requiredItems)
+            {
+                int ownedCount = required.item.Value;
+                int craftableCount = ownedCount / required.amount;
+
+                maxCraftableCount = Mathf.Min(maxCraftableCount, craftableCount);
+            }
+
+            // 최대 생산 가능량
+            _maxCountText.text = $"{maxCraftableCount} 개";
         }
 
         private void ChangeCounter(float value)

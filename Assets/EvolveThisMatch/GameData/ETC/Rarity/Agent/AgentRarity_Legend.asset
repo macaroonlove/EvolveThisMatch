@@ -17,6 +17,6 @@ MonoBehaviour:
   _rarity: 1
   _backgroundColor: {r: 1, g: 0.84313726, b: 0, a: 1}
   _textColor: {r: 0.29411766, g: 0, b: 0.50980395, a: 1}
-  _agentInfoSprite: {fileID: 21300000, guid: 96923696794596646b438849b4ed6e26, type: 3}
+  _agentInfoSprite: {fileID: 21300000, guid: 00b0e03f0c254084caf47c2aa23fa1bf, type: 3}
   _agentLevelLibrary: {fileID: 11400000, guid: a8db56028c011524d8fef66e7b7d449c, type: 2}
   _successProbability: 10

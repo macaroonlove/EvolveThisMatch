@@ -57,6 +57,13 @@ namespace EvolveThisMatch.Save
 
                 return true;
             }
+
+            public void RemoveActiveJob(CraftingJob job)
+            {
+                if (job == null) return;
+
+                activeJobs.Remove(job);
+            }
         }
 
         [Serializable]

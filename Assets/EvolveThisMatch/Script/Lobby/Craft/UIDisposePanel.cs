@@ -5,7 +5,6 @@ using FrameWork.UIBinding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,6 +16,7 @@ namespace EvolveThisMatch.Lobby
         enum Buttons
         {
             CloseButton,
+            ClearDisposeButton,
         }
         #endregion
 
@@ -39,6 +39,7 @@ namespace EvolveThisMatch.Lobby
             BindButton(typeof(Buttons));
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
+            GetButton((int)Buttons.ClearDisposeButton).onClick.AddListener(ClearDispose);
         }
 
         internal void InitailizeAction(UnityAction updateDepartment, UnityAction<int> updateInfoPanel)
@@ -53,7 +54,7 @@ namespace EvolveThisMatch.Lobby
 
             _departmentTemplate = departmentTemplate;
             _departmentData = departmentData;
-            
+
             // 레벨 정보 받아오기
             int level = departmentData == null ? 1 : departmentData.level;
             var levelData = departmentTemplate.GetLevelData(level);
@@ -86,8 +87,13 @@ namespace EvolveThisMatch.Lobby
                         float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.chargeUnitId).level;
                         float craftSpeed = agentLevel * 0.01f + levelData.speed;
 
+                        var timePerItem = craftItem.craftTime / craftSpeed;
+
                         // 해당 작업대에 작업이 있을 경우 초기화
-                        _disposeItems[i].Initialize(job, craftItem, craftResult, craftSpeed, () => ShowDisposeSettingPanel(index), _updateInfoPanel);
+                        _disposeItems[i].Initialize(job, craftItem, craftResult, craftSpeed,
+                            () => ShowDisposeSettingPanel(index), _updateInfoPanel,
+                            (int productionCount, float remainTime) => GainCraftItem(job, craftItem, craftResult, productionCount, timePerItem - remainTime),
+                            () => RemoveJob(job));
 
                         // 최대 보관량 >= (현재까지 보관량 + 작업의 아이템 무게) => 즉, 보관이 가능할 때
                         if (levelData.storageWeight >= panelOpenWeight + craftItem.weight)
@@ -169,9 +175,69 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
+        private async void GainCraftItem(DepartmentSaveData.CraftingJob job, CraftItemData craftItem, CraftResult craftResult, int productionCount, float remainTime)
+        {
+            // 더 이상 생산이 불가능할 경우
+            if (productionCount == -1)
+            {
+                // 현재까지 생산량 받아오기
+                productionCount = craftResult.productionCount;
+            }
+
+            // 최대 생산량 넘는거 방지
+            productionCount = Mathf.Min(productionCount, job.maxAmount);
+
+            // 아이템 획득
+            craftItem.variable.AddValue(productionCount);
+
+            // 생산량 차감
+            job.maxAmount -= productionCount;
+
+            // 전부 생산했다면
+            if (job.maxAmount <= 0)
+            {
+                // 작업대 비우기
+                _departmentData.RemoveActiveJob(job);
+            }
+            else
+            {
+                // 시작 시간 보정하기
+                job.startTime = DateTime.UtcNow - TimeSpan.FromSeconds(remainTime);
+            }
+
+            // 부서 업데이트
+            _updateDepartment?.Invoke();
+
+            // 저장
+            await SaveManager.Instance.Save_DepartmentData();
+        }
+
+        private async void RemoveJob(DepartmentSaveData.CraftingJob job)
+        {
+            // 작업대 비우기
+            _departmentData.RemoveActiveJob(job);
+
+            // 부서 업데이트
+            _updateDepartment?.Invoke();
+
+            // 저장
+            await SaveManager.Instance.Save_DepartmentData();
+        }
+
         private void ShowDisposeSettingPanel(int id)
         {
-            _disposeSettingPanel.Show(id, _departmentTemplate, _departmentData, _updateDepartment);
+            _disposeSettingPanel.Show(id, _departmentTemplate, _departmentData, () => {
+                _disposeItems[id].GainCraftItem();
+                _updateDepartment?.Invoke();
+            });
+        }
+
+        private void ClearDispose()
+        {
+            foreach (var item in _disposeItems)
+            {
+                item.RemoveJob();
+            }
         }
 
         private void OnDestroy()
