@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cf2889889ec39e440838f390975699aa
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 308224
+  packageName: Asset Inventory 3
+  packageVersion: 3.2.5
+  assetPath: Assets/AssetInventory/Editor/ThirdParty/SharpCompress/NuGet Gallery
+    - SharpCompress 0.40.0.url
+  uploadId: 775546

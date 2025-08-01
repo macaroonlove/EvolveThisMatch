@@ -142,7 +142,6 @@ namespace EvolveThisMatch.Lobby
             // 대기 개수
             int waitCount = job.maxAmount - productionCount;
             
-            #region 잠시 접기
             _agentBG.color = Color.white;
             _agentBG.sprite = agentTemplate.rarity.agentInfoSprite;
             _fullBody.enabled = true;
@@ -155,7 +154,6 @@ namespace EvolveThisMatch.Lobby
             _weightText.text = $"무게  <color=white>{craftItem.weight}kg</color>";
             _productionCount.text = $"생산  <color=white>{productionCount}개</color>";
             _waitCount.text = $"대기  <color=white>{waitCount}개</color>";
-            #endregion
         }
 
         internal void FullStorageWeight()

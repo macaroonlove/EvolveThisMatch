@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: dda158f2ace4e64488ec3cf68babc994
+timeCreated: 1661426961
+AssetOrigin:
+  serializedVersion: 1
+  productId: 308224
+  packageName: Asset Inventory 3
+  packageVersion: 3.2.5
+  assetPath: Assets/AssetInventory/Editor/Scripts/GUI/SubViews/FolderWizardUI.cs
+  uploadId: 775546

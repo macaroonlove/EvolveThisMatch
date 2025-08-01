@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: eea9948fe94548a796be43beb702b506
+timeCreated: 1742145199
+AssetOrigin:
+  serializedVersion: 1
+  productId: 308224
+  packageName: Asset Inventory 3
+  packageVersion: 3.2.5
+  assetPath: Assets/AssetInventory/Editor/Scripts/Features/ActionSteps/RunProcessStep.cs
+  uploadId: 775546
