@@ -33,6 +33,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _speedText;
 
         private UnityAction _openDisposePanelAction;
+        private UnityAction _bundleGain;
 
         protected override void Initialize()
         {
@@ -51,11 +52,12 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.BundleGainButton).onClick.AddListener(BundleGain);
         }
 
-        internal void Initialize(DepartmentTemplate template, DepartmentSaveData.Department departmentData, int totalWeight, UnityAction openDisposePanelAction)
+        internal void Initialize(DepartmentTemplate template, DepartmentSaveData.Department departmentData, int totalWeight, UnityAction openDisposePanelAction, UnityAction bundleGain)
         {
             if (template == null) return;
 
             _openDisposePanelAction = openDisposePanelAction;
+            _bundleGain = bundleGain;
             _title.text = template.departmentName;
             _description.text = template.departmentDescription;
 
@@ -88,7 +90,7 @@ namespace EvolveThisMatch.Lobby
 
         private void BundleGain()
         {
-
+            _bundleGain?.Invoke();
         }
     }
 }

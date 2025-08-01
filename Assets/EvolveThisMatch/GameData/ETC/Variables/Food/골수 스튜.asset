@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: "\uACE8\uC218 \uC2A4\uD29C"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1263682840
-    hiddenValue: 1263682840
+    currentCryptoKey: 2018395431
+    hiddenValue: 2018395431
     fakeValue: 0
     fakeValueActive: 1
     inited: 1

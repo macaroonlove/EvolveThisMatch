@@ -148,6 +148,18 @@ namespace EvolveThisMatch.Lobby
                         // 최대 보관량 >= (현재까지 보관량 + 작업의 아이템 무게) => 즉, 보관이 가능할 때
                         if (levelData.storageWeight >= panelOpenWeight + craftItem.weight)
                         {
+                            // 필요한 재료가 충분한지 검사
+                            foreach (var required in craftItem.requiredItems)
+                            {
+                                // 충분하지 않다면
+                                if (required.item.Value < required.amount)
+                                {
+                                    _disposeItems[i].LackRequiredItem();
+
+                                    return;
+                                }
+                            }
+
                             // 해당 작업대를 동작시키기
                             StartCoroutine(UpdateDisposeItems(i, levelData, craftItem, job, craftSpeed));
                         }
@@ -190,6 +202,12 @@ namespace EvolveThisMatch.Lobby
             // 아이템 획득
             craftItem.variable.AddValue(productionCount);
 
+            // 재료 소진
+            foreach (var required in craftItem.requiredItems)
+            {
+                required.item.AddValue(-(required.amount * productionCount));
+            }
+
             // 생산량 차감
             job.maxAmount -= productionCount;
 
@@ -230,6 +248,14 @@ namespace EvolveThisMatch.Lobby
                 _disposeItems[id].GainCraftItem();
                 _updateDepartment?.Invoke();
             });
+        }
+
+        internal void BundleGain()
+        {
+            foreach (var item in _disposeItems)
+            {
+                item.GainCraftItem();
+            }
         }
 
         private void ClearDispose()

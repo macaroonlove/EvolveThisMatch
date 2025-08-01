@@ -103,7 +103,7 @@ namespace EvolveThisMatch.Lobby
             }
 
             // 부서 정보창 초기화
-            _departmentInfoPanel.Initialize(template, departmentData, _totalWeight, () => _disposePanel.Show(true));
+            _departmentInfoPanel.Initialize(template, departmentData, _totalWeight, () => _disposePanel.Show(true), () => _disposePanel.BundleGain());
 
             // 배치창 초기화
             _disposePanel.InitailizeAction(() => ShowDepartment(template, departmentData), (int newWeight) => ChangeItemWeight(template, departmentData, craftResults, newWeight));
@@ -148,6 +148,15 @@ namespace EvolveThisMatch.Lobby
                 float elapsedSeconds = (float)elapsed.TotalSeconds;
 
                 int maxCount = Mathf.Min(job.maxAmount, Mathf.FloorToInt(elapsedSeconds / timePerItem));
+
+                foreach (var required in item.requiredItems)
+                {
+                    int ownedCount = required.item.Value;
+                    int craftableCount = ownedCount / required.amount;
+
+                    maxCount = Mathf.Min(maxCount, craftableCount);
+                }
+
                 for (int j = 0; j < maxCount; j++)
                 {
                     float nextTime = (float)(job.startTime.AddSeconds(timePerItem * (j + 1)) - DateTime.UnixEpoch).TotalSeconds;

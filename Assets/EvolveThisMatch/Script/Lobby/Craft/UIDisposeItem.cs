@@ -60,6 +60,7 @@ namespace EvolveThisMatch.Lobby
         private CanvasGroupController _lock;
 
         private int _prevProductionCount;
+        private int _checkProductionCount;
         private float _remainTime;
         private bool _isFirst;
 
@@ -168,6 +169,8 @@ namespace EvolveThisMatch.Lobby
             // 대기 개수
             int waitCount = job.maxAmount - productionCount;
 
+            _checkProductionCount = -1;
+
             _agentBG.color = Color.white;
             _agentBG.sprite = agentTemplate.rarity.agentInfoSprite;
             _craftBG.color = Color.white;
@@ -189,6 +192,13 @@ namespace EvolveThisMatch.Lobby
         internal void FullStorageWeight()
         {
             _remainTimeText.text = "보관 창고가\n가득찼습니다.";
+            _slider.fillAmount = 0f;
+            _sliderText.text = "0%";
+        }
+
+        internal void LackRequiredItem()
+        {
+            _remainTimeText.text = "재료가\n부족합니다.";
             _slider.fillAmount = 0f;
             _sliderText.text = "0%";
         }
@@ -224,16 +234,31 @@ namespace EvolveThisMatch.Lobby
                 _isFirst = false;
             }
 
-            // 무게 초과로 인한 생산 중단
-            int totalWeight = productionCount * craftItem.weight;
-            if (totalWeight >= levelData.storageWeight)
+            if (_checkProductionCount != productionCount)
             {
-                _remainTimeText.text = "보관 창고가\n가득찼습니다.";
-                _slider.fillAmount = 0f;
-                _sliderText.text = "0%";
+                // 무게 초과로 인한 생산 중단
+                int totalWeight = productionCount * craftItem.weight;
+                if (totalWeight >= levelData.storageWeight)
+                {
+                    FullStorageWeight();
 
-                _updateInfoPanel?.Invoke(craftItem.weight);
-                return false;
+                    _updateInfoPanel?.Invoke(craftItem.weight);
+                    return false;
+                }
+
+                // 필요한 재료가 충분한지 검사
+                foreach (var required in craftItem.requiredItems)
+                {
+                    // 충분하지 않다면
+                    if (required.item.Value < required.amount)
+                    {
+                        LackRequiredItem();
+
+                        return false;
+                    }
+                }
+
+                _checkProductionCount = productionCount;
             }
 
             // 생산 완료
