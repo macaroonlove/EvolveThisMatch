@@ -1,6 +1,7 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
+using FrameWork.UI;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine.Events;
@@ -37,7 +38,6 @@ namespace EvolveThisMatch.Lobby
             LevelUpPanel,
             TierUpPanel,
             TalentPanel,
-            PowderVariableDisplay,
         }
         #endregion
 
@@ -55,7 +55,6 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _level;
         private Image _fullBody;
         private CanvasGroupController[] _panels = new CanvasGroupController[6];
-        private CanvasGroupController _PowderVariableDisplay;
 
         private ProfileSaveData.Agent _owned;
         private UnityAction _action;
@@ -91,7 +90,6 @@ namespace EvolveThisMatch.Lobby
             _panels[3] = GetCanvasGroupController((int)CanvasGroup.LevelUpPanel);
             _panels[4] = GetCanvasGroupController((int)CanvasGroup.TierUpPanel);
             _panels[5] = GetCanvasGroupController((int)CanvasGroup.TalentPanel);
-            _PowderVariableDisplay = GetCanvasGroupController((int)CanvasGroup.PowderVariableDisplay);
 
             GetButton((int)Buttons.StatButton).onClick.AddListener(() => ShowPanel(0));
             GetButton((int)Buttons.SynergyButton).onClick.AddListener(() => ShowPanel(1));
@@ -147,8 +145,9 @@ namespace EvolveThisMatch.Lobby
         {
             if (_owned == null) return;
 
-            if (i == 5) _PowderVariableDisplay.Show(true);
-            else _PowderVariableDisplay.Hide(true);
+            VariableDisplayManager.Instance.HideAll();
+
+            if (i == 5) VariableDisplayManager.Instance.Show(CurrencyType.Powder);
 
             for (int j = 0; j < _panels.Length; j++)
             {

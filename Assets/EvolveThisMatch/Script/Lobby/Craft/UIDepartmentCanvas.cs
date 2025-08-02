@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
+using FrameWork.UI;
 using FrameWork.UIBinding;
 using System;
 using System.Collections.Generic;
@@ -54,12 +55,13 @@ namespace EvolveThisMatch.Lobby
         private async void InitializeDepartmentItems()
         {
             await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
+            await UniTask.WaitUntil(() => SaveManager.Instance.departmentData.isLoaded);
 
             var prefab = GetComponentInChildren<UIDepartmentItem>().gameObject;
             var parent = GetObject((int)Objects.DepartmentGroup).transform;
             var departmentTemplates = LobbyManager.Instance.departments;
             var departmentsDatas = SaveManager.Instance.departmentData.departments;
-
+            
             int count = departmentTemplates.Count;
             _departmentItems = new List<UIDepartmentItem>(count);
 
@@ -74,8 +76,6 @@ namespace EvolveThisMatch.Lobby
             }
 
             Destroy(prefab);
-
-            _departmentItems[0].SelectItem();
         }
 
         private void ChangeDepartment(DepartmentTemplate template, DepartmentSaveData.Department departmentData)
@@ -88,6 +88,13 @@ namespace EvolveThisMatch.Lobby
             ShowDepartment(template, departmentData);
         }
         #endregion
+
+        public override void Show(bool isForce = false)
+        {
+            _departmentItems[0].SelectItem();
+
+            base.Show(isForce);
+        }
 
         /// <summary>
         /// 부서를 변경하거나, 유닛을 배치할 때 호출
@@ -108,6 +115,13 @@ namespace EvolveThisMatch.Lobby
             // 배치창 초기화
             _disposePanel.InitailizeAction(() => ShowDepartment(template, departmentData), (int newWeight) => ChangeItemWeight(template, departmentData, craftResults, newWeight));
             _disposePanel.Initialize(template, departmentData, craftResults, _totalWeight);
+
+            // 제작 재료 보여주기
+            VariableDisplayManager.Instance.HideAll();
+            foreach (var item in template.craftItems)
+            {
+                VariableDisplayManager.Instance.Show(item.variable);
+            }
         }
 
         /// <summary>
@@ -195,6 +209,7 @@ namespace EvolveThisMatch.Lobby
 
         private void Hide()
         {
+            VariableDisplayManager.Instance.HideAll();
             Hide(true);
         }
     }

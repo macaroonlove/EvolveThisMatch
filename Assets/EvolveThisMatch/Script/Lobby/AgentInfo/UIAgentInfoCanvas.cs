@@ -1,5 +1,6 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.UI;
 using FrameWork.UIBinding;
 
 namespace EvolveThisMatch.Lobby
@@ -26,7 +27,10 @@ namespace EvolveThisMatch.Lobby
 
             BindButton(typeof(Buttons));
 
-            GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
+            GetButton((int)Buttons.CloseButton).onClick.AddListener(() => {
+                VariableDisplayManager.Instance.HideAll();
+                Hide(true);
+            });
         }
     }
 }

@@ -31,3 +31,13 @@ MonoBehaviour:
     - departmentId: "\uAC74\uC124\uBD80"
       level: 1
       activeJobs: []
+    butter: 0
+    skewers: 0
+    stew: 0
+    steak: 0
+    powder: 0
+  _butterVariable: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
+  _skewersVariable: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
+  _stewVariable: {fileID: 11400000, guid: e68af46fe6436f147850398607880a5b, type: 2}
+  _steakVariable: {fileID: 11400000, guid: 31e216b00ab0ca049b33c3b60b509a23, type: 2}
+  _powderVariable: {fileID: 11400000, guid: e58b3121932f85d44ad52dad4f5f8a66, type: 2}

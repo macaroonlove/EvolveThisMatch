@@ -19,7 +19,7 @@ MonoBehaviour:
   _departmentBackground: {fileID: 21300000, guid: a2d1dca2937dcd24a896dc60b2ef938e, type: 3}
   _craftItems:
   - _variable: {fileID: 11400000, guid: e58b3121932f85d44ad52dad4f5f8a66, type: 2}
-    _background: {fileID: 0}
+    _background: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}
     _craftTime: 60
     _weight: 10
     _requiredItems:

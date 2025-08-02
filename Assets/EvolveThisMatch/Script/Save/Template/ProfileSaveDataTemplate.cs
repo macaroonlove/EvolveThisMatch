@@ -18,6 +18,12 @@ namespace EvolveThisMatch.Save
         [Tooltip("°ñµå")]
         public ObscuredInt gold;
 
+        [Tooltip("°ñµå")]
+        public ObscuredInt essence;
+
+        [Tooltip("°ñµå")]
+        public ObscuredInt loot;
+
         [Tooltip("º¸À¯ÇÏ°í ÀÖ´Â ¾Æ±º À¯´Öµé")]
         public List<Agent> ownedAgents = new List<Agent>();
 
@@ -73,6 +79,8 @@ namespace EvolveThisMatch.Save
 
         [Header("Variable ¿¬µ¿")]
         [SerializeField] private ObscuredIntVariable _goldVariable;
+        [SerializeField] private ObscuredIntVariable _essenceVariable;
+        [SerializeField] private ObscuredIntVariable _lootVariable;
 
         public bool isLoaded { get; private set; }
 
@@ -110,6 +118,8 @@ namespace EvolveThisMatch.Save
                 isLoaded = _data.ownedAgents.Count > 0;
 
                 _goldVariable.Value = _data.gold;
+                _essenceVariable.Value = _data.essence;
+                _lootVariable.Value = _data.loot;
             }
 
             return isLoaded;
@@ -120,6 +130,8 @@ namespace EvolveThisMatch.Save
             if (_data == null) return null;
 
             _data.gold = _goldVariable.Value;
+            _data.essence = _essenceVariable.Value;
+            _data.loot = _lootVariable.Value;
 
             return JsonUtility.ToJson(_data);
         }

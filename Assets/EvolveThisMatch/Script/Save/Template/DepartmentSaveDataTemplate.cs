@@ -1,4 +1,5 @@
 using FrameWork.Editor;
+using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,13 @@ namespace EvolveThisMatch.Save
     {
         [Tooltip("각 부서 정보")]
         public List<Department> departments = new List<Department>();
+
+        [Tooltip("말캉 버터")] public int butter;
+        [Tooltip("갈빗살 꼬치")] public int skewers;
+        [Tooltip("골수 스튜")] public int stew;
+        [Tooltip("하트빔 스테이크")] public int steak;
+
+        [Tooltip("재능의 가루")] public int powder;
 
         #region 데이터 모델
         [Serializable]
@@ -88,6 +96,15 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private DepartmentSaveData _data;
 
+        [Header("식품부")]
+        [SerializeField] private ObscuredIntVariable _butterVariable;
+        [SerializeField] private ObscuredIntVariable _skewersVariable;
+        [SerializeField] private ObscuredIntVariable _stewVariable;
+        [SerializeField] private ObscuredIntVariable _steakVariable;
+
+        [Header("가공부")]
+        [SerializeField] private ObscuredIntVariable _powderVariable;
+
         public bool isLoaded { get; private set; }
 
         public IReadOnlyList<DepartmentSaveData.Department> departments => _data.departments;
@@ -110,6 +127,15 @@ namespace EvolveThisMatch.Save
             if (_data != null)
             {
                 isLoaded = departments.Count > 0;
+
+                // 식품부
+                _butterVariable.Value = _data.butter;
+                _skewersVariable.Value = _data.skewers;
+                _stewVariable.Value = _data.stew;
+                _steakVariable.Value = _data.steak;
+
+                // 가공부
+                _powderVariable.Value = _data.powder;
             }
 
             return isLoaded;
@@ -118,6 +144,15 @@ namespace EvolveThisMatch.Save
         public override string ToJson()
         {
             if (_data == null) return null;
+
+            // 식품부
+            _data.butter = _butterVariable.Value;
+            _data.skewers = _skewersVariable.Value;
+            _data.stew = _stewVariable.Value;
+            _data.steak = _steakVariable.Value;
+
+            // 가공부
+            _data.powder = _powderVariable.Value;
 
             return JsonUtility.ToJson(_data);
         }

@@ -24,7 +24,10 @@ namespace FrameWork.UI
         [SerializeField] private int _maxLength;
 
         private TextMeshProUGUI _valueText;
+        private Image _iconImage;
         private UIIntVariableLogEffect _logEffect;
+
+        internal bool isEmpty => _variable == null;
 
         protected override void Initialize()
         {
@@ -32,27 +35,46 @@ namespace FrameWork.UI
             BindImage(typeof(Images));
 
             _valueText = GetText((int)Texts.Value);
-            
+            _iconImage = GetImage((int)Images.Icon);
+
             if (_variable != null)
-                GetImage((int)Images.Icon).sprite = _variable.Icon;
+                _iconImage.sprite = _variable.Icon;
 
             _logEffect = GetComponentInChildren<UIIntVariableLogEffect>();
         }
 
-        private void OnEnable()
+        internal void SetVariable(ObscuredIntVariable variable)
+        {
+            Hide();
+            _variable = variable;
+            _iconImage.sprite = variable.Icon;
+            Show();
+        }
+
+        private void Start()
+        {
+            Show();
+        }
+
+        public void Show()
         {
             if (_variable == null) return;
 
             _variable.AddListener(OnChangeValue);
             _logEffect?.Initialize(_variable.Value);
             Apply(_variable.Value);
+
+            base.Show(true);
         }
 
-        private void OnDisable()
+        public void Hide()
         {
             if (_variable == null) return;
 
             _variable.RemoveListener(OnChangeValue);
+            _variable = null;
+            
+            base.Hide(true);
         }
 
         private void OnChangeValue(ObscuredInt value)

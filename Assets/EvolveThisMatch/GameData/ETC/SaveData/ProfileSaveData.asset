@@ -21,6 +21,18 @@ MonoBehaviour:
       fakeValue: 100
       fakeValueActive: 1
       inited: 1
+    essence:
+      currentCryptoKey: 1098817448
+      hiddenValue: 1098817448
+      fakeValue: 0
+      fakeValueActive: 0
+      inited: 1
+    loot:
+      currentCryptoKey: 1714522881
+      hiddenValue: 1714522881
+      fakeValue: 0
+      fakeValueActive: 0
+      inited: 1
     ownedAgents:
     - id: 0
       unitCount: 13
@@ -160,7 +172,8 @@ MonoBehaviour:
         isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
-    departments: []
     ownedPassiveItemIds: 
     ownedActiveItemIds: 
   _goldVariable: {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}
+  _essenceVariable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
+  _lootVariable: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}

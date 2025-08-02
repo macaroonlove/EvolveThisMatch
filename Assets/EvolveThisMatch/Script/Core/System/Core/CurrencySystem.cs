@@ -22,6 +22,7 @@ namespace EvolveThisMatch.Core
             public CurrencyType type => _type;
             public int value => _variable.Value;
             public Sprite icon => _variable.Icon;
+            public ObscuredIntVariable variable => _variable;
 
             public void SetValue(int value)
             {
@@ -78,6 +79,16 @@ namespace EvolveThisMatch.Core
             if (_currencies.TryGetValue(type, out var data))
             {
                 return data.icon;
+            }
+
+            return null;
+        }
+
+        public ObscuredIntVariable GetIntVariable(CurrencyType type)
+        {
+            if (_currencies.TryGetValue(type, out var data))
+            {
+                return data.variable;
             }
 
             return null;
