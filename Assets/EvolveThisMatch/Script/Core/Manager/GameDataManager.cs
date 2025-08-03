@@ -20,12 +20,17 @@ namespace EvolveThisMatch.Core
         [SerializeField] private AgentRarityLibrary _agentRarityLibrary;
         [SerializeField] private AgentTalentLibrary _agentTalentLibrary;
 
+        [SerializeField] private ArtifactLibraryTemplate _artifactLibrary;
+
         public ProfileSaveDataTemplate profileSaveData => _profileSaveData;
         public BattleDataTemplate battleData => _battleData;
+
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
         public IReadOnlyDictionary<SkinTemplate, AgentTemplate> agentSkinTemplates => _agentSkinLibrary.templates;
         public IReadOnlyList<AgentRarityTemplate> agentRarityTemplates => _agentRarityLibrary.agentRarityTemplates;
         public int probabilityLevel => _agentRarityLibrary.probabilityLevel;
+
+        public IReadOnlyList<ArtifactTemplate> artifactTemplates => _artifactLibrary.templates;
 
         public AgentTemplate GetAgentTemplateById(int id)
         {

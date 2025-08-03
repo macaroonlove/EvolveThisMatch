@@ -35,9 +35,9 @@ namespace EvolveThisMatch.Tutorial
                     });
                     break;
                 case ItemType.PassiveItem:
-                    AddressableAssetManager.Instance.GetScriptableObject<PassiveItemTemplate>(name, (template) =>
+                    AddressableAssetManager.Instance.GetScriptableObject<ArtifactTemplate>(name, (template) =>
                     {
-                        CoreManager.Instance.GetSubSystem<PassiveItemSystem>().AddItem(template);
+                        CoreManager.Instance.GetSubSystem<ArtifactSystem>().AddItem(template);
                     });
                     break;
             }

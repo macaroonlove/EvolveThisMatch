@@ -58,7 +58,7 @@ namespace EvolveThisMatch.Editor
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/ActiveSkill",
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/PassiveSkill",
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/ActiveItem",
-            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/PassiveItem",
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Artifact",
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Synergy",
         };
         #endregion
@@ -103,11 +103,11 @@ namespace EvolveThisMatch.Editor
         private Vector2 activeItemScrollPosition;
         private List<ActiveItemTemplate> activeItemTemplates = new List<ActiveItemTemplate>();
         #endregion
-        #region 패시브 아이템
-        private UnityEditor.Editor passiveItemEditor;
-        private int selectedPassiveItemIndex = 0;
-        private Vector2 passiveItemScrollPosition;
-        private List<PassiveItemTemplate> passiveItemTemplates = new List<PassiveItemTemplate>();
+        #region 아티팩트
+        private UnityEditor.Editor artifactEditor;
+        private int selectedArtifactIndex = 0;
+        private Vector2 artifactScrollPosition;
+        private List<ArtifactTemplate> artifactTemplates = new List<ArtifactTemplate>();
         #endregion
         #endregion
 
@@ -232,13 +232,13 @@ namespace EvolveThisMatch.Editor
         {
             GUILayout.BeginHorizontal();
             if (GUILayout.Toggle(selectedItemTitle == 0, "액티브 아이템", "Button")) selectedItemTitle = 0;
-            if (GUILayout.Toggle(selectedItemTitle == 1, "패시브 아이템", "Button")) selectedItemTitle = 1;
+            if (GUILayout.Toggle(selectedItemTitle == 1, "아티팩트", "Button")) selectedItemTitle = 1;
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10);
 
             if (selectedItemTitle == 0) DrawActiveItemTab();
-            else DrawPassiveItemTab();
+            else DrawArtifactTab();
         }
 
         #region 유닛
@@ -337,7 +337,7 @@ namespace EvolveThisMatch.Editor
             if (GUILayout.Toggle(selectedBuffTitle == 1, "액티브 스킬", "Button")) selectedBuffTitle = 1;
             if (GUILayout.Toggle(selectedBuffTitle == 2, "패시브 스킬", "Button")) selectedBuffTitle = 2;
             if (GUILayout.Toggle(selectedBuffTitle == 3, "액티브 아이템", "Button")) selectedBuffTitle = 3;
-            if (GUILayout.Toggle(selectedBuffTitle == 4, "패시브 아이템", "Button")) selectedBuffTitle = 4;
+            if (GUILayout.Toggle(selectedBuffTitle == 4, "아티팩트", "Button")) selectedBuffTitle = 4;
             if (GUILayout.Toggle(selectedBuffTitle == 5, "시너지", "Button")) selectedBuffTitle = 5;
             GUILayout.EndHorizontal();
 
@@ -479,22 +479,22 @@ namespace EvolveThisMatch.Editor
             );
         }
 
-        private void DrawPassiveItemTab()
+        private void DrawArtifactTab()
         {
-            AutoLoadItem(ref passiveItemTemplates, "PassiveItem");
+            AutoLoadItem(ref artifactTemplates, "Artifact");
 
-            DrawTemplateTab<PassiveItemTemplate>(
-                ref passiveItemTemplates,
-                ref selectedPassiveItemIndex,
-                ref passiveItemScrollPosition,
-                ref passiveItemEditor,
-                "패시브 아이템",
-                "Assets/EvolveThisMatch/GameData/Item/PassiveItem",
-                "PassiveItem",
+            DrawTemplateTab<ArtifactTemplate>(
+                ref artifactTemplates,
+                ref selectedArtifactIndex,
+                ref artifactScrollPosition,
+                ref artifactEditor,
+                "아티팩트",
+                "Assets/EvolveThisMatch/GameData/Item/Artifact",
+                "Artifact",
                 () =>
                 {
-                    var window = GetWindow<LoadPassiveItemTemplateEditorWindow>();
-                    window.titleContent = new GUIContent("패시브 아이템 불러오기");
+                    var window = GetWindow<LoadArtifactTemplateEditorWindow>();
+                    window.titleContent = new GUIContent("아티팩트 불러오기");
                     window.minSize = new Vector2(300, 100);
                     window.maxSize = new Vector2(300, 100);
                 }

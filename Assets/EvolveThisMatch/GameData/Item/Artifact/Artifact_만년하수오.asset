@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c07506fdbaa7fc45875ac46e8746973, type: 3}
+  m_Name: "Artifact_\uB9CC\uB144\uD558\uC218\uC624"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _id: 10
+  _displayName: "\uB9CC\uB144\uD558\uC218\uC624"
+  _description: "\uACF5\uACA9 \uAC04\uACA9\uC774 12% \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  _casterFX: {fileID: 0}
+  triggers: []

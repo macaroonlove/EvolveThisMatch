@@ -27,8 +27,8 @@ namespace EvolveThisMatch.Save
         [Tooltip("보유하고 있는 아군 유닛들")]
         public List<Agent> ownedAgents = new List<Agent>();
 
-        [Tooltip("보유하고 있는 패시브 아이템들의 아이디")]
-        public List<int> ownedPassiveItemIds = new List<int>();
+        [Tooltip("보유하고 있는 아티팩트들")]
+        public List<Artifact> ownedArtifacts = new List<Artifact>();
 
         [Tooltip("보유하고 있는 액티브 아이템들의 아이디")]
         public List<int> ownedActiveItemIds = new List<int>();
@@ -69,6 +69,23 @@ namespace EvolveThisMatch.Save
             public bool isLock;
         }
         #endregion
+
+        #region 아티팩트
+        [Serializable]
+        public class Artifact
+        {
+            public int id;
+            public int count;
+            public int level;
+
+            public Artifact(int id)
+            {
+                this.id = id;
+                this.count = 0;
+                this.level = 1;
+            }
+        }
+        #endregion
         #endregion
     }
 
@@ -88,7 +105,7 @@ namespace EvolveThisMatch.Save
         public bool isClearTutorial { get => _data.isClearTutorial; set => _data.isClearTutorial = value; }
 
         public List<ProfileSaveData.Agent> ownedAgents => _data.ownedAgents;
-        public List<int> ownedPassiveItemIds => _data.ownedPassiveItemIds;
+        public List<ProfileSaveData.Artifact> ownedArtifacts => _data.ownedArtifacts;
         public List<int> ownedActiveItemIds => _data.ownedActiveItemIds;
 
         public override void SetDefaultValues()
@@ -102,6 +119,12 @@ namespace EvolveThisMatch.Save
             AddAgent(3);
             AddAgent(4);
             AddAgent(5);
+
+            // 임시 아티팩트 추가
+            for (int i = 0; i < 21; i++)
+            {
+                AddArtifact(i);
+            }
 
             // 초기 골드 추가
             _data.gold = 100;
@@ -385,18 +408,85 @@ namespace EvolveThisMatch.Save
         #endregion
         #endregion
 
-        #region 아이템
+        #region 아티팩트
         /// <summary>
-        /// 패시브 아이템 추가
+        /// 아티팩트 추가
         /// </summary>
-        public void AddPassiveItem(int id)
+        public void AddArtifact(int id)
         {
-            if (_data.ownedPassiveItemIds.Contains(id) == false)
+            var modifyArtifact = FindArtifact(_data.ownedArtifacts, id);
+
+            // 유닛이 없었다면 유닛 추가
+            if (modifyArtifact == null)
             {
-                _data.ownedPassiveItemIds.Add(id);
+                _data.ownedArtifacts.Add(new ProfileSaveData.Artifact(id));
+            }
+            // 유닛이 있었다면 유닛의 개수 추가
+            else
+            {
+                modifyArtifact.count++;
+
+                // 레벨업 시도
+                TryLevelupArtifact(modifyArtifact);
             }
         }
 
+        #region 레벨업
+        /// <summary>
+        /// 아티팩트가 레벨업하는데 요구하는 개수
+        /// </summary>
+        private static readonly ObscuredInt[] _artifactLevelUpRequirements = { 0, 1, 3, 5, 7, 10, 15, 30, 50, 90, 150 };
+
+        /// <summary>
+        /// 아티팩트 레벨업 시도
+        /// </summary>
+        private bool TryLevelupArtifact(ProfileSaveData.Artifact modifyArtifact)
+        {
+            // 아티팩트가 있다면 && 최고 레벨이 아니라면
+            if (modifyArtifact != null && modifyArtifact.level < _artifactLevelUpRequirements.Length - 1)
+            {
+                int requiredCount = _artifactLevelUpRequirements[modifyArtifact.level];
+
+                if (modifyArtifact.count >= requiredCount)
+                {
+                    modifyArtifact.count -= requiredCount;
+                    modifyArtifact.level++;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 아티팩트 레벨에 따른 최대 요구 개수 반환
+        /// </summary>
+        public int GetMaxArtifactCountByLevel(int level)
+        {
+            if (level < 0 || level >= _artifactLevelUpRequirements.Length)
+                return -1;
+
+            return _artifactLevelUpRequirements[level];
+        }
+        #endregion
+
+        #region 유틸리티
+        private ProfileSaveData.Artifact FindArtifact(List<ProfileSaveData.Artifact> artifacts, int artifactId)
+        {
+            for (int i = 0; i < artifacts.Count; i++)
+            {
+                if (artifacts[i].id == artifactId)
+                {
+                    return artifacts[i];
+                }
+            }
+            return null;
+        }
+        #endregion
+        #endregion
+
+        #region 고서
         /// <summary>
         /// 액티브 아이템 추가
         /// </summary>

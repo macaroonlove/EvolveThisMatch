@@ -3,16 +3,14 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
-    [CreateAssetMenu(menuName = "Templates/Item/Passive Item", fileName = "PassiveItem", order = 1)]
-    public class PassiveItemTemplate : ScriptableObject, IDataWindowEntry
+    [CreateAssetMenu(menuName = "Templates/Item/Artifact", fileName = "Artifact", order = 1)]
+    public class ArtifactTemplate : ScriptableObject, IDataWindowEntry
     {
         [HideInInspector, SerializeField] private Sprite _sprite;
 
         [HideInInspector, SerializeField] private int _id;
         [HideInInspector, SerializeField] private string _displayName;
         [HideInInspector, SerializeField] private string _description;
-        [HideInInspector, SerializeField] private PassiveItemRarityTemplate _rarity;
-        [HideInInspector, SerializeField] private int _price;
 
         [HideInInspector, SerializeField] private FX _casterFX;
 
@@ -25,8 +23,6 @@ namespace EvolveThisMatch.Core
         public int id => _id;
         public string displayName => _displayName;
         public string description => _description;
-        public PassiveItemRarityTemplate rarity => _rarity;
-        public int price => _price;
 
         public FX casterFX => _casterFX;
         #endregion
@@ -35,8 +31,6 @@ namespace EvolveThisMatch.Core
         internal void SetId(int id) => _id = id;
         public void SetDisplayName(string name) => _displayName = name;
         internal void SetDescription(string desc) => _description = desc;
-        internal void SetRarity(PassiveItemRarityTemplate rarity) => _rarity = rarity;
-        internal void SetPrice(int price) => _price = price;
         #endregion
     }
 }
@@ -49,17 +43,15 @@ namespace EvolveThisMatch.Editor
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(PassiveItemTemplate)), CanEditMultipleObjects]
-    public class PassiveItemTemplateEditor : EffectEditor
+    [CustomEditor(typeof(ArtifactTemplate)), CanEditMultipleObjects]
+    public class ArtifactTemplateEditor : EffectEditor
     {
-        private PassiveItemTemplate _target;
+        private ArtifactTemplate _target;
 
         private SerializedProperty _sprite;
         private SerializedProperty _id;
         private SerializedProperty _displayName;
         private SerializedProperty _description;
-        private SerializedProperty _rarity;
-        private SerializedProperty _price;
         private SerializedProperty _casterFX;
 
         private ReorderableList _triggersList;
@@ -70,14 +62,12 @@ namespace EvolveThisMatch.Editor
 
         private void OnEnable()
         {
-            _target = target as PassiveItemTemplate;
+            _target = target as ArtifactTemplate;
 
             _sprite = serializedObject.FindProperty("_sprite");
             _id = serializedObject.FindProperty("_id");
             _displayName = serializedObject.FindProperty("_displayName");
             _description = serializedObject.FindProperty("_description");
-            _rarity = serializedObject.FindProperty("_rarity");
-            _price = serializedObject.FindProperty("_price");
             _casterFX = serializedObject.FindProperty("_casterFX");
 
             CreateEventTriggerList();
@@ -110,18 +100,6 @@ namespace EvolveThisMatch.Editor
 
             GUILayout.EndVertical();
 
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(10);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("등급", GUILayout.Width(192));
-            EditorGUILayout.PropertyField(_rarity, GUIContent.none);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("가격", GUILayout.Width(192));
-            EditorGUILayout.PropertyField(_price, GUIContent.none);
             GUILayout.EndHorizontal();
 
             GUILayout.Space(20);
@@ -202,7 +180,7 @@ namespace EvolveThisMatch.Editor
                 trigger.hideFlags = HideFlags.HideInHierarchy;
                 _target.triggers.Add(trigger);
 
-                var template = target as PassiveItemTemplate;
+                var template = target as ArtifactTemplate;
                 var path = AssetDatabase.GetAssetPath(template);
                 AssetDatabase.AddObjectToAsset(trigger, path);
                 EditorUtility.SetDirty(template);
@@ -244,7 +222,7 @@ namespace EvolveThisMatch.Editor
 
         private void CreateEffectList()
         {
-            _effectsList = SetupReorderableList("Passive Item Effects", _currentTrigger.effects,
+            _effectsList = SetupReorderableList("Artifact Effects", _currentTrigger.effects,
                 (rect, x) =>
                 {
                 },
@@ -310,7 +288,7 @@ namespace EvolveThisMatch.Editor
                 effect.hideFlags = HideFlags.HideInHierarchy;
                 _currentTrigger.effects.Add(effect);
 
-                var template = target as PassiveItemTemplate;
+                var template = target as ArtifactTemplate;
                 var path = AssetDatabase.GetAssetPath(template);
                 AssetDatabase.AddObjectToAsset(effect, path);
                 EditorUtility.SetDirty(template);

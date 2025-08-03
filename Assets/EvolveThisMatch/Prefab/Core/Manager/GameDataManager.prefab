@@ -51,3 +51,4 @@ MonoBehaviour:
   _agentSkinLibrary: {fileID: 11400000, guid: 6ee7cf71a5a805244afe866242e149ec, type: 2}
   _agentRarityLibrary: {fileID: 11400000, guid: f101581105b0f354388d46f3228c35e6, type: 2}
   _agentTalentLibrary: {fileID: 11400000, guid: aea4e8b6c074a164eae56f477243bef3, type: 2}
+  _artifactLibrary: {fileID: 11400000, guid: e0f526dd7bfbf064b8fda9580e3f12e7, type: 2}

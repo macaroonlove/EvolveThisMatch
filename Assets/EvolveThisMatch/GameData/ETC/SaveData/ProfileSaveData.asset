@@ -22,14 +22,14 @@ MonoBehaviour:
       fakeValueActive: 1
       inited: 1
     essence:
-      currentCryptoKey: 1098817448
-      hiddenValue: 1098817448
+      currentCryptoKey: 1968842967
+      hiddenValue: 1968842967
       fakeValue: 0
       fakeValueActive: 0
       inited: 1
     loot:
-      currentCryptoKey: 1714522881
-      hiddenValue: 1714522881
+      currentCryptoKey: 1974220594
+      hiddenValue: 1974220594
       fakeValue: 0
       fakeValueActive: 0
       inited: 1
@@ -81,8 +81,8 @@ MonoBehaviour:
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 2
-      unitCount: 6
-      tier: 2
+      unitCount: 1
+      tier: 3
       exp: 25
       level: 70
       talent:
@@ -109,17 +109,17 @@ MonoBehaviour:
       exp: 48214
       level: 61
       talent:
-      - id: 3
-        value: 98
-        isLock: 0
+      - id: 0
+        value: 173
+        isLock: 1
       - id: 0
         value: 180
         isLock: 1
       - id: 0
         value: 172
         isLock: 1
-      - id: 3
-        value: 84
+      - id: 0
+        value: 19
         isLock: 0
       - id: 0
         value: 186
@@ -152,8 +152,8 @@ MonoBehaviour:
     - id: 5
       unitCount: 0
       tier: 0
-      exp: 0
-      level: 1
+      exp: 526
+      level: 21
       talent:
       - id: -1
         value: 0

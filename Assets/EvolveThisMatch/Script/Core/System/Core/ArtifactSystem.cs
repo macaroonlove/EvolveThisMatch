@@ -8,9 +8,9 @@ namespace EvolveThisMatch.Core
     /// <summary>
     /// 패시브 아이템 효과를 적용시키는 시스템
     /// </summary>
-    public class PassiveItemSystem : MonoBehaviour, ICoreSystem
+    public class ArtifactSystem : MonoBehaviour, ICoreSystem
     {
-        [SerializeField, ReadOnly] private List<PassiveItemTemplate> _items = new List<PassiveItemTemplate>();
+        [SerializeField, ReadOnly] private List<ArtifactTemplate> _items = new List<ArtifactTemplate>();
 
         private List<AlwaysEffect> _alwaysEffects = new List<AlwaysEffect>();
         private List<GlobalEvent> _globalEvents = new List<GlobalEvent>();
@@ -18,7 +18,7 @@ namespace EvolveThisMatch.Core
 
 #if UNITY_EDITOR
         [Header("Debug")]
-        [SerializeField] private List<PassiveItemTemplate> _debugItems = new List<PassiveItemTemplate>();
+        [SerializeField] private List<ArtifactTemplate> _debugItems = new List<ArtifactTemplate>();
 #endif
 
         public void Initialize()
@@ -80,7 +80,7 @@ namespace EvolveThisMatch.Core
         /// 아이템 추가
         /// (저장되있는 아이템을 로드할 경우 isNewItem을 false로 넘겨주기)
         /// </summary>
-        public void AddItem(PassiveItemTemplate template, bool isNewItem = true)
+        public void AddItem(ArtifactTemplate template, bool isNewItem = true)
         {
             if (_items.Contains(template))
             {
@@ -177,7 +177,7 @@ namespace EvolveThisMatch.Core
         }
 
         #region FX
-        private void ExecuteCasterFX(PassiveItemTemplate template, Unit caster)
+        private void ExecuteCasterFX(ArtifactTemplate template, Unit caster)
         {
             if (template.casterFX != null)
             {
