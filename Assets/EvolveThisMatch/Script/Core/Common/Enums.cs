@@ -200,7 +200,7 @@ namespace EvolveThisMatch.Core
     }
     #endregion
 
-    public enum EActiveItemRangeType
+    public enum ETomeRangeType
     {
         All,
         Circle,

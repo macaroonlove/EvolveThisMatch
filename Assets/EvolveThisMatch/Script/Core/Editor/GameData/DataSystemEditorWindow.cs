@@ -57,7 +57,7 @@ namespace EvolveThisMatch.Editor
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Global",
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/ActiveSkill",
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/PassiveSkill",
-            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/ActiveItem",
+            "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Tome",
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Artifact",
             "Assets/EvolveThisMatch/GameData/Status/BuffStatus/Synergy",
         };
@@ -97,11 +97,11 @@ namespace EvolveThisMatch.Editor
         private int selectedItemTitle = 0;
         private int prevItemTitle = -1;
 
-        #region 액티브 아이템
-        private UnityEditor.Editor activeItemEditor;
-        private int selectedActiveItemIndex = 0;
-        private Vector2 activeItemScrollPosition;
-        private List<ActiveItemTemplate> activeItemTemplates = new List<ActiveItemTemplate>();
+        #region 고서
+        private UnityEditor.Editor tomeEditor;
+        private int selectedTomeIndex = 0;
+        private Vector2 tomeScrollPosition;
+        private List<TomeTemplate> tomeTemplates = new List<TomeTemplate>();
         #endregion
         #region 아티팩트
         private UnityEditor.Editor artifactEditor;
@@ -231,13 +231,13 @@ namespace EvolveThisMatch.Editor
         private void DrawItemTitle()
         {
             GUILayout.BeginHorizontal();
-            if (GUILayout.Toggle(selectedItemTitle == 0, "액티브 아이템", "Button")) selectedItemTitle = 0;
+            if (GUILayout.Toggle(selectedItemTitle == 0, "고서", "Button")) selectedItemTitle = 0;
             if (GUILayout.Toggle(selectedItemTitle == 1, "아티팩트", "Button")) selectedItemTitle = 1;
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10);
 
-            if (selectedItemTitle == 0) DrawActiveItemTab();
+            if (selectedItemTitle == 0) DrawTomeTab();
             else DrawArtifactTab();
         }
 
@@ -336,7 +336,7 @@ namespace EvolveThisMatch.Editor
             if (GUILayout.Toggle(selectedBuffTitle == 0, "공용", "Button")) selectedBuffTitle = 0;
             if (GUILayout.Toggle(selectedBuffTitle == 1, "액티브 스킬", "Button")) selectedBuffTitle = 1;
             if (GUILayout.Toggle(selectedBuffTitle == 2, "패시브 스킬", "Button")) selectedBuffTitle = 2;
-            if (GUILayout.Toggle(selectedBuffTitle == 3, "액티브 아이템", "Button")) selectedBuffTitle = 3;
+            if (GUILayout.Toggle(selectedBuffTitle == 3, "고서", "Button")) selectedBuffTitle = 3;
             if (GUILayout.Toggle(selectedBuffTitle == 4, "아티팩트", "Button")) selectedBuffTitle = 4;
             if (GUILayout.Toggle(selectedBuffTitle == 5, "시너지", "Button")) selectedBuffTitle = 5;
             GUILayout.EndHorizontal();
@@ -457,22 +457,22 @@ namespace EvolveThisMatch.Editor
             }
         }
 
-        private void DrawActiveItemTab()
+        private void DrawTomeTab()
         {
-            AutoLoadItem(ref activeItemTemplates, "ActiveItem");
+            AutoLoadItem(ref tomeTemplates, "Tome");
 
-            DrawTemplateTab<ActiveItemTemplate>(
-                ref activeItemTemplates,
-                ref selectedActiveItemIndex,
-                ref activeItemScrollPosition,
-                ref activeItemEditor,
-                "액티브 아이템",
-                "Assets/EvolveThisMatch/GameData/Item/ActiveItem",
-                "ActiveItem",
+            DrawTemplateTab<TomeTemplate>(
+                ref tomeTemplates,
+                ref selectedTomeIndex,
+                ref tomeScrollPosition,
+                ref tomeEditor,
+                "고서",
+                "Assets/EvolveThisMatch/GameData/Item/Tome",
+                "Tome",
                 () =>
                 {
-                    var window = GetWindow<LoadActiveItemTemplateEditorWindow>();
-                    window.titleContent = new GUIContent("액티브 아이템 불러오기");
+                    var window = GetWindow<LoadTomeTemplateEditorWindow>();
+                    window.titleContent = new GUIContent("고서 불러오기");
                     window.minSize = new Vector2(300, 100);
                     window.maxSize = new Vector2(300, 100);
                 }

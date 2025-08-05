@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 4328386156437477694}
   - component: {fileID: 6763210472154407998}
   m_Layer: 0
-  m_Name: ActiveItemSystem
+  m_Name: TomeSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -21,6 +21,7 @@ namespace EvolveThisMatch.Core
         [SerializeField] private AgentTalentLibrary _agentTalentLibrary;
 
         [SerializeField] private ArtifactLibraryTemplate _artifactLibrary;
+        [SerializeField] private TomeLibraryTemplate _tomeLibrary;
 
         public ProfileSaveDataTemplate profileSaveData => _profileSaveData;
         public BattleDataTemplate battleData => _battleData;
@@ -31,6 +32,7 @@ namespace EvolveThisMatch.Core
         public int probabilityLevel => _agentRarityLibrary.probabilityLevel;
 
         public IReadOnlyList<ArtifactTemplate> artifactTemplates => _artifactLibrary.templates;
+        public IReadOnlyList<TomeTemplate> tomeTemplates => _tomeLibrary.templates;
 
         public AgentTemplate GetAgentTemplateById(int id)
         {

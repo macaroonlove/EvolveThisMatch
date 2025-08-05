@@ -21,6 +21,7 @@ namespace EvolveThisMatch.Lobby
         private UIAgentInfoCanvas _agentInfoCanvas;
         private UIDepartmentCanvas _departmentCanvas;
         private UIArtifactCanvas _artifactCanvas;
+        private UITomeCanvas _tomeCanvas;
 
         protected override void Initialize()
         {
@@ -29,6 +30,7 @@ namespace EvolveThisMatch.Lobby
             _agentInfoCanvas = transform.parent.GetComponentInChildren<UIAgentInfoCanvas>();
             _departmentCanvas = transform.parent.GetComponentInChildren<UIDepartmentCanvas>();
             _artifactCanvas = transform.parent.GetComponentInChildren<UIArtifactCanvas>();
+            _tomeCanvas = transform.parent.GetComponentInChildren<UITomeCanvas>();
 
             GetButton((int)Buttons.BattleStartButton).onClick.AddListener(BattleStart);
             GetButton((int)Buttons.AgentInfoButton).onClick.AddListener(ShowAgentInfo);
@@ -62,7 +64,7 @@ namespace EvolveThisMatch.Lobby
 
         private void ShowTome()
         {
-
+            _tomeCanvas?.Show(true);
         }
 
         private void ShowStore()

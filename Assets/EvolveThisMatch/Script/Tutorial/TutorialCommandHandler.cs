@@ -29,9 +29,9 @@ namespace EvolveThisMatch.Tutorial
                     CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Gold, amount);
                     break;
                 case ItemType.ActiveItem:
-                    AddressableAssetManager.Instance.GetScriptableObject<ActiveItemTemplate>(name, (template) =>
+                    AddressableAssetManager.Instance.GetScriptableObject<TomeTemplate>(name, (template) =>
                     {
-                        CoreManager.Instance.GetSubSystem<ActiveItemSystem>().AddItem(template);
+                        CoreManager.Instance.GetSubSystem<TomeSystem>().AddItem(template);
                     });
                     break;
                 case ItemType.PassiveItem:

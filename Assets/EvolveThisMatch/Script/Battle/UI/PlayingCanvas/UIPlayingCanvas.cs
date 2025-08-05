@@ -10,7 +10,7 @@ namespace EvolveThisMatch.Battle
         private UITrainingSchoolCanvas _uiTrainingSchoolCanvas;
         private UIEngraveCanvas _uiEngraveCanvas;
         private UISynergyCanvas _uiSynergyCanvas;
-        private UIActiveItemExecuteButton[] _uIActiveItemExecuteButtons;
+        private UITomeExecuteButton[] _uIActiveItemExecuteButtons;
 
         protected override void Initialize()
         {
@@ -19,7 +19,7 @@ namespace EvolveThisMatch.Battle
             _uiTrainingSchoolCanvas = GetComponentInChildren<UITrainingSchoolCanvas>();
             _uiEngraveCanvas = GetComponentInChildren<UIEngraveCanvas>();
             _uiSynergyCanvas = GetComponentInChildren<UISynergyCanvas>();
-            _uIActiveItemExecuteButtons = GetComponentsInChildren<UIActiveItemExecuteButton>();
+            _uIActiveItemExecuteButtons = GetComponentsInChildren<UITomeExecuteButton>();
 
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
             BattleManager.Instance.onBattleDeinitialize += OnBattleDeinitialize;
@@ -41,7 +41,7 @@ namespace EvolveThisMatch.Battle
 
             foreach (var button in _uIActiveItemExecuteButtons)
             {
-                button.GetActiveItem();
+                button.GetTome();
             }
         }
 

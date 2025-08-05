@@ -30,8 +30,9 @@ namespace EvolveThisMatch.Save
         [Tooltip("보유하고 있는 아티팩트들")]
         public List<Artifact> ownedArtifacts = new List<Artifact>();
 
-        [Tooltip("보유하고 있는 액티브 아이템들의 아이디")]
-        public List<int> ownedActiveItemIds = new List<int>();
+        [Tooltip("보유하고 있는 고서들")]
+        public List<Tome> ownedTomes = new List<Tome>();
+        public int[] equipTomes = new int[] { -1, -1, -1 };
 
         #region 데이터 모델
         #region 유닛
@@ -86,6 +87,23 @@ namespace EvolveThisMatch.Save
             }
         }
         #endregion
+        
+        #region 고서
+        [Serializable]
+        public class Tome
+        {
+            public int id;
+            public int count;
+            public int level;
+
+            public Tome(int id)
+            {
+                this.id = id;
+                this.count = 0;
+                this.level = 1;
+            }
+        }
+        #endregion
         #endregion
     }
 
@@ -106,7 +124,8 @@ namespace EvolveThisMatch.Save
 
         public List<ProfileSaveData.Agent> ownedAgents => _data.ownedAgents;
         public List<ProfileSaveData.Artifact> ownedArtifacts => _data.ownedArtifacts;
-        public List<int> ownedActiveItemIds => _data.ownedActiveItemIds;
+        public List<ProfileSaveData.Tome> ownedTomes => _data.ownedTomes;
+        public int[] equipTomes => _data.equipTomes;
 
         public override void SetDefaultValues()
         {
@@ -124,6 +143,12 @@ namespace EvolveThisMatch.Save
             for (int i = 0; i < 21; i++)
             {
                 AddArtifact(i);
+            }
+
+            // 임시 고서 추가
+            for (int i = 0; i < 4; i++)
+            {
+                AddTome(i);
             }
 
             // 초기 골드 추가
@@ -416,12 +441,12 @@ namespace EvolveThisMatch.Save
         {
             var modifyArtifact = FindArtifact(_data.ownedArtifacts, id);
 
-            // 유닛이 없었다면 유닛 추가
+            // 아티팩트가 없었다면 추가
             if (modifyArtifact == null)
             {
                 _data.ownedArtifacts.Add(new ProfileSaveData.Artifact(id));
             }
-            // 유닛이 있었다면 유닛의 개수 추가
+            // 아티팩트가 있었다면 개수 추가
             else
             {
                 modifyArtifact.count++;
@@ -488,15 +513,88 @@ namespace EvolveThisMatch.Save
 
         #region 고서
         /// <summary>
-        /// 액티브 아이템 추가
+        /// 고서 추가
         /// </summary>
-        public void AddActiveItem(int id)
+        public void AddTome(int id)
         {
-            if (_data.ownedActiveItemIds.Contains(id) == false)
+            var modifyTome = FindTome(_data.ownedTomes, id);
+
+            // 고서가 없었다면 추가
+            if (modifyTome == null)
             {
-                _data.ownedActiveItemIds.Add(id);
+                _data.ownedTomes.Add(new ProfileSaveData.Tome(id));
+            }
+            // 고서가 있었다면 개수 추가
+            else
+            {
+                modifyTome.count++;
+
+                // 레벨업 시도
+                TryLevelupTome(modifyTome);
             }
         }
+
+        /// <summary>
+        /// 고서 장착
+        /// </summary>
+        public void EquipTome(int id, int index)
+        {
+            _data.equipTomes[index] = id;
+        }
+
+        #region 레벨업
+        /// <summary>
+        /// 고서가 레벨업하는데 요구하는 개수
+        /// </summary>
+        private static readonly ObscuredInt[] _tomeLevelUpRequirements = { 0, 1, 3, 5, 7, 10, 15, 30, 50, 90, 150 };
+
+        /// <summary>
+        /// 고서 레벨업 시도
+        /// </summary>
+        private bool TryLevelupTome(ProfileSaveData.Tome modifyTome)
+        {
+            // 아티팩트가 있다면 && 최고 레벨이 아니라면
+            if (modifyTome != null && modifyTome.level < _tomeLevelUpRequirements.Length - 1)
+            {
+                int requiredCount = _tomeLevelUpRequirements[modifyTome.level];
+
+                if (modifyTome.count >= requiredCount)
+                {
+                    modifyTome.count -= requiredCount;
+                    modifyTome.level++;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 아티팩트 레벨에 따른 최대 요구 개수 반환
+        /// </summary>
+        public int GetMaxTomeCountByLevel(int level)
+        {
+            if (level < 0 || level >= _tomeLevelUpRequirements.Length)
+                return -1;
+
+            return _tomeLevelUpRequirements[level];
+        }
+        #endregion
+
+        #region 유틸리티
+        private ProfileSaveData.Tome FindTome(List<ProfileSaveData.Tome> tomes, int tomeId)
+        {
+            for (int i = 0; i < tomes.Count; i++)
+            {
+                if (tomes[i].id == tomeId)
+                {
+                    return tomes[i];
+                }
+            }
+            return null;
+        }
+        #endregion
         #endregion
     }
 }
