@@ -230,7 +230,7 @@ namespace EvolveThisMatch.Core
 
                     foreach (var target in targets)
                     {
-                        unitEffect.Execute(unit, target);
+                        unitEffect.Execute(unit, target, 1);
                     }
                 }
             }

@@ -19,7 +19,7 @@ namespace EvolveThisMatch.Core
             return $"고서 대상 유닛들에게 {_duration}초 간 버프 적용";
         }
 
-        public override void Execute(List<Unit> targetUnits)
+        public override void Execute(List<Unit> targetUnits, int level)
         {
             foreach (var targetUnit in targetUnits)
             {
@@ -27,11 +27,11 @@ namespace EvolveThisMatch.Core
 
                 if (_isInfinity)
                 {
-                    targetUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue);
+                    targetUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue, level);
                 }
                 else
                 {
-                    targetUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, _duration);
+                    targetUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, _duration, level);
                 }
             }
         }

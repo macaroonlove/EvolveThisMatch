@@ -29,13 +29,13 @@ namespace EvolveThisMatch.Core
             return $"{unitLabel} 유닛에게 무한 지속 버프 적용";
         }
 
-        public override void Execute(Unit casterUnit)
+        public override void Execute(Unit casterUnit, int level)
         {
             if (casterUnit == null) return;
             if (UnitCondition(casterUnit) == false) return;
             // 조건 추가
-
-            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue);
+            
+            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue, level);
         }
 
         private bool UnitCondition(Unit unit)

@@ -28,12 +28,12 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.MoveIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += effect.Key.GetValue(effect.Value);
                 }
 
                 foreach (var effect in _abnormalStatusAbility.MoveIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += effect.Key.GetValue(effect.Value);
                 }
 
                 result *= increase;
@@ -42,7 +42,7 @@ namespace EvolveThisMatch.Core
                 #region »ó½Â¡¤ÇÏ¶ô
                 foreach (var effect in _buffAbility.MoveMultiplierDataEffects)
                 {
-                    result *= effect.value;
+                    result *= effect.Key.GetValue(effect.Value);
                 }
                 #endregion
 

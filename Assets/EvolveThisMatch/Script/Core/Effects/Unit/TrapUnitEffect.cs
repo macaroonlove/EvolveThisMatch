@@ -14,18 +14,18 @@ namespace EvolveThisMatch.Core
             return "µ£";
         }
 
-        public override void Execute(Unit casterUnit, Unit targetUnit)
+        public override void Execute(Unit casterUnit, Unit targetUnit, int level)
         {
             if (casterUnit == null || targetUnit == null) return;
             if (targetUnit.isDie) return;
 
             if (_isInfinity)
             {
-                casterUnit.GetAbility<EntitySpawnAbility>().SpawnTrap(_prefab, targetUnit.transform.position, (caster, target) => { SkillImpact(caster, target); });
+                casterUnit.GetAbility<EntitySpawnAbility>().SpawnTrap(_prefab, targetUnit.transform.position, (caster, target) => { SkillImpact(caster, target, level); });
             }
             else
             {
-                casterUnit.GetAbility<EntitySpawnAbility>().SpawnTrap(_prefab, targetUnit.transform.position, _duration, (caster, target) => { SkillImpact(caster, target); });
+                casterUnit.GetAbility<EntitySpawnAbility>().SpawnTrap(_prefab, targetUnit.transform.position, _duration, (caster, target) => { SkillImpact(caster, target, level); });
             }
         }
 

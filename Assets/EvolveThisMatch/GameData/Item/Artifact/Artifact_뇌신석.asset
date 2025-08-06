@@ -15,7 +15,22 @@ MonoBehaviour:
   _sprite: {fileID: 21300000, guid: 1e031a0597552134294e0f383b182beb, type: 3}
   _id: 6
   _displayName: "\uB1CC\uC2E0\uC11D"
-  _description: "\uBC88\uAC1C \uC18D\uC131 \uC2A4\uD0AC \uD53C\uD574\uB7C9\uC774\n10%
+  _description: "\uBC88\uAC1C \uC18D\uC131 \uC2A4\uD0AC \uD53C\uD574\uB7C9\uC774\n{value}%
     \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  _initValue: 10
   _casterFX: {fileID: 0}
-  triggers: []
+  triggers:
+  - {fileID: 8238418003271324030}
+--- !u!114 &8238418003271324030
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d9f1ec5f79b9e14997e30dd13e21a04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects: []

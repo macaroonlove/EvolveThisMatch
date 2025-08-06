@@ -14,22 +14,22 @@ namespace EvolveThisMatch.Core
         private List<UnableToAttackEffect> _unableToAttackEffects = new List<UnableToAttackEffect>();
         private List<UnableToHealEffect> _unableToHealEffects = new List<UnableToHealEffect>();
         private List<UnableToSkillEffect> _unableToSkillEffects = new List<UnableToSkillEffect>();
-        private List<MoveIncreaseDataEffect> _moveIncreaseDataEffects = new List<MoveIncreaseDataEffect>();
-        private Dictionary<PhysicalResistanceIncreaseDataEffect, string> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, string>();
-        private Dictionary<MagicResistanceIncreaseDataEffect, string> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, string>();
-        private List<ReceiveDamageIncreaseDataEffect> _receiveDamageIncreaseDataEffects = new List<ReceiveDamageIncreaseDataEffect>();
-        private List<HPRecoveryPerSecByMaxHPIncreaseDataEffect> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<HPRecoveryPerSecByMaxHPIncreaseDataEffect>();
+        private Dictionary<MoveIncreaseDataEffect, int> _moveIncreaseDataEffects = new Dictionary<MoveIncreaseDataEffect, int>();
+        private Dictionary<PhysicalResistanceIncreaseDataEffect, (int level, string displayName)> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, (int level, string displayName)>();
+        private Dictionary<MagicResistanceIncreaseDataEffect, (int level, string displayName)> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, (int level, string displayName)>();
+        private Dictionary<ReceiveDamageIncreaseDataEffect, int> _receiveDamageIncreaseDataEffects = new Dictionary<ReceiveDamageIncreaseDataEffect, int>();
+        private Dictionary<HPRecoveryPerSecByMaxHPIncreaseDataEffect, int> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new Dictionary<HPRecoveryPerSecByMaxHPIncreaseDataEffect, int>();
 
         #region 프로퍼티
         internal IReadOnlyList<UnableToMoveEffect> UnableToMoveEffects => _unableToMoveEffects;
         internal IReadOnlyList<UnableToAttackEffect> UnableToAttackEffects => _unableToAttackEffects;
         internal IReadOnlyList<UnableToHealEffect> UnableToHealEffects => _unableToHealEffects;
         internal IReadOnlyList<UnableToSkillEffect> UnableToSkillEffects => _unableToSkillEffects;
-        internal IReadOnlyList<MoveIncreaseDataEffect> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
-        public IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, string> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
-        public IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, string> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
-        internal IReadOnlyList<ReceiveDamageIncreaseDataEffect> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
-        internal IReadOnlyList<HPRecoveryPerSecByMaxHPIncreaseDataEffect> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
+        internal IReadOnlyDictionary<MoveIncreaseDataEffect, int> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
+        public IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, (int level, string displayName)> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
+        public IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, (int level, string displayName)> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
+        internal IReadOnlyDictionary<ReceiveDamageIncreaseDataEffect, int> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
+        internal IReadOnlyDictionary<HPRecoveryPerSecByMaxHPIncreaseDataEffect, int> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
         #endregion
 
         #endregion
@@ -44,7 +44,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.AbnormalStatusResistanceAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += effect.Key.GetValue(effect.Value);
                 }
                 #endregion
 
@@ -77,7 +77,7 @@ namespace EvolveThisMatch.Core
             unit.GetAbility<HealthAbility>().onDeath -= ClearStatusEffects;
         }
 
-        internal void ApplyAbnormalStatus(AbnormalStatusTemplate template, float duration)
+        internal void ApplyAbnormalStatus(AbnormalStatusTemplate template, float duration, int level = 1)
         {
             if (this == null || gameObject == null) return;
 
@@ -113,24 +113,24 @@ namespace EvolveThisMatch.Core
 
             if (template.delay > 0)
             {
-                StartCoroutine(CoAddStatus(template, duration, isContained));
+                StartCoroutine(CoAddStatus(template, duration, isContained, level));
             }
             else
             {
-                AddStatus(template, duration, isContained);
+                AddStatus(template, duration, isContained, level);
             }
         }
 
-        private IEnumerator CoAddStatus(AbnormalStatusTemplate template, float duration, bool isContained)
+        private IEnumerator CoAddStatus(AbnormalStatusTemplate template, float duration, bool isContained, int level)
         {
             yield return new WaitForSeconds(template.delay);
-            AddStatus(template, duration, isContained);
+            AddStatus(template, duration, isContained, level);
         }
 
         /// <summary>
         /// 상태이상 추가
         /// </summary>
-        private void AddStatus(AbnormalStatusTemplate template, float duration, bool isContained)
+        private void AddStatus(AbnormalStatusTemplate template, float duration, bool isContained, int level)
         {
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
             
@@ -179,23 +179,23 @@ namespace EvolveThisMatch.Core
                     }
                     else if (effect is MoveIncreaseDataEffect moveIncreaseDataEffect)
                     {
-                        _moveIncreaseDataEffects.Add(moveIncreaseDataEffect);
+                        _moveIncreaseDataEffects.Add(moveIncreaseDataEffect, level);
                     }
                     else if (effect is PhysicalResistanceIncreaseDataEffect physicalResistanceIncreaseDataEffect)
                     {
-                        _physicalResistanceIncreaseDataEffects.Add(physicalResistanceIncreaseDataEffect, template.displayName);
+                        _physicalResistanceIncreaseDataEffects.Add(physicalResistanceIncreaseDataEffect, (level, template.displayName));
                     }
                     else if (effect is MagicResistanceIncreaseDataEffect magicResistanceIncreaseDataEffect)
                     {
-                        _magicResistanceIncreaseDataEffects.Add(magicResistanceIncreaseDataEffect, template.displayName);
+                        _magicResistanceIncreaseDataEffects.Add(magicResistanceIncreaseDataEffect, (level, template.displayName));
                     }
                     else if (effect is ReceiveDamageIncreaseDataEffect receiveDamageIncreaseDataEffect)
                     {
-                        _receiveDamageIncreaseDataEffects.Add(receiveDamageIncreaseDataEffect);
+                        _receiveDamageIncreaseDataEffects.Add(receiveDamageIncreaseDataEffect, level);
                     }
                     else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
                     {
-                        _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Add(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
+                        _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Add(hpRecoveryPerSecByMaxHPIncreaseDataEffect, level);
                     }
                 }
             }

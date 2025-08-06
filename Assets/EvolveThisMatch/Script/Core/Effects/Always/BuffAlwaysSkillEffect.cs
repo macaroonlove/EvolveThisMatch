@@ -12,11 +12,11 @@ namespace EvolveThisMatch.Core
             return "모든 유닛에게 무한 지속 버프 적용";
         }
 
-        public override void Execute(Unit casterUnit)
+        public override void Execute(Unit casterUnit, int level)
         {
             if (casterUnit == null) return;
 
-            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue);
+            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue, level);
         }
 
 #if UNITY_EDITOR

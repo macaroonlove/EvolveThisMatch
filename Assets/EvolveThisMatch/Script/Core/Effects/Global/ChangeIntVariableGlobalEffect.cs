@@ -29,20 +29,22 @@ namespace EvolveThisMatch.Core
             return "오류! 확인 필요";
         }
 
-        public override void Execute()
+        public override void Execute(int level)
         {
             if (_target == null) return;
+
+            int finalValue = _value + level;
 
             switch (_operator)
             {
                 case EOperator.Add:
-                    _target.Value += _value;
+                    _target.Value += finalValue;
                     break;
                 case EOperator.Multiply:
-                    _target.Value *= _value;
+                    _target.Value *= finalValue;
                     break;
                 case EOperator.Set:
-                    _target.Value = _value;
+                    _target.Value = finalValue;
                     break;
             }
         }

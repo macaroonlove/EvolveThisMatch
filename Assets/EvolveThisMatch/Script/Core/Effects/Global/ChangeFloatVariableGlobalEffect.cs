@@ -8,7 +8,7 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private ObscuredFloatVariable _target;
         [SerializeField] private EOperator _operator = EOperator.Add;
-        [SerializeField] private int _value;
+        [SerializeField] private float _value;
 
         public override string GetDescription()
         {
@@ -29,20 +29,22 @@ namespace EvolveThisMatch.Core
             return "오류! 확인 필요";
         }
 
-        public override void Execute()
+        public override void Execute(int level)
         {
             if (_target == null) return;
+
+            float finalValue = _value + level * 0.01f;
 
             switch (_operator)
             {
                 case EOperator.Add:
-                    _target.Value += _value;
+                    _target.Value += finalValue;
                     break;
                 case EOperator.Multiply:
-                    _target.Value *= _value;
+                    _target.Value *= finalValue;
                     break;
                 case EOperator.Set:
-                    _target.Value = _value;
+                    _target.Value = finalValue;
                     break;
             }
         }
@@ -62,7 +64,7 @@ namespace EvolveThisMatch.Core
             labelRect.y += 20;
             valueRect.y += 20;
             GUI.Label(labelRect, "값");
-            _value = EditorGUI.IntField(valueRect, _value);
+            _value = EditorGUI.FloatField(valueRect, _value);
         }
 
         public override int GetNumRows()

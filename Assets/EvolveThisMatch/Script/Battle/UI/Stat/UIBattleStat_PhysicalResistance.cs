@@ -48,21 +48,21 @@ namespace EvolveThisMatch.Battle
 
             foreach (var effect in _buffAbility.PhysicalResistanceAdditionalDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Add)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Add)}");
             }
 
             foreach (var effect in _buffAbility.PhysicalResistanceIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Increase)}");
             }
             foreach (var effect in _abnormalStatusAbility.PhysicalResistanceIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Increase)}");
             }
 
             foreach (var effect in _buffAbility.PhysicalResistanceMultiplierDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Multiplier)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Multiplier)}");
             }
 
             return result.ToString();

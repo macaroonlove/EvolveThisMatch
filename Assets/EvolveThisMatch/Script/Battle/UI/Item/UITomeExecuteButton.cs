@@ -1,4 +1,5 @@
 using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,7 @@ namespace EvolveThisMatch.Battle
         private CoinSystem _coinSystem;
         private ActiveItemRangeRenderer _rangeRenderer;
         private TomeTemplate _template;
+        private ProfileSaveData.Tome _owned;
 
         private int _currentCoin;
         private float _inverseMaxCoolDownTime;
@@ -119,7 +121,10 @@ namespace EvolveThisMatch.Battle
         {
             GetImage((int)Images.Icon).sprite = template.sprite;
 
+            var ownedTomes = GameDataManager.Instance.profileSaveData.ownedTomes;
+
             _template = template;
+            _owned = ownedTomes.Find(t => t.id == template.id);
 
             _needCoinText.text = $"<sprite name=\"Coin\"> {finalNeedCoin}";
 
@@ -529,7 +534,7 @@ namespace EvolveThisMatch.Battle
             {
                 if (effect is GlobalEffect globalEffect)
                 {
-                    globalEffect.Execute();
+                    globalEffect.Execute(_owned.level);
                 }
             }
         }
@@ -540,7 +545,7 @@ namespace EvolveThisMatch.Battle
             {
                 if (effect is TomeEffect activeItemEffect)
                 {
-                    activeItemEffect.Execute(units);
+                    activeItemEffect.Execute(units, _owned.level);
                 }
             }
         }

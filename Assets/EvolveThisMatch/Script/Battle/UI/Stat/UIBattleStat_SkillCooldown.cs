@@ -25,9 +25,9 @@ namespace EvolveThisMatch.Battle
         {
             float finalSkillCooldown = 0;
 
-            foreach (var effect in _buffAbility.SkillCooldownIncreaseDataEffects.Keys)
+            foreach (var effect in _buffAbility.SkillCooldownIncreaseDataEffects)
             {
-                finalSkillCooldown += effect.value;
+                finalSkillCooldown += effect.Key.GetValue(effect.Value.level);
             }
 
             return (int)(finalSkillCooldown * 100);
@@ -49,7 +49,7 @@ namespace EvolveThisMatch.Battle
 
             foreach (var effect in _buffAbility.SkillCooldownIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Increase)}");
             }
 
             return result.ToString();

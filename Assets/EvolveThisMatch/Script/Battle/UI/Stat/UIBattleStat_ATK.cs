@@ -45,17 +45,17 @@ namespace EvolveThisMatch.Battle
 
             foreach (var effect in _buffAbility.ATKAdditionalDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Add)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Add)}");
             }
 
             foreach (var effect in _buffAbility.ATKIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Increase)}");
             }
 
             foreach (var effect in _buffAbility.ATKMultiplierDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Multiplier)}");
+                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Multiplier)}");
             }
 
             return result.ToString();

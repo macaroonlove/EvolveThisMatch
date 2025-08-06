@@ -69,7 +69,6 @@ namespace EvolveThisMatch.Lobby
             }
 
             _displayName.text = template.displayName;
-            _description.text = template.description;
             _needCoinValue.text = $"{template.needCoin} °³";
             _cooldownTimeValue.text = $"{template.cooldownTime} ÃÊ";
             _icon.sprite = template.sprite;
@@ -83,7 +82,7 @@ namespace EvolveThisMatch.Lobby
                 _rangeValue.text = $"¿ø ({template.range})";
             }
 
-            //owned.level
+            _description.text = template.description.Replace("{value}", $"{template.initValue + owned.level - 1}");
 
             _info.Show(true);
         }

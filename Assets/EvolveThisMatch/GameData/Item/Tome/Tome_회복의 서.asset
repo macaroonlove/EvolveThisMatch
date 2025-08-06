@@ -16,7 +16,8 @@ MonoBehaviour:
   _id: 0
   _displayName: "\uD68C\uBCF5\uC758 \uC11C"
   _description: "\uBC94\uC704 \uB0B4\uC758 \uBAA8\uB4E0 \uB300\uC0C1\uC744\n\uCD5C\uB300
-    \uCCB4\uB825\uC758 30% \uB9CC\uD07C\n\uD68C\uBCF5\uC2DC\uD0B5\uB2C8\uB2E4."
+    \uCCB4\uB825\uC758 {value}% \uB9CC\uD07C\n\uD68C\uBCF5\uC2DC\uD0B5\uB2C8\uB2E4."
+  _initValue: 30
   _needCoin: 20
   _cooldownTime: 10
   _delay: 0

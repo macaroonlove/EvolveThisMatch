@@ -1,6 +1,10 @@
+using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Save;
+using FrameWork;
 using FrameWork.Editor;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -12,21 +16,36 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField, ReadOnly] private List<ArtifactTemplate> _items = new List<ArtifactTemplate>();
 
-        private List<AlwaysEffect> _alwaysEffects = new List<AlwaysEffect>();
+        private Dictionary<AlwaysEffect, int> _alwaysEffects = new Dictionary<AlwaysEffect, int>();
         private List<GlobalEvent> _globalEvents = new List<GlobalEvent>();
         private List<UnitEvent> _unitEvents = new List<UnitEvent>();
+
+        private Dictionary<int, ProfileSaveData.Artifact> _ownedArtifactDic;
 
 #if UNITY_EDITOR
         [Header("Debug")]
         [SerializeField] private List<ArtifactTemplate> _debugItems = new List<ArtifactTemplate>();
 #endif
 
-        public void Initialize()
+        public async void Initialize()
         {
+            await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
+            await UniTask.WaitUntil(() => SaveManager.Instance.profileData.isLoaded);
+
+            var artifactTemplates = GameDataManager.Instance.artifactTemplates.ToList();
+            var ownedArtifacts = GameDataManager.Instance.profileSaveData.ownedArtifacts;
+            _ownedArtifactDic = ownedArtifacts.ToDictionary(a => a.id);
+
+            foreach (var owned in ownedArtifacts)
+            {
+                var artifact = artifactTemplates[owned.id];
+                AddItem(artifact);
+            }
+
 #if UNITY_EDITOR
             foreach (var debugItem in _debugItems)
             {
-                AddItem(debugItem, true);
+                AddItem(debugItem);
             }
 #endif
         }
@@ -68,11 +87,13 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        private void ApplyAlwaysEvent(Unit unit)
+        private async void ApplyAlwaysEvent(Unit unit)
         {
+            await UniTask.Yield();
+
             foreach (var effect in _alwaysEffects)
             {
-                effect.Execute(unit);
+                effect.Key.Execute(unit, effect.Value);
             }
         }
 
@@ -80,7 +101,7 @@ namespace EvolveThisMatch.Core
         /// 아이템 추가
         /// (저장되있는 아이템을 로드할 경우 isNewItem을 false로 넘겨주기)
         /// </summary>
-        public void AddItem(ArtifactTemplate template, bool isNewItem = true)
+        public void AddItem(ArtifactTemplate template)
         {
             if (_items.Contains(template))
             {
@@ -92,15 +113,17 @@ namespace EvolveThisMatch.Core
 
             _items.Add(template);
 
+            var level = _ownedArtifactDic[template.id].level;
+
             foreach (var trigger in template.triggers)
             {
-                if (trigger is GetGameTrigger getTrigger && isNewItem)
+                if (trigger is GetGameTrigger getTrigger)
                 {
                     foreach (var effect in getTrigger.effects)
                     {
                         if (effect is GlobalEffect globalEffect)
                         {
-                            globalEffect.Execute();
+                            globalEffect.Execute(level);
                         }
                     }
                 }
@@ -110,7 +133,7 @@ namespace EvolveThisMatch.Core
                     {
                         if (effect is AlwaysEffect alwaysEffect)
                         {
-                            _alwaysEffects.Add(alwaysEffect);
+                            _alwaysEffects.Add(alwaysEffect, level);
                         }
                     }
                 }
@@ -122,7 +145,7 @@ namespace EvolveThisMatch.Core
                         {
                             if (effect is GlobalEffect globalEffect)
                             {
-                                globalEffect.Execute();
+                                globalEffect.Execute(level);
                             }
                         }
                     };
@@ -139,11 +162,11 @@ namespace EvolveThisMatch.Core
                         {
                             if (effect is GlobalEffect globalEffect)
                             {
-                                globalEffect.Execute();
+                                globalEffect.Execute(level);
                             }
                             else if (effect is UnitEffect unitEffect)
                             {
-                                unitEffect.Execute(casterUnit, targetUnit);
+                                unitEffect.Execute(casterUnit, targetUnit, level);
                             }
                         }
 

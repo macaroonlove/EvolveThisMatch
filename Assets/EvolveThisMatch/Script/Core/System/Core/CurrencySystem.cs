@@ -160,21 +160,21 @@ namespace EvolveThisMatch.Core
             // 추가·차감
             foreach (var effect in _globalStatusSystem.GoldGainAdditionalDataEffects)
             {
-                result += effect.value;
+                result += effect.Key.GetValue(effect.Value);
             }
 
             // 증가·감소
             float increase = 1;
             foreach (var effect in _globalStatusSystem.GoldGainIncreaseDataEffects)
             {
-                increase += effect.value;
+                increase += effect.Key.GetValue(effect.Value);
             }
             result *= increase;
 
             // 상승·하락
             foreach (var effect in _globalStatusSystem.GoldGainMultiplierDataEffects)
             {
-                result *= effect.value;
+                result *= effect.Key.GetValue(effect.Value);
             }
 
             return (int)result;

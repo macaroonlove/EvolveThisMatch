@@ -53,27 +53,27 @@ namespace EvolveThisMatch.Core
                 float result = _baseATK;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.ATKAdditionalDataEffects.Keys)
+                foreach (var effect in _buffAbility.ATKAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += effect.Key.GetValue(effect.Value.level);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.ATKIncreaseDataEffects.Keys)
+                foreach (var effect in _buffAbility.ATKIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += effect.Key.GetValue(effect.Value.level);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.ATKMultiplierDataEffects.Keys)
+                foreach (var effect in _buffAbility.ATKMultiplierDataEffects)
                 {
-                    result *= effect.value;
+                    result *= effect.Key.GetValue(effect.Value.level);
                 }
                 #endregion
 
@@ -90,18 +90,18 @@ namespace EvolveThisMatch.Core
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects.Keys)
+                foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += effect.Key.GetValue(effect.Value.level);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects.Keys)
+                foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects)
                 {
-                    result *= effect.value;
+                    result *= effect.Key.GetValue(effect.Value.level);
                 }
                 #endregion
 
@@ -128,7 +128,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.AttackCountAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += effect.Key.GetValue(effect.Value);
                 }
 
                 return result;
@@ -386,7 +386,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
-                effect.Execute(unit, attackTarget);
+                effect.Execute(unit, attackTarget, 1);
             }
         }
         #endregion
@@ -451,7 +451,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
-                effect.Execute(unit, healTarget);
+                effect.Execute(unit, healTarget, 1);
             }
         }
         #endregion

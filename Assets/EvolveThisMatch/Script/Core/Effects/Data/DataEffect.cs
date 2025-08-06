@@ -9,7 +9,10 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] protected T _value;
 
-        public T value => _value;
+        //public T value => _value;
+
+        public abstract string GetDescription(int level);
+        public abstract T GetValue(int level);
 
 #if UNITY_EDITOR
 

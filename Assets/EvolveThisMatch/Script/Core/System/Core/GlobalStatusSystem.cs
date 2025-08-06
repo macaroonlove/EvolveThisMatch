@@ -12,14 +12,14 @@ namespace EvolveThisMatch.Core
     public class GlobalStatusSystem : MonoBehaviour, ICoreSystem
     {
         #region Effect List
-        private List<GoldGainAdditionalDataEffect> _goldGainAdditionalDataEffects = new List<GoldGainAdditionalDataEffect>();
-        private List<GoldGainIncreaseDataEffect> _goldGainIncreaseDataEffects = new List<GoldGainIncreaseDataEffect>();
-        private List<GoldGainMultiplierDataEffect> _goldGainMultiplierDataEffects = new List<GoldGainMultiplierDataEffect>();
+        private Dictionary<GoldGainAdditionalDataEffect, int> _goldGainAdditionalDataEffects = new Dictionary<GoldGainAdditionalDataEffect, int>();
+        private Dictionary<GoldGainIncreaseDataEffect, int> _goldGainIncreaseDataEffects = new Dictionary<GoldGainIncreaseDataEffect, int>();
+        private Dictionary<GoldGainMultiplierDataEffect, int> _goldGainMultiplierDataEffects = new Dictionary<GoldGainMultiplierDataEffect, int>();
 
         #region 프로퍼티
-        internal IReadOnlyList<GoldGainAdditionalDataEffect> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
-        internal IReadOnlyList<GoldGainIncreaseDataEffect> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
-        internal IReadOnlyList<GoldGainMultiplierDataEffect> GoldGainMultiplierDataEffects => _goldGainMultiplierDataEffects;
+        internal IReadOnlyDictionary<GoldGainAdditionalDataEffect, int> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
+        internal IReadOnlyDictionary<GoldGainIncreaseDataEffect, int> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
+        internal IReadOnlyDictionary<GoldGainMultiplierDataEffect, int> GoldGainMultiplierDataEffects => _goldGainMultiplierDataEffects;
         #endregion
         #endregion
 
@@ -38,7 +38,7 @@ namespace EvolveThisMatch.Core
             ClearStatusEffects();
         }
 
-        internal void ApplyGlobalStatus(GlobalStatusTemplate template, float duration)
+        internal void ApplyGlobalStatus(GlobalStatusTemplate template, float duration, int level = 1)
         {
             if (this == null || gameObject == null || template == null) return;
 
@@ -60,13 +60,13 @@ namespace EvolveThisMatch.Core
                 }
             }
 
-            AddStatus(template, duration, isContained);
+            AddStatus(template, duration, isContained, level);
         }
 
         /// <summary>
         /// 전역 상태 추가
         /// </summary>
-        private void AddStatus(GlobalStatusTemplate template, float duration, bool isContained)
+        private void AddStatus(GlobalStatusTemplate template, float duration, bool isContained, int level)
         {
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 
@@ -92,15 +92,15 @@ namespace EvolveThisMatch.Core
                 {
                     if (effect is GoldGainAdditionalDataEffect goldGainAdditionalDataEffect)
                     {
-                        _goldGainAdditionalDataEffects.Add(goldGainAdditionalDataEffect);
+                        _goldGainAdditionalDataEffects.Add(goldGainAdditionalDataEffect, level);
                     }
                     else if (effect is GoldGainIncreaseDataEffect goldGainIncreaseDataEffect)
                     {
-                        _goldGainIncreaseDataEffects.Add(goldGainIncreaseDataEffect);
+                        _goldGainIncreaseDataEffects.Add(goldGainIncreaseDataEffect, level);
                     }
                     else if (effect is GoldGainMultiplierDataEffect goldGainMultiplierDataEffect)
                     {
-                        _goldGainMultiplierDataEffects.Add(goldGainMultiplierDataEffect);
+                        _goldGainMultiplierDataEffects.Add(goldGainMultiplierDataEffect, level);
                     }
 
                 }

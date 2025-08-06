@@ -15,7 +15,8 @@ MonoBehaviour:
   _sprite: {fileID: 21300000, guid: f1582d92634817546baed763edd3002b, type: 3}
   _id: 12
   _displayName: "\uAE00\uB808\uC774\uD504\uB2C8\uB974"
-  _description: "\uB9C8\uBC95 \uAD00\uD1B5\uB825\uC774 15% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  _description: "\uB9C8\uBC95 \uAD00\uD1B5\uB825\uC774 {value}% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  _initValue: 15
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: 6700729085209800792}

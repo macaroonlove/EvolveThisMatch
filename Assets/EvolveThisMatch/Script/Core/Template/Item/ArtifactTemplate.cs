@@ -11,6 +11,7 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private int _id;
         [HideInInspector, SerializeField] private string _displayName;
         [HideInInspector, SerializeField] private string _description;
+        [HideInInspector, SerializeField] private int _initValue;
 
         [HideInInspector, SerializeField] private FX _casterFX;
 
@@ -23,6 +24,7 @@ namespace EvolveThisMatch.Core
         public int id => _id;
         public string displayName => _displayName;
         public string description => _description;
+        public int initValue => _initValue;
 
         public FX casterFX => _casterFX;
         #endregion
@@ -31,6 +33,7 @@ namespace EvolveThisMatch.Core
         internal void SetId(int id) => _id = id;
         public void SetDisplayName(string name) => _displayName = name;
         internal void SetDescription(string desc) => _description = desc;
+        internal void SetInitValue(int initValue) => _initValue = initValue;
         #endregion
     }
 }
@@ -52,6 +55,7 @@ namespace EvolveThisMatch.Editor
         private SerializedProperty _id;
         private SerializedProperty _displayName;
         private SerializedProperty _description;
+        private SerializedProperty _initValue;
         private SerializedProperty _casterFX;
 
         private ReorderableList _triggersList;
@@ -68,6 +72,7 @@ namespace EvolveThisMatch.Editor
             _id = serializedObject.FindProperty("_id");
             _displayName = serializedObject.FindProperty("_displayName");
             _description = serializedObject.FindProperty("_description");
+            _initValue = serializedObject.FindProperty("_initValue");
             _casterFX = serializedObject.FindProperty("_casterFX");
 
             CreateEventTriggerList();
@@ -96,6 +101,11 @@ namespace EvolveThisMatch.Editor
             GUILayout.BeginHorizontal();
             GUILayout.Label("아이템 설명", GUILayout.Width(80));
             _description.stringValue = EditorGUILayout.TextArea(_description.stringValue, GUILayout.Height(50));
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("초기값", GUILayout.Width(80));
+            EditorGUILayout.PropertyField(_initValue, GUIContent.none);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();

@@ -30,7 +30,9 @@ MonoBehaviour:
   _sprite: {fileID: 21300000, guid: 51235174aa667f94e92a114c049b380a, type: 3}
   _id: 15
   _displayName: "\uD669\uAE08\uC0AC\uACFC"
-  _description: "\uAC8C\uC784 \uC2DC\uC791 \uC2DC,\n\uCF54\uC778\uC744 20\uAC1C \uD68D\uB4DD\uD569\uB2C8\uB2E4."
+  _description: "\uAC8C\uC784 \uC2DC\uC791 \uC2DC,\n\uCF54\uC778\uC744 {value}\uAC1C
+    \uD68D\uB4DD\uD569\uB2C8\uB2E4."
+  _initValue: 20
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: 1830051041259834362}

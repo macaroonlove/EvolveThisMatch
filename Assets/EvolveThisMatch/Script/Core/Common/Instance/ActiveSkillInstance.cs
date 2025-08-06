@@ -23,9 +23,9 @@ namespace EvolveThisMatch.Core
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.SkillCooldownIncreaseDataEffects.Keys)
+                foreach (var effect in _buffAbility.SkillCooldownIncreaseDataEffects)
                 {
-                    increase -= effect.value;
+                    increase -= effect.Key.GetValue(effect.Value.level);
                 }
 
                 result *= increase;

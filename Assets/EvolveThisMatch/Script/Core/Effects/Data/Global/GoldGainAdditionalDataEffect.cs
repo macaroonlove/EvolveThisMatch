@@ -8,9 +8,24 @@ namespace EvolveThisMatch.Core
     {
         public override string GetDescription()
         {
+            return FormatDescription(_value);
+        }
+
+        public override string GetDescription(int level)
+        {
+            return FormatDescription(GetValue(level));
+        }
+
+        public override int GetValue(int level)
+        {
+            return _value + 1 * (level - 1);
+        }
+
+        private string FormatDescription(int value)
+        {
             if (value == 0)
             {
-                return $"Ãß°¡ °ñµå È¹µæ·®À» ¼³Á¤ÇØÁÖ¼¼¿ä.";
+                return "Ãß°¡ °ñµå È¹µæ·®À» ¼³Á¤ÇØÁÖ¼¼¿ä.";
             }
             else if (value > 0)
             {

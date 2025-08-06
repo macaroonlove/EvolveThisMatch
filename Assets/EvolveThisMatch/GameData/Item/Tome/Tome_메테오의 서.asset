@@ -15,8 +15,9 @@ MonoBehaviour:
   _sprite: {fileID: 21300000, guid: a7352be7d5769b847a9e25436bad2b13, type: 3}
   _id: 2
   _displayName: "\uBA54\uD14C\uC624\uC758 \uC11C"
-  _description: "\uBC94\uC704\uC5D0 \uC6B4\uC11D\uC744 \uB5A8\uC5B4\uB728\uB824 3000\uC758
+  _description: "\uBC94\uC704\uC5D0 \uC6B4\uC11D\uC744 \uB5A8\uC5B4\uB728\uB824\n{value}\uC758
     \uACE0\uC815\uD53C\uD574\uB97C \n\uC785\uD799\uB2C8\uB2E4."
+  _initValue: 3000
   _needCoin: 60
   _cooldownTime: 20
   _delay: 0
