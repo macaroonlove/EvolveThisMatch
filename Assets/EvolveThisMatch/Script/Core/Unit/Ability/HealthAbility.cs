@@ -134,6 +134,12 @@ namespace EvolveThisMatch.Core
                 int result = _baseHPRecoveryPerSec;
 
                 // 최대 체력의 % 만큼 초당 회복력 추가
+                foreach (var effect in _buffAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
+                {
+                    result += (int)(effect.value * finalMaxHP);
+                }
+
+                // 최대 체력의 % 만큼 초당 회복력 추가
                 foreach (var effect in _abnormalStatusAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
                 {
                     result += (int)(effect.value * finalMaxHP);

@@ -20,6 +20,8 @@ namespace EvolveThisMatch.Core
         public event UnityAction onBattleDeinitialize;
         public event UnityAction onBattleManagerDestroy;
 
+        [SerializeField] private GlobalEvent _battleStartGlobalEvent;
+
         protected override void Awake()
         {
             base.Awake();
@@ -69,6 +71,7 @@ namespace EvolveThisMatch.Core
             GameDataManager.Instance.InitializeData();
 
             onBattleInitialize?.Invoke();
+            _battleStartGlobalEvent?.Raise();
         }
 
         public void DeinitializeBattle()

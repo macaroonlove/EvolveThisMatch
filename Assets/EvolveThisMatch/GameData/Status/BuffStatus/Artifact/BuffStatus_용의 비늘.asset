@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d5374d65afbf1140988092280a6fc8c, type: 3}
+  m_Name: "BuffStatus_\uC6A9\uC758 \uBE44\uB298"
+  m_EditorClassIdentifier: 
+  _displayName: "\uC6A9\uC758 \uBE44\uB298"
+  _description: 
+  _delay: 0
+  _useAttackCountLimit: 0
+  _attackCount: 0
+  effects:
+  - {fileID: 9053209215255670568}
+  _applyFX: {fileID: 0}
+  _removeFX: {fileID: 0}
+--- !u!114 &9053209215255670568
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f577fa5588ec315438af571a5f1eabe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _value: 0.2

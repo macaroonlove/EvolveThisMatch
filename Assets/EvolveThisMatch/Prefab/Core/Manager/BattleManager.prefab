@@ -26934,6 +26934,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c71555a6b14b5c49950ff5f40e6b980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _battleStartGlobalEvent: {fileID: 11400000, guid: fe5efdae55e1d7340a74928bc9383ee5, type: 2}
 --- !u!1 &8734344099510577362
 GameObject:
   m_ObjectHideFlags: 0

@@ -68,6 +68,7 @@ MonoBehaviour:
   _rightHandPoint: {fileID: 0}
   _footPoint: {fileID: 475356860715632607}
   _projectileHitPoint: {fileID: 2604918211138618271}
+  _deathGlobalEvent: {fileID: 11400000, guid: 17e050b9e3ebfce41bff4a79d6f54c3b, type: 2}
 --- !u!114 &2156451356181090484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,6 +82,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _priority: 2
+  _attackUnitEvent: {fileID: 0}
 --- !u!114 &1201786375016263730
 MonoBehaviour:
   m_ObjectHideFlags: 0

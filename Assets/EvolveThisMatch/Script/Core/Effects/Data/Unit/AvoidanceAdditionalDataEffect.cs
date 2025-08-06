@@ -14,11 +14,11 @@ namespace EvolveThisMatch.Core
             }
             else if (value > 0)
             {
-                return $"È¸ÇÇ È®·ü  {value} Ãß°¡";
+                return $"È¸ÇÇ È®·ü  +{value}%";
             }
             else
             {
-                return $"È¸ÇÇ È®·ü  {Mathf.Abs(value)} Â÷°¨";
+                return $"È¸ÇÇ È®·ü  -{Mathf.Abs(value)}%";
             }
         }
     }

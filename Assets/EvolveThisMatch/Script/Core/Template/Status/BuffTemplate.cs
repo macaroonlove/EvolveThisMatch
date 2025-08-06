@@ -200,6 +200,7 @@ namespace EvolveThisMatch.Editor
             menu.AddItem(new GUIContent("회복량 상승·하락"), false, CreateEffectCallback, typeof(HealingMultiplierDataEffect));
 
             menu.AddItem(new GUIContent("초당 회복량 증감"), false, CreateEffectCallback, typeof(HPRecoveryPerSecByMaxHPIncreaseDataEffect));
+            menu.AddItem(new GUIContent("상태이상 저항력 추가"), false, CreateEffectCallback, typeof(AbnormalStatusResistanceAdditionalDataEffect));
 
             menu.AddItem(new GUIContent("스킬 가속도 증감"), false, CreateEffectCallback, typeof(SkillCooldownIncreaseDataEffect));
 

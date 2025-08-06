@@ -4,6 +4,8 @@ namespace EvolveThisMatch.Core
 {
     public class EnemyUnit : Unit
     {
+        [SerializeField] private GlobalEvent _deathGlobalEvent;
+
         private int _gainCoin;
         private int _gainCrystal;
 
@@ -34,6 +36,8 @@ namespace EvolveThisMatch.Core
             {
                 BattleManager.Instance.GetSubSystem<CrystalSystem>().AddCrystal(_gainCrystal);
             }
+
+            _deathGlobalEvent?.Raise();
 
             enemySystem.Deregist(this);
         }

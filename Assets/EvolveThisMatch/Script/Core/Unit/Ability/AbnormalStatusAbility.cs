@@ -3,21 +3,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace EvolveThisMatch.Core
 {
     public class AbnormalStatusAbility : AlwaysAbility
     {
         #region Effect List
-        [NonSerialized] private List<UnableToMoveEffect> _unableToMoveEffects = new List<UnableToMoveEffect>();
-        [NonSerialized] private List<UnableToAttackEffect> _unableToAttackEffects = new List<UnableToAttackEffect>();
-        [NonSerialized] private List<UnableToHealEffect> _unableToHealEffects = new List<UnableToHealEffect>();
-        [NonSerialized] private List<UnableToSkillEffect> _unableToSkillEffects = new List<UnableToSkillEffect>();
-        [NonSerialized] private List<MoveIncreaseDataEffect> _moveIncreaseDataEffects = new List<MoveIncreaseDataEffect>();
-        [NonSerialized] private Dictionary<PhysicalResistanceIncreaseDataEffect, string> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, string>();
-        [NonSerialized] private Dictionary<MagicResistanceIncreaseDataEffect, string> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, string>();
-        [NonSerialized] private List<ReceiveDamageIncreaseDataEffect> _receiveDamageIncreaseDataEffects = new List<ReceiveDamageIncreaseDataEffect>();
-        [NonSerialized] private List<HPRecoveryPerSecByMaxHPIncreaseDataEffect> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<HPRecoveryPerSecByMaxHPIncreaseDataEffect>();
+        private List<UnableToMoveEffect> _unableToMoveEffects = new List<UnableToMoveEffect>();
+        private List<UnableToAttackEffect> _unableToAttackEffects = new List<UnableToAttackEffect>();
+        private List<UnableToHealEffect> _unableToHealEffects = new List<UnableToHealEffect>();
+        private List<UnableToSkillEffect> _unableToSkillEffects = new List<UnableToSkillEffect>();
+        private List<MoveIncreaseDataEffect> _moveIncreaseDataEffects = new List<MoveIncreaseDataEffect>();
+        private Dictionary<PhysicalResistanceIncreaseDataEffect, string> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, string>();
+        private Dictionary<MagicResistanceIncreaseDataEffect, string> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, string>();
+        private List<ReceiveDamageIncreaseDataEffect> _receiveDamageIncreaseDataEffects = new List<ReceiveDamageIncreaseDataEffect>();
+        private List<HPRecoveryPerSecByMaxHPIncreaseDataEffect> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<HPRecoveryPerSecByMaxHPIncreaseDataEffect>();
 
         #region 프로퍼티
         internal IReadOnlyList<UnableToMoveEffect> UnableToMoveEffects => _unableToMoveEffects;
@@ -33,6 +34,27 @@ namespace EvolveThisMatch.Core
 
         #endregion
 
+        #region 스탯 계산
+        public float finalAbnormalStatusResistance
+        {
+            get
+            {
+                float result = 0;
+
+                #region 추가·차감
+                foreach (var effect in _buffAbility.AbnormalStatusResistanceAdditionalDataEffects)
+                {
+                    result += effect.value;
+                }
+                #endregion
+
+                return result;
+            }
+        }
+        #endregion
+
+        private BuffAbility _buffAbility;
+
         private Dictionary<AbnormalStatusTemplate, StatusInstance> statusDic = new Dictionary<AbnormalStatusTemplate, StatusInstance>();
 
 #if UNITY_EDITOR
@@ -42,6 +64,8 @@ namespace EvolveThisMatch.Core
         internal override void Initialize(Unit unit)
         {
             base.Initialize(unit);
+
+            _buffAbility = unit.GetAbility<BuffAbility>();
 
             unit.GetAbility<HitAbility>().onHit += RemoveStatusByHit;
             unit.GetAbility<HealthAbility>().onDeath += ClearStatusEffects;
@@ -56,6 +80,11 @@ namespace EvolveThisMatch.Core
         internal void ApplyAbnormalStatus(AbnormalStatusTemplate template, float duration)
         {
             if (this == null || gameObject == null) return;
+
+            if (Random.value < finalAbnormalStatusResistance)
+            {
+                return;
+            }
 
             var isContained = false;
 

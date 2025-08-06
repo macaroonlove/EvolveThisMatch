@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5550266784169305033
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a48a428d7c3dce54ebdbf0ecfd0cf521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitType: 3
+  _buff: {fileID: 11400000, guid: 72d9aa14ec1c8b141b579a5afb914647, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,9 +26,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c07506fdbaa7fc45875ac46e8746973, type: 3}
   m_Name: "Artifact_\uCC9C\uCE6D"
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: 1a9379a264399a84b91428eb906d12d7, type: 3}
   _id: 13
   _displayName: "\uCC9C\uCE6D"
-  _description: "\uCE58\uBA85\uD0C0 \uD655\uB960\uC774 10% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  _description: "\uCE58\uBA85\uD0C0 \uD655\uB960\uC774 10% \uB298\uC5B4\uB0A9\uB2C8\uB2E4."
   _casterFX: {fileID: 0}
-  triggers: []
+  triggers:
+  - {fileID: 4915191458812097488}
+--- !u!114 &4915191458812097488
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d9f1ec5f79b9e14997e30dd13e21a04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - {fileID: -5550266784169305033}

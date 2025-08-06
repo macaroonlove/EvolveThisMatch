@@ -62,6 +62,9 @@ namespace EvolveThisMatch.Core
         private List<HealingIncreaseDataEffect> _healingIncreaseDataEffects = new List<HealingIncreaseDataEffect>();
         private List<HealingMultiplierDataEffect> _healingMultiplierDataEffects = new List<HealingMultiplierDataEffect>();
 
+        private List<HPRecoveryPerSecByMaxHPIncreaseDataEffect> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<HPRecoveryPerSecByMaxHPIncreaseDataEffect>();
+        private List<AbnormalStatusResistanceAdditionalDataEffect> _abnormalStatusResistanceAdditionalDataEffects = new List<AbnormalStatusResistanceAdditionalDataEffect>();
+
         private Dictionary<SkillCooldownIncreaseDataEffect, string> _skillCooldownIncreaseDataEffects = new Dictionary<SkillCooldownIncreaseDataEffect, string>();
 
         private List<SetMinHPEffect> _setMinHPEffects = new List<SetMinHPEffect>();
@@ -121,6 +124,9 @@ namespace EvolveThisMatch.Core
         internal IReadOnlyList<HealingAdditionalDataEffect> HealingAdditionalDataEffects => _healingAdditionalDataEffects;
         internal IReadOnlyList<HealingIncreaseDataEffect> HealingIncreaseDataEffects => _healingIncreaseDataEffects;
         internal IReadOnlyList<HealingMultiplierDataEffect> HealingMultiplierDataEffects => _healingMultiplierDataEffects;
+
+        internal IReadOnlyList<HPRecoveryPerSecByMaxHPIncreaseDataEffect> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
+        internal IReadOnlyList<AbnormalStatusResistanceAdditionalDataEffect> AbnormalStatusResistanceAdditionalDataEffects => _abnormalStatusResistanceAdditionalDataEffects;
 
         public IReadOnlyDictionary<SkillCooldownIncreaseDataEffect, string> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
 
@@ -391,6 +397,15 @@ namespace EvolveThisMatch.Core
                     else if (effect is HealingMultiplierDataEffect healingMultiplierDataEffect)
                     {
                         _healingMultiplierDataEffects.Add(healingMultiplierDataEffect);
+                    }
+                    
+                    else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
+                    {
+                        _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Add(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
+                    }
+                    else if (effect is AbnormalStatusResistanceAdditionalDataEffect abnormalStatusResistanceAdditionalDataEffect)
+                    {
+                        _abnormalStatusResistanceAdditionalDataEffects.Add(abnormalStatusResistanceAdditionalDataEffect);
                     }
 
                     else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)
@@ -679,6 +694,15 @@ namespace EvolveThisMatch.Core
                 else if (effect is HealingMultiplierDataEffect healingMultiplierDataEffect)
                 {
                     _healingMultiplierDataEffects.Remove(healingMultiplierDataEffect);
+                }
+
+                else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
+                {
+                    _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Remove(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
+                }
+                else if (effect is AbnormalStatusResistanceAdditionalDataEffect abnormalStatusResistanceAdditionalDataEffect)
+                {
+                    _abnormalStatusResistanceAdditionalDataEffects.Remove(abnormalStatusResistanceAdditionalDataEffect);
                 }
 
                 else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)

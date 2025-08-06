@@ -11,6 +11,8 @@ namespace EvolveThisMatch.Core
     /// </summary>
     public class AttackAbility : ConditionAbility
     {
+        [SerializeField] private UnitEvent _attackUnitEvent;
+
         private bool _isProjectileAttack;
         private GameObject _projectilePrefab;
         private ESpawnPoint _spawnPoint;
@@ -380,6 +382,7 @@ namespace EvolveThisMatch.Core
             attackTarget.GetAbility<HitAbility>().Hit(unit);
 
             onAttack?.Invoke();
+            _attackUnitEvent?.Raise(unit, attackTarget);
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
@@ -444,6 +447,7 @@ namespace EvolveThisMatch.Core
             healTarget.GetAbility<HealthAbility>().Healed(finalATK, unit);
 
             onAttack?.Invoke();
+            _attackUnitEvent?.Raise(unit, healTarget);
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {

@@ -290,6 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _priority: 1
+  _attackUnitEvent: {fileID: 11400000, guid: ca27d42ed5c8403448162c8f7e654afc, type: 2}
 --- !u!114 &6735737040812538881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -456,6 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _priority: 0
+  _isLookingLeft: 0
   _baseMoveSpeed: 0
   _isLeft: 0
   _chaseRange: 0

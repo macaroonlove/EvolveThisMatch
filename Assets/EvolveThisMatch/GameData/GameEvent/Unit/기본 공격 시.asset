@@ -9,6 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d18f7660020b71d4fb7a2e5fa6d99ee1, type: 3}
-  m_Name: "\uC544\uAD70 \uC720\uB2DB\uC774 \uAE30\uBCF8\uACF5\uACA9 \uC2DC"
+  m_Script: {fileID: 11500000, guid: 2cffe5319ae7fc54f85ed03cc1c05356, type: 3}
+  m_Name: "\uAE30\uBCF8 \uACF5\uACA9 \uC2DC"
   m_EditorClassIdentifier: 
+  _debugValue: {fileID: 0}
+  _debugValue2: {fileID: 0}
