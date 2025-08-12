@@ -6,8 +6,8 @@ namespace EvolveThisMatch.Core
     [CreateAssetMenu(menuName = "Templates/Unit/Skin", fileName = "Skin_Lobby_", order = 0)]
     public class SkinLobbyTemplate : ScriptableObject
     {
-        [Header("스프라이트")]
-        [SerializeField, Label("전체 일러스트")] private Sprite _fullBodySprite;
+        [Header("프리팹")]
+        [SerializeField, Label("OverUI 프리팹")] private GameObject _overUIPrefab;
 
         [Header("보이스")]
         [SerializeField, Label("캐릭터 목록")] private AudioClip _infoVoice;
@@ -17,7 +17,7 @@ namespace EvolveThisMatch.Core
         [SerializeField, Label("목소리 3")] private AudioClip _talk3Voice;
 
         #region 프로퍼티
-        public Sprite fullBodySprite => _fullBodySprite;
+        public GameObject overUIPrefab => _overUIPrefab;
 
         public AudioClip infoVoice => _infoVoice;
         public AudioClip getVoice => _getVoice;

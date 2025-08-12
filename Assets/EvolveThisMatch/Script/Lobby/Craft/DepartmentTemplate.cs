@@ -12,6 +12,7 @@ namespace EvolveThisMatch.Lobby
         [SerializeField] private string _departmentName;
         [SerializeField, TextArea] private string _departmentDescription;
         [SerializeField] private Sprite _departmentBackground;
+        [SerializeField] private Vector2[] _unitPos;
 
         [Space(10)]
         [SerializeField] private List<CraftItemData> _craftItems = new List<CraftItemData>();
@@ -23,6 +24,7 @@ namespace EvolveThisMatch.Lobby
         internal string departmentName => _departmentName;
         internal string departmentDescription => _departmentDescription;
         internal Sprite departmentBackground => _departmentBackground;
+        internal Vector2[] unitPos => _unitPos;
 
         internal IReadOnlyList<CraftItemData> craftItems => _craftItems;
         #endregion

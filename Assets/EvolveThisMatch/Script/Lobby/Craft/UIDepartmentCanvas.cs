@@ -35,10 +35,16 @@ namespace EvolveThisMatch.Lobby
         private List<UIDepartmentItem> _departmentItems;
         private int _totalWeight;
 
+        private PoolSystem _poolSystem;
+        private GameObject _overUICamera;
+        private readonly List<GameObject> _spawnedUnits = new List<GameObject>();
+
         protected override void Initialize()
         {
             _departmentInfoPanel = GetComponentInChildren<UIDepartmentInfoPanel>();
             _disposePanel = GetComponentInChildren<UIDisposePanel>();
+            _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
+            _overUICamera = Camera.main.transform.Find("OverUICamera").gameObject;
 
             BindImage(typeof(Images));
             BindButton(typeof(Buttons));
@@ -61,7 +67,7 @@ namespace EvolveThisMatch.Lobby
             var parent = GetObject((int)Objects.DepartmentGroup).transform;
             var departmentTemplates = LobbyManager.Instance.departments;
             var departmentsDatas = SaveManager.Instance.departmentData.departments;
-            
+
             int count = departmentTemplates.Count;
             _departmentItems = new List<UIDepartmentItem>(count);
 
@@ -93,6 +99,8 @@ namespace EvolveThisMatch.Lobby
         {
             _departmentItems[0].SelectItem();
 
+            _overUICamera.SetActive(true);
+
             base.Show(isForce);
         }
 
@@ -107,6 +115,26 @@ namespace EvolveThisMatch.Lobby
             foreach (var craftResult in craftResults)
             {
                 _totalWeight += craftResult.totalWeight;
+            }
+
+            // ¿Ø¥÷ º˚±‚±‚
+            if (_spawnedUnits.Count > 0)
+            {
+                foreach (var unit in _spawnedUnits)
+                {
+                    _poolSystem.DeSpawn(unit);
+                }
+                _spawnedUnits.Clear();
+            }
+            // ¿Ø¥÷ ∫∏ø©¡÷±‚
+            for (int i = 0; i < departmentData.activeJobCount; i++)
+            {
+                var job = departmentData.GetActiveJob(i);
+                var prefab = GameDataManager.Instance.GetAgentTemplateById(job.unitId).overUIPrefab;
+                var obj = _poolSystem.Spawn(prefab);
+                obj.transform.position = template.unitPos[i];
+
+                _spawnedUnits.Add(obj);
             }
 
             // ∫Œº≠ ¡§∫∏√¢ √ ±‚»≠
@@ -154,7 +182,7 @@ namespace EvolveThisMatch.Lobby
                 var job = departmentData.GetActiveJob(i);
                 var item = template.craftItems[job.craftItemId];
 
-                float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.chargeUnitId).level;
+                float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.unitId).level;
                 float craftSpeed = agentLevel * 0.01f + levelData.speed;
                 float timePerItem = item.craftTime / craftSpeed;
 
@@ -210,6 +238,19 @@ namespace EvolveThisMatch.Lobby
         private void Hide()
         {
             VariableDisplayManager.Instance.HideAll();
+
+            _overUICamera.SetActive(false);
+
+            // ¿Ø¥÷ º˚±‚±‚
+            if (_spawnedUnits.Count > 0)
+            {
+                foreach (var unit in _spawnedUnits)
+                {
+                    _poolSystem.DeSpawn(unit);
+                }
+                _spawnedUnits.Clear();
+            }
+
             Hide(true);
         }
     }

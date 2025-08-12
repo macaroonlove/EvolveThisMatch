@@ -161,7 +161,7 @@ namespace EvolveThisMatch.Lobby
             _gainCraftItem = gainCraftItem;
             _removeJob = removeJob;
 
-            var agentTemplate = GameDataManager.Instance.GetAgentTemplateById(job.chargeUnitId);
+            var agentTemplate = GameDataManager.Instance.GetAgentTemplateById(job.unitId);
 
             // 생산 개수
             int productionCount = craftResult.productionCount;

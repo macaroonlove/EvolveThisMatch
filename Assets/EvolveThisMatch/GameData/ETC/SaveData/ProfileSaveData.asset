@@ -16,114 +16,114 @@ MonoBehaviour:
     displayName: 
     isClearTutorial: 0
     gold:
-      currentCryptoKey: 1885012549
-      hiddenValue: 1885012513
-      fakeValue: 100
+      currentCryptoKey: 1219435645
+      hiddenValue: 1219432545
+      fakeValue: 3100
       fakeValueActive: 1
       inited: 1
     essence:
-      currentCryptoKey: 1968842967
-      hiddenValue: 1968842967
-      fakeValue: 0
-      fakeValueActive: 0
+      currentCryptoKey: 1821100287
+      hiddenValue: 1821100499
+      fakeValue: 300
+      fakeValueActive: 1
       inited: 1
     loot:
-      currentCryptoKey: 1974220594
-      hiddenValue: 1974220594
-      fakeValue: 0
-      fakeValueActive: 0
+      currentCryptoKey: 1097246019
+      hiddenValue: 1097245807
+      fakeValue: 300
+      fakeValueActive: 1
       inited: 1
     ownedAgents:
     - id: 0
-      unitCount: 13
-      tier: 5
-      exp: 32730
-      level: 59
-      talent:
-      - id: 0
-        value: 174
-        isLock: 1
-      - id: 0
-        value: 172
-        isLock: 1
-      - id: 0
-        value: 185
-        isLock: 1
-      - id: 0
-        value: 164
-        isLock: 1
-      - id: 0
-        value: 195
-        isLock: 1
-      selectedSkinId: 0
-      ownedSkinIds: 00000000
-    - id: 1
-      unitCount: 2
-      tier: 2
+      unitCount: 0
+      tier: 0
       exp: 0
       level: 1
       talent:
-      - id: 0
-        value: 193
-        isLock: 1
-      - id: 1
-        value: 72
+      - id: -1
+        value: 0
         isLock: 0
-      - id: 0
-        value: 173
-        isLock: 1
-      - id: 0
-        value: 191
-        isLock: 1
-      - id: 1
-        value: 27
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      selectedSkinId: 0
+      ownedSkinIds: 00000000
+    - id: 1
+      unitCount: 0
+      tier: 0
+      exp: 0
+      level: 1
+      talent:
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
         isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 2
-      unitCount: 1
-      tier: 3
-      exp: 25
-      level: 70
+      unitCount: 0
+      tier: 0
+      exp: 0
+      level: 1
       talent:
-      - id: 0
-        value: 167
-        isLock: 1
-      - id: 0
-        value: 66
+      - id: -1
+        value: 0
         isLock: 0
-      - id: 1
-        value: 61
+      - id: -1
+        value: 0
         isLock: 0
-      - id: 3
-        value: 35
+      - id: -1
+        value: 0
         isLock: 0
-      - id: 0
-        value: 164
-        isLock: 1
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 3
-      unitCount: 1
-      tier: 3
-      exp: 48214
-      level: 61
+      unitCount: 0
+      tier: 0
+      exp: 0
+      level: 1
       talent:
-      - id: 0
-        value: 173
-        isLock: 1
-      - id: 0
-        value: 180
-        isLock: 1
-      - id: 0
-        value: 172
-        isLock: 1
-      - id: 0
-        value: 19
+      - id: -1
+        value: 0
         isLock: 0
-      - id: 0
-        value: 186
-        isLock: 1
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
+      - id: -1
+        value: 0
+        isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
     - id: 4
@@ -152,8 +152,8 @@ MonoBehaviour:
     - id: 5
       unitCount: 0
       tier: 0
-      exp: 526
-      level: 21
+      exp: 0
+      level: 1
       talent:
       - id: -1
         value: 0
@@ -172,8 +172,84 @@ MonoBehaviour:
         isLock: 0
       selectedSkinId: 0
       ownedSkinIds: 00000000
-    ownedPassiveItemIds: 
-    ownedActiveItemIds: 
+    ownedArtifacts:
+    - id: 0
+      count: 10
+      level: 1
+    - id: 1
+      count: 10
+      level: 1
+    - id: 2
+      count: 10
+      level: 1
+    - id: 3
+      count: 10
+      level: 1
+    - id: 4
+      count: 10
+      level: 1
+    - id: 5
+      count: 10
+      level: 1
+    - id: 6
+      count: 10
+      level: 1
+    - id: 7
+      count: 10
+      level: 1
+    - id: 8
+      count: 10
+      level: 1
+    - id: 9
+      count: 10
+      level: 1
+    - id: 10
+      count: 10
+      level: 1
+    - id: 11
+      count: 10
+      level: 1
+    - id: 12
+      count: 10
+      level: 1
+    - id: 13
+      count: 10
+      level: 1
+    - id: 14
+      count: 10
+      level: 1
+    - id: 15
+      count: 10
+      level: 1
+    - id: 16
+      count: 10
+      level: 1
+    - id: 17
+      count: 10
+      level: 1
+    - id: 18
+      count: 10
+      level: 1
+    - id: 19
+      count: 10
+      level: 1
+    - id: 20
+      count: 10
+      level: 1
+    ownedTomes:
+    - id: 0
+      count: 0
+      level: 1
+    - id: 1
+      count: 0
+      level: 1
+    - id: 2
+      count: 0
+      level: 1
+    - id: 3
+      count: 0
+      level: 1
+    equipTomes: ffffffffffffffffffffffff
   _goldVariable: {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}
   _essenceVariable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
   _lootVariable: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}

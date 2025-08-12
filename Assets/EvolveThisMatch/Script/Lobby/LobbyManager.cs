@@ -1,7 +1,10 @@
+using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -12,5 +15,43 @@ namespace EvolveThisMatch.Lobby
 
         internal DepartmentSaveDataTemplate departmentSaveData => _departmentSaveData;
         internal IReadOnlyList<DepartmentTemplate> departments => _departmentGroup.departments;
+
+        private List<AgentTemplate> _loadedTemplates = new List<AgentTemplate>();
+
+        protected override async void Awake()
+        {
+            base.Awake();
+
+            await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
+
+            List<UniTask> tasks = new List<UniTask>();
+
+            var agents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            foreach (var agent in agents)
+            {
+                var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
+
+                if (template != null)
+                {
+                    _loadedTemplates.Add(template);
+                    var task = template.LoadAllSkinLobbyTemplate();
+                    tasks.Add(task);
+                }
+            }
+
+            await UniTask.WhenAll(tasks);
+        }
+
+        private void OnDisable()
+        {
+            if (_loadedTemplates.Count > 0)
+            {
+                foreach (var template in _loadedTemplates)
+                {
+                    template.ReleaseSkinLobbyTemplate();
+                }
+            }
+            _loadedTemplates.Clear();
+        }
     }
 }

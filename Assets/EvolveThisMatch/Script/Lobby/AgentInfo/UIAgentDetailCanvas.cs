@@ -4,6 +4,7 @@ using FrameWork;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -56,12 +57,16 @@ namespace EvolveThisMatch.Lobby
         private Image _fullBody;
         private CanvasGroupController[] _panels = new CanvasGroupController[6];
 
+        private PoolSystem _poolSystem;
+        private GameObject _spawnObj;
+
         private ProfileSaveData.Agent _owned;
         private UnityAction _action;
 
         internal void Initialize(UnityAction action = null)
         {
             _action = action;
+            _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
 
             BindText(typeof(Texts));
             BindImage(typeof(Images));
@@ -102,6 +107,17 @@ namespace EvolveThisMatch.Lobby
         internal void Show(AgentTemplate template, ProfileSaveData.Agent owned)
         {
             if (owned == null) ShowPanel(0);
+
+            if (_spawnObj != null)
+            {
+                _poolSystem.DeSpawn(_spawnObj);
+                _spawnObj = null;
+            }
+            if (template.overUIPrefab != null)
+            {
+                _spawnObj = _poolSystem.Spawn(template.overUIPrefab);
+                _spawnObj.transform.position = new Vector2(-1.5f, -4);
+            }
 
             _owned = owned;
             _displayName.text = template.displayName;
@@ -156,6 +172,17 @@ namespace EvolveThisMatch.Lobby
                 else
                     _panels[j].Hide(true);
             }
+        }
+
+        internal void HidePanel()
+        {
+            if (_spawnObj != null)
+            {
+                _poolSystem.DeSpawn(_spawnObj);
+                _spawnObj = null;
+            }
+
+
         }
 
         private void ReShowAndSave(AgentTemplate template, ProfileSaveData.Agent owned)

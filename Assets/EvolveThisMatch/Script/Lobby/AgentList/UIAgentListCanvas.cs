@@ -40,7 +40,10 @@ namespace EvolveThisMatch.Lobby
         protected void Start()
         {
             InitializeAgentListItem();
+        }
 
+        internal void SelectFirstItem()
+        {
             _agentListItems[0].SelectItem();
         }
 

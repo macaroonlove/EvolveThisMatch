@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 0
   _rarity: {fileID: 0}
-  _displayName: "Skin_\uC9C8\uB4DC\uB808_\uAE30\uBCF8"
+  _displayName: "\uAE30\uBCF8"
   _description: 
   _faceSprite: {fileID: 0}
+  _faceCenterPosition: {x: 0, y: 0}
   lobbyResource:
     m_AssetGUID: 5e7a601638f8d8c43a0c0788e371b762
     m_SubObjectName: 

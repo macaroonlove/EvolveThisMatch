@@ -84,7 +84,7 @@ namespace EvolveThisMatch.Lobby
                         var craftItem = departmentTemplate.craftItems[job.craftItemId];
 
                         // 생산 속도
-                        float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.chargeUnitId).level;
+                        float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.unitId).level;
                         float craftSpeed = agentLevel * 0.01f + levelData.speed;
 
                         var timePerItem = craftItem.craftTime / craftSpeed;
@@ -142,7 +142,7 @@ namespace EvolveThisMatch.Lobby
                         var craftItem = _departmentTemplate.craftItems[job.craftItemId];
 
                         // 생산 속도
-                        float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.chargeUnitId).level;
+                        float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.unitId).level;
                         float craftSpeed = agentLevel * 0.01f + levelData.speed;
 
                         // 최대 보관량 >= (현재까지 보관량 + 작업의 아이템 무게) => 즉, 보관이 가능할 때

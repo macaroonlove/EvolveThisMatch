@@ -39,4 +39,5 @@ MonoBehaviour:
   _magicResistance: 54
   _hpRecoveryPerSec: 0
   _skillTemplates: []
-  skins: []
+  skins:
+  - {fileID: 11400000, guid: 4774d21e0af6d3941af25dfbdb6e642e, type: 2}

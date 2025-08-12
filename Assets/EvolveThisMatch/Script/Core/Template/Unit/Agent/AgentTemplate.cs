@@ -59,6 +59,16 @@ namespace EvolveThisMatch.Core
         public Sprite sprite => (skins.Count == 0) ? null : skins[0]?.faceSprite;
         public Vector2 faceCenterPosition => (skins.Count == 0) ? Vector2.zero : skins[0].faceCenterPosition;
         public GameObject prefab => skins[_selectedSkinId]?.battleTemplate.prefab;
+        public GameObject overUIPrefab
+        {
+            get
+            {
+                int skinId = _selectedSkinId;
+                if (skinId == -1) skinId = 0;
+
+                return skins[skinId]?.lobbyTemplate?.overUIPrefab;
+            }
+        }
 
         public EMoveType MoveType => _moveType;
         public float MoveSpeed => _moveSpeed;

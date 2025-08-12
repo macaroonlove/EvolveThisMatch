@@ -532,6 +532,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2093480981221593349}
     m_Modifications:
+    - target: {fileID: 467906691830542811, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3543613261734166024, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -575,6 +579,26 @@ PrefabInstance:
     - target: {fileID: 5887278830239525266, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
       propertyPath: m_Name
       value: AgentUnitCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887278830239525266, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6076689236920819634, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6960878726137027529, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586746381296484034, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8607105682757326627, guid: 6d1b80f5ee392504d9b14c9895d8a34a, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

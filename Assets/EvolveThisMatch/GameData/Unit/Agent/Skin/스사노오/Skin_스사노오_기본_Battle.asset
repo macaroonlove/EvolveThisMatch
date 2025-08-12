@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29102e1da39c9224093d839c85df4021, type: 3}
   m_Name: "Skin_\uC2A4\uC0AC\uB178\uC624_\uAE30\uBCF8_Battle"
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 1306879285935070340, guid: ad3d170b972bb8248be66b7c75f38cff, type: 3}
+  _prefab: {fileID: 0}
   _spawnVoice: {fileID: 0}
   _deathVoice: {fileID: 0}
   _casterFX: {fileID: 0}

@@ -49,7 +49,7 @@ namespace EvolveThisMatch.Save
                 if (i >= activeJobs.Count)
                 {
                     var newJob = new CraftingJob();
-                    newJob.chargeUnitId = unitId;
+                    newJob.unitId = unitId;
                     newJob.craftItemId = itemId;
                     newJob.maxAmount = maxAmount;
                     newJob.startTime = DateTime.UtcNow;
@@ -57,7 +57,7 @@ namespace EvolveThisMatch.Save
                 }
                 else
                 {
-                    activeJobs[i].chargeUnitId = unitId;
+                    activeJobs[i].unitId = unitId;
                     activeJobs[i].craftItemId = itemId;
                     activeJobs[i].maxAmount = maxAmount;
                     activeJobs[i].startTime = DateTime.UtcNow;
@@ -77,7 +77,7 @@ namespace EvolveThisMatch.Save
         [Serializable]
         public class CraftingJob
         {
-            public int chargeUnitId;
+            public int unitId;
             public int craftItemId;
             public int maxAmount;
             [SerializeField] private long startTimeTicks;

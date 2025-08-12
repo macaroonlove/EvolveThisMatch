@@ -55,7 +55,8 @@ namespace FrameWork
 
             foreach (var obj in gameObjects)
             {
-                obj.SetActive(true);
+                if (obj != null)
+                    obj.SetActive(true);
             }
         }
     }

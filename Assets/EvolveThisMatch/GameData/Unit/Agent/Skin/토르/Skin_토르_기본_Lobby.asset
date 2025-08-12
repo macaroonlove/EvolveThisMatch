@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a48cd38ff0e4584e96c26a2bd393c39, type: 3}
   m_Name: "Skin_\uD1A0\uB974_\uAE30\uBCF8_Lobby"
   m_EditorClassIdentifier: 
-  _fullBodySprite: {fileID: 0}
+  _overUIPrefab: {fileID: 6450913296144138661, guid: dc0a6893238d92745a81d3f9d1a498f6, type: 3}
   _infoVoice: {fileID: 0}
   _getVoice: {fileID: 0}
   _talk1Voice: {fileID: 0}
