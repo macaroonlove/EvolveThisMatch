@@ -15,24 +15,24 @@ MonoBehaviour:
   _data:
     departments:
     - departmentId: "\uC2DD\uD488\uBD80"
-      level: 1
+      level: 5
       activeJobs:
-      - chargeUnitId: 2
+      - unitId: 0
         craftItemId: 0
-        maxAmount: 510
-        startTimeTicks: 638895366994792425
+        maxAmount: 587
+        startTimeTicks: 638905917522456882
+      - unitId: 2
+        craftItemId: 0
+        maxAmount: 1
+        startTimeTicks: 638905928550235687
     - departmentId: "\uAC00\uACF5\uBD80"
       level: 1
-      activeJobs:
-      - chargeUnitId: 4
-        craftItemId: 3
-        maxAmount: 487
-        startTimeTicks: 638894626785618562
+      activeJobs: []
     - departmentId: "\uAC74\uC124\uBD80"
       level: 1
       activeJobs: []
-    butter: 0
-    skewers: 0
+    butter: 195
+    skewers: 7
     stew: 0
     steak: 0
     powder: 0
