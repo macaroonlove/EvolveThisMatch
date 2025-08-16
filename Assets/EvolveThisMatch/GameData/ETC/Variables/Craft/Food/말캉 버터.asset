@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: "\uB9D0\uCE89 \uBC84\uD130"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1773871784
-    hiddenValue: 1773871743
-    fakeValue: 215
+    currentCryptoKey: 1123605240
+    hiddenValue: 1123605051
+    fakeValue: 195
     fakeValueActive: 1
     inited: 1
   _readOnly: 0
@@ -37,4 +37,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _displayName: "\uB9D0\uCE89\uBC84\uD130"
+  _iconText: SmoothButter
   _icon: {fileID: 21300000, guid: dddb0ac29fb9cd84eb17115cd91e5ba2, type: 3}
+  _iconBG: {fileID: 21300000, guid: 7d650437e77823e45a4e9b75d09f1d4a, type: 3}

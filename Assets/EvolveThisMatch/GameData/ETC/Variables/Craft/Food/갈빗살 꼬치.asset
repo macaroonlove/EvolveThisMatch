@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: "\uAC08\uBE57\uC0B4 \uAF2C\uCE58"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1110299754
-    hiddenValue: 1110299759
-    fakeValue: 5
+    currentCryptoKey: 1740650182
+    hiddenValue: 1740650177
+    fakeValue: 7
     fakeValueActive: 1
     inited: 1
   _readOnly: 0
@@ -37,4 +37,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _displayName: "\uAC08\uBE57\uC0B4 \uAF2C\uCE58"
+  _iconText: RibSkewers
   _icon: {fileID: 21300000, guid: dd9503bde2ad50940b2133f72bff2054, type: 3}
+  _iconBG: {fileID: 21300000, guid: 37dbc62800c9cc84996704ba0cc82876, type: 3}

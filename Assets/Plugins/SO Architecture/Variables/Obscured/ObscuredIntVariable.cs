@@ -14,14 +14,16 @@ namespace ScriptableObjectArchitecture
         order = SOArchitecture_Utility.ASSET_MENU_ORDER_COLLECTIONS + 4)]
     public class ObscuredIntVariable : BaseVariable<ObscuredInt, ObscuredIntEvent>
     {
-        [SerializeField]
-        private string _displayName;
-        [SerializeField]
-        private Sprite _icon;
+        [SerializeField] private string _displayName;
+        [SerializeField] private string _iconText;
+        [SerializeField] private Sprite _icon;
+        [SerializeField] private Sprite _iconBG;
 
         public override bool Clampable { get { return true; } }
         public string DisplayName => _displayName;
+        public string IconText => _iconText;
         public Sprite Icon => _icon;
+        public Sprite IconBG => _iconBG;
 
 #if UNITY_EDITOR
         public void AddValueDebug(int add)

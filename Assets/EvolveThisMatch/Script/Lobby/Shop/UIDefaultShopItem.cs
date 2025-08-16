@@ -1,11 +1,12 @@
 using FrameWork.UIBinding;
 using TMPro;
-using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIDefaultShopItem : UIBase
+    public class UIDefaultShopItem : UIBase, IPointerClickHandler
     {
         #region ¹ÙÀÎµù
         enum Images
@@ -23,6 +24,9 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _itemName;
         private TextMeshProUGUI _payText;
 
+        private ShopItemData _data;
+        private UnityAction<ShopItemData> _onSelect;
+
         protected override void Initialize()
         {
             BindImage(typeof(Images));
@@ -33,8 +37,11 @@ namespace EvolveThisMatch.Lobby
             _payText = GetText((int)Texts.PayText);
         }
 
-        internal void Show(ShopItemData itemData)
+        internal void Show(ShopItemData itemData, UnityAction<ShopItemData> onSelect)
         {
+            _data = itemData;
+            _onSelect = onSelect;
+
             _itemIcon.sprite = itemData.itemIcon;
             _itemName.text = itemData.itemName;
 
@@ -50,7 +57,7 @@ namespace EvolveThisMatch.Lobby
                 }
                 else
                 {
-                    _payText.text = $"{itemData.variable} {itemData.needCount}";
+                    _payText.text = $"<sprite name={itemData.variable.IconText}> {itemData.needCount}";
                 }
             }
 
@@ -62,6 +69,11 @@ namespace EvolveThisMatch.Lobby
         {
             gameObject.SetActive(false);
             transform.parent.gameObject.SetActive(false);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            _onSelect?.Invoke(_data);
         }
     }
 }

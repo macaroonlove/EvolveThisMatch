@@ -31,6 +31,8 @@ MonoBehaviour:
           _variable: {fileID: 0}
           _needCount: 0
           _buyAbleCount: 1
+          _isPackage: 1
+          _isPanel: 0
           _gainShopItemDatas:
           - rid: 7061457599392120978
         - _itemName: 500
@@ -39,6 +41,8 @@ MonoBehaviour:
           _variable: {fileID: 0}
           _needCount: 2500
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468528
         - _itemName: 1200
@@ -47,6 +51,8 @@ MonoBehaviour:
           _variable: {fileID: 0}
           _needCount: 5000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468529
         - _itemName: 2500
@@ -55,6 +61,8 @@ MonoBehaviour:
           _variable: {fileID: 0}
           _needCount: 10000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468530
         - _itemName: 6500
@@ -63,6 +71,8 @@ MonoBehaviour:
           _variable: {fileID: 0}
           _needCount: 25000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468531
         - _itemName: 14000
@@ -71,6 +81,8 @@ MonoBehaviour:
           _variable: {fileID: 0}
           _needCount: 50000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468532
         - _itemName: 30000
@@ -79,6 +91,8 @@ MonoBehaviour:
           _variable: {fileID: 0}
           _needCount: 100000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468533
     - rid: 7061457599392120911
@@ -87,27 +101,33 @@ MonoBehaviour:
         _subTabName: "\uACE8\uB4DC"
         _shopItems:
         - _itemName: 10000
-          _itemIcon: {fileID: 0}
+          _itemIcon: {fileID: 21300000, guid: 30796497c9cee9e46b428d51118aeaba, type: 3}
           _isCash: 0
           _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
           _needCount: 500
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468538
         - _itemName: 20000
-          _itemIcon: {fileID: 0}
+          _itemIcon: {fileID: 21300000, guid: 140a9453b4ed7bd48ab31fa0f3053ff8, type: 3}
           _isCash: 0
           _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
           _needCount: 1000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468537
         - _itemName: 50000
-          _itemIcon: {fileID: 0}
+          _itemIcon: {fileID: 21300000, guid: 234e543e12cff1e4e80ec78933024a9b, type: 3}
           _isCash: 0
           _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
           _needCount: 2500
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468536
         - _itemName: 100000
@@ -116,6 +136,8 @@ MonoBehaviour:
           _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
           _needCount: 5000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468535
         - _itemName: 200000
@@ -124,6 +146,8 @@ MonoBehaviour:
           _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
           _needCount: 10000
           _buyAbleCount: 0
+          _isPackage: 0
+          _isPanel: 1
           _gainShopItemDatas:
           - rid: 7061457619809468534
     - rid: 7061457599392120978

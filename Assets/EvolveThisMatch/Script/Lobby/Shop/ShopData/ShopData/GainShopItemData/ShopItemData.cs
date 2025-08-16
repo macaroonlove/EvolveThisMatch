@@ -17,6 +17,7 @@ namespace EvolveThisMatch.Lobby
 
         [SerializeField] private int _buyAbleCount;
         [SerializeField] private bool _isPackage;
+        [SerializeField] private bool _isPanel;
 
         [SerializeReference] private List<GainShopItemData> _gainShopItemDatas = new List<GainShopItemData>();
 
@@ -28,6 +29,7 @@ namespace EvolveThisMatch.Lobby
         public int needCount => _needCount;
         public int buyAbleCount => _buyAbleCount;
         public bool isPackage => _isPackage;
+        public bool isPanel => _isPanel;
 
         public IReadOnlyList<GainShopItemData> gainShopItemDatas => _gainShopItemDatas;
         #endregion
@@ -77,6 +79,8 @@ namespace EvolveThisMatch.Editor
             propertyRect.y += 30;
 
             EditorGUI.PropertyField(propertyRect, property.FindPropertyRelative("_isPackage"), new GUIContent("패키지인가?"));
+            propertyRect.y += 20;
+            EditorGUI.PropertyField(propertyRect, property.FindPropertyRelative("_isPanel"), new GUIContent("패널을 열 것인가?"));
             propertyRect.y += 30;
 
             propertyRect.height = gainList.GetHeight();
@@ -159,7 +163,7 @@ namespace EvolveThisMatch.Editor
         {
             var gainList = GetOrCreateDataList(property);
 
-            float totalHeight = 150; 
+            float totalHeight = 170; 
 
             if (!property.FindPropertyRelative("_isCash").boolValue)
             {

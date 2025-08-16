@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: "\uACE8\uB4DC"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1783753296
-    hiddenValue: 1783752268
+    currentCryptoKey: 1219435645
+    hiddenValue: 1219432545
     fakeValue: 3100
     fakeValueActive: 1
     inited: 1
@@ -37,4 +37,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _displayName: "\uACE8\uB4DC"
+  _iconText: Gold
   _icon: {fileID: 21300000, guid: 6b5662003c3b29846afa9d458a4d6dc4, type: 3}
+  _iconBG: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}

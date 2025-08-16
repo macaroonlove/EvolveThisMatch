@@ -87,7 +87,7 @@ namespace EvolveThisMatch.Save
             }
         }
         #endregion
-        
+
         #region 고서
         [Serializable]
         public class Tome
@@ -194,19 +194,23 @@ namespace EvolveThisMatch.Save
         /// <summary>
         /// 유닛 추가
         /// </summary>
-        public void AddAgent(int id)
+        public void AddAgent(int id, int count = 1)
         {
+            if (count <= 0) return;
+
             var modifyUnit = FindAgent(_data.ownedAgents, id);
 
             // 유닛이 없었다면 유닛 추가
             if (modifyUnit == null)
             {
-                _data.ownedAgents.Add(new ProfileSaveData.Agent(id));
+                var newUnit = new ProfileSaveData.Agent(id);
+                newUnit.unitCount = count;
+                _data.ownedAgents.Add(newUnit);
             }
             // 유닛이 있었다면 유닛의 개수 추가
             else
             {
-                modifyUnit.unitCount++;
+                modifyUnit.unitCount += count;
             }
         }
 
@@ -400,7 +404,7 @@ namespace EvolveThisMatch.Save
                 && modifyUnit.tier < _agentTierUpRequirements.Length - 1
                 && modifyUnit.unitCount >= _agentTierUpRequirements[modifyUnit.tier];
         }
-        
+
         /// <summary>
         /// 유닛의 격에 따른 최대 유닛 개수 반환
         /// </summary>
@@ -437,19 +441,23 @@ namespace EvolveThisMatch.Save
         /// <summary>
         /// 아티팩트 추가
         /// </summary>
-        public void AddArtifact(int id)
+        public void AddArtifact(int id, int count = 1)
         {
+            if (count <= 0) return;
+
             var modifyArtifact = FindArtifact(_data.ownedArtifacts, id);
 
             // 아티팩트가 없었다면 추가
             if (modifyArtifact == null)
             {
-                _data.ownedArtifacts.Add(new ProfileSaveData.Artifact(id));
+                var newArtifact = new ProfileSaveData.Artifact(id);
+                newArtifact.count = count;
+                _data.ownedArtifacts.Add(newArtifact);
             }
             // 아티팩트가 있었다면 개수 추가
             else
             {
-                modifyArtifact.count++;
+                modifyArtifact.count += count;
 
                 // 레벨업 시도
                 TryLevelupArtifact(modifyArtifact);
@@ -515,19 +523,23 @@ namespace EvolveThisMatch.Save
         /// <summary>
         /// 고서 추가
         /// </summary>
-        public void AddTome(int id)
+        public void AddTome(int id, int count = 1)
         {
+            if (count <= 0) return;
+
             var modifyTome = FindTome(_data.ownedTomes, id);
 
             // 고서가 없었다면 추가
             if (modifyTome == null)
             {
-                _data.ownedTomes.Add(new ProfileSaveData.Tome(id));
+                var newTome = new ProfileSaveData.Tome(id);
+                newTome.count = count;
+                _data.ownedTomes.Add(newTome);
             }
             // 고서가 있었다면 개수 추가
             else
             {
-                modifyTome.count++;
+                modifyTome.count += count;
 
                 // 레벨업 시도
                 TryLevelupTome(modifyTome);

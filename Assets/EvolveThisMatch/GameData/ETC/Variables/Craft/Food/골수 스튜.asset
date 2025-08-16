@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: "\uACE8\uC218 \uC2A4\uD29C"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1922916909
-    hiddenValue: 1922916909
+    currentCryptoKey: 1721763588
+    hiddenValue: 1721763588
     fakeValue: 0
     fakeValueActive: 1
     inited: 1
@@ -37,4 +37,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _displayName: "\uACE8\uC218 \uC2A4\uD29C"
+  _iconText: BoneStew
   _icon: {fileID: 21300000, guid: 6a2b89093a81ef94c91ff24518bfad79, type: 3}
+  _iconBG: {fileID: 21300000, guid: 64012c6aa62cf0e44ac9dd28ba47d664, type: 3}

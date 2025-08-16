@@ -59,7 +59,7 @@ namespace EvolveThisMatch.Lobby
             int minutes = itemData.craftTime / 60;
             int seconds = itemData.craftTime % 60;
 
-            _craftBackground.sprite = itemData.background;
+            _craftBackground.sprite = itemData.variable.IconBG;
             _craftIcon.sprite = itemData.variable.Icon;
             _craftTime.text = $"{minutes:D2}:{seconds:D2}";
             _craftName.text = itemData.variable.DisplayName;

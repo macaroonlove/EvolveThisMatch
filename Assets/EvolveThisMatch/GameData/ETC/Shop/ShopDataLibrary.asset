@@ -15,3 +15,6 @@ MonoBehaviour:
   _shopDataTemplates:
   - {fileID: 11400000, guid: f294bd14c755b6b45b9d20690f617625, type: 2}
   - {fileID: 11400000, guid: ce750fd2d6111ca40a60ce7039bc0560, type: 2}
+  - {fileID: 11400000, guid: 6bf1dc5374b13294e9502fa119b87531, type: 2}
+  - {fileID: 11400000, guid: 6d15b5f5e6bee7541a9be6a028272ff5, type: 2}
+  - {fileID: 11400000, guid: d6dbfddb0ab0b8649aaa6a892f5eff29, type: 2}

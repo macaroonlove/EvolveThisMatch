@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: "\uC7AC\uB2A5\uC758\uAC00\uB8E8"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 2050921632
-    hiddenValue: 2050923160
-    fakeValue: 3640
+    currentCryptoKey: 1456954347
+    hiddenValue: 1456954347
+    fakeValue: 0
     fakeValueActive: 1
     inited: 1
   _readOnly: 0
@@ -37,4 +37,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _displayName: "\uC7AC\uB2A5\uC758 \uAC00\uB8E8"
+  _iconText: Powder
   _icon: {fileID: 21300000, guid: dfccfbfdbba62d84388b7fa122d383db, type: 3}
+  _iconBG: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}

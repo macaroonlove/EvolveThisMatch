@@ -26,13 +26,14 @@ MonoBehaviour:
       data:
         _subTabName: "\uC77C\uC77C \uD328\uD0A4\uC9C0"
         _shopItems:
-        - _itemName: "\uC77C\uC77C \uBB34\uB8CC \uD328\uD0A4\uC9C0"
+        - _itemName: "\uC77C\uC77C \uBB34\uB8CC \uD589\uB3D9\uB825"
           _itemIcon: {fileID: 0}
           _isCash: 1
           _variable: {fileID: 0}
           _needCount: 0
-          _buyAbleCount: 0
+          _buyAbleCount: 1
           _isPackage: 1
+          _isPanel: 0
           _gainShopItemDatas:
           - rid: 7061457599392120978
     - rid: 7061457599392120911
@@ -45,8 +46,9 @@ MonoBehaviour:
           _isCash: 1
           _variable: {fileID: 0}
           _needCount: 0
-          _buyAbleCount: 0
-          _isPackage: 0
+          _buyAbleCount: 1
+          _isPackage: 1
+          _isPanel: 0
           _gainShopItemDatas: []
     - rid: 7061457599392120912
       type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
@@ -58,11 +60,12 @@ MonoBehaviour:
           _isCash: 1
           _variable: {fileID: 0}
           _needCount: 0
-          _buyAbleCount: 0
-          _isPackage: 0
+          _buyAbleCount: 1
+          _isPackage: 1
+          _isPanel: 0
           _gainShopItemDatas: []
     - rid: 7061457599392120978
       type: {class: VariableGainShopItemData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
       data:
-        _count: 0
-        _variable: {fileID: 0}
+        _count: 5
+        _variable: {fileID: 11400000, guid: 4d88b44f9a3268546aa36967b284cbff, type: 2}

@@ -174,7 +174,7 @@ namespace EvolveThisMatch.Lobby
             _agentBG.color = Color.white;
             _agentBG.sprite = agentTemplate.rarity.agentInfoSprite;
             _craftBG.color = Color.white;
-            _craftBG.sprite = craftItem.background;
+            _craftBG.sprite = craftItem.variable.IconBG;
             _fullBody.enabled = true;
             _fullBody.sprite = agentTemplate.sprite;
             _fullBody.rectTransform.anchoredPosition = agentTemplate.faceCenterPosition + new Vector2(0, -40);
