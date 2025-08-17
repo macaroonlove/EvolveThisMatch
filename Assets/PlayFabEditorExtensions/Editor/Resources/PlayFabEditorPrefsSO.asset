@@ -15,5 +15,5 @@ MonoBehaviour:
   SdkPath: Assets/Plugins/PlayFabSDK
   EdExPath: 
   PanelIsShown: 0
-  curMainMenuIdx: 1
+  curMainMenuIdx: 0
   curSubMenuIdx: 0

@@ -1,3 +1,4 @@
+using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.Loading;
 using FrameWork.PlayFabExtensions;
@@ -5,7 +6,6 @@ using FrameWork.UIBinding;
 using FrameWork.UIPopup;
 using PlayFab;
 using PlayFab.ClientModels;
-using EvolveThisMatch.Save;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Login
@@ -113,7 +113,7 @@ namespace EvolveThisMatch.Login
             {
                 if (profileData.isClearTutorial)
                 {
-                    LoadingManager.Instance.LoadScene("FrameWork"); // Lobby
+                    LoadingManager.Instance.LoadScene("Lobby");
                 }
                 else
                 {
