@@ -23,6 +23,7 @@ namespace EvolveThisMatch.Lobby
         private UIArtifactCanvas _artifactCanvas;
         private UITomeCanvas _tomeCanvas;
         private UIShopCanvas _shopCanvas;
+        private UIGachaCanvas _gachaCanvas;
 
         protected override void Initialize()
         {
@@ -33,6 +34,7 @@ namespace EvolveThisMatch.Lobby
             _artifactCanvas = transform.parent.GetComponentInChildren<UIArtifactCanvas>();
             _tomeCanvas = transform.parent.GetComponentInChildren<UITomeCanvas>();
             _shopCanvas = transform.parent.GetComponentInChildren<UIShopCanvas>();
+            _gachaCanvas = transform.parent.GetComponentInChildren<UIGachaCanvas>();
 
             GetButton((int)Buttons.BattleStartButton).onClick.AddListener(BattleStart);
             GetButton((int)Buttons.AgentInfoButton).onClick.AddListener(ShowAgentInfo);
@@ -76,7 +78,7 @@ namespace EvolveThisMatch.Lobby
 
         private void ShowGacha()
         {
-
+            _gachaCanvas?.Show(true);
         }
 
         private void ShowLoot()

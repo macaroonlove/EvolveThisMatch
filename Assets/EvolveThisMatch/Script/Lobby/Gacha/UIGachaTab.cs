@@ -1,5 +1,7 @@
 using DG.Tweening;
 using FrameWork.UIBinding;
+using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -10,14 +12,20 @@ namespace EvolveThisMatch.Lobby
         #region ¹ÙÀÎµù
         enum Images
         {
-            GachaTab,
+            Background,
         }
 
         enum Texts
         {
-            GachaTabText,
+            TabName,
         }
         #endregion
+
+        [SerializeField] private Color _selectColor;
+        [SerializeField] private Color _unSelectColor;
+
+        private Image _background;
+        private TextMeshProUGUI _tabName;
 
         private GachaData _gachaData;
         private UnityAction<UIGachaTab> _onSelect;
@@ -37,8 +45,11 @@ namespace EvolveThisMatch.Lobby
                 button.onClick.AddListener(OnClick);
             }
 
-            GetImage((int)Images.GachaTab).sprite = gachaData.tabBackground;
-            GetText((int)Texts.GachaTabText).text = gachaData.tabName;
+            _background = GetImage((int)Images.Background); 
+            _tabName = GetText((int)Texts.TabName); 
+
+            _background.sprite = gachaData.tabBackground;
+            _tabName.text = gachaData.tabName;
         }
 
         private void OnClick()
@@ -48,12 +59,18 @@ namespace EvolveThisMatch.Lobby
 
         internal virtual void Select()
         {
-            transform.DOLocalMoveX(0, 0.5f);
+            transform.DOLocalMoveX(60, 0.5f);
+
+            _background.color = _selectColor;
+            _tabName.color = _unSelectColor;
         }
 
         internal virtual void UnSelect()
         {
-            transform.DOLocalMoveX(-20, 0.5f);
+            transform.DOLocalMoveX(20, 0.5f);
+
+            _background.color = _unSelectColor;
+            _tabName.color = _selectColor;
         }
     }
 }

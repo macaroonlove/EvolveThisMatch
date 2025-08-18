@@ -131,7 +131,7 @@ MonoBehaviour:
           _gainShopItemDatas:
           - rid: 7061457619809468536
         - _itemName: 100000
-          _itemIcon: {fileID: 0}
+          _itemIcon: {fileID: 21300000, guid: bf25d5bcf4ee1264bbe1c888be02d554, type: 3}
           _isCash: 0
           _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
           _needCount: 5000
@@ -141,7 +141,7 @@ MonoBehaviour:
           _gainShopItemDatas:
           - rid: 7061457619809468535
         - _itemName: 200000
-          _itemIcon: {fileID: 0}
+          _itemIcon: {fileID: 21300000, guid: 317145c449e2422469d4f25583fb4b59, type: 3}
           _isCash: 0
           _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
           _needCount: 10000

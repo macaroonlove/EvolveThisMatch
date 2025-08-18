@@ -14,7 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mainTabName: "\uC7A1\uD654\uC810"
   _mainTabIcon: {fileID: 0}
-  _shopDatas: []
+  _shopDatas:
+  - rid: 7061457685939224692
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7061457685939224692
+      type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
+      data:
+        _subTabName: 
+        _shopItems: []

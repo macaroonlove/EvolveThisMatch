@@ -21,6 +21,7 @@ namespace EvolveThisMatch.Lobby
         }
 
         [Header("아군 유닛 등급별 확률정보")]
+        [SerializeField, Range(0, 100.0f)] private int _mythRarity;
         [SerializeField, Range(0, 100.0f)] private int _legendRarity;
         [SerializeField, Range(0, 100.0f)] private int _epicRarity;
         [SerializeField, Range(0, 100.0f)] private int _rareRarity;
@@ -30,13 +31,14 @@ namespace EvolveThisMatch.Lobby
         [SerializeField] private List<PickUpData> _pickupList = new List<PickUpData>();
 
         private float[] _rarityProbabilities;
+        private List<AgentTemplate> _mythAgents;
         private List<AgentTemplate> _legendAgents;
         private List<AgentTemplate> _epicAgents;
         private List<AgentTemplate> _rareAgents;
         private List<AgentTemplate> _commonAgents;
 
         private List<AgentTemplate> _gachaList = new List<AgentTemplate>();
-        private List<PickUpData> _legentPickUpList = new List<PickUpData>();
+        private List<PickUpData> _mythPickUpList = new List<PickUpData>();
 
         internal override async void Initialize(UIGachaResultCanvas gachaResultCanvas)
         {
@@ -53,7 +55,8 @@ namespace EvolveThisMatch.Lobby
             // 픽업 유닛을 제외한 아군 유닛 리스트
             var agentList = GameDataManager.Instance.agentTemplates.Where(x => !_pickupList.Any(y => y.template == x));
 
-            _legentPickUpList = _pickupList.Where(p => p.template.rarity.rarity == EAgentRarity.Legend).ToList();
+            _mythPickUpList = _pickupList.Where(p => p.template.rarity.rarity == EAgentRarity.Myth).ToList();
+            _mythAgents = agentList.Where(template => template.rarity.rarity == EAgentRarity.Myth).ToList();
             _legendAgents = agentList.Where(template => template.rarity.rarity == EAgentRarity.Legend).ToList();
             _epicAgents = agentList.Where(template => template.rarity.rarity == EAgentRarity.Epic).ToList();
             _rareAgents = agentList.Where(template => template.rarity.rarity == EAgentRarity.Rare).ToList();
@@ -94,7 +97,7 @@ namespace EvolveThisMatch.Lobby
             {
                 _confirmedPickUpVariable.Value = 50;
 
-                var agentTemplate = GetPickUp(_legentPickUpList, 100);
+                var agentTemplate = GetPickUp(_mythPickUpList, 100);
 
                 if (agentTemplate != null) return agentTemplate;
 
@@ -105,9 +108,10 @@ namespace EvolveThisMatch.Lobby
             List<AgentTemplate> agents;
             switch (rarityIndex)
             {
-                case 0: agents = _legendAgents; break;
-                case 1: agents = _epicAgents; break;
-                case 2: agents = _rareAgents; break;
+                case 0: agents = _mythAgents; break;
+                case 1: agents = _legendAgents; break;
+                case 2: agents = _epicAgents; break;
+                case 3: agents = _rareAgents; break;
                 default: agents = _commonAgents; break;
             }
 

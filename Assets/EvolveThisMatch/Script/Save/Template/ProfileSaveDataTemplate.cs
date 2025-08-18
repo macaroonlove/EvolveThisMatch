@@ -1,5 +1,8 @@
 using CodeStage.AntiCheat.ObscuredTypes;
+using Cysharp.Threading.Tasks;
 using FrameWork.Editor;
+using PlayFab;
+using PlayFab.ClientModels;
 using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
@@ -213,6 +216,46 @@ namespace EvolveThisMatch.Save
                 modifyUnit.unitCount += count;
             }
         }
+
+        //        public async UniTask<bool> AddAgent(int id, int count = 1)
+        //        {
+        //            if (count <= 0) return false;
+
+        //            var request = new ExecuteCloudScriptRequest
+        //            {
+        //                FunctionName = "AddAgent",
+        //                FunctionParameter = new { id = $"agent_{id}", count = count },
+        //                GeneratePlayStreamEvent = true
+        //            };
+
+        //            var tcs = new UniTaskCompletionSource<bool>();
+
+        //            PlayFabClientAPI.ExecuteCloudScript(request,
+        //                result =>
+        //                {
+        //                    if (result.Error != null)
+        //                    {
+        //#if UNITY_EDITOR
+        //                        // 서버쪽 CloudScript 에러
+        //                        Debug.LogError($"CloudScript error: {result.Error.Message}");
+        //#endif
+        //                        tcs.TrySetResult(false);
+        //                    }
+        //                    else
+        //                    {
+        //                        tcs.TrySetResult(true);
+        //                    }
+        //                }, error =>
+        //                {
+        //#if UNITY_EDITOR
+        //                    // 클라이언트 -> 서버 통신 에러
+        //                    Debug.LogError($"ExecuteCloudScript failed: {error.GenerateErrorReport()}");
+        //#endif
+        //                    tcs.TrySetResult(false);
+        //                });
+
+        //            return await tcs.Task;
+        //        }
 
         #region 스킨
         /// <summary>
