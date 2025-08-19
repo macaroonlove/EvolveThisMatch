@@ -125,12 +125,12 @@ MonoBehaviour:
     m_Unicode: 128516
     m_GlyphIndex: 8
     m_Scale: 1
-    m_Name: 1f604
+    m_Name: Action
   - m_ElementType: 2
     m_Unicode: 128517
     m_GlyphIndex: 9
     m_Scale: 1
-    m_Name: 1f605
+    m_Name: BookFragments
   - m_ElementType: 2
     m_Unicode: 128518
     m_GlyphIndex: 10

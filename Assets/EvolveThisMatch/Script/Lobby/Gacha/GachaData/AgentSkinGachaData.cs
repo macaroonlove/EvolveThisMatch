@@ -83,26 +83,39 @@ namespace EvolveThisMatch.Lobby
         {
             int rarityIndex;
 
-            if (_confirmedPickUpVariable.Value > 0)
+            if (_confirmedPickUpVariable != null)
             {
-                _confirmedPickUpVariable.AddValue(-1);
+                if (_confirmedPickUpVariable.Value > 0)
+                {
+                    _confirmedPickUpVariable.AddValue(-1);
 
+                    var skinTemplate = GetPickUp(_pickupList, 100);
+
+                    if (skinTemplate != null) return skinTemplate;
+
+                    rarityIndex = GetRandomRarityIndex();
+                }
+                else
+                {
+                    _confirmedPickUpVariable.Value = 50;
+
+                    var skinTemplate = GetPickUp(_legentPickUpList, 100);
+
+                    if (skinTemplate != null) return skinTemplate;
+
+                    rarityIndex = 0;
+                }
+            }
+            else
+            {
                 var skinTemplate = GetPickUp(_pickupList, 100);
 
                 if (skinTemplate != null) return skinTemplate;
 
                 rarityIndex = GetRandomRarityIndex();
             }
-            else
-            {
-                _confirmedPickUpVariable.Value = 50;
 
-                var skinTemplate = GetPickUp(_legentPickUpList, 100);
-
-                if (skinTemplate != null) return skinTemplate;
-
-                rarityIndex = 0;
-            }
+            _additionalVariable.AddValue(1);
 
             // ¿œπ› ¿Ø¥÷ ªÃ±‚
             List<SkinTemplate> skins;

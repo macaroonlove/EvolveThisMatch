@@ -25,6 +25,7 @@ MonoBehaviour:
       type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
       data:
         _subTabName: "\uC77C\uC77C \uD328\uD0A4\uC9C0"
+        _variableDisplays: []
         _shopItems:
         - _itemName: "\uC77C\uC77C \uBB34\uB8CC \uD589\uB3D9\uB825"
           _itemIcon: {fileID: 0}
@@ -40,6 +41,7 @@ MonoBehaviour:
       type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
       data:
         _subTabName: "\uC8FC\uAC04 \uD328\uD0A4\uC9C0"
+        _variableDisplays: []
         _shopItems:
         - _itemName: "\uC8FC\uAC04 \uBB34\uB8CC \uD328\uD0A4\uC9C0"
           _itemIcon: {fileID: 0}
@@ -54,6 +56,7 @@ MonoBehaviour:
       type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
       data:
         _subTabName: "\uC6D4\uAC04 \uD328\uD0A4\uC9C0"
+        _variableDisplays: []
         _shopItems:
         - _itemName: "\uC6D4\uAC04 \uBB34\uB8CC \uD328\uD0A4\uC9C0"
           _itemIcon: {fileID: 0}

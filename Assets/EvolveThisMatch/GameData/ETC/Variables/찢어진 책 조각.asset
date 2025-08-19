@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c058bd575b53b804db17b9459309b6ee, type: 3}
-  m_Name: "\uC7AC\uB2A5\uC758\uC815\uC218"
+  m_Name: "\uCC22\uC5B4\uC9C4 \uCC45 \uC870\uAC01"
   m_EditorClassIdentifier: 
   _value:
-    currentCryptoKey: 1202986574
-    hiddenValue: 1202998342
-    fakeValue: 21000
+    currentCryptoKey: 1508073811
+    hiddenValue: 1508073805
+    fakeValue: 30
     fakeValueActive: 1
     inited: 1
   _readOnly: 0
@@ -36,7 +36,7 @@ MonoBehaviour:
   _event:
     m_PersistentCalls:
       m_Calls: []
-  _displayName: "\uC7AC\uB2A5\uC758 \uC815\uC218"
-  _iconText: Essence
-  _icon: {fileID: 21300000, guid: 5392060fc2910ab489fff40f29d876c3, type: 3}
+  _displayName: "\uCC22\uC5B4\uC9C4 \uCC45 \uC870\uAC01"
+  _iconText: BookFragments
+  _icon: {fileID: 21300000, guid: e57a77b6a5236ff4190037806a57d150, type: 3}
   _iconBG: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}

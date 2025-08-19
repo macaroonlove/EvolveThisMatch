@@ -25,6 +25,7 @@ MonoBehaviour:
         _tabBackground: {fileID: 0}
         _background: {fileID: 21300000, guid: 40f550fc5f0861346ad0cfc2d17f0eef, type: 3}
         _confirmedPickUpVariable: {fileID: 11400000, guid: e1484d9d8b7744941bec9c0466d2bf01, type: 2}
+        _additionalVariable: {fileID: 11400000, guid: f0882b25629d1604098e974c9bd6df06, type: 2}
         _costs:
         - variable: {fileID: 11400000, guid: 43f242fa87dc70d45965f0282e63237f, type: 2}
           cost: 1
@@ -48,6 +49,7 @@ MonoBehaviour:
         _tabBackground: {fileID: 0}
         _background: {fileID: 21300000, guid: 6227578bd747fce40ab2da0002b2975b, type: 3}
         _confirmedPickUpVariable: {fileID: 11400000, guid: e1484d9d8b7744941bec9c0466d2bf01, type: 2}
+        _additionalVariable: {fileID: 11400000, guid: f0882b25629d1604098e974c9bd6df06, type: 2}
         _costs:
         - variable: {fileID: 11400000, guid: a7d2524475fb40b4190c662e4183ee54, type: 2}
           cost: 1

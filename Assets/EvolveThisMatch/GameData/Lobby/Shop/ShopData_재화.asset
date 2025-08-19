@@ -23,7 +23,8 @@ MonoBehaviour:
     - rid: 7061457599392120910
       type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
       data:
-        _subTabName: "\uC7AC\uB2A5\uC758 \uC815\uC218"
+        _subTabName: "\uC138\uACC4\uC11D"
+        _variableDisplays: []
         _shopItems:
         - _itemName: "\uC77C\uC77C \uBB34\uB8CC \uC815\uC218"
           _itemIcon: {fileID: 0}
@@ -99,6 +100,8 @@ MonoBehaviour:
       type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
       data:
         _subTabName: "\uACE8\uB4DC"
+        _variableDisplays:
+        - {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
         _shopItems:
         - _itemName: 10000
           _itemIcon: {fileID: 21300000, guid: 30796497c9cee9e46b428d51118aeaba, type: 3}

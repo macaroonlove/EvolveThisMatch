@@ -10,17 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b46f632ddef9de548a949aa4174fe56f, type: 3}
-  m_Name: "ShopData_\uC7AC\uB2A5 \uAD50\uD658\uC18C"
+  m_Name: "ShopData_\uC554\uC2DC\uC7A5"
   m_EditorClassIdentifier: 
-  _mainTabName: "\uC7AC\uB2A5 \uAD50\uD658\uC18C"
+  _mainTabName: "\uC554\uC2DC\uC7A5"
   _mainTabIcon: {fileID: 0}
   _shopDatas:
-  - rid: 7061457685939224693
+  - rid: 7061457639933739136
   references:
     version: 2
     RefIds:
-    - rid: 7061457685939224693
-      type: {class: DefaultShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
+    - rid: 7061457639933739136
+      type: {class: RandomShopData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
       data:
         _subTabName: 
+        _variableDisplays:
+        - {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}
+        - {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
         _shopItems: []

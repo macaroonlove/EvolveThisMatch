@@ -122,7 +122,11 @@ namespace EvolveThisMatch.Lobby
             SetButtons(tab);
 
             VariableDisplayManager.Instance.HideAll();
-            
+
+            if (tab.gachaData.additionalVariable != null)
+            {
+                VariableDisplayManager.Instance.Show(tab.gachaData.additionalVariable);
+            }
             foreach (var item in tab.gachaData.costs)
             {
                 VariableDisplayManager.Instance.Show(item.variable);

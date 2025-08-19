@@ -181,6 +181,13 @@ namespace EvolveThisMatch.Lobby
                     dIndex++;
                 }
             }
+
+            VariableDisplayManager.Instance.HideAll();
+
+            foreach (var variableDisplay in tab.data.variableDisplays)
+            {
+                VariableDisplayManager.Instance.Show(variableDisplay);
+            }
         }
 
         private List<UIShopGainItem> GetGainItem(int count)

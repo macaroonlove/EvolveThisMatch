@@ -83,26 +83,39 @@ namespace EvolveThisMatch.Lobby
         {
             int rarityIndex;
 
-            if (_confirmedPickUpVariable.Value > 0)
+            if (_confirmedPickUpVariable != null)
             {
-                _confirmedPickUpVariable.AddValue(-1);
+                if (_confirmedPickUpVariable.Value > 0)
+                {
+                    _confirmedPickUpVariable.AddValue(-1);
 
+                    var agentTemplate = GetPickUp(_pickupList, 100);
+
+                    if (agentTemplate != null) return agentTemplate;
+
+                    rarityIndex = GetRandomRarityIndex();
+                }
+                else
+                {
+                    _confirmedPickUpVariable.Value = 50;
+
+                    var agentTemplate = GetPickUp(_mythPickUpList, 100);
+
+                    if (agentTemplate != null) return agentTemplate;
+
+                    rarityIndex = 0;
+                }
+            }
+            else
+            {
                 var agentTemplate = GetPickUp(_pickupList, 100);
 
                 if (agentTemplate != null) return agentTemplate;
 
                 rarityIndex = GetRandomRarityIndex();
             }
-            else
-            {
-                _confirmedPickUpVariable.Value = 50;
 
-                var agentTemplate = GetPickUp(_mythPickUpList, 100);
-
-                if (agentTemplate != null) return agentTemplate;
-
-                rarityIndex = 0;
-            }
+            _additionalVariable?.AddValue(1);
 
             // ¿œπ› ¿Ø¥÷ ªÃ±‚
             List<AgentTemplate> agents;

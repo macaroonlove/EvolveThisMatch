@@ -15,6 +15,7 @@ namespace EvolveThisMatch.Lobby
         [Header("뽑기 기타 설정")]
         [SerializeField, Label("메인 배경")] private Sprite _background;
         [SerializeField, Label("천장 변수")] protected ObscuredIntVariable _confirmedPickUpVariable;
+        [SerializeField, Label("추가 획득 변수")] protected ObscuredIntVariable _additionalVariable;
         [SerializeField] private List<GachaCost> _costs = new List<GachaCost>();
 
         [Header("뽑기 버튼 설정")]
@@ -26,6 +27,7 @@ namespace EvolveThisMatch.Lobby
         internal string tabName => _tabName;
         internal Sprite tabBackground => _tabBackground;
         internal Sprite background => _background;
+        internal ObscuredIntVariable additionalVariable => _additionalVariable;
         internal IReadOnlyList<GachaCost> costs => _costs;
         internal IReadOnlyList<GachaButton> gachaButtons => _gachaButtons;
         #endregion
