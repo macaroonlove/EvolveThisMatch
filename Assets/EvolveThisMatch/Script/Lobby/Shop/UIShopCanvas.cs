@@ -162,7 +162,7 @@ namespace EvolveThisMatch.Lobby
             foreach (var item in _defaultShopItems) item.Hide(true);
             foreach (var item in _shopGainItems.Keys) _poolSystem.DeSpawn(item);
 
-            var items = tab.data.shopItems;
+            var items = tab.data.GetItems();
 
             int pIndex = 0;
             int dIndex = 0;
@@ -245,9 +245,9 @@ namespace EvolveThisMatch.Lobby
         /// </summary>
         private bool IsPayAble(ShopItemData itemData)
         {
-            if (itemData.isCash == false && itemData.needCount != 0)
+            if (itemData.isCash == false && itemData.price != 0)
             {
-                int maxValue = itemData.variable.Value / itemData.needCount;
+                int maxValue = itemData.variable.Value / itemData.price;
                 if (maxValue <= 0)
                 {
                     // TODO: 재화 부족해서 구매 불가능하다 알림
@@ -315,7 +315,7 @@ namespace EvolveThisMatch.Lobby
         /// </summary>
         private bool VariablePay(ShopItemData itemData, int buyCount)
         {
-            int payValue = itemData.needCount * buyCount;
+            int payValue = itemData.price * buyCount;
 
             if (payValue > itemData.variable.Value) return false;
 

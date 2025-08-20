@@ -9,11 +9,15 @@ namespace EvolveThisMatch.Lobby
     {
         [SerializeField] private string _mainTabName;
         [SerializeField] private Sprite _mainTabIcon;
-        [SerializeReference] private List<ShopData> _shopDatas = new List<ShopData>();
+        [SerializeField] private List<ShopData> _shopDatas = new List<ShopData>();
 
         public string mainTabName => _mainTabName;
         public Sprite mainTabIcon => _mainTabIcon;
         public IReadOnlyList<ShopData> shopDatas => _shopDatas;
+
+#if UNITY_EDITOR
+        public void AddShopData(ShopData data) => _shopDatas.Add(data);
+#endif
     }
 }
 
@@ -26,6 +30,8 @@ namespace EvolveThisMatch.Editor
     [CustomEditor(typeof(ShopDataTemplate)), CanEditMultipleObjects]
     public class ShopDataTemplateEditor : Editor
     {
+        private ShopDataTemplate _target;
+
         private SerializedProperty _mainTabName;
         private SerializedProperty _mainTabIcon;
 
@@ -34,10 +40,13 @@ namespace EvolveThisMatch.Editor
 
         private void OnEnable()
         {
+            _target = target as ShopDataTemplate;
+
             _mainTabName = serializedObject.FindProperty("_mainTabName");
             _mainTabIcon = serializedObject.FindProperty("_mainTabIcon");
 
             _shopDatas = serializedObject.FindProperty("_shopDatas");
+
             CreateDataList();
         }
 
@@ -49,7 +58,7 @@ namespace EvolveThisMatch.Editor
             GUILayout.Label("메인 탭 이름", GUILayout.Width(140));
             EditorGUILayout.PropertyField(_mainTabName, GUIContent.none);
             GUILayout.EndHorizontal();
-            
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("메인 탭 아이콘", GUILayout.Width(140));
             EditorGUILayout.PropertyField(_mainTabIcon, GUIContent.none);
@@ -69,23 +78,35 @@ namespace EvolveThisMatch.Editor
                 },
                 drawElementCallback = (rect, index, isActive, isFocused) =>
                 {
-                    var element = _shopDatas.GetArrayElementAtIndex(index);
+                    var element = _shopDatas.GetArrayElementAtIndex(index).objectReferenceValue as ShopData;
 
                     rect.x += 10;
                     rect.width -= 10;
 
-                    var labelRect = new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight);
-                    var subTabName = element.FindPropertyRelative("_subTabName").stringValue;
-                    var obj = element.managedReferenceValue;
-                    var tabName = $"{subTabName} ({obj.GetType().Name})";
-                    EditorGUI.LabelField(labelRect, tabName, EditorStyles.boldLabel);
+                    if (element != null)
+                    {
+                        rect.y += 2;
+                        rect.width -= 10;
+                        rect.height = EditorGUIUtility.singleLineHeight;
 
-                    EditorGUI.PropertyField(rect, element, GUIContent.none, true);
+                        var label = $"{element.subTabName} ({element.GetType().Name})";
+                        EditorGUI.LabelField(rect, label, EditorStyles.boldLabel);
+
+                        rect.y += 5;
+                        rect.y += EditorGUIUtility.singleLineHeight;
+
+                        element.Draw(rect);
+
+                        if (GUI.changed)
+                        {
+                            EditorUtility.SetDirty(element);
+                        }
+                    }
                 },
                 elementHeightCallback = (index) =>
                 {
-                    var element = _shopDatas.GetArrayElementAtIndex(index);
-                    return EditorGUI.GetPropertyHeight(element, true) + 4;
+                    var element = _target.shopDatas[index];
+                    return element.GetHeight();
                 },
                 onAddDropdownCallback = (buttonRect, list) =>
                 {
@@ -113,18 +134,19 @@ namespace EvolveThisMatch.Editor
             menu.ShowAsContext();
         }
 
-        private void CreateDataCallback(Type type)
+        private void CreateDataCallback(object obj)
         {
-            var instance = Activator.CreateInstance(type) as ShopData;
+            var data = ScriptableObject.CreateInstance((Type)obj) as ShopData;
 
-            if (instance != null)
+            if (data != null)
             {
-                _shopDatas.arraySize++;
-                var newElement = _shopDatas.GetArrayElementAtIndex(_shopDatas.arraySize - 1);
-                newElement.managedReferenceValue = instance;
+                data.hideFlags = HideFlags.HideInHierarchy;
+                _target.AddShopData(data);
 
-                serializedObject.ApplyModifiedProperties();
-                EditorUtility.SetDirty(target);
+                var template = target as ShopDataTemplate;
+                var path = AssetDatabase.GetAssetPath(template);
+                AssetDatabase.AddObjectToAsset(data, path);
+                EditorUtility.SetDirty(template);
             }
         }
     }

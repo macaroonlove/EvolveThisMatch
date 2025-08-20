@@ -68,7 +68,8 @@ namespace EvolveThisMatch.Lobby
             _itemIcon.sprite = itemData.itemIcon;
             _itemName.text = itemData.itemName;
 
-            if (itemData.needCount == 0)
+            int price = itemData.price;
+            if (price == 0)
             {
                 _payText.text = "¹«·á";
             }
@@ -76,11 +77,11 @@ namespace EvolveThisMatch.Lobby
             {
                 if (itemData.isCash)
                 {
-                    _payText.text = $"£Ü {itemData.needCount}";
+                    _payText.text = $"£Ü {price}";
                 }
                 else
                 {
-                    _payText.text = $"<sprite name={itemData.variable.IconText}> {itemData.needCount}";
+                    _payText.text = $"<sprite name={itemData.variable.IconText}> {price}";
                 }
             }
 
@@ -92,7 +93,7 @@ namespace EvolveThisMatch.Lobby
             {
                 _counterText.transform.parent.gameObject.SetActive(true);
                 
-                int maxValue = itemData.variable.Value / itemData.needCount;
+                int maxValue = itemData.variable.Value / price;
                 _counterSlider.maxValue = maxValue;
 
                 _counterSlider.value = 1;

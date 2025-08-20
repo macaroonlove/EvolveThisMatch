@@ -1,7 +1,7 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
-using FrameWork.Editor;
 using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace EvolveThisMatch.Lobby
@@ -9,7 +9,7 @@ namespace EvolveThisMatch.Lobby
     [Serializable]
     public class TomeGainShopItemData : GainShopItemData
     {
-        [SerializeField, Label("고서 Template")] private TomeTemplate _tomeTemplate;
+        [SerializeField] private TomeTemplate _tomeTemplate;
 
         public TomeTemplate tomeTemplate => _tomeTemplate;
 
@@ -22,5 +22,29 @@ namespace EvolveThisMatch.Lobby
         {
             SaveManager.Instance.profileData.AddTome(_tomeTemplate.id, count * buyCount);
         }
+
+#if UNITY_EDITOR
+        public override void Draw(Rect rect)
+        {
+            var labelRect = new Rect(rect.x, rect.y, 140, rect.height);
+            var valueRect = new Rect(rect.x + 140, rect.y, rect.width - 140, rect.height);
+
+            GUI.Label(labelRect, "고서 Template");
+            _tomeTemplate = (TomeTemplate)EditorGUI.ObjectField(valueRect, _tomeTemplate, typeof(TomeTemplate), false);
+
+            rect.y = labelRect.y + 20;
+
+            base.Draw(rect);
+        }
+
+        public override int GetHeight()
+        {
+            int height = base.GetHeight();
+
+            height += 20;
+
+            return height;
+        }
+#endif
     }
 }

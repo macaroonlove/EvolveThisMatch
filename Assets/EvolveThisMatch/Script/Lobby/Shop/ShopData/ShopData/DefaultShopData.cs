@@ -8,7 +8,7 @@ namespace EvolveThisMatch.Lobby
     {
         public override List<ShopItemData> GetItems()
         {
-            return null;
+            return _shopItems;
         }
     }
 }
