@@ -1,3 +1,4 @@
+using FrameWork.NetworkTime;
 using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,16 @@ namespace EvolveThisMatch.Lobby
     {
         [SerializeField] private string _subTabName;
 
+        [SerializeField] private ECycleType _cycleType;
+        [SerializeField] private int _cycleInterval;
+
         [SerializeField] private List<ObscuredIntVariable> _variableDisplays = new List<ObscuredIntVariable>();
         [SerializeField] protected List<ShopItemData> _shopItems = new List<ShopItemData>();
 
         #region 프로퍼티
         internal string subTabName => _subTabName;
+        internal ECycleType cycleType => _cycleType;
+        internal int cycleInterval => _cycleInterval;
         internal IReadOnlyList<ObscuredIntVariable> variableDisplays => _variableDisplays;
         #endregion
 
@@ -55,11 +61,20 @@ namespace EvolveThisMatch.Lobby
             var labelRect = new Rect(rect.x, rect.y, 140, rect.height);
             var valueRect = new Rect(rect.x + 140, rect.y, rect.width - 140, rect.height);
 
-            // 서브탭 이름
             GUI.Label(labelRect, "서브 탭 이름");
             _subTabName = EditorGUI.TextField(valueRect, _subTabName);
 
-            rect.y += 25;
+            labelRect.y += 40;
+            valueRect.y += 40;
+            GUI.Label(labelRect, "아이템 초기화 단위");
+            _cycleType = (ECycleType)EditorGUI.EnumPopup(valueRect, _cycleType);
+
+            labelRect.y += 20;
+            valueRect.y += 20;
+            GUI.Label(labelRect, "아이템 초기화 주기");
+            _cycleInterval = EditorGUI.IntField(valueRect, _cycleInterval);
+
+            rect.y = labelRect.y + 25;
 
             // Variable Displays
             _variableList.DoList(new Rect(rect.x, rect.y, rect.width, _variableList.GetHeight()));
@@ -74,7 +89,7 @@ namespace EvolveThisMatch.Lobby
         {
             if (_variableList == null || _itemList == null) InitLists();
 
-            float height = 60;
+            float height = 120;
 
             height += _variableList.GetHeight() + 10;
             height += _itemList.GetHeight();

@@ -33,11 +33,15 @@ namespace EvolveThisMatch.Save
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private async static void Login()
         {
+            Application.runInBackground = true;
+            Application.targetFrameRate = 60;
+
             if (autoLoadSaveData)
             {
                 await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
                 await SaveManager.Instance.Load_ProfileData();
                 await SaveManager.Instance.Load_DepartmentData();
+                await SaveManager.Instance.Load_ShopData();
             }
         }
     }

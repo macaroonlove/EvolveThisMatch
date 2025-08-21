@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab70e826b028804d987eda700ba6200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _subTabName: 
+  _subTabName: "\uCC45\uBC29"
+  _cycleType: 2
+  _cycleInterval: 2
   _variableDisplays:
   - {fileID: 11400000, guid: f0882b25629d1604098e974c9bd6df06, type: 2}
   _shopItems:
@@ -51,5 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []

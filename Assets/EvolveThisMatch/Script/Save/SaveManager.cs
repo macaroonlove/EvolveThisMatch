@@ -14,10 +14,12 @@ namespace EvolveThisMatch.Save
         [SerializeField] private ProfileSaveDataTemplate _profileData;
         [SerializeField] private FormationSaveDataTemplate _formationData;
         [SerializeField] private DepartmentSaveDataTemplate _departmentData;
+        [SerializeField] private ShopSaveDataTemplate _shopData;
 
         public ProfileSaveDataTemplate profileData => _profileData;
         public FormationSaveDataTemplate formationData => _formationData;
         public DepartmentSaveDataTemplate departmentData => _departmentData;
+        public ShopSaveDataTemplate shopData => _shopData;
 
         protected override void Initialize()
         {
@@ -28,6 +30,7 @@ namespace EvolveThisMatch.Save
             profileData.Clear();
             formationData.Clear();
             departmentData.Clear();
+            shopData.Clear();
         }
 
         #region Profile Data
@@ -172,6 +175,55 @@ namespace EvolveThisMatch.Save
             else
             {
                 return ClearPlayerPrefs("DepartmentData");
+            }
+        }
+        #endregion
+
+        #region Shop Data
+        public async UniTask<bool> Load_ShopData()
+        {
+            bool isSuccess;
+
+            if (PlayFabAuthService.IsLoginState)
+            {
+                isSuccess = await LoadPlayFab(shopData, "ShopData");
+            }
+            else
+            {
+                isSuccess = LoadPlayerPrefs(shopData, "ShopData");
+            }
+
+            if (isSuccess == false)
+            {
+                shopData.SetDefaultValues();
+                await Save_ShopData();
+            }
+
+            return true;
+        }
+
+        public async UniTask<bool> Save_ShopData()
+        {
+            if (PlayFabAuthService.IsLoginState)
+            {
+                return await SavePlayFab(shopData, "ShopData");
+            }
+            else
+            {
+                return SavePlayerPrefs(shopData, "ShopData");
+            }
+        }
+
+        [ContextMenu("상점 초기화")]
+        public async UniTask<bool> Clear_ShopData()
+        {
+            if (PlayFabAuthService.IsLoginState)
+            {
+                return await ClearPlayFab("ShopData");
+            }
+            else
+            {
+                return ClearPlayerPrefs("ShopData");
             }
         }
         #endregion

@@ -1,8 +1,13 @@
+using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.NetworkTime;
 using FrameWork.UI;
 using FrameWork.UIBinding;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace EvolveThisMatch.Lobby
@@ -13,6 +18,10 @@ namespace EvolveThisMatch.Lobby
         enum Buttons
         {
             CloseButton,
+        }
+        enum Texts
+        {
+            RemainTimeText,
         }
         #endregion
 
@@ -45,6 +54,11 @@ namespace EvolveThisMatch.Lobby
         private UIPackagePayPanel _packagePayPanel;
         private UIDefaultPayPanel _defaultPayPanel;
 
+        private TextMeshProUGUI _remainTime;
+        private Coroutine _refreshCoroutine;
+        private WaitForSecondsRealtime _refreshMinuteWFS = new WaitForSecondsRealtime(60);
+        private WaitForSecondsRealtime _refreshSecondWFS = new WaitForSecondsRealtime(1);
+
         protected override void Initialize()
         {
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
@@ -55,7 +69,9 @@ namespace EvolveThisMatch.Lobby
             InitializeTab();
 
             BindButton(typeof(Buttons));
+            BindText(typeof(Texts));
 
+            _remainTime = GetText((int)Texts.RemainTimeText);
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
         }
 
@@ -154,14 +170,50 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        private void SelectSubTab(UIShopSubTab tab)
+        private async void SelectSubTab(UIShopSubTab tab)
         {
+            #region 탭과 아이템 모두 비활성화
+            // 모든 탭 비활성화
             foreach (var subTab in _shopSubTabList) subTab.UnSelect();
 
+            // 모든 아이템 비활성화
             foreach (var item in _packageShopItems) item.Hide(true);
             foreach (var item in _defaultShopItems) item.Hide(true);
             foreach (var item in _shopGainItems.Keys) _poolSystem.DeSpawn(item);
+            #endregion
 
+            var data = tab.data;
+            var shopCatalog = SaveManager.Instance.shopData.GetShopCatalog(data.subTabName);
+
+            #region 상점 최신화
+            _remainTime.transform.parent.gameObject.SetActive(false);
+
+            // 코루틴이 존재한다면 멈추기
+            if (_refreshCoroutine != null)
+            {
+                StopCoroutine(_refreshCoroutine);
+                _refreshCoroutine = null;
+            }
+
+            // 상점 최신화 주기가 존재한다면
+            if (data.cycleInterval > 0)
+            {
+                var remainTime = await NetworkTimeManager.Instance.GetRemainTime(shopCatalog.lastBuyTime, data.cycleType, data.cycleInterval);
+
+                // 아직 최신화 할 때가 되지 않았다면
+                if (remainTime.TotalSeconds > 0)
+                {
+                    _refreshCoroutine = StartCoroutine(WaitRefresh(remainTime, tab, shopCatalog));
+                }
+                // 최신화 할 때라면
+                else
+                {
+                    Refresh(tab, shopCatalog).Forget();
+                }
+            }
+            #endregion
+
+            #region 아이템 초기화
             var items = tab.data.GetItems();
 
             int pIndex = 0;
@@ -172,22 +224,25 @@ namespace EvolveThisMatch.Lobby
                 {
                     var gainItemList = GetGainItem(item.gainShopItemDatas.Count);
 
-                    _packageShopItems[pIndex].Show(item, gainItemList, SelectPackage);
+                    _packageShopItems[pIndex].Show(shopCatalog, item, gainItemList, (shopItem) => SelectPackage(tab, shopCatalog, shopItem, item));
                     pIndex++;
                 }
                 else
                 {
-                    _defaultShopItems[dIndex].Show(item, SelectDefault);
+                    _defaultShopItems[dIndex].Show(shopCatalog, item, (shopItem) => SelectDefault(tab, shopCatalog, shopItem, item));
                     dIndex++;
                 }
             }
+            #endregion
 
+            #region Variable Display 설정
             VariableDisplayManager.Instance.HideAll();
 
             foreach (var variableDisplay in tab.data.variableDisplays)
             {
                 VariableDisplayManager.Instance.Show(variableDisplay);
             }
+            #endregion
         }
 
         private List<UIShopGainItem> GetGainItem(int count)
@@ -211,32 +266,100 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
+        #region 상점 최신화
+        private IEnumerator WaitRefresh(TimeSpan remainTime, UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog)
+        {
+            _remainTime.transform.parent.gameObject.SetActive(true);
+
+            // 1분 중, 잔여 초 부터 정리
+            if (remainTime.TotalSeconds > 60)
+            {
+                double remainder = remainTime.TotalSeconds % 60;
+                double firstWait = remainder > 0 ? remainder : 60;
+
+                // 남은 시간 UI표시
+                UpdateRemainTime(remainTime);
+
+                yield return new WaitForSecondsRealtime((float)firstWait);
+
+                remainTime -= TimeSpan.FromSeconds(firstWait);
+            }
+
+            // 1분마다 표시하기
+            while (remainTime.TotalSeconds > 0)
+            {
+                // 남은 시간 UI표시
+                UpdateRemainTime(remainTime);
+
+                if (remainTime.TotalSeconds > 60)
+                {
+                    yield return _refreshMinuteWFS;
+
+                    // 남은 시간 업데이트
+                    float waitSeconds = Mathf.Min(60f, (float)remainTime.TotalSeconds);
+                    remainTime -= TimeSpan.FromSeconds(waitSeconds);
+                }
+                else
+                {
+                    yield return _refreshSecondWFS;
+
+                    // 남은 시간 업데이트
+                    remainTime -= TimeSpan.FromSeconds(1);
+                }
+            }
+
+            Refresh(tab, shopCatalog).Forget();
+        }
+
+        private void UpdateRemainTime(TimeSpan remainTime)
+        {
+            if (remainTime.TotalDays >= 1) _remainTime.text = $"{(int)remainTime.TotalDays}일 {remainTime.Hours:D2}시간";
+            else if (remainTime.TotalSeconds > 60) _remainTime.text = $"{remainTime.Hours:D2}시간 {remainTime.Minutes:D2}분";
+            else _remainTime.text = $"{remainTime.Minutes:D2}분 {remainTime.Seconds:D2}초";
+        }
+
+        private async UniTaskVoid Refresh(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog)
+        {
+            // 해당 탭의 모든 아이템의 구매 횟수 초기화
+            shopCatalog.ResetAllItems();
+
+            // 해당 탭의 시간을 초기화
+            shopCatalog.lastBuyTime = await NetworkTimeManager.Instance.GetKoreanNow();
+
+            // 탭 내용물 다시 보여주기
+            SelectSubTab(tab);
+
+            // 저장
+            _ = SaveManager.Instance.Save_ShopData();
+        }
+        #endregion
+
         #region 아이템 선택
-        private void SelectPackage(ShopItemData itemData)
+        private void SelectPackage(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData)
         {
             if (!IsPayAble(itemData)) return;
 
             if (itemData.isPanel)
             {
-                _packagePayPanel.Show(itemData, () => Pay(itemData));
+                _packagePayPanel.Show(shopCatalog, itemData, () => Pay(tab, shopCatalog, shopItem, itemData));
             }
             else
             {
-                Pay(itemData);
+                Pay(tab, shopCatalog, shopItem, itemData);
             }
         }
 
-        private void SelectDefault(ShopItemData itemData)
+        private void SelectDefault(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData)
         {
             if (!IsPayAble(itemData)) return;
 
             if (itemData.isPanel)
             {
-                _defaultPayPanel.Show(itemData, (buyCount) => Pay(itemData, buyCount));
+                _defaultPayPanel.Show(shopCatalog, itemData, (buyCount) => Pay(tab, shopCatalog, shopItem, itemData, buyCount));
             }
             else
             {
-                Pay(itemData);
+                Pay(tab, shopCatalog, shopItem, itemData);
             }
         }
 
@@ -254,14 +377,25 @@ namespace EvolveThisMatch.Lobby
                     return false;
                 }
             }
-            
+
             return true;
         }
         #endregion
 
         #region 결제
-        private async void Pay(ShopItemData itemData, int buyCount = 1)
+        private async void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData, int buyCount = 1)
         {
+            // 구매 횟수 제한이 있다면
+            if (itemData.buyAbleCount > 0)
+            {
+                // 더 이상 아이템을 구매할 수 없다면
+                int boughtCount = shopItem == null ? 0 : shopItem.boughtCount;
+                if (boughtCount + buyCount > itemData.buyAbleCount)
+                {
+                    return;
+                }
+            }
+
             if (!CanGainShopItem(itemData, buyCount))
             {
                 // TODO: 오류: 획득할 아이템 품목에 버그가 있습니다.
@@ -269,7 +403,7 @@ namespace EvolveThisMatch.Lobby
             }
 
             bool isSuccess = false;
-            
+
             if (itemData.isCash)
             {
                 isSuccess = CashPay(itemData);
@@ -281,12 +415,22 @@ namespace EvolveThisMatch.Lobby
 
             if (isSuccess)
             {
+                // 아이템 획득
                 foreach (var gainItem in itemData.gainShopItemDatas)
                 {
                     gainItem.GainShopItem(buyCount);
                 }
 
-                await SaveManager.Instance.Save_ProfileData();
+                // 구매 횟수 제한이 있다면
+                if (itemData.buyAbleCount > 0)
+                {
+                    shopCatalog.AddItem(itemData.itemName, buyCount);
+                }
+
+                SelectSubTab(tab);
+
+                _ = SaveManager.Instance.Save_ShopData();
+                _ = SaveManager.Instance.Save_ProfileData();
             }
         }
 

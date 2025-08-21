@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
+using FrameWork.NetworkTime;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using System;
@@ -100,7 +101,7 @@ namespace EvolveThisMatch.Lobby
             _departmentItems[0].SelectItem();
 
             _overUICamera.SetActive(true);
-
+            Debug.Log(NetworkTimeManager.Instance.GetUtcNow());
             base.Show(isForce);
         }
 

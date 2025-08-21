@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e4968d507b3e74eb01510c0013b31b, type: 3}
-  m_Name: "ShopItem_\uD328\uD0A4\uC9C0_\uC77C\uC77C \uBB34\uB8CC \uD589\uB3D9\uB825"
+  m_Name: "ShopItem_\uD328\uD0A4\uC9C0_\uB370\uC77C\uB9AC \uBB34\uB8CC \uD589\uB3D9\uB825"
   m_EditorClassIdentifier: 
-  _itemName: "\uC77C\uC77C \uBB34\uB8CC \uD589\uB3D9\uB825"
+  _itemName: "\uB370\uC77C\uB9AC \uBB34\uB8CC \uD589\uB3D9\uB825"
   _itemIcon: {fileID: 21300000, guid: be6c7dc1d21e82a40b4f37e323df4c6c, type: 3}
   _isCash: 1
   _variable: {fileID: 0}

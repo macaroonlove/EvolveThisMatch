@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays:
   - {fileID: 0}
   _shopItems: []
@@ -29,6 +31,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: "\u3134\u3134\u3134"
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-8097520866211994250
@@ -44,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays:
   - {fileID: 0}
   _shopItems: []
@@ -60,6 +66,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-3450007391280885715
@@ -75,6 +83,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-3262113329513102203
@@ -90,6 +100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-2940269667730176120
@@ -105,6 +117,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: "\uC6D4\uAC04 \uD328\uD0A4\uC9C0"
+  _cycleType: 3
+  _cycleInterval: 1
   _variableDisplays: []
   _shopItems:
   - {fileID: 11400000, guid: 8cbe913d9f0c42942b9a433978687a91, type: 2}
@@ -121,6 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: "\u3147\u3147\u3147\u3147"
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems:
   - {fileID: 0}
@@ -137,8 +153,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: "\u3142\u3142\u3142"
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []
+  _slotCount: 0
 --- !u!114 &-291697511001599327
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -151,7 +170,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab70e826b028804d987eda700ba6200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _subTabName: "\uC77C\uC77C \uD328\uD0A4\uC9C0"
+  _subTabName: "\uB370\uC77C\uB9AC \uD328\uD0A4\uC9C0"
+  _cycleType: 1
+  _cycleInterval: 1
   _variableDisplays: []
   _shopItems:
   - {fileID: 11400000, guid: 68bbed34b9d08594b83437c432f48b7c, type: 2}
@@ -186,6 +207,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &5422913962110084791
@@ -201,6 +224,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: "\uC8FC\uAC04 \uD328\uD0A4\uC9C0"
+  _cycleType: 2
+  _cycleInterval: 1
   _variableDisplays: []
   _shopItems:
   - {fileID: 11400000, guid: 96c2afd606a1197489ec85afafdcc448, type: 2}
@@ -217,5 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: 
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays: []
   _shopItems: []

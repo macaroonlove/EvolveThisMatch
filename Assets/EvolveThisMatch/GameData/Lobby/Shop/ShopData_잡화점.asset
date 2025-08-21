@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab70e826b028804d987eda700ba6200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _subTabName: 
+  _subTabName: "\uC7A1\uD654\uC810"
+  _cycleType: 0
+  _cycleInterval: 0
   _variableDisplays:
   - {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
   - {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}

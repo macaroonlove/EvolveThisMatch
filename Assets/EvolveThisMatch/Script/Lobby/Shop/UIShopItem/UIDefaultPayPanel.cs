@@ -1,4 +1,4 @@
-using FrameWork.UIBinding;
+using EvolveThisMatch.Save;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIDefaultPayPanel : UIBase
+    public class UIDefaultPayPanel : UIShopItem
     {
         #region 바인딩
         enum Buttons
@@ -25,16 +25,18 @@ namespace EvolveThisMatch.Lobby
             ItemName,
             PayText,
             CounterText,
+            PurchaseLimitText,
         }
         enum Sliders
         {
             CounterSlider,
         }
+        enum CanvasGroups
+        {
+            PurchaseLimit,
+        }
         #endregion
 
-        private Image _itemIcon;
-        private TextMeshProUGUI _itemName;
-        private TextMeshProUGUI _payText;
         private TextMeshProUGUI _counterText;
         private Slider _counterSlider;
 
@@ -46,12 +48,15 @@ namespace EvolveThisMatch.Lobby
             BindImage(typeof(Images));
             BindText(typeof(Texts));
             BindSlider(typeof(Sliders));
+            BindCanvasGroupController(typeof(CanvasGroups));
 
             _itemIcon = GetImage((int)Images.ItemIcon);
             _itemName = GetText((int)Texts.ItemName);
             _payText = GetText((int)Texts.PayText);
             _counterText = GetText((int)Texts.CounterText);
+            _purchaseLimitText = GetText((int)Texts.PurchaseLimitText);
             _counterSlider = GetSlider((int)Sliders.CounterSlider);
+            _purchaseLimit = GetCanvasGroupController((int)CanvasGroups.PurchaseLimit);
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
             GetButton((int)Buttons.PayButton).onClick.AddListener(Pay);
@@ -61,30 +66,13 @@ namespace EvolveThisMatch.Lobby
             _counterSlider.onValueChanged.AddListener(ChangeCounter);
         }
 
-        internal void Show(ShopItemData itemData, UnityAction<int> onPay)
+        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItemData itemData, UnityAction<int> onPay)
         {
             _onPay = onPay;
 
-            _itemIcon.sprite = itemData.itemIcon;
-            _itemName.text = itemData.itemName;
+            base.Show(shopCatalog, itemData);
 
-            int price = itemData.price;
-            if (price == 0)
-            {
-                _payText.text = "무료";
-            }
-            else
-            {
-                if (itemData.isCash)
-                {
-                    _payText.text = $"￦ {price}";
-                }
-                else
-                {
-                    _payText.text = $"<sprite name={itemData.variable.IconText}> {price}";
-                }
-            }
-
+            #region 아이템 구매 횟수 결정
             if (itemData.isCash)
             {
                 _counterText.transform.parent.gameObject.SetActive(false);
@@ -92,13 +80,15 @@ namespace EvolveThisMatch.Lobby
             else
             {
                 _counterText.transform.parent.gameObject.SetActive(true);
-                
-                int maxValue = itemData.variable.Value / price;
+
+                int maxValue = itemData.variable.Value / itemData.price;
+                maxValue = Mathf.Min(maxValue, itemData.buyAbleCount);
                 _counterSlider.maxValue = maxValue;
 
                 _counterSlider.value = 1;
                 ChangeCounter(1);
             }
+            #endregion
 
             base.Show(true);
         }
@@ -110,6 +100,8 @@ namespace EvolveThisMatch.Lobby
 
         private void Pay()
         {
+            if (!_isBuyAble) return;
+
             _onPay?.Invoke((int)_counterSlider.value);
 
             Hide();
