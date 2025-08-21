@@ -23,6 +23,7 @@ namespace EvolveThisMatch.Lobby
         enum CanvasGroups
         {
             PurchaseLimit,
+            BuyComplete,
         }
         #endregion
 
@@ -31,6 +32,7 @@ namespace EvolveThisMatch.Lobby
         protected TextMeshProUGUI _payText;
         protected TextMeshProUGUI _purchaseLimitText;
         protected CanvasGroupController _purchaseLimit;
+        protected CanvasGroupController _buyComplete;
         
         protected ShopSaveData.ShopItem _shopItem;
         protected bool _isBuyAble;
@@ -46,6 +48,7 @@ namespace EvolveThisMatch.Lobby
             _payText = GetText((int)Texts.PayText);
             _purchaseLimitText = GetText((int)Texts.PurchaseLimitText);
             _purchaseLimit = GetCanvasGroupController((int)CanvasGroups.PurchaseLimit);
+            _buyComplete = GetCanvasGroupController((int)CanvasGroups.BuyComplete);
         }
 
         protected void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItemData itemData)
@@ -73,6 +76,8 @@ namespace EvolveThisMatch.Lobby
             _shopItem = null;
             _isBuyAble = true;
 
+            _buyComplete.Hide(true);
+
             // 구매 횟수 제한이 있다면
             if (itemData.buyAbleCount > 0)
             {
@@ -84,7 +89,11 @@ namespace EvolveThisMatch.Lobby
                     int remainCount = itemData.buyAbleCount - _shopItem.boughtCount;
                     _purchaseLimitText.text = $"{remainCount}/{itemData.buyAbleCount}";
 
-                    _isBuyAble = remainCount > 0;
+                    if (remainCount <= 0)
+                    {
+                        _isBuyAble = false;
+                        _buyComplete.Show(true);
+                    }
                 }
                 else
                 {

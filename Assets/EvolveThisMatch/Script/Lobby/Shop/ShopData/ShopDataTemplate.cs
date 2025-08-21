@@ -8,11 +8,11 @@ namespace EvolveThisMatch.Lobby
     public class ShopDataTemplate : ScriptableObject
     {
         [SerializeField] private string _mainTabName;
-        [SerializeField] private Sprite _mainTabIcon;
+        [SerializeField] private Sprite _background;
         [SerializeField] private List<ShopData> _shopDatas = new List<ShopData>();
 
         public string mainTabName => _mainTabName;
-        public Sprite mainTabIcon => _mainTabIcon;
+        public Sprite background => _background;
         public IReadOnlyList<ShopData> shopDatas => _shopDatas;
 
 #if UNITY_EDITOR
@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Editor
         private ShopDataTemplate _target;
 
         private SerializedProperty _mainTabName;
-        private SerializedProperty _mainTabIcon;
+        private SerializedProperty _background;
 
         private SerializedProperty _shopDatas;
         private ReorderableList _dataList;
@@ -43,7 +43,7 @@ namespace EvolveThisMatch.Editor
             _target = target as ShopDataTemplate;
 
             _mainTabName = serializedObject.FindProperty("_mainTabName");
-            _mainTabIcon = serializedObject.FindProperty("_mainTabIcon");
+            _background = serializedObject.FindProperty("_background");
 
             _shopDatas = serializedObject.FindProperty("_shopDatas");
 
@@ -60,8 +60,8 @@ namespace EvolveThisMatch.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("메인 탭 아이콘", GUILayout.Width(140));
-            EditorGUILayout.PropertyField(_mainTabIcon, GUIContent.none);
+            GUILayout.Label("배경", GUILayout.Width(140));
+            EditorGUILayout.PropertyField(_background, GUIContent.none);
             GUILayout.EndHorizontal();
 
             _dataList.DoLayoutList();

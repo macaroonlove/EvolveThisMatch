@@ -40,6 +40,7 @@ namespace EvolveThisMatch.Save
             [SerializeField] private List<ShopItem> _items = new List<ShopItem>();
 
             public string catalogId => _catalogId;
+            public IReadOnlyList<ShopItem> items => _items;
             public DateTime lastBuyTime
             {
                 get => new DateTime(_lastBuyTicks);

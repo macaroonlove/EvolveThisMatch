@@ -17,7 +17,7 @@ MonoBehaviour:
   _isCash: 1
   _variable: {fileID: 0}
   _price: 0
-  _buyAbleCount: 0
+  _buyAbleCount: 1
   _isPackage: 1
   _isPanel: 0
   _gainShopItemDatas:

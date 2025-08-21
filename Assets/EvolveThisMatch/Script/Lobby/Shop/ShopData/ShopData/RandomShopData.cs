@@ -1,3 +1,4 @@
+using EvolveThisMatch.Save;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -13,16 +14,29 @@ namespace EvolveThisMatch.Lobby
 
         public override List<ShopItemData> GetItems()
         {
-            int count = Mathf.Min(_slotCount, _shopItems.Count);
-
-            List<ShopItemData> tempList = new List<ShopItemData>(_shopItems);
             List<ShopItemData> result = new List<ShopItemData>();
 
-            for (int i = 0; i < count; i++)
+            var shopCatalog = SaveManager.Instance.shopData.GetShopCatalog(subTabName);
+
+            foreach (var item in shopCatalog.items)
             {
-                int index = Random.Range(0, tempList.Count);
-                result.Add(tempList[index]);
-                tempList.RemoveAt(index);
+                var itemData = _shopItems.Find(x => x.itemName == item.itemId);
+                if (itemData != null) result.Add(itemData);
+            }
+
+            if (result.Count < 1)
+            {
+                int count = Mathf.Min(_slotCount, _shopItems.Count);
+
+                List<ShopItemData> tempList = new List<ShopItemData>(_shopItems);
+
+                for (int i = 0; i < count; i++)
+                {
+                    int index = Random.Range(0, tempList.Count);
+                    shopCatalog.AddItem(tempList[index].itemName, 0);
+                    result.Add(tempList[index]);
+                    tempList.RemoveAt(index);
+                }
             }
 
             return result;

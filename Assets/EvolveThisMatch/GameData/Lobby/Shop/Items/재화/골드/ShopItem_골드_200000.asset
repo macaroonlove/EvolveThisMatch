@@ -16,7 +16,7 @@ MonoBehaviour:
   _itemIcon: {fileID: 21300000, guid: 317145c449e2422469d4f25583fb4b59, type: 3}
   _isCash: 0
   _variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
-  _price: 2500
+  _price: 10000
   _buyAbleCount: 0
   _isPackage: 0
   _isPanel: 1

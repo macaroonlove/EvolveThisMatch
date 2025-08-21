@@ -15,6 +15,7 @@ namespace EvolveThisMatch.Lobby
 
         [SerializeField] private ECycleType _cycleType;
         [SerializeField] private int _cycleInterval;
+        [SerializeField] private bool _isShowRemainTime;
 
         [SerializeField] private List<ObscuredIntVariable> _variableDisplays = new List<ObscuredIntVariable>();
         [SerializeField] protected List<ShopItemData> _shopItems = new List<ShopItemData>();
@@ -23,6 +24,7 @@ namespace EvolveThisMatch.Lobby
         internal string subTabName => _subTabName;
         internal ECycleType cycleType => _cycleType;
         internal int cycleInterval => _cycleInterval;
+        internal bool isShowRemainTime => _isShowRemainTime;
         internal IReadOnlyList<ObscuredIntVariable> variableDisplays => _variableDisplays;
         #endregion
 
@@ -73,6 +75,11 @@ namespace EvolveThisMatch.Lobby
             valueRect.y += 20;
             GUI.Label(labelRect, "아이템 초기화 주기");
             _cycleInterval = EditorGUI.IntField(valueRect, _cycleInterval);
+            
+            labelRect.y += 40;
+            valueRect.y += 40;
+            GUI.Label(labelRect, "남은 시간 표시 여부");
+            _isShowRemainTime = EditorGUI.Toggle(valueRect, _isShowRemainTime);
 
             rect.y = labelRect.y + 25;
 
@@ -89,7 +96,7 @@ namespace EvolveThisMatch.Lobby
         {
             if (_variableList == null || _itemList == null) InitLists();
 
-            float height = 120;
+            float height = 160;
 
             height += _variableList.GetHeight() + 10;
             height += _itemList.GetHeight();

@@ -15,6 +15,7 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays:
   - {fileID: 0}
   _shopItems: []
@@ -33,6 +34,7 @@ MonoBehaviour:
   _subTabName: "\u3134\u3134\u3134"
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-8097520866211994250
@@ -50,6 +52,7 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays:
   - {fileID: 0}
   _shopItems: []
@@ -68,6 +71,7 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-3450007391280885715
@@ -85,6 +89,7 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-3262113329513102203
@@ -102,6 +107,7 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &-2940269667730176120
@@ -119,6 +125,7 @@ MonoBehaviour:
   _subTabName: "\uC6D4\uAC04 \uD328\uD0A4\uC9C0"
   _cycleType: 3
   _cycleInterval: 1
+  _isShowRemainTime: 1
   _variableDisplays: []
   _shopItems:
   - {fileID: 11400000, guid: 8cbe913d9f0c42942b9a433978687a91, type: 2}
@@ -137,6 +144,7 @@ MonoBehaviour:
   _subTabName: "\u3147\u3147\u3147\u3147"
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems:
   - {fileID: 0}
@@ -155,6 +163,7 @@ MonoBehaviour:
   _subTabName: "\u3142\u3142\u3142"
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []
   _slotCount: 0
@@ -173,6 +182,7 @@ MonoBehaviour:
   _subTabName: "\uB370\uC77C\uB9AC \uD328\uD0A4\uC9C0"
   _cycleType: 1
   _cycleInterval: 1
+  _isShowRemainTime: 1
   _variableDisplays: []
   _shopItems:
   - {fileID: 11400000, guid: 68bbed34b9d08594b83437c432f48b7c, type: 2}
@@ -189,7 +199,7 @@ MonoBehaviour:
   m_Name: "ShopData_\uD328\uD0A4\uC9C0"
   m_EditorClassIdentifier: 
   _mainTabName: "\uD328\uD0A4\uC9C0"
-  _mainTabIcon: {fileID: 0}
+  _background: {fileID: 21300000, guid: a5d1a4c716d98b645bed59c1bc24c31b, type: 3}
   _shopDatas:
   - {fileID: -291697511001599327}
   - {fileID: 5422913962110084791}
@@ -209,6 +219,7 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []
 --- !u!114 &5422913962110084791
@@ -226,6 +237,7 @@ MonoBehaviour:
   _subTabName: "\uC8FC\uAC04 \uD328\uD0A4\uC9C0"
   _cycleType: 2
   _cycleInterval: 1
+  _isShowRemainTime: 1
   _variableDisplays: []
   _shopItems:
   - {fileID: 11400000, guid: 96c2afd606a1197489ec85afafdcc448, type: 2}
@@ -244,5 +256,6 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []

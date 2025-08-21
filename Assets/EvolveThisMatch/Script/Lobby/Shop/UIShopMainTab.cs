@@ -48,7 +48,6 @@ namespace EvolveThisMatch.Lobby
             _background = GetImage((int)Images.Background);
             _mainTabName = GetText((int)Texts.Title);
 
-            _background.sprite = template.mainTabIcon;
             _mainTabName.text = template.mainTabName;
         }
 

@@ -15,6 +15,7 @@ MonoBehaviour:
   _subTabName: "\uCC45\uBC29"
   _cycleType: 2
   _cycleInterval: 2
+  _isShowRemainTime: 1
   _variableDisplays:
   - {fileID: 11400000, guid: f0882b25629d1604098e974c9bd6df06, type: 2}
   _shopItems:
@@ -37,7 +38,7 @@ MonoBehaviour:
   m_Name: "ShopData_\uCC45\uBC29"
   m_EditorClassIdentifier: 
   _mainTabName: "\uCC45\uBC29"
-  _mainTabIcon: {fileID: 0}
+  _background: {fileID: 21300000, guid: a5d1a4c716d98b645bed59c1bc24c31b, type: 3}
   _shopDatas:
   - {fileID: -8891452674657651016}
 --- !u!114 &6656417178344102214
@@ -55,5 +56,6 @@ MonoBehaviour:
   _subTabName: 
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems: []

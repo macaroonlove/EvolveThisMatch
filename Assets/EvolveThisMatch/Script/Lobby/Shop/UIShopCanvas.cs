@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -22,6 +23,10 @@ namespace EvolveThisMatch.Lobby
         enum Texts
         {
             RemainTimeText,
+        }
+        enum Images
+        {
+            Background,
         }
         #endregion
 
@@ -55,6 +60,7 @@ namespace EvolveThisMatch.Lobby
         private UIDefaultPayPanel _defaultPayPanel;
 
         private TextMeshProUGUI _remainTime;
+        private Image _background;
         private Coroutine _refreshCoroutine;
         private WaitForSecondsRealtime _refreshMinuteWFS = new WaitForSecondsRealtime(60);
         private WaitForSecondsRealtime _refreshSecondWFS = new WaitForSecondsRealtime(1);
@@ -70,8 +76,10 @@ namespace EvolveThisMatch.Lobby
 
             BindButton(typeof(Buttons));
             BindText(typeof(Texts));
+            BindImage(typeof(Images));
 
             _remainTime = GetText((int)Texts.RemainTimeText);
+            _background = GetImage((int)Images.Background);
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
         }
 
@@ -143,6 +151,8 @@ namespace EvolveThisMatch.Lobby
             _currentTab?.UnSelect();
             _currentTab = tab;
             _currentTab?.Select();
+
+            _background.sprite = tab.template.background;
 
             var datas = tab.template.shopDatas;
             for (int i = 0; i < 5; i++)
@@ -269,43 +279,58 @@ namespace EvolveThisMatch.Lobby
         #region 상점 최신화
         private IEnumerator WaitRefresh(TimeSpan remainTime, UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog)
         {
-            _remainTime.transform.parent.gameObject.SetActive(true);
-
-            // 1분 중, 잔여 초 부터 정리
-            if (remainTime.TotalSeconds > 60)
+            if (remainTime.TotalSeconds <= 0)
             {
-                double remainder = remainTime.TotalSeconds % 60;
-                double firstWait = remainder > 0 ? remainder : 60;
-
-                // 남은 시간 UI표시
-                UpdateRemainTime(remainTime);
-
-                yield return new WaitForSecondsRealtime((float)firstWait);
-
-                remainTime -= TimeSpan.FromSeconds(firstWait);
+                Refresh(tab, shopCatalog).Forget();
+                yield break;
             }
 
-            // 1분마다 표시하기
-            while (remainTime.TotalSeconds > 0)
+            // 상점에 표시할 것이라면
+            if (tab.data.isShowRemainTime)
             {
-                // 남은 시간 UI표시
-                UpdateRemainTime(remainTime);
+                _remainTime.transform.parent.gameObject.SetActive(true);
 
+                // 1분 중, 잔여 초 부터 정리
                 if (remainTime.TotalSeconds > 60)
                 {
-                    yield return _refreshMinuteWFS;
+                    double remainder = remainTime.TotalSeconds % 60;
+                    double firstWait = remainder > 0 ? remainder : 60;
 
-                    // 남은 시간 업데이트
-                    float waitSeconds = Mathf.Min(60f, (float)remainTime.TotalSeconds);
-                    remainTime -= TimeSpan.FromSeconds(waitSeconds);
+                    // 남은 시간 UI표시
+                    UpdateRemainTime(remainTime);
+
+                    yield return new WaitForSecondsRealtime((float)firstWait);
+
+                    remainTime -= TimeSpan.FromSeconds(firstWait);
                 }
-                else
+
+                // 1분마다 표시하기
+                while (remainTime.TotalSeconds > 0)
                 {
-                    yield return _refreshSecondWFS;
+                    // 남은 시간 UI표시
+                    UpdateRemainTime(remainTime);
 
-                    // 남은 시간 업데이트
-                    remainTime -= TimeSpan.FromSeconds(1);
+                    if (remainTime.TotalSeconds > 60)
+                    {
+                        yield return _refreshMinuteWFS;
+
+                        // 남은 시간 업데이트
+                        float waitSeconds = Mathf.Min(60f, (float)remainTime.TotalSeconds);
+                        remainTime -= TimeSpan.FromSeconds(waitSeconds);
+                    }
+                    else
+                    {
+                        yield return _refreshSecondWFS;
+
+                        // 남은 시간 업데이트
+                        remainTime -= TimeSpan.FromSeconds(1);
+                    }
                 }
+            }
+            // 상점에 표시하지 않을거라면 한 번에 대기하기
+            else
+            {
+                yield return new WaitForSecondsRealtime((float)remainTime.TotalSeconds);
             }
 
             Refresh(tab, shopCatalog).Forget();
@@ -327,7 +352,7 @@ namespace EvolveThisMatch.Lobby
             shopCatalog.lastBuyTime = await NetworkTimeManager.Instance.GetKoreanNow();
 
             // 탭 내용물 다시 보여주기
-            SelectSubTab(tab);
+            tab.Select();
 
             // 저장
             _ = SaveManager.Instance.Save_ShopData();
@@ -383,7 +408,7 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         #region 결제
-        private async void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData, int buyCount = 1)
+        private void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData, int buyCount = 1)
         {
             // 구매 횟수 제한이 있다면
             if (itemData.buyAbleCount > 0)
@@ -427,7 +452,7 @@ namespace EvolveThisMatch.Lobby
                     shopCatalog.AddItem(itemData.itemName, buyCount);
                 }
 
-                SelectSubTab(tab);
+                tab.Select();
 
                 _ = SaveManager.Instance.Save_ShopData();
                 _ = SaveManager.Instance.Save_ProfileData();

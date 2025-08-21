@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: "\uACE8\uB4DC"
+  _cycleType: 0
+  _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays:
   - {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
   _shopItems:
@@ -33,8 +36,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46f632ddef9de548a949aa4174fe56f, type: 3}
   m_Name: "ShopData_\uC7AC\uD654"
   m_EditorClassIdentifier: 
-  _mainTabName: "\uC7AC\uD654"
-  _mainTabIcon: {fileID: 0}
+  _mainTabName: "\uD658\uC804\uC18C"
+  _background: {fileID: 21300000, guid: a5d1a4c716d98b645bed59c1bc24c31b, type: 3}
   _shopDatas:
   - {fileID: 4885529875209864578}
   - {fileID: -2064009996562032867}
@@ -51,6 +54,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subTabName: "\uC138\uACC4\uC11D"
+  _cycleType: 1
+  _cycleInterval: 1
+  _isShowRemainTime: 0
   _variableDisplays: []
   _shopItems:
   - {fileID: 11400000, guid: bc1f56e001fb05245a5e956bbfeb0688, type: 2}

@@ -15,6 +15,7 @@ MonoBehaviour:
   _subTabName: "\uC7A1\uD654\uC810"
   _cycleType: 0
   _cycleInterval: 0
+  _isShowRemainTime: 0
   _variableDisplays:
   - {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
   - {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}
@@ -37,6 +38,6 @@ MonoBehaviour:
   m_Name: "ShopData_\uC7A1\uD654\uC810"
   m_EditorClassIdentifier: 
   _mainTabName: "\uC7A1\uD654\uC810"
-  _mainTabIcon: {fileID: 0}
+  _background: {fileID: 21300000, guid: a5d1a4c716d98b645bed59c1bc24c31b, type: 3}
   _shopDatas:
   - {fileID: -3612074856613507708}
