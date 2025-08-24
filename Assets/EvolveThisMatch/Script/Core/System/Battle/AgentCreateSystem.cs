@@ -1,3 +1,4 @@
+using EvolveThisMatch.Save;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace EvolveThisMatch.Core
             _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
 
-            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
             foreach (var agent in ownedAgents)
             {
                 _ownedAgentTemplates.Add(GameDataManager.Instance.GetAgentTemplateById(agent.id));

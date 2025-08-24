@@ -26,9 +26,9 @@ namespace EvolveThisMatch.Lobby
         protected bool _isAsc;
         protected int _filterIndex;
 
-        protected UnityAction<AgentTemplate, ProfileSaveData.Agent> _action;
+        protected UnityAction<AgentTemplate, AgentSaveData.Agent> _action;
 
-        internal virtual void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal virtual void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
         {
             _action = action;
 
@@ -70,7 +70,7 @@ namespace EvolveThisMatch.Lobby
             ChangeFilterOrder(0);
         }
 
-        private void ChangeAgent(AgentTemplate template, ProfileSaveData.Agent owned)
+        private void ChangeAgent(AgentTemplate template, AgentSaveData.Agent owned)
         {
             // 모든 아이템 선택 취소
             foreach (var item in _agentListItems) item.DeSelectItem();
@@ -80,7 +80,7 @@ namespace EvolveThisMatch.Lobby
 
         internal void RegistAgentListItem()
         {
-            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
             int count = _agentTemplates.Count;
 
             // 보유한 유닛의 아이디
@@ -108,7 +108,7 @@ namespace EvolveThisMatch.Lobby
         {
             _filterIndex = index;
 
-            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
 
             // 보유한 유닛의 아이디
             var ownedAgentDic = ownedAgents.ToDictionary(a => a.id);

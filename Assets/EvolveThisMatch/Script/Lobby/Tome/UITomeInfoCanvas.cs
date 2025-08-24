@@ -60,7 +60,7 @@ namespace EvolveThisMatch.Lobby
             _info = GetCanvasGroupController((int)CanvasGroups.Info);
         }
 
-        internal void Show(TomeTemplate template, ProfileSaveData.Tome owned)
+        internal void Show(TomeTemplate template, ItemSaveData.Tome owned)
         {
             if (template == null)
             {

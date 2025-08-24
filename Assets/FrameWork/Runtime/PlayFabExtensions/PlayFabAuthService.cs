@@ -265,7 +265,9 @@ namespace FrameWork.PlayFabExtensions
             PlayFabId = result.PlayFabId;
             SessionTicket = result.SessionTicket;
 
-            OnLoginSuccess?.Invoke(result);
+            TitleDataManager.LoadTitleData(() => {
+                OnLoginSuccess?.Invoke(result);
+            });
         }
 
         private void HandlePlayFabError(PlayFabError error)

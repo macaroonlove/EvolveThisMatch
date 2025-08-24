@@ -90,7 +90,7 @@ namespace EvolveThisMatch.Lobby
             Show(true);
         }
 
-        private void ChangeAgent(AgentTemplate template, ProfileSaveData.Agent owned)
+        private void ChangeAgent(AgentTemplate template, AgentSaveData.Agent owned)
         {
             _agentId = template.id;
         }

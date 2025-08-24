@@ -12,11 +12,15 @@ namespace EvolveThisMatch.Save
     public class SaveManager : PersistentSingleton<SaveManager>
     {
         [SerializeField] private ProfileSaveDataTemplate _profileData;
+        [SerializeField] private AgentSaveDataTemplate _agentData;
+        [SerializeField] private ItemSaveDataTemplate _itemData;
         [SerializeField] private FormationSaveDataTemplate _formationData;
         [SerializeField] private DepartmentSaveDataTemplate _departmentData;
         [SerializeField] private ShopSaveDataTemplate _shopData;
 
         public ProfileSaveDataTemplate profileData => _profileData;
+        public AgentSaveDataTemplate agentData => _agentData;
+        public ItemSaveDataTemplate itemData => _itemData;
         public FormationSaveDataTemplate formationData => _formationData;
         public DepartmentSaveDataTemplate departmentData => _departmentData;
         public ShopSaveDataTemplate shopData => _shopData;
@@ -27,11 +31,15 @@ namespace EvolveThisMatch.Save
             GameSettingsManager.RestoreSettings();
 
             // 데이터 지우기
-            profileData.Clear();
-            formationData.Clear();
-            departmentData.Clear();
-            shopData.Clear();
+            _profileData.Clear();
+            _agentData.Clear();
+            _itemData.Clear();
+            _formationData.Clear();
+            _departmentData.Clear();
+            _shopData.Clear();
         }
+
+        #region 데이터 모음
 
         #region Profile Data
         public async UniTask<bool> Load_ProfileData()
@@ -40,16 +48,16 @@ namespace EvolveThisMatch.Save
 
             if (PlayFabAuthService.IsLoginState)
             {
-                isSuccess = await LoadPlayFab(profileData, "ProfileData");
+                isSuccess = await LoadPlayFab(_profileData, "ProfileData");
             }
             else
             {
-                isSuccess = LoadPlayerPrefs(profileData, "ProfileData");
+                isSuccess = LoadPlayerPrefs(_profileData, "ProfileData");
             }
 
             if (isSuccess == false)
             {
-                profileData.SetDefaultValues();
+                _profileData.SetDefaultValues();
                 await Save_ProfileData();
             }
 
@@ -60,11 +68,11 @@ namespace EvolveThisMatch.Save
         {
             if (PlayFabAuthService.IsLoginState)
             {
-                return await SavePlayFab(profileData, "ProfileData");
+                return await SavePlayFab(_profileData, "ProfileData");
             }
             else
             {
-                return SavePlayerPrefs(profileData, "ProfileData");
+                return SavePlayerPrefs(_profileData, "ProfileData");
             }
         }
 
@@ -82,51 +90,128 @@ namespace EvolveThisMatch.Save
         }
         #endregion
 
-        #region Formation Data
-        public async UniTask<bool> Load_FormationData()
+        #region Agent Data
+        public async UniTask<bool> Load_AgentData()
+        {
+            bool isSuccess;
+            
+            if (PlayFabAuthService.IsLoginState)
+            {
+                isSuccess = await LoadPlayFab(_agentData, "AgentData");
+            }
+            else
+            {
+                isSuccess = LoadPlayerPrefs(_agentData, "AgentData");
+            }
+            
+            if (isSuccess == false)
+            {
+                _agentData.SetDefaultValues();
+                await Save_AgentData();
+            }
+            
+            return true;
+        }
+
+        public async UniTask<bool> Save_AgentData()
+        {
+            if (PlayFabAuthService.IsLoginState)
+            {
+                return await SavePlayFab(_agentData, "AgentData");
+            }
+            else
+            {
+                return SavePlayerPrefs(_agentData, "AgentData");
+            }
+        }
+
+        [ContextMenu("유닛 데이터 초기화")]
+        public async UniTask<bool> Clear_AgentData()
+        {
+            if (PlayFabAuthService.IsLoginState)
+            {
+                return await ClearPlayFab("AgentData");
+            }
+            else
+            {
+                return ClearPlayerPrefs("AgentData");
+            }
+        }
+        #endregion
+
+        #region Item Data
+        public async UniTask<bool> Load_ItemData()
         {
             bool isSuccess;
 
             if (PlayFabAuthService.IsLoginState)
             {
-                isSuccess = await LoadPlayFab(formationData, "FormationData");
+                isSuccess = await LoadPlayFab(_itemData, "ItemData");
             }
             else
             {
-                isSuccess = LoadPlayerPrefs(formationData, "FormationData");
+                isSuccess = LoadPlayerPrefs(_itemData, "ItemData");
             }
 
             if (isSuccess == false)
             {
-                formationData.SetDefaultValues();
-                await Save_FormationData();
+                _itemData.SetDefaultValues();
+                await Save_ItemData();
             }
 
             return true;
         }
 
-        public async UniTask<bool> Save_FormationData()
+        public async UniTask<bool> Save_ItemData()
         {
             if (PlayFabAuthService.IsLoginState)
             {
-                return await SavePlayFab(formationData, "FormationData");
+                return await SavePlayFab(_itemData, "ItemData");
             }
             else
             {
-                return SavePlayerPrefs(formationData, "FormationData");
+                return SavePlayerPrefs(_itemData, "ItemData");
             }
         }
 
-        public async UniTask<bool> Clear_FormationData()
+        [ContextMenu("아이템 데이터 초기화")]
+        public async UniTask<bool> Clear_ItemData()
         {
             if (PlayFabAuthService.IsLoginState)
             {
-                return await ClearPlayFab("FormationData");
+                return await ClearPlayFab("ItemData");
             }
             else
             {
-                return ClearPlayerPrefs("FormationData");
+                return ClearPlayerPrefs("ItemData");
             }
+        }
+        #endregion
+
+        #region Formation Data
+        public bool Load_FormationData()
+        {
+            bool isSuccess;
+
+            isSuccess = LoadPlayerPrefs(_formationData, "FormationData");
+
+            if (isSuccess == false)
+            {
+                _formationData.SetDefaultValues();
+                Save_FormationData();
+            }
+
+            return true;
+        }
+
+        public bool Save_FormationData()
+        {
+            return SavePlayerPrefs(_formationData, "FormationData");
+        }
+
+        public bool Clear_FormationData()
+        {
+            return ClearPlayerPrefs("FormationData");
         }
         #endregion
 
@@ -137,16 +222,16 @@ namespace EvolveThisMatch.Save
 
             if (PlayFabAuthService.IsLoginState)
             {
-                isSuccess = await LoadPlayFab(departmentData, "DepartmentData");
+                isSuccess = await LoadPlayFab(_departmentData, "DepartmentData");
             }
             else
             {
-                isSuccess = LoadPlayerPrefs(departmentData, "DepartmentData");
+                isSuccess = LoadPlayerPrefs(_departmentData, "DepartmentData");
             }
 
             if (isSuccess == false)
             {
-                departmentData.SetDefaultValues();
+                _departmentData.SetDefaultValues();
                 await Save_DepartmentData();
             }
 
@@ -157,11 +242,11 @@ namespace EvolveThisMatch.Save
         {
             if (PlayFabAuthService.IsLoginState)
             {
-                return await SavePlayFab(departmentData, "DepartmentData");
+                return await SavePlayFab(_departmentData, "DepartmentData");
             }
             else
             {
-                return SavePlayerPrefs(departmentData, "DepartmentData");
+                return SavePlayerPrefs(_departmentData, "DepartmentData");
             }
         }
 
@@ -186,16 +271,16 @@ namespace EvolveThisMatch.Save
 
             if (PlayFabAuthService.IsLoginState)
             {
-                isSuccess = await LoadPlayFab(shopData, "ShopData");
+                isSuccess = await LoadPlayFab(_shopData, "ShopData");
             }
             else
             {
-                isSuccess = LoadPlayerPrefs(shopData, "ShopData");
+                isSuccess = LoadPlayerPrefs(_shopData, "ShopData");
             }
 
             if (isSuccess == false)
             {
-                shopData.SetDefaultValues();
+                _shopData.SetDefaultValues();
                 await Save_ShopData();
             }
 
@@ -206,11 +291,11 @@ namespace EvolveThisMatch.Save
         {
             if (PlayFabAuthService.IsLoginState)
             {
-                return await SavePlayFab(shopData, "ShopData");
+                return await SavePlayFab(_shopData, "ShopData");
             }
             else
             {
-                return SavePlayerPrefs(shopData, "ShopData");
+                return SavePlayerPrefs(_shopData, "ShopData");
             }
         }
 
@@ -228,6 +313,8 @@ namespace EvolveThisMatch.Save
         }
         #endregion
 
+        #endregion
+
         #region Load
         private async UniTask<bool> LoadPlayFab(SaveDataTemplate data, string key)
         {
@@ -240,14 +327,14 @@ namespace EvolveThisMatch.Save
             }, result =>
             {
                 bool isSuccess = false;
-
+                
                 if (result.Data != null && result.Data.ContainsKey(key))
                 {
                     isSuccess = data.Load(result.Data[key].Value);
                 }
                 else
                 {
-                    isSuccess = true;
+                    isSuccess = false;
                 }
                 tcs.TrySetResult(isSuccess);
             }, error =>

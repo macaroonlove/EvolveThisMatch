@@ -39,9 +39,11 @@ namespace EvolveThisMatch.Save
             if (autoLoadSaveData)
             {
                 await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
-                await SaveManager.Instance.Load_ProfileData();
-                await SaveManager.Instance.Load_DepartmentData();
-                await SaveManager.Instance.Load_ShopData();
+                _ = SaveManager.Instance.Load_ProfileData();
+                _ = SaveManager.Instance.Load_AgentData();
+                _ = SaveManager.Instance.Load_ItemData();
+                _ = SaveManager.Instance.Load_DepartmentData();
+                _ = SaveManager.Instance.Load_ShopData();
             }
         }
     }

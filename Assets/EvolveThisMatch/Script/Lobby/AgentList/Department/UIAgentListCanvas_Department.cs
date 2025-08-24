@@ -7,7 +7,7 @@ namespace EvolveThisMatch.Lobby
 {
     public class UIAgentListCanvas_Department : UIAgentListCanvas
     {
-        internal override void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal override void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
         {
             base.Initialize(action);
         }

@@ -101,7 +101,7 @@ namespace EvolveThisMatch.Lobby
             _departmentItems[0].SelectItem();
 
             _overUICamera.SetActive(true);
-            Debug.Log(NetworkTimeManager.Instance.GetUtcNow());
+
             base.Show(isForce);
         }
 
@@ -183,7 +183,7 @@ namespace EvolveThisMatch.Lobby
                 var job = departmentData.GetActiveJob(i);
                 var item = template.craftItems[job.craftItemId];
 
-                float agentLevel = GameDataManager.Instance.profileSaveData.GetAgent(job.unitId).level;
+                float agentLevel = SaveManager.Instance.agentData.GetAgent(job.unitId).level;
                 float craftSpeed = agentLevel * 0.01f + levelData.speed;
                 float timePerItem = item.craftTime / craftSpeed;
 

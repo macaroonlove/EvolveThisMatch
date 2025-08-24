@@ -9,10 +9,6 @@ namespace EvolveThisMatch.Core
 {
     public class GameDataManager : PersistentSingleton<GameDataManager>
     {
-        [Header("SaveData")]
-        [SerializeField] private ProfileSaveDataTemplate _profileSaveData;
-        [SerializeField] private FormationSaveDataTemplate _formationSaveData;
-
         [Header("Library")]
         [SerializeField] private BattleDataTemplate _battleData;
         [SerializeField] private AgentLibraryTemplate _agentLibrary;
@@ -23,7 +19,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] private ArtifactLibraryTemplate _artifactLibrary;
         [SerializeField] private TomeLibraryTemplate _tomeLibrary;
 
-        public ProfileSaveDataTemplate profileSaveData => _profileSaveData;
         public BattleDataTemplate battleData => _battleData;
 
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
@@ -54,24 +49,6 @@ namespace EvolveThisMatch.Core
         {
             _agentRarityLibrary.Initialize();
         }
-
-        #region 배치 상태
-        public async UniTask<FormationSaveDataTemplate> GetFormationSaveData()
-        {
-            if (_formationSaveData.isLoaded == false)
-            {
-                await SaveManager.Instance.Load_FormationData();
-            }
-            return _formationSaveData;
-        }
-
-        public async void SetFormationSaveData(List<FormationSlot> formation)
-        {
-            _formationSaveData.UpdateFormation(formation);
-
-            await SaveManager.Instance.Save_FormationData();
-        }
-        #endregion
 
         #region 등급별 유닛 소환 확률
         public AgentRarityTemplate GetAgentRandomRarity()

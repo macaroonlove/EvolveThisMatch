@@ -35,7 +35,7 @@ namespace EvolveThisMatch.Lobby
         internal int index { get; private set; }
         internal bool isEquip { get; private set; }
         internal TomeTemplate template { get; private set; }
-        internal ProfileSaveData.Tome owned { get; private set; }
+        internal ItemSaveData.Tome owned { get; private set; }
 
         private UnityAction<UITomeListItem> _action;
 
@@ -55,7 +55,7 @@ namespace EvolveThisMatch.Lobby
             _selectDim = GetImage((int)Images.SelectDim);
         }
 
-        internal virtual void Show(TomeTemplate template, ProfileSaveData.Tome owned)
+        internal virtual void Show(TomeTemplate template, ItemSaveData.Tome owned)
         {
             if (owned == null)
             {
@@ -73,7 +73,7 @@ namespace EvolveThisMatch.Lobby
             _level.text = $"Lv. {owned.level}";
 
             int tomeCount = owned.count;
-            int maxTomeCount = GameDataManager.Instance.profileSaveData.GetMaxTomeCountByLevel(owned.level);
+            int maxTomeCount = SaveManager.Instance.itemData.GetMaxTomeCountByLevel(owned.level);
 
             if (maxTomeCount == -1)
             {

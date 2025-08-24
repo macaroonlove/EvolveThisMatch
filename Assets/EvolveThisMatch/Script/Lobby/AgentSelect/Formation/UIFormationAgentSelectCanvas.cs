@@ -1,3 +1,4 @@
+using EvolveThisMatch.Save;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace EvolveThisMatch.Core
         {
             _selectedItems.Clear();
 
-            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
 
             // 중복 제거용 HashSet 추가
             var duplicateTemplates = selectedSlots
@@ -59,7 +60,7 @@ namespace EvolveThisMatch.Core
             _selectedItems.Clear();
             _formationMaxCount = formationMaxCount;
 
-            var ownedAgents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
 
             var agentTemplates = ownedAgents
                 .Select(owned => GameDataManager.Instance.GetAgentTemplateById(owned.id))

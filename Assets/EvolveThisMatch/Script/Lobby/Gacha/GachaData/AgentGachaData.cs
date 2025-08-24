@@ -71,7 +71,7 @@ namespace EvolveThisMatch.Lobby
             {
                 var agent = GetRandomAgent();
                 _gachaList.Add(agent);
-                GameDataManager.Instance.profileSaveData.AddAgent(agent.id);
+                SaveManager.Instance.agentData.AddAgent(agent.id);
             }
 
             _ = SaveManager.Instance.Save_ProfileData();

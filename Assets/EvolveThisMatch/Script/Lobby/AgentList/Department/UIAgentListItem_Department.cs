@@ -27,7 +27,7 @@ namespace EvolveThisMatch.Lobby
         private Image _fullBody;
         private Image _selectDim;
 
-        internal override void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal override void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
         {
             base.Initialize(action);
 
@@ -40,7 +40,7 @@ namespace EvolveThisMatch.Lobby
             _selectDim = GetImage((int)Images.SelectDim);
         }
 
-        internal override void Show(AgentTemplate template, ProfileSaveData.Agent owned)
+        internal override void Show(AgentTemplate template, AgentSaveData.Agent owned)
         {
             if (owned == null)
             {

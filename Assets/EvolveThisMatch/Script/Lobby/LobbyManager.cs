@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Lobby
 
             List<UniTask> tasks = new List<UniTask>();
 
-            var agents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var agents = SaveManager.Instance.agentData.ownedAgents;
             foreach (var agent in agents)
             {
                 var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);

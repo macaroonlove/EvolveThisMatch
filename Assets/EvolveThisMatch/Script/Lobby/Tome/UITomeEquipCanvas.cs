@@ -99,8 +99,9 @@ namespace EvolveThisMatch.Lobby
 
         internal void RegistTomeEquipItem()
         {
-            var ownedTomes = GameDataManager.Instance.profileSaveData.ownedTomes;
-            var equipTomes = GameDataManager.Instance.profileSaveData.equipTomes;
+            var itemData = SaveManager.Instance.itemData;
+            var ownedTomes = itemData.ownedTomes;
+            var equipTomes = itemData.equipTomes;
             int count = _tomeEquipItems.Length;
 
             // 보유한 고서의 아이디
@@ -155,7 +156,7 @@ namespace EvolveThisMatch.Lobby
                 _equipText.text = "반납하기";
                 _equipState = EquipState.Return;
 
-                GameDataManager.Instance.profileSaveData.EquipTome(template.id, _selectedTomeEquipItem.index);
+                SaveManager.Instance.itemData.EquipTome(template.id, _selectedTomeEquipItem.index);
             }
             else if (_equipState == EquipState.Return)
             {
@@ -169,7 +170,7 @@ namespace EvolveThisMatch.Lobby
                 _equipText.text = "대여하기";
                 _equipState = EquipState.Rent;
 
-                GameDataManager.Instance.profileSaveData.EquipTome(-1, _selectedTomeEquipItem.index);
+                SaveManager.Instance.itemData.EquipTome(-1, _selectedTomeEquipItem.index);
             }
 
             await SaveManager.Instance.Save_ProfileData();

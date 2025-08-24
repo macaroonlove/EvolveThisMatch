@@ -71,7 +71,7 @@ namespace EvolveThisMatch.Lobby
                 var skin = GetRandomSkin();
                 _gachaList.Add(skin);
                 var agentTemplate = GameDataManager.Instance.agentSkinTemplates[skin];
-                GameDataManager.Instance.profileSaveData.AddAgentSkin(agentTemplate.id, skin.id);
+                SaveManager.Instance.agentData.AddAgentSkin(agentTemplate.id, skin.id);
             }
 
             _ = SaveManager.Instance.Save_ProfileData();

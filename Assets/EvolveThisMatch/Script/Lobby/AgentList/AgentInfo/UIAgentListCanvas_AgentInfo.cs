@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Lobby
 
         private Transform _orderIcon;
 
-        internal override void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal override void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
         {
             base.Initialize(action);
 

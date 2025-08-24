@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _profileData: {fileID: 11400000, guid: 778655154cf61e7479cef77ac17d8de0, type: 2}
+  _agentData: {fileID: 11400000, guid: d00a8fb403766034fb2a13774772988f, type: 2}
+  _itemData: {fileID: 11400000, guid: b8b72256c03598f41a713ec49453469a, type: 2}
   _formationData: {fileID: 11400000, guid: 6a0a8762cf3dd484bab3c8397df21e11, type: 2}
   _departmentData: {fileID: 11400000, guid: 69d4629cd75811644a0fec7f21fb663f, type: 2}
   _shopData: {fileID: 11400000, guid: b6d00b94dc7a9b246840e97eec477fc8, type: 2}

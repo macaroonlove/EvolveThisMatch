@@ -33,11 +33,11 @@ namespace EvolveThisMatch.Lobby
         private Image _selectDim;
 
         internal ArtifactTemplate template { get; private set; }
-        internal ProfileSaveData.Artifact owned { get; private set; }
+        internal ItemSaveData.Artifact owned { get; private set; }
 
-        private UnityAction<ArtifactTemplate, ProfileSaveData.Artifact> _action;
+        private UnityAction<ArtifactTemplate, ItemSaveData.Artifact> _action;
 
-        internal virtual void Initialize(UnityAction<ArtifactTemplate, ProfileSaveData.Artifact> action = null)
+        internal virtual void Initialize(UnityAction<ArtifactTemplate, ItemSaveData.Artifact> action = null)
         {
             _action = action;
 
@@ -52,7 +52,7 @@ namespace EvolveThisMatch.Lobby
             _selectDim = GetImage((int)Images.SelectDim);
         }
 
-        internal virtual void Show(ArtifactTemplate template, ProfileSaveData.Artifact owned)
+        internal virtual void Show(ArtifactTemplate template, ItemSaveData.Artifact owned)
         {
             if (owned == null)
             {
@@ -70,7 +70,7 @@ namespace EvolveThisMatch.Lobby
             _level.text = $"Lv. {owned.level}";
 
             int artifactCount = owned.count;
-            int maxArtifactCount = GameDataManager.Instance.profileSaveData.GetMaxArtifactCountByLevel(owned.level);
+            int maxArtifactCount = SaveManager.Instance.itemData.GetMaxArtifactCountByLevel(owned.level);
 
             if (maxArtifactCount == -1)
             {

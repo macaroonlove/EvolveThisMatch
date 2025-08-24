@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Save;
 using FrameWork;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace EvolveThisMatch.Core
         {
             List<UniTask> tasks = new List<UniTask>();
 
-            var agents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var agents = SaveManager.Instance.agentData.ownedAgents;
             foreach (var agent in agents)
             {
                 var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
@@ -88,7 +89,7 @@ namespace EvolveThisMatch.Core
 
         private void ReleaseSkinAddressable()
         {
-            var agents = GameDataManager.Instance.profileSaveData.ownedAgents;
+            var agents = SaveManager.Instance.agentData.ownedAgents;
             foreach (var agent in agents)
             {
                 var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);

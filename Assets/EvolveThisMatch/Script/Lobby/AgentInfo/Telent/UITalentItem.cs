@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Lobby
         private CanvasGroupController _empty;
         private UnityAction _action;
 
-        internal ProfileSaveData.Talent talent { get; private set; }
+        internal AgentSaveData.Talent talent { get; private set; }
         internal bool isLock => _toggle.isOn;
 
         protected override void Initialize()
@@ -61,7 +61,7 @@ namespace EvolveThisMatch.Lobby
             _ = SaveManager.Instance.Save_ProfileData();
         }
 
-        internal void Show(ProfileSaveData.Talent talent, UnityAction action)
+        internal void Show(AgentSaveData.Talent talent, UnityAction action)
         {
             this.talent = talent;
             _action = action;

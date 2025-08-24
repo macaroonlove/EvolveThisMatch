@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Lobby
         internal int index { get; private set; }
         internal int listItemIndex { get; private set; }
         internal TomeTemplate template { get; private set; }
-        internal ProfileSaveData.Tome owned { get; private set; }
+        internal ItemSaveData.Tome owned { get; private set; }
 
         private UnityAction<UITomeEquipItem> _action;
 
@@ -43,7 +43,7 @@ namespace EvolveThisMatch.Lobby
             _selectDim = GetImage((int)Images.SelectDim);
         }
 
-        internal virtual void Show(TomeTemplate template, ProfileSaveData.Tome owned, int listItemIndex)
+        internal virtual void Show(TomeTemplate template, ItemSaveData.Tome owned, int listItemIndex)
         {
             this.template = template;
             this.owned = owned;

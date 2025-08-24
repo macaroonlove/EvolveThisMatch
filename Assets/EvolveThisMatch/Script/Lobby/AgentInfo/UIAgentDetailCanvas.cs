@@ -52,15 +52,17 @@ namespace EvolveThisMatch.Lobby
         private UITierUpPanel _tierUpPanel;
         private UITalentPanel _talentPanel;
         private UITalentFilterPanel _talentFileterPanel;
+
         private TextMeshProUGUI _displayName;
         private TextMeshProUGUI _level;
         private Image _fullBody;
-        private CanvasGroupController[] _panels = new CanvasGroupController[6];
-
+        
         private PoolSystem _poolSystem;
         private GameObject _spawnObj;
 
-        private ProfileSaveData.Agent _owned;
+        private CanvasGroupController[] _panels = new CanvasGroupController[6];
+
+        private AgentSaveData.Agent _owned;
         private UnityAction _action;
 
         internal void Initialize(UnityAction action = null)
@@ -104,7 +106,7 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.TalentButton).onClick.AddListener(() => ShowPanel(5));
         }
 
-        internal void Show(AgentTemplate template, ProfileSaveData.Agent owned)
+        internal void Show(AgentTemplate template, AgentSaveData.Agent owned)
         {
             if (owned == null) ShowPanel(0);
 
@@ -135,7 +137,7 @@ namespace EvolveThisMatch.Lobby
             if (owned != null)
             {
                 // 유닛 레벨
-                _level.text = $"Lv. {owned.level} / {GameDataManager.Instance.profileSaveData.GetMaxLevelByTier(owned.tier)}";
+                _level.text = $"Lv. {owned.level} / {SaveManager.Instance.agentData.GetMaxLevelByTier(owned.tier)}";
 
                 // 유닛 티어
                 _tierGroup.Show(owned.tier);
@@ -147,13 +149,13 @@ namespace EvolveThisMatch.Lobby
                 _skillCanvas.ShowSkill(template);
 
                 // 레벨업 패널
-                _levelupPanel.Show(owned, () => { ReShowAndSave(template, owned); });
+                _levelupPanel.Show(owned, () => { ReShow(template, owned); });
 
                 // 승격 패널
-                _tierUpPanel.Show(owned, () => { ReShowAndSave(template, owned); });
+                _tierUpPanel.Show(owned, () => { ReShow(template, owned); });
 
                 // 재능 패널
-                _talentPanel.Show(owned, () => { Save(); _talentFileterPanel.Hide(true); }, () => { _talentFileterPanel.Show(); });
+                _talentPanel.Show(owned, () => { _talentFileterPanel.Hide(true); }, () => { _talentFileterPanel.Show(); });
             }
         }
 
@@ -181,21 +183,12 @@ namespace EvolveThisMatch.Lobby
                 _poolSystem.DeSpawn(_spawnObj);
                 _spawnObj = null;
             }
-
-
         }
 
-        private void ReShowAndSave(AgentTemplate template, ProfileSaveData.Agent owned)
+        private void ReShow(AgentTemplate template, AgentSaveData.Agent owned)
         {
             Show(template, owned);
             _action?.Invoke();
-
-            Save();
-        }
-
-        private void Save()
-        {
-            _ = SaveManager.Instance.Save_ProfileData();
         }
     }
 }

@@ -42,9 +42,10 @@ namespace EvolveThisMatch.Core
         }
 
         [ContextMenu("√ ±‚»≠")]
-        public async void Show()
+        public void Show()
         {
-            var formationSaveData = await GameDataManager.Instance.GetFormationSaveData();
+            var formationSaveData = SaveManager.Instance.formationData;
+            if (!formationSaveData.isLoaded) SaveManager.Instance.Load_FormationData();
 
             var formationSlots = formationSaveData.formation;
             int formationCount = formationSlots.Count;
@@ -166,7 +167,8 @@ namespace EvolveThisMatch.Core
                 }
             }
 
-            GameDataManager.Instance.SetFormationSaveData(formation);
+            SaveManager.Instance.formationData.UpdateFormation(formation);
+            SaveManager.Instance.Save_FormationData();
 
             Hide();
         }

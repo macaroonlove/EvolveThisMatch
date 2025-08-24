@@ -21,7 +21,7 @@ namespace EvolveThisMatch.Lobby
             _artifactListCanvas = GetComponentInChildren<UIArtifactListCanvas>();
             _artifactInfoCanvas = GetComponentInChildren<UIArtifactInfoCanvas>();
 
-            _artifactListCanvas.Initialize((ArtifactTemplate template, ProfileSaveData.Artifact owned) => _artifactInfoCanvas.Show(template, owned));
+            _artifactListCanvas.Initialize((ArtifactTemplate template, ItemSaveData.Artifact owned) => _artifactInfoCanvas.Show(template, owned));
             _artifactInfoCanvas.Initialize(_artifactListCanvas.RegistArtifactListItem);
 
             BindButton(typeof(Buttons));

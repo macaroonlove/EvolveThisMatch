@@ -9,16 +9,16 @@ namespace EvolveThisMatch.Lobby
     public abstract class UIAgentListItem : UIBase, IPointerClickHandler
     {
         internal AgentTemplate template { get; private set; }
-        internal ProfileSaveData.Agent owned { get; private set; }
+        internal AgentSaveData.Agent owned { get; private set; }
 
-        private UnityAction<AgentTemplate, ProfileSaveData.Agent> _action;
+        private UnityAction<AgentTemplate, AgentSaveData.Agent> _action;
 
-        internal virtual void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal virtual void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
         {
             _action = action;
         }
 
-        internal virtual void Show(AgentTemplate template, ProfileSaveData.Agent owned)
+        internal virtual void Show(AgentTemplate template, AgentSaveData.Agent owned)
         {
             this.template = template;
             this.owned = owned;

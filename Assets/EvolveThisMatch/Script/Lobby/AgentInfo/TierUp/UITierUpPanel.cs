@@ -37,8 +37,8 @@ namespace EvolveThisMatch.Lobby
         private UIAgentTier[] _tierGroups;
         private UITierAdvantageItem[] _tierAdvantageItems;
 
-        private ProfileSaveDataTemplate _profileData;
-        private ProfileSaveData.Agent _owned;
+        private AgentSaveDataTemplate _agentData;
+        private AgentSaveData.Agent _owned;
         private UnityAction _reShow;
 
         protected override void Initialize()
@@ -59,11 +59,11 @@ namespace EvolveThisMatch.Lobby
             _tierUpButton.onClick.AddListener(TierUp);
         }
 
-        internal void Show(ProfileSaveData.Agent owned, UnityAction reShow)
+        internal void Show(AgentSaveData.Agent owned, UnityAction reShow)
         {
             _owned = owned;
             _reShow = reShow;
-            if (_profileData == null) _profileData = GameDataManager.Instance.profileSaveData;
+            if (_agentData == null) _agentData = SaveManager.Instance.agentData;
 
             if (_owned == null)
             {
@@ -82,7 +82,7 @@ namespace EvolveThisMatch.Lobby
 
             int tier = owned.tier;
             int unitCount = owned.unitCount;
-            int maxUnitCount = GameDataManager.Instance.profileSaveData.GetMaxUnitCountByTier(tier);
+            int maxUnitCount = SaveManager.Instance.agentData.GetMaxUnitCountByTier(tier);
 
             if (maxUnitCount == -1)
             {
@@ -111,12 +111,12 @@ namespace EvolveThisMatch.Lobby
                 _tierAdvantageItems[i].ShowItem(i < tier);
             }
 
-            _tierUpButton.interactable = _profileData.GetTierUpAbleUnit(_owned.id);
+            _tierUpButton.interactable = _agentData.GetTierUpAbleUnit(_owned.id);
         }
 
         private void TierUp()
         {
-            if (_profileData.TierUpAgent(_owned.id))
+            if (_agentData.TierUpAgent(_owned.id))
             {
                 _reShow?.Invoke();
             }

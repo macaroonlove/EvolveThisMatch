@@ -66,7 +66,7 @@ namespace EvolveThisMatch.Lobby
             _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
         }
 
-        internal void Show(ProfileSaveData.Agent owned, UnityAction action, UnityAction openFilterPanel)
+        internal void Show(AgentSaveData.Agent owned, UnityAction action, UnityAction openFilterPanel)
         {
             if (owned == null) return;
 

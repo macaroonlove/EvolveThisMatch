@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Core
         private List<GlobalEvent> _globalEvents = new List<GlobalEvent>();
         private List<UnitEvent> _unitEvents = new List<UnitEvent>();
 
-        private Dictionary<int, ProfileSaveData.Artifact> _ownedArtifactDic;
+        private Dictionary<int, ItemSaveData.Artifact> _ownedArtifactDic;
 
 #if UNITY_EDITOR
         [Header("Debug")]
@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Core
             await UniTask.WaitUntil(() => SaveManager.Instance.profileData.isLoaded);
 
             var artifactTemplates = GameDataManager.Instance.artifactTemplates.ToList();
-            var ownedArtifacts = GameDataManager.Instance.profileSaveData.ownedArtifacts;
+            var ownedArtifacts = SaveManager.Instance.itemData.ownedArtifacts;
             _ownedArtifactDic = ownedArtifacts.ToDictionary(a => a.id);
 
             foreach (var owned in ownedArtifacts)

@@ -37,4 +37,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _displayName: "\uCC9C\uC7A5"
-  _icon: {fileID: 0}
+  _iconText: UnitLimit
+  _icon: {fileID: 21300000, guid: 0abb81b14fabf8448965b65256379cc6, type: 3}
+  _iconBG: {fileID: 0}

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Save;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace EvolveThisMatch.Core
         public List<SkinTemplate> skins = new List<SkinTemplate>();
 
         private List<SkinTemplate> _loadedSkins = new List<SkinTemplate>();
-        private int _selectedSkinId => GameDataManager.Instance.profileSaveData.GetSelectedAgentSkinId(id);
+        private int _selectedSkinId => SaveManager.Instance.agentData.GetSelectedAgentSkinId(id);
 
         #region 프로퍼티
         public int id => _id;
@@ -134,7 +135,7 @@ namespace EvolveThisMatch.Core
         #region Load
         public async UniTask LoadAllSkinLobbyTemplate()
         {
-            var skinIds = GameDataManager.Instance.profileSaveData.GetAllAgentSkinId(id);
+            var skinIds = SaveManager.Instance.agentData.GetAllAgentSkinId(id);
 
             var tasks = new UniTask[skinIds.Count];
 

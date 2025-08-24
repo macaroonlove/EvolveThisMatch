@@ -21,9 +21,9 @@ namespace EvolveThisMatch.Lobby
         protected List<UIArtifactListItem> _artifactListItems;
         protected List<ArtifactTemplate> _artifactTemplates;
 
-        protected UnityAction<ArtifactTemplate, ProfileSaveData.Artifact> _action;
+        protected UnityAction<ArtifactTemplate, ItemSaveData.Artifact> _action;
 
-        internal virtual void Initialize(UnityAction<ArtifactTemplate, ProfileSaveData.Artifact> action = null)
+        internal virtual void Initialize(UnityAction<ArtifactTemplate, ItemSaveData.Artifact> action = null)
         {
             _action = action;
 
@@ -62,7 +62,7 @@ namespace EvolveThisMatch.Lobby
             RegistArtifactListItem();
         }
 
-        private void ChangeArtifact(ArtifactTemplate template, ProfileSaveData.Artifact owned)
+        private void ChangeArtifact(ArtifactTemplate template, ItemSaveData.Artifact owned)
         {
             // 모든 아이템 선택 취소
             foreach (var item in _artifactListItems) item.DeSelectItem();
@@ -72,7 +72,7 @@ namespace EvolveThisMatch.Lobby
 
         internal void RegistArtifactListItem()
         {
-            var ownedArtifacts = GameDataManager.Instance.profileSaveData.ownedArtifacts;
+            var ownedArtifacts = SaveManager.Instance.itemData.ownedArtifacts;
             int count = _artifactTemplates.Count;
 
             // 보유한 아티팩트의 아이디

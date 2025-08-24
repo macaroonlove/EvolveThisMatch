@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Lobby
 
         internal override void GainShopItem(int buyCount)
         {
-            SaveManager.Instance.profileData.AddArtifact(_artifactTemplate.id, count * buyCount);
+            SaveManager.Instance.itemData.AddArtifact(_artifactTemplate.id, count * buyCount);
         }
 
 #if UNITY_EDITOR

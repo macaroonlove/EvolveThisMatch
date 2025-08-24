@@ -36,7 +36,7 @@ namespace EvolveThisMatch.Lobby
         private Image _selectDim;
         private UIAgentTier _tierGroup;
 
-        internal override void Initialize(UnityAction<AgentTemplate, ProfileSaveData.Agent> action = null)
+        internal override void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
         {
             base.Initialize(action);
 
@@ -55,7 +55,7 @@ namespace EvolveThisMatch.Lobby
             _tierGroup = GetComponentInChildren<UIAgentTier>();
         }
 
-        internal override void Show(AgentTemplate template, ProfileSaveData.Agent owned)
+        internal override void Show(AgentTemplate template, AgentSaveData.Agent owned)
         {
             base.Show(template, owned);
 
@@ -75,7 +75,7 @@ namespace EvolveThisMatch.Lobby
             }
 
             int unitCount = owned.unitCount;
-            int maxUnitCount = GameDataManager.Instance.profileSaveData.GetMaxUnitCountByTier(owned.tier);
+            int maxUnitCount = SaveManager.Instance.agentData.GetMaxUnitCountByTier(owned.tier);
 
             if (maxUnitCount == -1)
             {

@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Lobby
 
         internal override void GainShopItem(int buyCount)
         {
-            SaveManager.Instance.profileData.AddAgent(_agentTemplate.id, count * buyCount);
+            SaveManager.Instance.agentData.AddAgent(_agentTemplate.id, count * buyCount);
         }
 
 #if UNITY_EDITOR

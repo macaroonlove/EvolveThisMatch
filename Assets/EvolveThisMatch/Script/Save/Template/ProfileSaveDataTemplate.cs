@@ -1,11 +1,6 @@
-using CodeStage.AntiCheat.ObscuredTypes;
-using Cysharp.Threading.Tasks;
 using FrameWork.Editor;
-using PlayFab;
-using PlayFab.ClientModels;
 using ScriptableObjectArchitecture;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace EvolveThisMatch.Save
@@ -19,95 +14,40 @@ namespace EvolveThisMatch.Save
         public bool isClearTutorial;
 
         [Tooltip("골드")]
-        public ObscuredInt gold;
+        public int gold;
 
-        [Tooltip("골드")]
-        public ObscuredInt essence;
+        [Tooltip("세계석")]
+        public int essence;
 
-        [Tooltip("골드")]
-        public ObscuredInt loot;
+        [Tooltip("전리품")]
+        public int loot;
 
-        [Tooltip("보유하고 있는 아군 유닛들")]
-        public List<Agent> ownedAgents = new List<Agent>();
+        [Tooltip("행동력")]
+        public int action;
 
-        [Tooltip("보유하고 있는 아티팩트들")]
-        public List<Artifact> ownedArtifacts = new List<Artifact>();
+        [Tooltip("일반 유닛 책갈피")]
+        public int defaultUnitBookmark;
 
-        [Tooltip("보유하고 있는 고서들")]
-        public List<Tome> ownedTomes = new List<Tome>();
-        public int[] equipTomes = new int[] { -1, -1, -1 };
+        [Tooltip("픽업 유닛 책갈피")]
+        public int pickUpUnitBookmark;
 
-        #region 데이터 모델
-        #region 유닛
-        [Serializable]
-        public class Agent
-        {
-            public int id;
-            public int unitCount;
-            public int tier;
-            public int exp;
-            public int level;
+        [Tooltip("찢어진 책 조각")]
+        public int bookFragment;
 
-            public Talent[] talent;
+        [Tooltip("픽업 유닛 책갈피")]
+        public int unitLimit;
 
-            public int selectedSkinId;
-            public List<int> ownedSkinIds = new List<int>() { 0 };
+        [Tooltip("말캉 버터")]
+        public int butter;
+        [Tooltip("갈빗살 꼬치")]
+        public int skewers;
+        [Tooltip("골수 스튜")]
+        public int stew;
+        [Tooltip("하트빔 스테이크")]
+        public int steak;
 
-            public Agent(int id)
-            {
-                this.id = id;
-                this.unitCount = 0;
-                this.tier = 0;
-                this.exp = 0;
-                this.level = 1;
-                this.selectedSkinId = 0;
-                talent = new Talent[5];
-            }
-        }
-
-        [Serializable]
-        public class Talent
-        {
-            public int id = -1;
-            public int value;
-            public bool isLock;
-        }
-        #endregion
-
-        #region 아티팩트
-        [Serializable]
-        public class Artifact
-        {
-            public int id;
-            public int count;
-            public int level;
-
-            public Artifact(int id)
-            {
-                this.id = id;
-                this.count = 0;
-                this.level = 1;
-            }
-        }
-        #endregion
-
-        #region 고서
-        [Serializable]
-        public class Tome
-        {
-            public int id;
-            public int count;
-            public int level;
-
-            public Tome(int id)
-            {
-                this.id = id;
-                this.count = 0;
-                this.level = 1;
-            }
-        }
-        #endregion
-        #endregion
+        [Tooltip("세계의 흔적")]
+        public int powder;
     }
 
     [CreateAssetMenu(menuName = "Templates/SaveData/ProfileSaveData", fileName = "ProfileSaveData", order = 0)]
@@ -115,47 +55,35 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private ProfileSaveData _data;
 
-        [Header("Variable 연동")]
+        [Header("기본")]
         [SerializeField] private ObscuredIntVariable _goldVariable;
         [SerializeField] private ObscuredIntVariable _essenceVariable;
         [SerializeField] private ObscuredIntVariable _lootVariable;
+        [SerializeField] private ObscuredIntVariable _actionVariable;
+
+        [Header("뽑기")]
+        [SerializeField] private ObscuredIntVariable _defaultUnitBookmarkVariable;
+        [SerializeField] private ObscuredIntVariable _pickUpUnitBookmarkVariable;
+        [SerializeField] private ObscuredIntVariable _bookFragmentVariable;
+        [SerializeField] private ObscuredIntVariable _unitLimitVariable;
+
+        [Header("부서_식품")]
+        [SerializeField] private ObscuredIntVariable _butterVariable;
+        [SerializeField] private ObscuredIntVariable _skewersVariable;
+        [SerializeField] private ObscuredIntVariable _stewVariable;
+        [SerializeField] private ObscuredIntVariable _steakVariable;
+
+        [Header("부서_가공")]
+        [SerializeField] private ObscuredIntVariable _powderVariable;
 
         public bool isLoaded { get; private set; }
 
         public string displayName { get => _data.displayName; set => _data.displayName = value; }
         public bool isClearTutorial { get => _data.isClearTutorial; set => _data.isClearTutorial = value; }
 
-        public List<ProfileSaveData.Agent> ownedAgents => _data.ownedAgents;
-        public List<ProfileSaveData.Artifact> ownedArtifacts => _data.ownedArtifacts;
-        public List<ProfileSaveData.Tome> ownedTomes => _data.ownedTomes;
-        public int[] equipTomes => _data.equipTomes;
-
         public override void SetDefaultValues()
         {
             _data = new ProfileSaveData();
-
-            // 초기 캐릭터 추가
-            AddAgent(0);
-            AddAgent(1);
-            AddAgent(2);
-            AddAgent(3);
-            AddAgent(4);
-            AddAgent(5);
-
-            // 임시 아티팩트 추가
-            for (int i = 0; i < 21; i++)
-            {
-                AddArtifact(i);
-            }
-
-            // 임시 고서 추가
-            for (int i = 0; i < 4; i++)
-            {
-                AddTome(i);
-            }
-
-            // 초기 골드 추가
-            _data.gold = 100;
 
             isLoaded = true;
         }
@@ -166,11 +94,28 @@ namespace EvolveThisMatch.Save
 
             if (_data != null)
             {
-                isLoaded = _data.ownedAgents.Count > 0;
+                isLoaded = true;
 
+                // 기본
                 _goldVariable.Value = _data.gold;
                 _essenceVariable.Value = _data.essence;
                 _lootVariable.Value = _data.loot;
+                _actionVariable.Value = _data.action;
+
+                // 뽑기
+                _defaultUnitBookmarkVariable.Value = _data.defaultUnitBookmark;
+                _pickUpUnitBookmarkVariable.Value = _data.pickUpUnitBookmark;
+                _bookFragmentVariable.Value = _data.bookFragment;
+                _unitLimitVariable.Value = _data.unitLimit;
+
+                // 식품부
+                _butterVariable.Value = _data.butter;
+                _skewersVariable.Value = _data.skewers;
+                _stewVariable.Value = _data.stew;
+                _steakVariable.Value = _data.steak;
+
+                // 가공부
+                _powderVariable.Value = _data.powder;
             }
 
             return isLoaded;
@@ -180,9 +125,27 @@ namespace EvolveThisMatch.Save
         {
             if (_data == null) return null;
 
+            // 기본
             _data.gold = _goldVariable.Value;
             _data.essence = _essenceVariable.Value;
             _data.loot = _lootVariable.Value;
+
+            _data.action = _actionVariable.Value;
+
+            // 뽑기
+            _data.defaultUnitBookmark = _defaultUnitBookmarkVariable.Value;
+            _data.pickUpUnitBookmark = _pickUpUnitBookmarkVariable.Value;
+            _data.bookFragment = _bookFragmentVariable.Value;
+            _data.unitLimit = _unitLimitVariable.Value;
+
+            // 식품부
+            _data.butter = _butterVariable.Value;
+            _data.skewers = _skewersVariable.Value;
+            _data.stew = _stewVariable.Value;
+            _data.steak = _steakVariable.Value;
+
+            // 가공부
+            _data.powder = _powderVariable.Value;
 
             return JsonUtility.ToJson(_data);
         }
@@ -192,464 +155,5 @@ namespace EvolveThisMatch.Save
             _data = null;
             isLoaded = false;
         }
-
-        #region 유닛
-        /// <summary>
-        /// 유닛 추가
-        /// </summary>
-        public void AddAgent(int id, int count = 1)
-        {
-            if (count <= 0) return;
-
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            // 유닛이 없었다면 유닛 추가
-            if (modifyUnit == null)
-            {
-                var newUnit = new ProfileSaveData.Agent(id);
-                newUnit.unitCount = count;
-                _data.ownedAgents.Add(newUnit);
-            }
-            // 유닛이 있었다면 유닛의 개수 추가
-            else
-            {
-                modifyUnit.unitCount += count;
-            }
-        }
-
-        //        public async UniTask<bool> AddAgent(int id, int count = 1)
-        //        {
-        //            if (count <= 0) return false;
-
-        //            var request = new ExecuteCloudScriptRequest
-        //            {
-        //                FunctionName = "AddAgent",
-        //                FunctionParameter = new { id = $"agent_{id}", count = count },
-        //                GeneratePlayStreamEvent = true
-        //            };
-
-        //            var tcs = new UniTaskCompletionSource<bool>();
-
-        //            PlayFabClientAPI.ExecuteCloudScript(request,
-        //                result =>
-        //                {
-        //                    if (result.Error != null)
-        //                    {
-        //#if UNITY_EDITOR
-        //                        // 서버쪽 CloudScript 에러
-        //                        Debug.LogError($"CloudScript error: {result.Error.Message}");
-        //#endif
-        //                        tcs.TrySetResult(false);
-        //                    }
-        //                    else
-        //                    {
-        //                        tcs.TrySetResult(true);
-        //                    }
-        //                }, error =>
-        //                {
-        //#if UNITY_EDITOR
-        //                    // 클라이언트 -> 서버 통신 에러
-        //                    Debug.LogError($"ExecuteCloudScript failed: {error.GenerateErrorReport()}");
-        //#endif
-        //                    tcs.TrySetResult(false);
-        //                });
-
-        //            return await tcs.Task;
-        //        }
-
-        #region 스킨
-        /// <summary>
-        /// 스킨 추가 (보유 중인 유닛만 스킨 획득 가능)
-        /// </summary>
-        public void AddAgentSkin(int agentId, int skinId)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, agentId);
-
-            // 유닛이 있다면 스킨 추가
-            if (modifyUnit != null)
-            {
-                if (modifyUnit.ownedSkinIds.Contains(skinId))
-                {
-                    modifyUnit.ownedSkinIds.Add(skinId);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 스킨을 보유하고 있는지
-        /// </summary>
-        public bool IsOwnedAgentSkin(int agentId, int skinId)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, agentId);
-
-            if (modifyUnit != null)
-            {
-                if (skinId == 0) return true;
-
-                return modifyUnit.ownedSkinIds.Contains(skinId);
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 현재 유닛의 모든 스킨ID 받아오기
-        /// </summary>
-        public List<int> GetAllAgentSkinId(int agentId)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, agentId);
-
-            if (modifyUnit != null)
-            {
-                return modifyUnit.ownedSkinIds;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// 현재 유닛의 선택된 스킨ID 받아오기
-        /// </summary>
-        public int GetSelectedAgentSkinId(int agentId)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, agentId);
-
-            if (modifyUnit != null)
-            {
-                return modifyUnit.selectedSkinId;
-            }
-
-            return -1;
-        }
-        #endregion
-
-        #region 유닛 레벨업
-        /// <summary>
-        /// 티어에 따라 제한되는 최대 레벨
-        /// </summary>
-        private static readonly int[] _agentMaxLevelPerTier = { 50, 70, 100, 120, 150, 180 }; //, 210, 240, 270, 300, 330
-
-        /// <summary>
-        /// 유닛 레벨업
-        /// </summary>
-        public bool LevelUpAgent(int id, int gainedExp)
-        {
-            var unit = FindAgent(_data.ownedAgents, id);
-            if (unit == null)
-                return false;
-
-            int maxLevel = _agentMaxLevelPerTier[unit.tier];
-            bool leveledUp = false;
-
-            unit.exp += gainedExp;
-
-            while (unit.level < maxLevel)
-            {
-                int requiredExp = GetRequiredExpForLevel(unit.level);
-                if (unit.exp >= requiredExp)
-                {
-                    unit.exp -= requiredExp;
-                    unit.level++;
-                    leveledUp = true;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return leveledUp;
-        }
-
-        /// <summary>
-        /// 현재 레벨 기준 필요한 경험치 반환
-        /// </summary>
-        public int GetRequiredExpForLevel(int level)
-        {
-            if (level <= 0) return 0;
-
-            const double baseExp = 450.0;
-            const double growthRate = 1.09;
-
-            return (int)Math.Round(baseExp * Math.Pow(growthRate, level - 1));
-        }
-
-        /// <summary>
-        /// 레벨업이 가능한지 여부
-        /// </summary>
-        public bool CanLevelUp(int id)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            if (modifyUnit == null)
-                return false;
-
-            int maxLevel = GetMaxLevelByTier(modifyUnit.tier);
-
-            if (modifyUnit.level >= maxLevel)
-                return false;
-
-            int requiredExp = GetRequiredExpForLevel(modifyUnit.level);
-
-            return modifyUnit.exp >= requiredExp;
-        }
-
-        /// <summary>
-        /// 해당 티어에서의 최대 레벨 반환
-        /// </summary>
-        public int GetMaxLevelByTier(int tier)
-        {
-            if (tier < 0 || tier >= _agentMaxLevelPerTier.Length)
-                return _agentMaxLevelPerTier[_agentMaxLevelPerTier.Length - 1];
-
-            return _agentMaxLevelPerTier[tier];
-        }
-        #endregion
-
-        #region 유닛 승격
-        /// <summary>
-        /// 유닛이 승격하는데 요구하는 개수
-        /// </summary>
-        private static readonly ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10 }; // , 15, 30, 50, 90, 150
-
-        /// <summary>
-        /// 유닛 승격
-        /// </summary>
-        public bool TierUpAgent(int id)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            // 유닛이 있다면 && 최대 티어가 아니라면
-            if (modifyUnit != null && modifyUnit.tier < _agentTierUpRequirements.Length - 1)
-            {
-                int requiredCount = _agentTierUpRequirements[modifyUnit.tier];
-
-                if (modifyUnit.unitCount >= requiredCount)
-                {
-                    modifyUnit.unitCount -= requiredCount;
-                    modifyUnit.tier++;
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 승격 가능한 유닛인지 판별
-        /// </summary>
-        public bool GetTierUpAbleUnit(int id)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            return modifyUnit != null
-                && modifyUnit.tier < _agentTierUpRequirements.Length - 1
-                && modifyUnit.unitCount >= _agentTierUpRequirements[modifyUnit.tier];
-        }
-
-        /// <summary>
-        /// 유닛의 격에 따른 최대 유닛 개수 반환
-        /// </summary>
-        public int GetMaxUnitCountByTier(int tier)
-        {
-            if (tier < 0 || tier >= _agentTierUpRequirements.Length)
-                return -1;
-
-            return _agentTierUpRequirements[tier];
-        }
-        #endregion
-
-        #region 유틸리티
-        public ProfileSaveData.Agent GetAgent(int id)
-        {
-            return FindAgent(_data.ownedAgents, id);
-        }
-
-        private ProfileSaveData.Agent FindAgent(List<ProfileSaveData.Agent> agents, int agentId)
-        {
-            for (int i = 0; i < agents.Count; i++)
-            {
-                if (agents[i].id == agentId)
-                {
-                    return agents[i];
-                }
-            }
-            return null;
-        }
-        #endregion
-        #endregion
-
-        #region 아티팩트
-        /// <summary>
-        /// 아티팩트 추가
-        /// </summary>
-        public void AddArtifact(int id, int count = 1)
-        {
-            if (count <= 0) return;
-
-            var modifyArtifact = FindArtifact(_data.ownedArtifacts, id);
-
-            // 아티팩트가 없었다면 추가
-            if (modifyArtifact == null)
-            {
-                var newArtifact = new ProfileSaveData.Artifact(id);
-                newArtifact.count = count;
-                _data.ownedArtifacts.Add(newArtifact);
-            }
-            // 아티팩트가 있었다면 개수 추가
-            else
-            {
-                modifyArtifact.count += count;
-
-                // 레벨업 시도
-                TryLevelupArtifact(modifyArtifact);
-            }
-        }
-
-        #region 레벨업
-        /// <summary>
-        /// 아티팩트가 레벨업하는데 요구하는 개수
-        /// </summary>
-        private static readonly ObscuredInt[] _artifactLevelUpRequirements = { 0, 1, 3, 5, 7, 10, 15, 30, 50, 90, 150 };
-
-        /// <summary>
-        /// 아티팩트 레벨업 시도
-        /// </summary>
-        private bool TryLevelupArtifact(ProfileSaveData.Artifact modifyArtifact)
-        {
-            // 아티팩트가 있다면 && 최고 레벨이 아니라면
-            if (modifyArtifact != null && modifyArtifact.level < _artifactLevelUpRequirements.Length - 1)
-            {
-                int requiredCount = _artifactLevelUpRequirements[modifyArtifact.level];
-
-                if (modifyArtifact.count >= requiredCount)
-                {
-                    modifyArtifact.count -= requiredCount;
-                    modifyArtifact.level++;
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 아티팩트 레벨에 따른 최대 요구 개수 반환
-        /// </summary>
-        public int GetMaxArtifactCountByLevel(int level)
-        {
-            if (level < 0 || level >= _artifactLevelUpRequirements.Length)
-                return -1;
-
-            return _artifactLevelUpRequirements[level];
-        }
-        #endregion
-
-        #region 유틸리티
-        private ProfileSaveData.Artifact FindArtifact(List<ProfileSaveData.Artifact> artifacts, int artifactId)
-        {
-            for (int i = 0; i < artifacts.Count; i++)
-            {
-                if (artifacts[i].id == artifactId)
-                {
-                    return artifacts[i];
-                }
-            }
-            return null;
-        }
-        #endregion
-        #endregion
-
-        #region 고서
-        /// <summary>
-        /// 고서 추가
-        /// </summary>
-        public void AddTome(int id, int count = 1)
-        {
-            if (count <= 0) return;
-
-            var modifyTome = FindTome(_data.ownedTomes, id);
-
-            // 고서가 없었다면 추가
-            if (modifyTome == null)
-            {
-                var newTome = new ProfileSaveData.Tome(id);
-                newTome.count = count;
-                _data.ownedTomes.Add(newTome);
-            }
-            // 고서가 있었다면 개수 추가
-            else
-            {
-                modifyTome.count += count;
-
-                // 레벨업 시도
-                TryLevelupTome(modifyTome);
-            }
-        }
-
-        /// <summary>
-        /// 고서 장착
-        /// </summary>
-        public void EquipTome(int id, int index)
-        {
-            _data.equipTomes[index] = id;
-        }
-
-        #region 레벨업
-        /// <summary>
-        /// 고서가 레벨업하는데 요구하는 개수
-        /// </summary>
-        private static readonly ObscuredInt[] _tomeLevelUpRequirements = { 0, 1, 3, 5, 7, 10, 15, 30, 50, 90, 150 };
-
-        /// <summary>
-        /// 고서 레벨업 시도
-        /// </summary>
-        private bool TryLevelupTome(ProfileSaveData.Tome modifyTome)
-        {
-            // 아티팩트가 있다면 && 최고 레벨이 아니라면
-            if (modifyTome != null && modifyTome.level < _tomeLevelUpRequirements.Length - 1)
-            {
-                int requiredCount = _tomeLevelUpRequirements[modifyTome.level];
-
-                if (modifyTome.count >= requiredCount)
-                {
-                    modifyTome.count -= requiredCount;
-                    modifyTome.level++;
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 아티팩트 레벨에 따른 최대 요구 개수 반환
-        /// </summary>
-        public int GetMaxTomeCountByLevel(int level)
-        {
-            if (level < 0 || level >= _tomeLevelUpRequirements.Length)
-                return -1;
-
-            return _tomeLevelUpRequirements[level];
-        }
-        #endregion
-
-        #region 유틸리티
-        private ProfileSaveData.Tome FindTome(List<ProfileSaveData.Tome> tomes, int tomeId)
-        {
-            for (int i = 0; i < tomes.Count; i++)
-            {
-                if (tomes[i].id == tomeId)
-                {
-                    return tomes[i];
-                }
-            }
-            return null;
-        }
-        #endregion
-        #endregion
     }
 }

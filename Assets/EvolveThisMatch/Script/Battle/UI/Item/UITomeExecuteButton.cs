@@ -45,7 +45,7 @@ namespace EvolveThisMatch.Battle
         private CoinSystem _coinSystem;
         private ActiveItemRangeRenderer _rangeRenderer;
         private TomeTemplate _template;
-        private ProfileSaveData.Tome _owned;
+        private ItemSaveData.Tome _owned;
 
         private int _currentCoin;
         private float _inverseMaxCoolDownTime;
@@ -121,7 +121,7 @@ namespace EvolveThisMatch.Battle
         {
             GetImage((int)Images.Icon).sprite = template.sprite;
 
-            var ownedTomes = GameDataManager.Instance.profileSaveData.ownedTomes;
+            var ownedTomes = SaveManager.Instance.itemData.ownedTomes;
 
             _template = template;
             _owned = ownedTomes.Find(t => t.id == template.id);

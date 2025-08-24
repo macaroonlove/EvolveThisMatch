@@ -2,7 +2,6 @@ using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using TMPro;
-using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -40,7 +39,7 @@ namespace EvolveThisMatch.Lobby
             _icon = GetImage((int)Images.Icon);
         }
 
-        internal void Show(ArtifactTemplate template, ProfileSaveData.Artifact owned)
+        internal void Show(ArtifactTemplate template, ItemSaveData.Artifact owned)
         {
             if (template == null) return;
 
