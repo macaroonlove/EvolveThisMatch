@@ -155,7 +155,7 @@ namespace EvolveThisMatch.Lobby
                 _tierUpPanel.Show(owned, () => { ReShow(template, owned); });
 
                 // 재능 패널
-                _talentPanel.Show(owned, () => { _talentFileterPanel.Hide(true); }, () => { _talentFileterPanel.Show(); });
+                _talentPanel.Show(owned, SaveTalent, () => { _talentFileterPanel.Show(); });
             }
         }
 
@@ -165,7 +165,8 @@ namespace EvolveThisMatch.Lobby
 
             VariableDisplayManager.Instance.HideAll();
 
-            if (i == 5) VariableDisplayManager.Instance.Show(CurrencyType.Powder);
+            if (i == 4) VariableDisplayManager.Instance.Show(CurrencyType.Essence);
+            else if (i == 5) VariableDisplayManager.Instance.Show(CurrencyType.Powder);
 
             for (int j = 0; j < _panels.Length; j++)
             {
@@ -189,6 +190,13 @@ namespace EvolveThisMatch.Lobby
         {
             Show(template, owned);
             _action?.Invoke();
+        }
+
+        private void SaveTalent()
+        {
+            _ = SaveManager.Instance.SaveData(SaveKey.Profile, SaveKey.Agent);
+
+            _talentFileterPanel.Hide(true);
         }
     }
 }

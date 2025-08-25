@@ -74,7 +74,7 @@ namespace EvolveThisMatch.Lobby
                 SaveManager.Instance.agentData.AddAgent(agent.id);
             }
 
-            _ = SaveManager.Instance.Save_ProfileData();
+            _ = SaveManager.Instance.SaveData(SaveKey.Agent, SaveKey.Shop);
 
             _gachaResultCanvas.Show(_gachaList);
         }

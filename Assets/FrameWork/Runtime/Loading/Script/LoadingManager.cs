@@ -52,8 +52,10 @@ namespace FrameWork.Loading
 
         private async Task SaveProfileData(float amount)
         {
-            await SaveManager.Instance.Save_ProfileData();
+            //await SaveManager.Instance.Save_ProfileData();
             UpdateProgress(amount);
+            
+            await Task.CompletedTask;
         }
 
         private async Task SaveMiniGameData(float amount)

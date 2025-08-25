@@ -355,7 +355,7 @@ namespace EvolveThisMatch.Lobby
             tab.Select();
 
             // ¿˙¿Â
-            _ = SaveManager.Instance.Save_ShopData();
+            _ = SaveManager.Instance.SaveData(SaveKey.Shop);
         }
         #endregion
 
@@ -454,8 +454,7 @@ namespace EvolveThisMatch.Lobby
 
                 tab.Select();
 
-                _ = SaveManager.Instance.Save_ShopData();
-                _ = SaveManager.Instance.Save_ProfileData();
+                _ = SaveManager.Instance.SaveData(SaveKey.Profile, SaveKey.Shop);
             }
         }
 

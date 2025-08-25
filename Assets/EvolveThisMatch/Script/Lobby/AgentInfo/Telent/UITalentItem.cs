@@ -58,7 +58,7 @@ namespace EvolveThisMatch.Lobby
             talent.isLock = isOn;
             _action?.Invoke();
 
-            _ = SaveManager.Instance.Save_ProfileData();
+            _ = SaveManager.Instance.SaveData(SaveKey.Agent);
         }
 
         internal void Show(AgentSaveData.Talent talent, UnityAction action)

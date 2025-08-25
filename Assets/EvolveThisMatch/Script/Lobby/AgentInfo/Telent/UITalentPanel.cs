@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
-using FrameWork.UI;
 using FrameWork.UIBinding;
 using System.Collections.Generic;
 using TMPro;
@@ -43,7 +42,7 @@ namespace EvolveThisMatch.Lobby
         private bool _isStopResetting;
         private int _cachedPowderCount;
 
-        protected override async void Initialize()
+        protected override void Initialize()
         {
             _items = GetComponentsInChildren<UITalentItem>();
 
@@ -60,10 +59,6 @@ namespace EvolveThisMatch.Lobby
 
             _changeTalentButton.onClick.AddListener(ChangeTalent);
             _openTalentFilterButton.onClick.AddListener(() => _openFilterPanel?.Invoke());
-
-            await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
-
-            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
         }
 
         internal void Show(AgentSaveData.Agent owned, UnityAction action, UnityAction openFilterPanel)
@@ -83,21 +78,18 @@ namespace EvolveThisMatch.Lobby
 
             for (int i = 0; i < _items.Length; i++)
             {
-                _items[i].Show(owned.talent[i], () => SetChangeTalentText());
+                _items[i].Show(owned.talent[i], UpdateUI);
             }
 
-            SetChangeTalentText();
-
-            bool isAble = _currencySystem.CheckCurrency(CurrencyType.Powder, _cachedPowderCount);
-
-            _changeTalentButton.interactable = isAble;
-            _openTalentFilterButton.interactable = isAble;
+            UpdateUI();
+            CheckEnoughPowder();
         }
 
+        #region 재능 돌리기
         private void ChangeTalent()
         {
             // 재설정이 불가능하다면
-            if (IsAbleResetting() == false) return;
+            if (!PayPowder()) return;
 
             foreach (var item in _items)
             {
@@ -112,10 +104,10 @@ namespace EvolveThisMatch.Lobby
             _changeTalentText.text = "중지";
             _isStopResetting = false;
 
-            while (_isStopResetting == false)
+            while (!_isStopResetting)
             {
                 // 재설정이 불가능하다면
-                if (IsAbleResetting() == false) break;
+                if (!PayPowder()) break;
 
                 bool isBreak = false;
 
@@ -132,21 +124,8 @@ namespace EvolveThisMatch.Lobby
                 await UniTask.Yield();
             }
 
-            SetChangeTalentText();
+            UpdateUI();
             _action?.Invoke();
-        }
-
-        private bool IsAbleResetting()
-        {
-            if (_currencySystem.PayCurrency(CurrencyType.Powder, _cachedPowderCount) == false)
-            {
-                _changeTalentButton.interactable = false;
-                _openTalentFilterButton.interactable = false;
-
-                return false;
-            }
-
-            return true;
         }
 
         private bool TryChangeTalentItem(UITalentItem item, int rarity = -1, List<int> talents = null)
@@ -162,13 +141,39 @@ namespace EvolveThisMatch.Lobby
             // 조건에 만족하면 루프 중단 (true)
             return rarity >= (int)data.GetRarity(item.talent.value).rarity && talents.Contains(item.talent.id);
         }
+        #endregion
+
+        #region Powder 계산
+        private void CheckEnoughPowder()
+        {
+            if (_currencySystem == null) _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
+
+            bool isEnough = _currencySystem.CheckCurrency(CurrencyType.Powder, _cachedPowderCount);
+
+            _changeTalentButton.interactable = isEnough;
+            _openTalentFilterButton.interactable = isEnough;
+        }
+
+        private bool PayPowder()
+        {
+            bool isEnough = _currencySystem.CheckCurrency(CurrencyType.Powder, _cachedPowderCount);
+
+            if (isEnough == false)
+            {
+                _changeTalentButton.interactable = isEnough;
+                _openTalentFilterButton.interactable = isEnough;
+            }
+
+            return isEnough;
+        }
+        #endregion
 
         internal void StopFilter()
         {
             _isStopResetting = true;
         }
 
-        private void SetChangeTalentText()
+        private void UpdateUI()
         {
             _changeTalentText.text = GetChangeTalentText();
         }

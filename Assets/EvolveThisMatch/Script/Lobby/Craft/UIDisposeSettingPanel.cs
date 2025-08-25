@@ -131,7 +131,7 @@ namespace EvolveThisMatch.Lobby
             Hide(true);
             _action?.Invoke();
 
-            await SaveManager.Instance.Save_DepartmentData();
+            await SaveManager.Instance.SaveData(SaveKey.Department);
         }
     }
 }

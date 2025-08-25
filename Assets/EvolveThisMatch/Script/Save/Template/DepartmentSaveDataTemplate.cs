@@ -89,8 +89,6 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private DepartmentSaveData _data;
 
-        public bool isLoaded { get; private set; }
-
         public IReadOnlyList<DepartmentSaveData.Department> departments => _data.departments;
 
         public override void SetDefaultValues()

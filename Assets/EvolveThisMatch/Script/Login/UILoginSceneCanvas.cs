@@ -101,14 +101,8 @@ namespace EvolveThisMatch.Login
 
         private async void OnLoginSuccess(LoginResult result)
         {
-            var profile = SaveManager.Instance.Load_ProfileData();
-            var agent = SaveManager.Instance.Load_AgentData();
-            var item = SaveManager.Instance.Load_ItemData();
-            var department = SaveManager.Instance.Load_DepartmentData();
-            var shop = SaveManager.Instance.Load_ShopData();
+            await SaveManager.Instance.LoadData(SaveKey.Profile, SaveKey.Agent, SaveKey.Item, SaveKey.Department, SaveKey.Shop);
 
-            await UniTask.WhenAll(profile, agent, item, department, shop);
-            
             var profileData = SaveManager.Instance.profileData;
 
             if (string.IsNullOrEmpty(profileData.displayName))
@@ -147,7 +141,7 @@ namespace EvolveThisMatch.Login
             if (string.IsNullOrEmpty(displayName) == false)
             {
                 profileData.displayName = displayName;
-                await SaveManager.Instance.Save_ProfileData();
+                await SaveManager.Instance.SaveData(SaveKey.Profile);
             }
 
             TutorialOrLobby(profileData);

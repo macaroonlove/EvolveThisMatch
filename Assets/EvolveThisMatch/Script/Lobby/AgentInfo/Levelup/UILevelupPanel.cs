@@ -1,6 +1,5 @@
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
-using FrameWork.UIPopup;
 using System;
 using TMPro;
 using UnityEngine;
@@ -289,7 +288,8 @@ namespace EvolveThisMatch.Lobby
             int additionalExp = GetTotalExp();
             if (additionalExp <= 0) return;
 
-            _agentData.LevelUpAgent(_owned.id, _eatFood, () => {
+            _agentData.LevelUpAgent(_owned.id, _eatFood, () =>
+            {
                 // 레벨업에 성공했다면
                 foreach (var eat in _eats)
                 {

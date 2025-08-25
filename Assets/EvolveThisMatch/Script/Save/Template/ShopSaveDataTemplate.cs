@@ -85,8 +85,6 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private ShopSaveData _data;
 
-        public bool isLoaded { get; private set; }
-
         #region 저장 및 로드
         public override void SetDefaultValues()
         {

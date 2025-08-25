@@ -66,8 +66,6 @@ namespace EvolveThisMatch.Save
         private static ObscuredInt[] _agentMaxLevelPerTier;// = { 50, 70, 100, 120, 150, 180 };
         private static ObscuredInt[] _foodExp = { 30, 500, 2000, 15000 };
 
-        public bool isLoaded { get; private set; }
-
         public List<AgentSaveData.Agent> ownedAgents => _data.ownedAgents;
 
         public static IReadOnlyList<ObscuredInt> agentTierUpRequirements => _agentTierUpRequirements;
@@ -258,25 +256,35 @@ namespace EvolveThisMatch.Save
         /// <summary>
         /// 유닛 승격
         /// </summary>
-        public bool TierUpAgent(int id)
+        public void TierUpAgent(int id, UnityAction onComplete)
         {
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            // 유닛이 있다면 && 최대 티어가 아니라면
-            if (modifyUnit != null && modifyUnit.tier < _agentTierUpRequirements.Length - 1)
+            var request = new ExecuteCloudScriptRequest
             {
-                int requiredCount = _agentTierUpRequirements[modifyUnit.tier];
+                FunctionName = "TierUpAgent",
+                FunctionParameter = new { agentId = id },
+                GeneratePlayStreamEvent = true
+            };
 
-                if (modifyUnit.unitCount >= requiredCount)
-                {
-                    modifyUnit.unitCount -= requiredCount;
-                    modifyUnit.tier++;
+            PlayFabClientAPI.ExecuteCloudScript(request, 
+                (ExecuteCloudScriptResult result) => {
 
-                    return true;
-                }
-            }
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
 
-            return false;
+                    if ((bool)jsonResult["success"])
+                    {
+                        var agent = FindAgent(ownedAgents, id);
+                        int requiredCount = _agentTierUpRequirements[agent.tier];
+
+                        agent.unitCount -= requiredCount;
+                        agent.tier++;
+
+                        onComplete?.Invoke();
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                    }
+            }, DebugPlayFabError);
         }
 
         /// <summary>

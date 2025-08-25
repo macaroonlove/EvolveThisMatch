@@ -76,8 +76,6 @@ namespace EvolveThisMatch.Save
         [Header("부서_가공")]
         [SerializeField] private ObscuredIntVariable _powderVariable;
 
-        public bool isLoaded { get; private set; }
-
         public string displayName { get => _data.displayName; set => _data.displayName = value; }
         public bool isClearTutorial { get => _data.isClearTutorial; set => _data.isClearTutorial = value; }
 

@@ -227,7 +227,7 @@ namespace EvolveThisMatch.Lobby
             _updateDepartment?.Invoke();
 
             // 저장
-            await SaveManager.Instance.Save_DepartmentData();
+            _ =  SaveManager.Instance.SaveData(SaveKey.Department);
         }
 
         private async void RemoveJob(DepartmentSaveData.CraftingJob job)
@@ -239,7 +239,7 @@ namespace EvolveThisMatch.Lobby
             _updateDepartment?.Invoke();
 
             // 저장
-            await SaveManager.Instance.Save_DepartmentData();
+            _ = SaveManager.Instance.SaveData(SaveKey.Department);
         }
 
         private void ShowDisposeSettingPanel(int id)

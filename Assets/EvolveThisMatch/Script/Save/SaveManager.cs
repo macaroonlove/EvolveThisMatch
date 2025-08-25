@@ -9,6 +9,15 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Save
 {
+    public enum SaveKey
+    {
+        Profile,
+        Agent,
+        Item,
+        Department,
+        Shop
+    }
+
     public class SaveManager : PersistentSingleton<SaveManager>
     {
         [SerializeField] private ProfileSaveDataTemplate _profileData;
@@ -25,6 +34,8 @@ namespace EvolveThisMatch.Save
         public DepartmentSaveDataTemplate departmentData => _departmentData;
         public ShopSaveDataTemplate shopData => _shopData;
 
+        private Dictionary<SaveKey, (string key, SaveDataTemplate data)> _saveDataKeys;
+
         protected override void Initialize()
         {
             // 게임 설정 불러오기
@@ -37,156 +48,21 @@ namespace EvolveThisMatch.Save
             _formationData.Clear();
             _departmentData.Clear();
             _shopData.Clear();
+
+            InitializeKey();
         }
 
-        #region 데이터 모음
-
-        #region Profile Data
-        public async UniTask<bool> Load_ProfileData()
+        private void InitializeKey()
         {
-            bool isSuccess;
-
-            if (PlayFabAuthService.IsLoginState)
+            _saveDataKeys = new Dictionary<SaveKey, (string, SaveDataTemplate)>
             {
-                isSuccess = await LoadPlayFab(_profileData, "ProfileData");
-            }
-            else
-            {
-                isSuccess = LoadPlayerPrefs(_profileData, "ProfileData");
-            }
-
-            if (isSuccess == false)
-            {
-                _profileData.SetDefaultValues();
-                await Save_ProfileData();
-            }
-
-            return true;
+                { SaveKey.Profile, ("ProfileData", _profileData) },
+                { SaveKey.Agent, ("AgentData", _agentData) },
+                { SaveKey.Item, ("ItemData", _itemData) },
+                { SaveKey.Department, ("DepartmentData", _departmentData) },
+                { SaveKey.Shop, ("ShopData", _shopData) }
+            };
         }
-
-        public async UniTask<bool> Save_ProfileData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await SavePlayFab(_profileData, "ProfileData");
-            }
-            else
-            {
-                return SavePlayerPrefs(_profileData, "ProfileData");
-            }
-        }
-
-        [ContextMenu("프로필 초기화")]
-        public async UniTask<bool> Clear_ProfileData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await ClearPlayFab("ProfileData");
-            }
-            else
-            {
-                return ClearPlayerPrefs("ProfileData");
-            }
-        }
-        #endregion
-
-        #region Agent Data
-        public async UniTask<bool> Load_AgentData()
-        {
-            bool isSuccess;
-            
-            if (PlayFabAuthService.IsLoginState)
-            {
-                isSuccess = await LoadPlayFab(_agentData, "AgentData");
-            }
-            else
-            {
-                isSuccess = LoadPlayerPrefs(_agentData, "AgentData");
-            }
-            
-            if (isSuccess == false)
-            {
-                _agentData.SetDefaultValues();
-                await Save_AgentData();
-            }
-            
-            return true;
-        }
-
-        public async UniTask<bool> Save_AgentData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await SavePlayFab(_agentData, "AgentData");
-            }
-            else
-            {
-                return SavePlayerPrefs(_agentData, "AgentData");
-            }
-        }
-
-        [ContextMenu("유닛 데이터 초기화")]
-        public async UniTask<bool> Clear_AgentData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await ClearPlayFab("AgentData");
-            }
-            else
-            {
-                return ClearPlayerPrefs("AgentData");
-            }
-        }
-        #endregion
-
-        #region Item Data
-        public async UniTask<bool> Load_ItemData()
-        {
-            bool isSuccess;
-
-            if (PlayFabAuthService.IsLoginState)
-            {
-                isSuccess = await LoadPlayFab(_itemData, "ItemData");
-            }
-            else
-            {
-                isSuccess = LoadPlayerPrefs(_itemData, "ItemData");
-            }
-
-            if (isSuccess == false)
-            {
-                _itemData.SetDefaultValues();
-                await Save_ItemData();
-            }
-
-            return true;
-        }
-
-        public async UniTask<bool> Save_ItemData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await SavePlayFab(_itemData, "ItemData");
-            }
-            else
-            {
-                return SavePlayerPrefs(_itemData, "ItemData");
-            }
-        }
-
-        [ContextMenu("아이템 데이터 초기화")]
-        public async UniTask<bool> Clear_ItemData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await ClearPlayFab("ItemData");
-            }
-            else
-            {
-                return ClearPlayerPrefs("ItemData");
-            }
-        }
-        #endregion
 
         #region Formation Data
         public bool Load_FormationData()
@@ -215,128 +91,137 @@ namespace EvolveThisMatch.Save
         }
         #endregion
 
-        #region Department Data
-        public async UniTask<bool> Load_DepartmentData()
+        public async UniTask<bool> LoadData(params SaveKey[] saveKeys)
         {
-            bool isSuccess;
-
             if (PlayFabAuthService.IsLoginState)
             {
-                isSuccess = await LoadPlayFab(_departmentData, "DepartmentData");
+                var datas = new Dictionary<string, SaveDataTemplate>();
+                foreach (var saveKey in saveKeys)
+                {
+                    var (saveName, saveData) = _saveDataKeys[saveKey];
+                    datas.Add(saveName, saveData);
+                }
+
+                var isSuccess = await LoadPlayFab(datas);
+
+                if (!isSuccess)
+                {
+                    var missingData = new Dictionary<string, SaveDataTemplate>();
+
+                    foreach (var data in datas)
+                    {
+                        if (data.Value.isLoaded == false)
+                        {
+                            data.Value.SetDefaultValues();
+                            missingData.Add(data.Key, data.Value);
+                        }
+                    }
+
+                    if (missingData.Count > 0)
+                    {
+                        await SavePlayFab(missingData);
+                    }
+                }
             }
             else
             {
-                isSuccess = LoadPlayerPrefs(_departmentData, "DepartmentData");
-            }
+                foreach (var saveKey in saveKeys)
+                {
+                    var (key, data) = _saveDataKeys[saveKey];
+                    bool isSuccess = LoadPlayerPrefs(data, key);
 
-            if (isSuccess == false)
-            {
-                _departmentData.SetDefaultValues();
-                await Save_DepartmentData();
+                    if (!isSuccess)
+                    {
+                        data.SetDefaultValues();
+                        SavePlayerPrefs(data, key);
+                    }
+                }
             }
 
             return true;
         }
 
-        public async UniTask<bool> Save_DepartmentData()
+        public async UniTask<bool> SaveData(params SaveKey[] saveKeys)
         {
             if (PlayFabAuthService.IsLoginState)
             {
-                return await SavePlayFab(_departmentData, "DepartmentData");
+                var datas = new Dictionary<string, SaveDataTemplate>();
+
+                foreach (var saveKey in saveKeys)
+                {
+                    var (saveName, saveData) = _saveDataKeys[saveKey];
+                    datas.Add(saveName, saveData);
+                }
+
+                return await SavePlayFab(datas);
             }
             else
             {
-                return SavePlayerPrefs(_departmentData, "DepartmentData");
+                foreach (var saveKey in saveKeys)
+                {
+                    var (saveName, saveData) = _saveDataKeys[saveKey];
+                    SavePlayerPrefs(saveData, saveName);
+                }
+
+                return true;
             }
         }
 
-        [ContextMenu("부서 초기화")]
-        public async UniTask<bool> Clear_DepartmentData()
+        public async UniTask<bool> ClearData(params SaveKey[] saveKeys)
         {
             if (PlayFabAuthService.IsLoginState)
             {
-                return await ClearPlayFab("DepartmentData");
+                var keys = new List<string>();
+
+                foreach (var saveKey in saveKeys)
+                {
+                    var key = _saveDataKeys[saveKey].key;
+                    keys.Add(key);
+                }
+
+                return await ClearPlayFab(keys);
             }
             else
             {
-                return ClearPlayerPrefs("DepartmentData");
+                foreach (var saveKey in saveKeys)
+                {
+                    var key = _saveDataKeys[saveKey].key;
+                    ClearPlayerPrefs(key);
+                }
+
+                return true;
             }
         }
-        #endregion
-
-        #region Shop Data
-        public async UniTask<bool> Load_ShopData()
-        {
-            bool isSuccess;
-
-            if (PlayFabAuthService.IsLoginState)
-            {
-                isSuccess = await LoadPlayFab(_shopData, "ShopData");
-            }
-            else
-            {
-                isSuccess = LoadPlayerPrefs(_shopData, "ShopData");
-            }
-
-            if (isSuccess == false)
-            {
-                _shopData.SetDefaultValues();
-                await Save_ShopData();
-            }
-
-            return true;
-        }
-
-        public async UniTask<bool> Save_ShopData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await SavePlayFab(_shopData, "ShopData");
-            }
-            else
-            {
-                return SavePlayerPrefs(_shopData, "ShopData");
-            }
-        }
-
-        [ContextMenu("상점 초기화")]
-        public async UniTask<bool> Clear_ShopData()
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                return await ClearPlayFab("ShopData");
-            }
-            else
-            {
-                return ClearPlayerPrefs("ShopData");
-            }
-        }
-        #endregion
-
-        #endregion
 
         #region Load
-        private async UniTask<bool> LoadPlayFab(SaveDataTemplate data, string key)
+        private async UniTask<bool> LoadPlayFab(Dictionary<string, SaveDataTemplate> datas)
         {
             var tcs = new UniTaskCompletionSource<bool>();
+
+            var keys = new List<string>(datas.Keys);
 
             PlayFabClientAPI.GetUserData(new GetUserDataRequest
             {
                 PlayFabId = PlayFabAuthService.PlayFabId,
-                Keys = new List<string> { key }
+                Keys = keys
             }, result =>
             {
-                bool isSuccess = false;
-                
-                if (result.Data != null && result.Data.ContainsKey(key))
+                bool allSuccess = true;
+
+                foreach (var key in keys)
                 {
-                    isSuccess = data.Load(result.Data[key].Value);
+                    if (result.Data != null && result.Data.ContainsKey(key))
+                    {
+                        bool success = datas[key].Load(result.Data[key].Value);
+                        allSuccess &= success;
+                    }
+                    else
+                    {
+                        allSuccess = false;
+                    }
                 }
-                else
-                {
-                    isSuccess = false;
-                }
-                tcs.TrySetResult(isSuccess);
+
+                tcs.TrySetResult(allSuccess);
             }, error =>
             {
                 tcs.TrySetResult(false);
@@ -358,22 +243,26 @@ namespace EvolveThisMatch.Save
         #endregion
 
         #region Save
-        private async UniTask<bool> SavePlayFab(SaveDataTemplate data, string key)
+        private async UniTask<bool> SavePlayFab(Dictionary<string, SaveDataTemplate> datas)
         {
             var tcs = new UniTaskCompletionSource<bool>();
 
-            string jsonData = data.ToJson();
+            var jsonDatas = new Dictionary<string, string>();
+            foreach (var data in datas)
+            {
+                jsonDatas[data.Key] = data.Value.ToJson();
+            }
 
-            PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest
-            {
-                Data = new Dictionary<string, string> { { key, jsonData } }
-            }, result =>
-            {
-                tcs.TrySetResult(true);
-            }, error =>
-            {
-                tcs.TrySetResult(false);
-            });
+            var request = new UpdateUserDataRequest { Data = jsonDatas };
+
+            PlayFabClientAPI.UpdateUserData(request,
+                result =>
+                {
+                    tcs.TrySetResult(true);
+                }, error =>
+                {
+                    tcs.TrySetResult(false);
+                });
 
             return await tcs.Task;
         }
@@ -390,20 +279,20 @@ namespace EvolveThisMatch.Save
         #endregion
 
         #region Clear
-        private async UniTask<bool> ClearPlayFab(string key)
+        private async UniTask<bool> ClearPlayFab(List<string> keys)
         {
             var tcs = new UniTaskCompletionSource<bool>();
 
-            PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest
-            {
-                KeysToRemove = new List<string> { key }
-            }, result =>
-            {
-                tcs.TrySetResult(true);
-            }, error =>
-            {
-                tcs.TrySetResult(false);
-            });
+            var request = new UpdateUserDataRequest { KeysToRemove = keys };
+
+            PlayFabClientAPI.UpdateUserData(request,
+                result =>
+                {
+                    tcs.TrySetResult(true);
+                }, error =>
+                {
+                    tcs.TrySetResult(false);
+                });
 
             return await tcs.Task;
         }

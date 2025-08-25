@@ -58,8 +58,6 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private ItemSaveData _data;
 
-        public bool isLoaded { get; private set; }
-
         public List<ItemSaveData.Artifact> ownedArtifacts => _data.ownedArtifacts;
         public List<ItemSaveData.Tome> ownedTomes => _data.ownedTomes;
         public int[] equipTomes => _data.equipTomes;

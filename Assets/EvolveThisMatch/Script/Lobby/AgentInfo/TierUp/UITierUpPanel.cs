@@ -1,5 +1,6 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.UI;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine;
@@ -78,8 +79,6 @@ namespace EvolveThisMatch.Lobby
                 return;
             }
 
-            
-
             int tier = owned.tier;
             int unitCount = owned.unitCount;
             int maxUnitCount = SaveManager.Instance.agentData.GetMaxUnitCountByTier(tier);
@@ -116,10 +115,10 @@ namespace EvolveThisMatch.Lobby
 
         private void TierUp()
         {
-            if (_agentData.TierUpAgent(_owned.id))
+            _agentData.TierUpAgent(_owned.id, () =>
             {
                 _reShow?.Invoke();
-            }
+            });
         }
     }
 }

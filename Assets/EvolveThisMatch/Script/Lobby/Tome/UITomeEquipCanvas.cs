@@ -134,7 +134,7 @@ namespace EvolveThisMatch.Lobby
             _selectedTomeListItem = item;
         }
 
-        private async void Equip()
+        private void Equip()
         {
             if (_equipState == EquipState.Rent)
             {
@@ -173,7 +173,7 @@ namespace EvolveThisMatch.Lobby
                 SaveManager.Instance.itemData.EquipTome(-1, _selectedTomeEquipItem.index);
             }
 
-            await SaveManager.Instance.Save_ProfileData();
+            _ = SaveManager.Instance.SaveData(SaveKey.Item);
         }
     }
 }
