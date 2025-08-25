@@ -19,6 +19,9 @@ namespace EvolveThisMatch.Save
 
         [Tooltip("포메이션")]
         public List<FormationSlot> formation = new List<FormationSlot>();
+
+        [Tooltip("장착중인 고서")]
+        public int[] equipTomes = new int[] { -1, -1, -1 };
     }
 
     [CreateAssetMenu(menuName = "Templates/SaveData/FormationSaveData", fileName = "FormationSaveData", order = 0)]
@@ -26,11 +29,10 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private FormationSaveData _data;
 
-        public bool isLoaded { get; private set; }
-
         public string displayName { get => _data.displayName; set => _data.displayName = value; }
 
         public IReadOnlyList<FormationSlot> formation => _data.formation;
+        public IReadOnlyList<int> equipTomes => _data.equipTomes;
 
         public override void SetDefaultValues()
         {
@@ -45,7 +47,7 @@ namespace EvolveThisMatch.Save
 
             if (_data != null)
             {
-                isLoaded = _data.formation.Count > 0;
+                isLoaded = true;
             }
 
             return isLoaded;
@@ -64,9 +66,20 @@ namespace EvolveThisMatch.Save
             isLoaded = false;
         }
 
+        /// <summary>
+        /// 배치 업데이트
+        /// </summary>
         public void UpdateFormation(List<FormationSlot> formation)
         {
             _data.formation = formation;
+        }
+
+        /// <summary>
+        /// 고서 장착
+        /// </summary>
+        public void EquipTome(int id, int index)
+        {
+            _data.equipTomes[index] = id;
         }
     }
 }

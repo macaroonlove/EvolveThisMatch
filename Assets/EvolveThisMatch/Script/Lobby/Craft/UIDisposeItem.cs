@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
+using FrameWork.NetworkTime;
 using FrameWork.UIBinding;
 using System;
 using TMPro;
@@ -203,10 +205,11 @@ namespace EvolveThisMatch.Lobby
             _sliderText.text = "0%";
         }
 
-        internal bool UpdateItem(DepartmentLevelData levelData, CraftItemData craftItem, DepartmentSaveData.CraftingJob job, float timePerItem)
+        internal async UniTask<bool>  UpdateItem(DepartmentLevelData levelData, CraftItemData craftItem, DepartmentSaveData.CraftingJob job, float timePerItem)
         {
             // 경과 시간
-            TimeSpan elapsed = DateTime.UtcNow - job.startTime;
+            var currentTime = await NetworkTimeManager.Instance.GetUtcNow();
+            TimeSpan elapsed = currentTime - job.startTime;
             float second = (float)elapsed.TotalSeconds;
 
             // 최대 생산량

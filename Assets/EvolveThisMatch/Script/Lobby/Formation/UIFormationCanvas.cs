@@ -45,7 +45,6 @@ namespace EvolveThisMatch.Core
         public void Show()
         {
             var formationSaveData = SaveManager.Instance.formationData;
-            if (!formationSaveData.isLoaded) SaveManager.Instance.Load_FormationData();
 
             var formationSlots = formationSaveData.formation;
             int formationCount = formationSlots.Count;

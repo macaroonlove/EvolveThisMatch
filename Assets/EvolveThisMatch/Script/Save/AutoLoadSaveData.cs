@@ -40,7 +40,8 @@ namespace EvolveThisMatch.Save
             {
                 await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
 
-                _ = SaveManager.Instance.LoadData(SaveKey.Profile, SaveKey.Agent, SaveKey.Item, SaveKey.Department, SaveKey.Shop);
+                await SaveManager.Instance.LoadData(SaveKey.Profile, SaveKey.Agent, SaveKey.Item, SaveKey.Department, SaveKey.Shop);
+                SaveManager.Instance.Load_FormationData();
             }
         }
     }

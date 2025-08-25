@@ -84,9 +84,8 @@ namespace EvolveThisMatch.Lobby
 
         internal void RegistTomeListItem()
         {
-            var itemData = SaveManager.Instance.itemData;
-            var ownedTomes = itemData.ownedTomes;
-            var equipTomes = itemData.equipTomes;
+            var ownedTomes = SaveManager.Instance.itemData.ownedTomes;
+            var equipTomes = SaveManager.Instance.formationData.equipTomes;
             int count = _tomeTemplates.Count;
 
             // 보유한 고서의 아이디

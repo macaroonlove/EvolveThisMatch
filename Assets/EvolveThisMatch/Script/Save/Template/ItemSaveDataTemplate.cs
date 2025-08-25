@@ -14,7 +14,6 @@ namespace EvolveThisMatch.Save
 
         [Tooltip("보유하고 있는 고서들")]
         public List<Tome> ownedTomes = new List<Tome>();
-        public int[] equipTomes = new int[] { -1, -1, -1 };
 
         #region 데이터 모델
         #region 아티팩트
@@ -60,7 +59,6 @@ namespace EvolveThisMatch.Save
 
         public List<ItemSaveData.Artifact> ownedArtifacts => _data.ownedArtifacts;
         public List<ItemSaveData.Tome> ownedTomes => _data.ownedTomes;
-        public int[] equipTomes => _data.equipTomes;
 
         public override void SetDefaultValues()
         {
@@ -213,14 +211,6 @@ namespace EvolveThisMatch.Save
                 // 레벨업 시도
                 TryLevelupTome(modifyTome);
             }
-        }
-
-        /// <summary>
-        /// 고서 장착
-        /// </summary>
-        public void EquipTome(int id, int index)
-        {
-            _data.equipTomes[index] = id;
         }
 
         #region 레벨업

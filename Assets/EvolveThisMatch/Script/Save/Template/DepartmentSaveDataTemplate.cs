@@ -1,3 +1,4 @@
+using CodeStage.AntiCheat.ObscuredTypes;
 using FrameWork.Editor;
 using ScriptableObjectArchitecture;
 using System;
@@ -70,10 +71,10 @@ namespace EvolveThisMatch.Save
         [Serializable]
         public class CraftingJob
         {
-            public int unitId;
-            public int craftItemId;
-            public int maxAmount;
-            [SerializeField] private long startTimeTicks;
+            public ObscuredInt unitId;
+            public ObscuredInt craftItemId;
+            public ObscuredInt maxAmount;
+            [SerializeField] private ObscuredLong startTimeTicks;
 
             public DateTime startTime
             {

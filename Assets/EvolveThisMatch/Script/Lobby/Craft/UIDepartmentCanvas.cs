@@ -108,9 +108,9 @@ namespace EvolveThisMatch.Lobby
         /// <summary>
         /// 부서를 변경하거나, 유닛을 배치할 때 호출
         /// </summary>
-        private void ShowDepartment(DepartmentTemplate template, DepartmentSaveData.Department departmentData)
+        private async void ShowDepartment(DepartmentTemplate template, DepartmentSaveData.Department departmentData)
         {
-            var craftResults = CalculateCraftResults(template, departmentData);
+            var craftResults = await CalculateCraftResults(template, departmentData);
 
             _totalWeight = 0;
             foreach (var craftResult in craftResults)
@@ -167,12 +167,12 @@ namespace EvolveThisMatch.Lobby
         }
 
         #region 생산 작업 결과 (패널이 열렸을 때 기준)
-        private List<CraftResult> CalculateCraftResults(DepartmentTemplate template, DepartmentSaveData.Department departmentData)
+        private async UniTask<List<CraftResult>> CalculateCraftResults(DepartmentTemplate template, DepartmentSaveData.Department departmentData)
         {
             int level = departmentData == null ? 1 : departmentData.level;
             var levelData = template.GetLevelData(level);
 
-            var now = DateTime.UtcNow;
+            var now = await NetworkTimeManager.Instance.GetUtcNow();
             var allJobs = new List<(int slotIndex, float nextTime, float interval, int weight)>();
             var results = new Dictionary<int, CraftResult>();
 

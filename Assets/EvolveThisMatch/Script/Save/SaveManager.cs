@@ -68,9 +68,10 @@ namespace EvolveThisMatch.Save
         public bool Load_FormationData()
         {
             bool isSuccess;
-
-            isSuccess = LoadPlayerPrefs(_formationData, "FormationData");
-
+            string safeKey = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(profileData.displayName));
+            
+            isSuccess = LoadPlayerPrefs(_formationData, $"{safeKey}_FormationData");
+            
             if (isSuccess == false)
             {
                 _formationData.SetDefaultValues();
@@ -82,12 +83,16 @@ namespace EvolveThisMatch.Save
 
         public bool Save_FormationData()
         {
-            return SavePlayerPrefs(_formationData, "FormationData");
+            string safeKey = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(profileData.displayName));
+
+            return SavePlayerPrefs(_formationData, $"{safeKey}_FormationData");
         }
 
         public bool Clear_FormationData()
         {
-            return ClearPlayerPrefs("FormationData");
+            string safeKey = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(profileData.displayName));
+
+            return ClearPlayerPrefs($"{safeKey}_FormationData");
         }
         #endregion
 

@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
-using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.NetworkTime;
 using FrameWork.UIBinding;
 using System;
 using System.Collections;
@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Lobby
         private UnityAction _updateDepartment;
         private UnityAction<int> _updateInfoPanel;
 
-        private WaitForSeconds _wfs = new WaitForSeconds(0.1f);
+        private WaitForSecondsRealtime _wfs = new WaitForSecondsRealtime(0.1f);
 
         protected override void Initialize()
         {
@@ -179,7 +179,9 @@ namespace EvolveThisMatch.Lobby
 
             while (true)
             {
-                var isUpdateAble = _disposeItems[i].UpdateItem(levelData, craftItem, job, timePerItem);
+                var isUpdateAble = false;
+                var task = _disposeItems[i].UpdateItem(levelData, craftItem, job, timePerItem).ToCoroutine(result => isUpdateAble = result);
+                yield return task;
 
                 if (isUpdateAble == false) break;
 
@@ -196,8 +198,18 @@ namespace EvolveThisMatch.Lobby
                 productionCount = craftResult.productionCount;
             }
 
+            // 재료별로 가능한 최대 생산량 계산
+            foreach (var required in craftItem.requiredItems)
+            {
+                int maxProductionCountByItem = required.item.Value / required.amount;
+                productionCount = Mathf.Min(productionCount, maxProductionCountByItem);
+            }
+
             // 최대 생산량 넘는거 방지
             productionCount = Mathf.Min(productionCount, job.maxAmount);
+
+            // 생산이 불가능했었을 경우
+            if (productionCount <= 0) return;
 
             // 아이템 획득
             craftItem.variable.AddValue(productionCount);
@@ -220,17 +232,18 @@ namespace EvolveThisMatch.Lobby
             else
             {
                 // 시작 시간 보정하기
-                job.startTime = DateTime.UtcNow - TimeSpan.FromSeconds(remainTime);
+                var currentTime = await NetworkTimeManager.Instance.GetUtcNow();
+                job.startTime = currentTime - TimeSpan.FromSeconds(remainTime);
             }
 
             // 부서 업데이트
             _updateDepartment?.Invoke();
 
             // 저장
-            _ =  SaveManager.Instance.SaveData(SaveKey.Department);
+            _ = SaveManager.Instance.SaveData(SaveKey.Department, SaveKey.Profile);
         }
 
-        private async void RemoveJob(DepartmentSaveData.CraftingJob job)
+        private void RemoveJob(DepartmentSaveData.CraftingJob job)
         {
             // 작업대 비우기
             _departmentData.RemoveActiveJob(job);
@@ -244,7 +257,8 @@ namespace EvolveThisMatch.Lobby
 
         private void ShowDisposeSettingPanel(int id)
         {
-            _disposeSettingPanel.Show(id, _departmentTemplate, _departmentData, () => {
+            _disposeSettingPanel.Show(id, _departmentTemplate, _departmentData, () =>
+            {
                 _disposeItems[id].GainCraftItem();
                 _updateDepartment?.Invoke();
             });
