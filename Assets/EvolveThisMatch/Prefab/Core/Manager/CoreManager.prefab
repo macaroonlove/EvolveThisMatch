@@ -148,6 +148,8 @@ MonoBehaviour:
     _variable: {fileID: 11400000, guid: e58b3121932f85d44ad52dad4f5f8a66, type: 2}
   - _type: 3
     _variable: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
+  - _type: 4
+    _variable: {fileID: 11400000, guid: f0882b25629d1604098e974c9bd6df06, type: 2}
 --- !u!1 &5292269569538604490
 GameObject:
   m_ObjectHideFlags: 0

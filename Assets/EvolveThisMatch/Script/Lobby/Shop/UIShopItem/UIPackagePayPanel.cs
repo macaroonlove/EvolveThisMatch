@@ -1,4 +1,5 @@
 using EvolveThisMatch.Save;
+using FrameWork.PlayFabExtensions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,15 +16,15 @@ namespace EvolveThisMatch.Lobby
         }
         enum Objects
         {
-            GainItemGroup,
+            RewardItemGroup,
         }
         #endregion
 
-        [SerializeField] private GameObject _gainItemPrefab;
+        [SerializeField] private GameObject _rewardItemPrefab;
 
-        private Transform _gainItemGroup;
+        private Transform _rewardItemGroup;
 
-        private List<UIShopGainItem> _shopGainItems = new List<UIShopGainItem>();
+        private List<UIShopRewardItem> _shopRewardItems = new List<UIShopRewardItem>();
 
         private UnityAction _onPay;
 
@@ -34,38 +35,38 @@ namespace EvolveThisMatch.Lobby
             BindButton(typeof(Buttons));
             BindObject(typeof(Objects));
 
-            _gainItemGroup = GetObject((int)Objects.GainItemGroup).transform;
+            _rewardItemGroup = GetObject((int)Objects.RewardItemGroup).transform;
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
             GetButton((int)Buttons.PayButton).onClick.AddListener(Pay);
         }
 
-        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItemData itemData, UnityAction onPay)
+        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, UnityAction onPay)
         {
             _onPay = onPay;
 
             base.Show(shopCatalog, itemData);
 
             #region »πµÊ«“ æ∆¿Ã≈€ «•Ω√
-            foreach (var gainItem in _shopGainItems) gainItem.Hide(true);
+            foreach (var rewardItem in _shopRewardItems) rewardItem.Hide(true);
 
-            var gainDatas = itemData.gainShopItemDatas;
-            for (int i = 0; i < gainDatas.Count; i++)
+            var rewards = itemData.rewards;
+            for (int i = 0; i < rewards.Count; i++)
             {
-                UIShopGainItem gainItem;
-                if (i < _shopGainItems.Count)
+                UIShopRewardItem rewardItem;
+                if (i < _shopRewardItems.Count)
                 {
-                    gainItem = _shopGainItems[i];
+                    rewardItem = _shopRewardItems[i];
                 }
                 else
                 {
-                    var instance = Instantiate(_gainItemPrefab, _gainItemGroup);
-                    gainItem = instance.GetComponent<UIShopGainItem>();
+                    var instance = Instantiate(_rewardItemPrefab, _rewardItemGroup);
+                    rewardItem = instance.GetComponent<UIShopRewardItem>();
 
-                    _shopGainItems.Add(gainItem);
+                    _shopRewardItems.Add(rewardItem);
                 }
 
-                gainItem.Show(gainDatas[i]);
+                rewardItem.Show(rewards[i]);
             }
             #endregion
 

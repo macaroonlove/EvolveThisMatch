@@ -1,4 +1,5 @@
 using EvolveThisMatch.Save;
+using FrameWork.PlayFabExtensions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,18 +29,18 @@ namespace EvolveThisMatch.Lobby
             _gainItemGroup = GetObject((int)Objects.GainItemGroup).transform;
         }
 
-        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItemData itemData, List<UIShopGainItem> gainItems, UnityAction<ShopSaveData.ShopItem> onSelect)
+        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, List<UIShopRewardItem> shopRewardItems, UnityAction<ShopSaveData.ShopItem> onSelect)
         {
             _onSelect = onSelect;
 
             base.Show(shopCatalog, itemData);
 
             #region »πµÊ«“ æ∆¿Ã≈€ «•Ω√
-            var gainDatas = itemData.gainShopItemDatas;
-            for (int i = 0; i < gainItems.Count; i++)
+            var rewards = itemData.rewards;
+            for (int i = 0; i < shopRewardItems.Count; i++)
             {
-                gainItems[i].Show(gainDatas[i]);
-                gainItems[i].transform.parent = _gainItemGroup;
+                shopRewardItems[i].Show(rewards[i]);
+                shopRewardItems[i].transform.parent = _gainItemGroup;
             }
             #endregion
 

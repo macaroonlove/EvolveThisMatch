@@ -9,6 +9,7 @@ namespace EvolveThisMatch.Core
         Essence,
         Powder,
         Loot,
+        BookFragments,
     }
 
     /// <summary>

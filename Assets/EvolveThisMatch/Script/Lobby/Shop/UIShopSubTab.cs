@@ -1,3 +1,4 @@
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine;
@@ -26,10 +27,10 @@ namespace EvolveThisMatch.Lobby
         private Image _background;
         private TextMeshProUGUI _subTabName;
 
-        private ShopData _data;
+        private ShopSubTab _subTabData;
         private UnityAction<UIShopSubTab> _onSelect;
 
-        internal ShopData data => _data;
+        internal ShopSubTab subTabData => _subTabData;
 
         protected override void Initialize()
         {
@@ -45,12 +46,12 @@ namespace EvolveThisMatch.Lobby
             _background = GetImage((int)Images.Background);
         }
 
-        internal void Show(ShopData data, UnityAction<UIShopSubTab> onSelect)
+        internal void Show(ShopSubTab subTabData, UnityAction<UIShopSubTab> onSelect)
         {
-            _data = data;
+            _subTabData = subTabData;
             _onSelect = onSelect;
 
-            _subTabName.text = data.subTabName;
+            _subTabName.text = subTabData.subTab;
 
             base.Show(true);
         }

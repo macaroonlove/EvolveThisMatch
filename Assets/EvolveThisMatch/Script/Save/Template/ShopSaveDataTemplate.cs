@@ -1,4 +1,5 @@
 using FrameWork.Editor;
+using FrameWork.PlayFabExtensions;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -85,6 +86,8 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private ShopSaveData _data;
 
+        public static ShopTitleData shopTitleData { get; private set; }
+
         #region 저장 및 로드
         public override void SetDefaultValues()
         {
@@ -99,7 +102,8 @@ namespace EvolveThisMatch.Save
 
             if (_data != null)
             {
-                isLoaded = _data.shopCatalogs.Count > 0;
+                isLoaded = true;
+                shopTitleData = TitleDataManager.LoadShopData();
             }
 
             return isLoaded;

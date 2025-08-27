@@ -1,4 +1,5 @@
 using DG.Tweening;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine;
@@ -27,14 +28,14 @@ namespace EvolveThisMatch.Lobby
         private Image _background;
         private TextMeshProUGUI _mainTabName;
 
-        private ShopDataTemplate _template;
+        private ShopMainTab _mainTabData;
         private UnityAction<UIShopMainTab> _onSelect;
 
-        internal ShopDataTemplate template => _template;
+        internal ShopMainTab mainTabData => _mainTabData;
 
-        internal void Initialize(ShopDataTemplate template, UnityAction<UIShopMainTab> onSelect)
+        internal void Initialize(string mainTabName, ShopMainTab mainTabData, UnityAction<UIShopMainTab> onSelect)
         {
-            _template = template;
+            _mainTabData = mainTabData;
             _onSelect = onSelect;
 
             BindImage(typeof(Images));
@@ -48,7 +49,7 @@ namespace EvolveThisMatch.Lobby
             _background = GetImage((int)Images.Background);
             _mainTabName = GetText((int)Texts.Title);
 
-            _mainTabName.text = template.mainTabName;
+            _mainTabName.text = mainTabName;
         }
 
         private void OnClick()

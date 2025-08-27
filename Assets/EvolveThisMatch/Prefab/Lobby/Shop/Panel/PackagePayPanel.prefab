@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 919759964773717370}
   - component: {fileID: 6638457037500716541}
   m_Layer: 5
-  m_Name: GainItemGroup
+  m_Name: RewardItemGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1058,7 +1058,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233477224dd70ae4f8a824d0841e1b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gainItemPrefab: {fileID: 7529484857225633185, guid: a8fd525254397874c87b614d90df7953, type: 3}
+  _rewardItemPrefab: {fileID: 7529484857225633185, guid: a8fd525254397874c87b614d90df7953, type: 3}
 --- !u!1 &4850316794700295564
 GameObject:
   m_ObjectHideFlags: 0

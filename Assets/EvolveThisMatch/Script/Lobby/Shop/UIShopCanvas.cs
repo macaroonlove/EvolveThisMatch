@@ -1,9 +1,12 @@
 using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork;
 using FrameWork.NetworkTime;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UI;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,16 +47,14 @@ namespace EvolveThisMatch.Lobby
         [SerializeField] private Transform _itemParent;
 
         [Header("획득 아이템")]
-        [SerializeField] private GameObject _gainItemPrefab;
-
-        [Header("상점 데이터")]
-        [SerializeField] private ShopDataTemplateLibrary _shopDataTemplateLibrary;
+        [SerializeField] private GameObject _rewardItemPrefab;
 
         private PoolSystem _poolSystem;
+        private CurrencySystem _currencySystem;
         private List<UIShopSubTab> _shopSubTabList = new List<UIShopSubTab>();
         private List<UIDefaultShopItem> _defaultShopItems = new List<UIDefaultShopItem>();
         private List<UIPackageShopItem> _packageShopItems = new List<UIPackageShopItem>();
-        private Dictionary<GameObject, UIShopGainItem> _shopGainItems = new Dictionary<GameObject, UIShopGainItem>();
+        private Dictionary<GameObject, UIShopRewardItem> _shopRewardItems = new Dictionary<GameObject, UIShopRewardItem>();
         private UIShopMainTab _firstMainTab;
         private UIShopMainTab _currentTab;
         private UIPackagePayPanel _packagePayPanel;
@@ -68,6 +69,7 @@ namespace EvolveThisMatch.Lobby
         protected override void Initialize()
         {
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
+            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
             _packagePayPanel = GetComponentInChildren<UIPackagePayPanel>();
             _defaultPayPanel = GetComponentInChildren<UIDefaultPayPanel>();
 
@@ -91,11 +93,11 @@ namespace EvolveThisMatch.Lobby
         }
 
         #region 생성
-        private void InitializeTab()
+        private async void InitializeTab()
         {
-            if (_shopDataTemplateLibrary == null) return;
+            await UniTask.WaitUntil(() => SaveManager.Instance.shopData.isLoaded);
 
-            var templates = _shopDataTemplateLibrary.shopDataTemplates;
+            var templates = ShopSaveDataTemplate.shopTitleData.shopCatalog;
 
             for (int i = 0; i < 5; i++)
             {
@@ -110,9 +112,7 @@ namespace EvolveThisMatch.Lobby
             {
                 var instance = Instantiate(_mainTabPrefab, _mainTabParent);
                 var mainTab = instance.GetComponent<UIShopMainTab>();
-                mainTab.Initialize(template, SelectMainTab);
-
-                var datas = template.shopDatas;
+                mainTab.Initialize(template.Key, template.Value, SelectMainTab);
 
                 if (isSelected == false)
                 {
@@ -152,9 +152,12 @@ namespace EvolveThisMatch.Lobby
             _currentTab = tab;
             _currentTab?.Select();
 
-            _background.sprite = tab.template.background;
+            AddressableAssetManager.Instance.GetSprite(tab.mainTabData.mainTabBackground, (background) =>
+            {
+                _background.sprite = background;
+            });
 
-            var datas = tab.template.shopDatas;
+            var datas = tab.mainTabData.subTabGroup;
             for (int i = 0; i < 5; i++)
             {
                 if (i < datas.Count)
@@ -189,11 +192,11 @@ namespace EvolveThisMatch.Lobby
             // 모든 아이템 비활성화
             foreach (var item in _packageShopItems) item.Hide(true);
             foreach (var item in _defaultShopItems) item.Hide(true);
-            foreach (var item in _shopGainItems.Keys) _poolSystem.DeSpawn(item);
+            foreach (var item in _shopRewardItems.Keys) _poolSystem.DeSpawn(item);
             #endregion
 
-            var data = tab.data;
-            var shopCatalog = SaveManager.Instance.shopData.GetShopCatalog(data.subTabName);
+            var data = tab.subTabData;
+            var shopCatalog = SaveManager.Instance.shopData.GetShopCatalog(data.subTab);
 
             #region 상점 최신화
             _remainTime.transform.parent.gameObject.SetActive(false);
@@ -206,9 +209,9 @@ namespace EvolveThisMatch.Lobby
             }
 
             // 상점 최신화 주기가 존재한다면
-            if (data.cycleInterval > 0)
+            if (data.resetInterval > 0)
             {
-                var remainTime = await NetworkTimeManager.Instance.GetRemainTime(shopCatalog.lastBuyTime, data.cycleType, data.cycleInterval);
+                var remainTime = await NetworkTimeManager.Instance.GetRemainTime(shopCatalog.lastBuyTime, Enum.Parse<ECycleType>(data.resetType), data.resetInterval);
 
                 // 아직 최신화 할 때가 되지 않았다면
                 if (remainTime.TotalSeconds > 0)
@@ -224,7 +227,7 @@ namespace EvolveThisMatch.Lobby
             #endregion
 
             #region 아이템 초기화
-            var items = tab.data.GetItems();
+            var items = tab.subTabData.items;
 
             int pIndex = 0;
             int dIndex = 0;
@@ -232,9 +235,9 @@ namespace EvolveThisMatch.Lobby
             {
                 if (item.isPackage)
                 {
-                    var gainItemList = GetGainItem(item.gainShopItemDatas.Count);
+                    var shopRewardItemList = GetShopRewardItem(item.rewards.Count);
 
-                    _packageShopItems[pIndex].Show(shopCatalog, item, gainItemList, (shopItem) => SelectPackage(tab, shopCatalog, shopItem, item));
+                    _packageShopItems[pIndex].Show(shopCatalog, item, shopRewardItemList, (shopItem) => SelectPackage(tab, shopCatalog, shopItem, item));
                     pIndex++;
                 }
                 else
@@ -248,28 +251,31 @@ namespace EvolveThisMatch.Lobby
             #region Variable Display 설정
             VariableDisplayManager.Instance.HideAll();
 
-            foreach (var variableDisplay in tab.data.variableDisplays)
+            foreach (var showVariable in tab.subTabData.showVariable)
             {
-                VariableDisplayManager.Instance.Show(variableDisplay);
+                if (Enum.TryParse<CurrencyType>(showVariable, true, out var currency))
+                {
+                    VariableDisplayManager.Instance.Show(currency);
+                }
             }
             #endregion
         }
 
-        private List<UIShopGainItem> GetGainItem(int count)
+        private List<UIShopRewardItem> GetShopRewardItem(int count)
         {
-            var results = new List<UIShopGainItem>();
+            var results = new List<UIShopRewardItem>();
 
             for (int i = 0; i < count; i++)
             {
-                var instance = _poolSystem.Spawn(_gainItemPrefab);
+                var instance = _poolSystem.Spawn(_rewardItemPrefab);
 
-                if (!_shopGainItems.TryGetValue(instance, out var gainItem))
+                if (!_shopRewardItems.TryGetValue(instance, out var rewardItem))
                 {
-                    gainItem = instance.GetComponent<UIShopGainItem>();
-                    _shopGainItems.Add(instance, gainItem);
+                    rewardItem = instance.GetComponent<UIShopRewardItem>();
+                    _shopRewardItems.Add(instance, rewardItem);
                 }
 
-                results.Add(gainItem);
+                results.Add(rewardItem);
             }
 
             return results;
@@ -286,7 +292,7 @@ namespace EvolveThisMatch.Lobby
             }
 
             // 상점에 표시할 것이라면
-            if (tab.data.isShowRemainTime)
+            if (tab.subTabData.isShowTime)
             {
                 _remainTime.transform.parent.gameObject.SetActive(true);
 
@@ -360,11 +366,11 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         #region 아이템 선택
-        private void SelectPackage(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData)
+        private void SelectPackage(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItem itemData)
         {
             if (!IsPayAble(itemData)) return;
 
-            if (itemData.isPanel)
+            if (itemData.isOpenPanel)
             {
                 _packagePayPanel.Show(shopCatalog, itemData, () => Pay(tab, shopCatalog, shopItem, itemData));
             }
@@ -374,11 +380,11 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        private void SelectDefault(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData)
+        private void SelectDefault(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItem itemData)
         {
             if (!IsPayAble(itemData)) return;
 
-            if (itemData.isPanel)
+            if (itemData.isOpenPanel)
             {
                 _defaultPayPanel.Show(shopCatalog, itemData, (buyCount) => Pay(tab, shopCatalog, shopItem, itemData, buyCount));
             }
@@ -391,14 +397,27 @@ namespace EvolveThisMatch.Lobby
         /// <summary>
         /// 구매 가능 여부
         /// </summary>
-        private bool IsPayAble(ShopItemData itemData)
+        private bool IsPayAble(ShopItem itemData)
         {
-            if (itemData.isCash == false && itemData.price != 0)
+
+            if (itemData.currency != "RM" && itemData.price != 0)
             {
-                int maxValue = itemData.variable.Value / itemData.price;
-                if (maxValue <= 0)
+                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
                 {
-                    // TODO: 재화 부족해서 구매 불가능하다 알림
+                    var value = _currencySystem.GetAmount(currency);
+                    int maxValue = value / itemData.price;
+
+                    if (maxValue <= 0)
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup("재화가 부족해서 구매가 불가능합니다.");
+                        return false;
+                    }
+                }
+                else
+                {
+#if UNITY_EDITOR
+                    Debug.LogError("재화가 등록되어있지 않습니다.");
+#endif
                     return false;
                 }
             }
@@ -408,89 +427,89 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         #region 결제
-        private void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItemData itemData, int buyCount = 1)
+        private void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItem itemData, int buyCount = 1)
         {
-            // 구매 횟수 제한이 있다면
-            if (itemData.buyAbleCount > 0)
-            {
-                // 더 이상 아이템을 구매할 수 없다면
-                int boughtCount = shopItem == null ? 0 : shopItem.boughtCount;
-                if (boughtCount + buyCount > itemData.buyAbleCount)
-                {
-                    return;
-                }
-            }
+            //// 구매 횟수 제한이 있다면
+            //if (itemData.buyAbleCount > 0)
+            //{
+            //    // 더 이상 아이템을 구매할 수 없다면
+            //    int boughtCount = shopItem == null ? 0 : shopItem.boughtCount;
+            //    if (boughtCount + buyCount > itemData.buyAbleCount)
+            //    {
+            //        return;
+            //    }
+            //}
 
-            if (!CanGainShopItem(itemData, buyCount))
-            {
-                // TODO: 오류: 획득할 아이템 품목에 버그가 있습니다.
-                return;
-            }
+            //if (!CanGainShopItem(itemData, buyCount))
+            //{
+            //    // TODO: 오류: 획득할 아이템 품목에 버그가 있습니다.
+            //    return;
+            //}
 
-            bool isSuccess = false;
+            //bool isSuccess = false;
 
-            if (itemData.isCash)
-            {
-                isSuccess = CashPay(itemData);
-            }
-            else
-            {
-                isSuccess = VariablePay(itemData, buyCount);
-            }
+            //if (itemData.isCash)
+            //{
+            //    isSuccess = CashPay(itemData);
+            //}
+            //else
+            //{
+            //    isSuccess = VariablePay(itemData, buyCount);
+            //}
 
-            if (isSuccess)
-            {
-                // 아이템 획득
-                foreach (var gainItem in itemData.gainShopItemDatas)
-                {
-                    gainItem.GainShopItem(buyCount);
-                }
+            //if (isSuccess)
+            //{
+            //    // 아이템 획득
+            //    foreach (var gainItem in itemData.gainShopItemDatas)
+            //    {
+            //        gainItem.GainShopItem(buyCount);
+            //    }
 
-                // 구매 횟수 제한이 있다면
-                if (itemData.buyAbleCount > 0)
-                {
-                    shopCatalog.AddItem(itemData.itemName, buyCount);
-                }
+            //    // 구매 횟수 제한이 있다면
+            //    if (itemData.buyAbleCount > 0)
+            //    {
+            //        shopCatalog.AddItem(itemData.itemName, buyCount);
+            //    }
 
-                tab.Select();
+            //    tab.Select();
 
-                _ = SaveManager.Instance.SaveData(SaveKey.Profile, SaveKey.Shop);
-            }
+            //    _ = SaveManager.Instance.SaveData(SaveKey.Profile, SaveKey.Shop);
+            //}
         }
 
-        private bool CanGainShopItem(ShopItemData itemData, int buyCount)
-        {
-            foreach (var gainItem in itemData.gainShopItemDatas)
-            {
-                if (!gainItem.CanGainShopItem(buyCount))
-                    return false;
-            }
-            return true;
-        }
+        //private bool CanGainShopItem(ShopItem itemData, int buyCount)
+        //{
+        //    foreach (var gainItem in itemData.gainShopItemDatas)
+        //    {
+        //        if (!gainItem.CanGainShopItem(buyCount))
+        //            return false;
+        //    }
+        //    return true;
+        //}
 
-        /// <summary>
-        /// 현금 결제
-        /// </summary>
-        private bool CashPay(ShopItemData itemData)
-        {
-            // TODO: 구글 플레이스토어 결제는 추후 구현
+        ///// <summary>
+        ///// 현금 결제
+        ///// </summary>
+        //private bool CashPay(ShopItem itemData)
+        //{
+        //    // TODO: 구글 플레이스토어 결제는 추후 구현
 
-            return true;
-        }
+        //    return true;
+        //}
 
-        /// <summary>
-        /// 인게임 재화 결제
-        /// </summary>
-        private bool VariablePay(ShopItemData itemData, int buyCount)
-        {
-            int payValue = itemData.price * buyCount;
+        ///// <summary>
+        ///// 인게임 재화 결제
+        ///// </summary>
+        //private bool VariablePay(ShopItem itemData, int buyCount)
+        //{
+        //    int payValue = itemData.price * buyCount;
 
-            if (payValue > itemData.variable.Value) return false;
+        //    if (payValue > itemData.variable.Value) return false;
 
-            itemData.variable.AddValue(-payValue);
+        //    itemData.variable.AddValue(-payValue);
 
-            return true;
-        }
+        //    return true;
+        //}
         #endregion
 
         public void Hide()

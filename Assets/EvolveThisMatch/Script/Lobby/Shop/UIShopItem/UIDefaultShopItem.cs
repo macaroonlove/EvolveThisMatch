@@ -1,4 +1,5 @@
 using EvolveThisMatch.Save;
+using FrameWork.PlayFabExtensions;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -8,7 +9,7 @@ namespace EvolveThisMatch.Lobby
     {
         private UnityAction<ShopSaveData.ShopItem> _onSelect;
 
-        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItemData itemData, UnityAction<ShopSaveData.ShopItem> onSelect)
+        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, UnityAction<ShopSaveData.ShopItem> onSelect)
         {
             _onSelect = onSelect;
 

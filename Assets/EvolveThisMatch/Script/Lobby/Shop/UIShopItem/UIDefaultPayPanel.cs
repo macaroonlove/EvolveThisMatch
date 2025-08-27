@@ -1,4 +1,7 @@
+using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.PlayFabExtensions;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -40,10 +43,14 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _counterText;
         private Slider _counterSlider;
 
+        private CurrencySystem _currencySystem;
+
         private UnityAction<int> _onPay;
 
         protected override void Initialize()
         {
+            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
+
             BindButton(typeof(Buttons));
             BindImage(typeof(Images));
             BindText(typeof(Texts));
@@ -66,14 +73,14 @@ namespace EvolveThisMatch.Lobby
             _counterSlider.onValueChanged.AddListener(ChangeCounter);
         }
 
-        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItemData itemData, UnityAction<int> onPay)
+        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, UnityAction<int> onPay)
         {
             _onPay = onPay;
 
             base.Show(shopCatalog, itemData);
 
             #region 아이템 구매 횟수 결정
-            if (itemData.isCash)
+            if (itemData.currency == "RM")
             {
                 _counterText.transform.parent.gameObject.SetActive(false);
             }
@@ -81,10 +88,15 @@ namespace EvolveThisMatch.Lobby
             {
                 _counterText.transform.parent.gameObject.SetActive(true);
 
-                int maxValue = itemData.variable.Value / itemData.price;
-                maxValue = Mathf.Min(maxValue, itemData.buyAbleCount);
-                _counterSlider.maxValue = maxValue;
+                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
+                {
+                    var value = _currencySystem.GetAmount(currency);
 
+                    int maxValue = value / itemData.price;
+                    maxValue = Mathf.Min(maxValue, itemData.buyAbleCount);
+                    _counterSlider.maxValue = maxValue;
+                }
+                
                 _counterSlider.value = 1;
                 ChangeCounter(1);
             }

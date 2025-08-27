@@ -64,18 +64,6 @@ namespace EvolveThisMatch.Save
         {
             _data = new ItemSaveData();
 
-            // 임시 아티팩트 추가
-            for (int i = 0; i < 21; i++)
-            {
-                AddArtifact(i);
-            }
-
-            // 임시 고서 추가
-            for (int i = 0; i < 4; i++)
-            {
-                AddTome(i);
-            }
-
             isLoaded = true;
         }
 

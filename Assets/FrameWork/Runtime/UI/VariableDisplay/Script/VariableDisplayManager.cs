@@ -33,7 +33,7 @@ namespace FrameWork.UI
             {
                 if (_intVariables[i].isEmpty)
                 {
-                    _intVariables[i].SetVariable(intVariable);
+                    _intVariables[i]?.SetVariable(intVariable);
                     break;
                 }
             }

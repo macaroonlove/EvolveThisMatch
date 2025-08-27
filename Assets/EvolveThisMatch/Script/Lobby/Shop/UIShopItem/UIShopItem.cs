@@ -1,6 +1,9 @@
+using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,12 +36,14 @@ namespace EvolveThisMatch.Lobby
         protected TextMeshProUGUI _purchaseLimitText;
         protected CanvasGroupController _purchaseLimit;
         protected CanvasGroupController _buyComplete;
-        
+
+        private CurrencySystem _currencySystem;
         protected ShopSaveData.ShopItem _shopItem;
         protected bool _isBuyAble;
 
         protected override void Initialize()
         {
+            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
             BindImage(typeof(Images));
             BindText(typeof(Texts));
             BindCanvasGroupController(typeof(CanvasGroups));
@@ -51,10 +56,13 @@ namespace EvolveThisMatch.Lobby
             _buyComplete = GetCanvasGroupController((int)CanvasGroups.BuyComplete);
         }
 
-        protected void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItemData itemData)
+        protected void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData)
         {
-            _itemIcon.sprite = itemData.itemIcon;
-            _itemName.text = itemData.itemName;
+            AddressableAssetManager.Instance.GetSprite(itemData.icon, (sprite) => {
+                _itemIcon.sprite = sprite;
+            });
+
+            _itemName.text = itemData.displayName;
 
             int price = itemData.price;
             if (price == 0)
@@ -63,26 +71,29 @@ namespace EvolveThisMatch.Lobby
             }
             else
             {
-                if (itemData.isCash)
+                if (itemData.currency == "RM")
                 {
                     _payText.text = $"￦ {price}";
                 }
                 else
                 {
-                    _payText.text = $"<sprite name={itemData.variable.IconText}> {price}";
+                    string iconText = UpperFirst(itemData.currency);
+                    var isPayAble = IsPayAble(itemData);
+                    if (isPayAble) _payText.text = $"<sprite name={iconText}> {price}";
+                    else _payText.text = $"<color=red><sprite name={iconText}> {price}</color>";
                 }
             }
 
             _shopItem = null;
             _isBuyAble = true;
 
-            _buyComplete.Hide(true);
+            _buyComplete?.Hide(true);
 
             // 구매 횟수 제한이 있다면
             if (itemData.buyAbleCount > 0)
             {
                 _purchaseLimit.Show(true);
-                _shopItem = shopCatalog.GetItem(itemData.itemName);
+                _shopItem = shopCatalog.GetItem(itemData.displayName);
 
                 if (_shopItem != null)
                 {
@@ -92,7 +103,7 @@ namespace EvolveThisMatch.Lobby
                     if (remainCount <= 0)
                     {
                         _isBuyAble = false;
-                        _buyComplete.Show(true);
+                        _buyComplete?.Show(true);
                     }
                 }
                 else
@@ -104,6 +115,41 @@ namespace EvolveThisMatch.Lobby
             {
                 _purchaseLimit.Hide(true);
             }
+        }
+
+        /// <summary>
+        /// 구매 가능 여부
+        /// </summary>
+        private bool IsPayAble(ShopItem itemData)
+        {
+
+            if (itemData.currency != "RM" && itemData.price != 0)
+            {
+                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
+                {
+                    var value = _currencySystem.GetAmount(currency);
+                    int maxValue = value / itemData.price;
+
+                    if (maxValue <= 0)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public string UpperFirst(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return str;
+
+            return char.ToUpper(str[0]) + str.Substring(1);
         }
     }
 }

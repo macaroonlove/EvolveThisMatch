@@ -757,8 +757,7 @@ MonoBehaviour:
   _packageItemPrefab: {fileID: 6278394147793976240, guid: c65758461d27d3d49b0d4efcade705fc, type: 3}
   _defaultItemPrefab: {fileID: 4335256558450763796, guid: 8ed6c5df0a4350e40a6ef420d091064d, type: 3}
   _itemParent: {fileID: 4034566153055448603}
-  _gainItemPrefab: {fileID: 8646042082984435606, guid: c159a51ec8d52c042af2a7157a5255d1, type: 3}
-  _shopDataTemplateLibrary: {fileID: 11400000, guid: b7642abc34686284fa758d243411d638, type: 2}
+  _rewardItemPrefab: {fileID: 8646042082984435606, guid: c159a51ec8d52c042af2a7157a5255d1, type: 3}
 --- !u!1 &5941714121564593627
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using FrameWork.UIPopup;
+using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.ClientModels;
 using System;
@@ -44,6 +45,22 @@ namespace FrameWork.PlayFabExtensions
             foodExp = agentData.foodExp.Select(v => (ObscuredInt)v).ToArray();
         }
 
+        public static ShopTitleData LoadShopData()
+        {
+            if (!_titleData.TryGetValue("ShopData", out string json))
+            {
+#if UNITY_EDITOR
+                Debug.LogError("ShopData를 찾을 수 없습니다.");
+#endif
+                return null;
+            }
+
+            var shopData = JsonConvert.DeserializeObject<ShopTitleData>(json);
+
+            return shopData;
+        }
+
+        #region 오류 처리
         private static void DebugPlayFabError(PlayFabError error)
         {
             switch (error.Error)
@@ -72,8 +89,10 @@ namespace FrameWork.PlayFabExtensions
                     break;
             }
         }
+        #endregion
     }
 
+    #region AgentTitleData
     [Serializable]
     public class AgentTitleData
     {
@@ -81,4 +100,54 @@ namespace FrameWork.PlayFabExtensions
         public int[] agentMaxLevelPerTier;
         public int[] foodExp;
     }
+    #endregion
+
+    #region ShopTitleData
+    [Serializable]
+    public class ShopTitleData
+    {
+        public Dictionary<string, ShopMainTab> shopCatalog;
+    }
+
+    [Serializable]
+    public class ShopMainTab
+    {
+        public string mainTabBackground;
+        public List<ShopSubTab> subTabGroup;
+    }
+
+    [Serializable]
+    public class ShopSubTab
+    {
+        public string subTab;
+        public string shopType;
+        public List<string> showVariable;
+        public string resetType;
+        public int resetInterval;
+        public bool isShowTime;
+        public List<ShopItem> items;
+    }
+
+    [Serializable]
+    public class ShopItem
+    {
+        public string id;
+        public string displayName;
+        public string icon;
+        public string currency;
+        public int price;
+        public int buyAbleCount;
+        public bool isPackage;
+        public bool isOpenPanel;
+        public List<Reward> rewards;
+    }
+
+    [Serializable]
+    public class Reward
+    {
+        public string type;
+        public string key;
+        public int amount;
+    }
+    #endregion
 }

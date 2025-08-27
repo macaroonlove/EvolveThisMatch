@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.SceneManagement;
 
 namespace FrameWork
@@ -226,6 +227,43 @@ namespace FrameWork
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             ReleaseAll();
+
+            switch (scene.name)
+            {
+                case "Lobby":
+                    LoadResources("LobbyResource");
+                    break;
+                case "Battle":
+                    LoadResources("BattleResource");
+                    break;
+            }
+        }
+
+        private void LoadResources(string label)
+        {
+            AsyncOperationHandle<IList<IResourceLocation>> handle = Addressables.LoadResourceLocationsAsync(label);
+
+            handle.Completed += op =>
+            {
+                foreach (var address in op.Result)
+                {
+                    if (address.ResourceType == typeof(Texture2D))
+                    {
+                        GetSprite(address.PrimaryKey, null);
+                    }
+                    else if (address.ResourceType == typeof(AudioClip))
+                    {
+                        GetAudioClip(address.PrimaryKey, null);
+                    }
+                    else if (address.ResourceType == typeof(ScriptableObject))
+                    {
+                        Addressables.LoadAssetAsync<ScriptableObject>(address.PrimaryKey).Completed += so =>
+                        {
+                            _scriptableObjects[address.PrimaryKey] = Addressables.ResourceManager.CreateCompletedOperation(so.Result, "");
+                        };
+                    }
+                }
+            };
         }
     }
 }
