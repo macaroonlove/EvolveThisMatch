@@ -28,6 +28,7 @@ namespace FrameWork.VisualNovel
     {
         public abstract CommandType command { get; }
 
+#if UNITY_EDITOR
         public virtual void Draw(Rect rect)
         {
             var commandRect = new Rect(rect.x, rect.y + 4, 125, 20);
@@ -38,6 +39,7 @@ namespace FrameWork.VisualNovel
         {
             return 1;
         }
+#endif
     }
 
     [Serializable]

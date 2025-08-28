@@ -1,0 +1,232 @@
+<linker>
+  <assembly fullname="DamageNumbersPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="DamageNumbersPro.DamageNumberMesh" preserve="all" />
+    <type fullname="DamageNumbersPro.CollisionSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.ColorByNumberSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.CombinationMethod" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.CombinationSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.DestructionSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.DigitSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.DistanceScalingSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.FollowSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.LerpSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.PushSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.ScaleByNumberSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.ShakeSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.TextSettings" preserve="nothing" serialized="true" />
+    <type fullname="DamageNumbersPro.VelocitySettings" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="EvolveThisMatch.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="EvolveThisMatch.Core.AbnormalStatusAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AbnormalStatusResistanceAdditionalDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AbnormalStatusSkillEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AbnormalStatusTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ActiveSkillAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ActiveSkillTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentLevelLibrary" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentLibraryTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentRarityLibrary" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentRarityTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentTalentLibrary" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentUnit" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AlwaysGameTrigger" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ArtifactLibraryTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ArtifactTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ATKIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ATKIncreaseRuntimeDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AttackAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AttackEventHandler" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AttackSpeedIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AttackSpeedIncreaseRuntimeDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AvoidanceAdditionalDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.BattleDataTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.BuffAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.BuffByConditionAlwaysEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.BuffTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ChangeIntVariableGlobalEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.CriticalHitChanceAdditionalDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.CriticalHitChanceAdditionalRuntimeDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.DamageCalculateAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.DamageIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.DamageSkillEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.DeployAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.EnemyRarityTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.EnemyTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.EnemyUnit" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.EntitySpawnAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.FindTargetAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.FullDistortionFadeFX" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.FXAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.FXLibrary" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.GameDataManager" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.GlobalEvent" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.GlobalEventGameTrigger" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.HealthAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.HitAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.HPBar" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.HPRecoveryPerSecByMaxHPIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.InstantGetTargetUnitEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.InstantUnitEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.JobTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.MagicPenetrationIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.MagicResistanceIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.MoveBoundaryAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.MoveChaseAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.PassiveSkillAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.PassiveSkillTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.PhysicalResistanceIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ProjectileGetTargetUnitEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.ReleaseFullDistortionFadeFX" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SFX" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkillCooldownIncreaseDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkillCooldownIncreaseRuntimeDataEffect" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkillEventHandler" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkillStateMachine" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkillTypeTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkinBattleTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkinLibraryTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkinLobbyTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SkinTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.StraightUnitProjectile" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.SynergyTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.TomeLibraryTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.TomeTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.UnitAnimationAbility" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.UnitEvent" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.UnitEventGameTrigger" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.VFX" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.VFXDespawn" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.WaveLibraryTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.WaveTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Core.AgentLevelData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.AgentRarityProbabilityData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.AgentTalentData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.ApplyTypeByAmountData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.GetTargetData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.RewardData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.SynergyData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.TypeEngraveData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Core.WaveInfo" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="EvolveThisMatch.Save, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="EvolveThisMatch.Save.AgentSaveDataTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Save.DepartmentSaveDataTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Save.FormationSaveDataTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Save.ItemSaveDataTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Save.ProfileSaveDataTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Save.SaveManager" preserve="all" />
+    <type fullname="EvolveThisMatch.Save.ShopSaveDataTemplate" preserve="all" />
+    <type fullname="EvolveThisMatch.Save.AgentSaveData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.AgentSaveData/Agent" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.AgentSaveData/Talent" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.DepartmentSaveData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.DepartmentSaveData/Department" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.FormationSaveData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.ItemSaveData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.ItemSaveData/Artifact" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.ItemSaveData/Tome" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.ProfileSaveData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.ShopSaveData" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.ShopSaveData/ShopCatalog" preserve="nothing" serialized="true" />
+    <type fullname="EvolveThisMatch.Save.ShopSaveData/ShopItem" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="FrameWork, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="FrameWork.CanvasGroupController" preserve="all" />
+  </assembly>
+  <assembly fullname="FrameWork.Loading, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="FrameWork.Loading.LoadingManager" preserve="all" />
+    <type fullname="FrameWork.Loading.UILoadingCanvas" preserve="all" />
+  </assembly>
+  <assembly fullname="ScriptableObject-Architecture, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="ScriptableObjectArchitecture.ObscuredIntVariable" preserve="all" />
+    <type fullname="ScriptableObjectArchitecture.ObscuredIntEvent" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.U2D.Animation.SpriteSkin" preserve="all" />
+  </assembly>
+  <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />
+    <type fullname="UnityEngine.AddressableAssets.AssetReference" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.Localization, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Localization.Locale" preserve="all" />
+    <type fullname="UnityEngine.Localization.Tables.SharedTableData" preserve="all" />
+    <type fullname="UnityEngine.Localization.Tables.StringTable" preserve="all" />
+    <type fullname="UnityEngine.Localization.LocaleIdentifier" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.Localization.Metadata.MetadataCollection" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.Localization.Tables.TableEntryData" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.Localization.Tables.DistributedUIDGenerator" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.Localization.Tables.SharedTableData/SharedTableEntry" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.InstanceProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.SceneProvider" preserve="all" />
+  </assembly>
+  <assembly fullname="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="TMPro.TextMeshPro" preserve="all" />
+    <type fullname="TMPro.TMP_FontAsset" preserve="all" />
+    <type fullname="TMPro.FaceInfo_Legacy" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.FontAssetCreationSettings" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.KerningTable" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_Character" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_FontFeatureTable" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_FontWeightPair" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.VertexGradient" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.AnimationClip" preserve="all" />
+    <type fullname="UnityEngine.Animator" preserve="all" />
+    <type fullname="UnityEngine.AnimatorOverrideController" preserve="all" />
+    <type fullname="UnityEngine.RuntimeAnimatorController" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.GameObject" preserve="all" />
+    <type fullname="UnityEngine.Material" preserve="all" />
+    <type fullname="UnityEngine.MeshFilter" preserve="all" />
+    <type fullname="UnityEngine.MeshRenderer" preserve="all" />
+    <type fullname="UnityEngine.Object" preserve="all" />
+    <type fullname="UnityEngine.RectTransform" preserve="all" />
+    <type fullname="UnityEngine.Rendering.SortingGroup" preserve="all" />
+    <type fullname="UnityEngine.Shader" preserve="all" />
+    <type fullname="UnityEngine.Sprite" preserve="all" />
+    <type fullname="UnityEngine.SpriteRenderer" preserve="all" />
+    <type fullname="UnityEngine.Texture2D" preserve="all" />
+    <type fullname="UnityEngine.Transform" preserve="all" />
+    <type fullname="UnityEngine.U2D.SpriteAtlas" preserve="all" />
+    <type fullname="UnityEngine.Events.PersistentCallGroup" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.ParticleSystem" preserve="all" />
+    <type fullname="UnityEngine.ParticleSystemRenderer" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.BoxCollider" preserve="all" />
+    <type fullname="UnityEngine.Rigidbody" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.UI.CanvasScaler" preserve="all" />
+    <type fullname="UnityEngine.UI.GraphicRaycaster" preserve="all" />
+    <type fullname="UnityEngine.UI.Image" preserve="all" />
+    <type fullname="UnityEngine.UI.MaskableGraphic/CullStateChangedEvent" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Canvas" preserve="all" />
+    <type fullname="UnityEngine.CanvasGroup" preserve="all" />
+    <type fullname="UnityEngine.CanvasRenderer" preserve="all" />
+  </assembly>
+  <assembly fullname="ACTk.Runtime">
+    <type fullname="CodeStage.AntiCheat.ObscuredTypes.ObscuredInt" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.TextCoreFontEngineModule">
+    <type fullname="UnityEngine.TextCore.FaceInfo" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.Glyph" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.GlyphMetrics" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.GlyphRect" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="VInspector">
+    <type fullname="VInspector.SerializedDictionary`2" preserve="nothing" serialized="true" />
+  </assembly>
+</linker>

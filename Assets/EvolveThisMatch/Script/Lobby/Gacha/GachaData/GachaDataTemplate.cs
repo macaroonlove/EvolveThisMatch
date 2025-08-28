@@ -13,6 +13,7 @@ namespace EvolveThisMatch.Lobby
     }
 }
 
+#if UNITY_EDITOR
 namespace EvolveThisMatch.Editor
 {
     using EvolveThisMatch.Lobby;
@@ -106,3 +107,4 @@ namespace EvolveThisMatch.Editor
         }
     }
 }
+#endif

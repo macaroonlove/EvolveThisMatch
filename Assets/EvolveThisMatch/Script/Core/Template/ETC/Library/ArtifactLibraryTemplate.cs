@@ -9,6 +9,7 @@ namespace EvolveThisMatch.Core
     {
         public List<ArtifactTemplate> templates = new List<ArtifactTemplate>();
 
+#if UNITY_EDITOR
         [ContextMenu("모든 ArtifactTemplate 찾기")]
         public void FindAllRefresh()
         {
@@ -32,5 +33,6 @@ namespace EvolveThisMatch.Core
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
+#endif
     }
 }

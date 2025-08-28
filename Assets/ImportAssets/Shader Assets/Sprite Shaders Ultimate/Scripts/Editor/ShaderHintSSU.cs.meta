@@ -9,3 +9,10 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158988
+  packageName: Sprite Shaders Ultimate
+  packageVersion: 6.16
+  assetPath: Assets/ImportAssets/Shader Assets/Sprite Shaders Ultimate/Scripts/Editor/ShaderHintSSU.cs
+  uploadId: 764641

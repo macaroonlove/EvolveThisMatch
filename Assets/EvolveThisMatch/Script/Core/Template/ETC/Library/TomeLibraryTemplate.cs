@@ -9,6 +9,7 @@ namespace EvolveThisMatch.Core
     {
         public List<TomeTemplate> templates = new List<TomeTemplate>();
 
+#if UNITY_EDITOR
         [ContextMenu("모든 TomeTemplate 찾기")]
         public void FindAllRefresh()
         {
@@ -32,5 +33,6 @@ namespace EvolveThisMatch.Core
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
+#endif
     }
 }

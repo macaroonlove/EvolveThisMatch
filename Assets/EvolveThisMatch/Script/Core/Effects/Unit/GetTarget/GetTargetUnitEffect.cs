@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using EvolveThisMatch.Editor;
-using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core

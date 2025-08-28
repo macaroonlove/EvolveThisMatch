@@ -136,6 +136,7 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+#if UNITY_EDITOR
         public Rect Draw(Rect rect)
         {
             var labelRect = new Rect(rect.x, rect.y, 140, rect.height);
@@ -269,5 +270,6 @@ namespace EvolveThisMatch.Core
 
             return rowNum;
         }
+#endif
     }
 }

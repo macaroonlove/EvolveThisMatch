@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -6,6 +5,7 @@ using UnityEngine;
 
 namespace FrameWork.VisualNovel.Editor
 {
+#if UNITY_EDITOR
     public class VisualNovelEditorWindow : EditorWindow
     {
         private int _selectedStoryIndex = 0;
@@ -206,7 +206,7 @@ namespace FrameWork.VisualNovel.Editor
         {
             // 템플릿 생성
             ChapterTemplate template = CreateInstance<ChapterTemplate>();
-            
+
             // 에셋 저장
             string text = Path.GetFileName(_storyDirectories[_selectedStoryIndex]);
             string defaultPath = _storyDirectories[_selectedStoryIndex];
@@ -255,4 +255,5 @@ namespace FrameWork.VisualNovel.Editor
             GUILayout.Space(5);
         }
     }
+#endif
 }

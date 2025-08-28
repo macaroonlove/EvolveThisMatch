@@ -9,6 +9,7 @@ using UnityEngine.Events;
 
 namespace EvolveThisMatch.Editor
 {
+#if UNITY_EDITOR
     public class DataSystemEditorWindow : EditorWindow
     {
         private int selectedTab = 0;
@@ -650,4 +651,5 @@ namespace EvolveThisMatch.Editor
         }
         #endregion
     }
+#endif
 }

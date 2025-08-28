@@ -1,13 +1,11 @@
-using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Core;
 using System;
 using System.Collections.Generic;
-using EvolveThisMatch.Core;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.Networking;
 
 namespace EvolveThisMatch.Editor
 {
+#if UNITY_EDITOR
     public class LoadSummonTemplateEditorWindow : LoadTemplateEditorWindow
     {
         protected override void ConvertCSVToTemplate(Dictionary<string, List<string>> csvDic)
@@ -325,4 +323,5 @@ namespace EvolveThisMatch.Editor
         }
         #endregion
     }
+#endif
 }

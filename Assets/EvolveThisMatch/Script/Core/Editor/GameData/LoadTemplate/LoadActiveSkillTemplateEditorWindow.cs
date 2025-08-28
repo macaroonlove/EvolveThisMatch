@@ -5,6 +5,7 @@ using UnityEditor;
 
 namespace EvolveThisMatch.Editor
 {
+#if UNITY_EDITOR
     public class LoadActiveSkillTemplateEditorWindow : LoadTemplateEditorWindow
     {
         protected override void ConvertCSVToTemplate(Dictionary<string, List<string>> csvDic)
@@ -162,4 +163,5 @@ namespace EvolveThisMatch.Editor
         }
         #endregion
     }
+#endif
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace FrameWork.VisualNovel.Editor
 {
+#if UNITY_EDITOR
     public class InputDialogEditorWindow : EditorWindow
     {
         private string _massageText;
@@ -44,4 +45,5 @@ namespace FrameWork.VisualNovel.Editor
             GUILayout.EndHorizontal();
         }
     }
+#endif
 }

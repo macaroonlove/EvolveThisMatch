@@ -10,6 +10,7 @@ namespace EvolveThisMatch.Core
     {
         public SerializedDictionary<SkinTemplate, AgentTemplate> templates = new SerializedDictionary<SkinTemplate, AgentTemplate>();
 
+#if UNITY_EDITOR
         [Header("필터 (기본 스킨은 제외됩니다.)")]
         [Label("모든 스킨"), SerializeField] private bool _isAll;
         //[HideIf("_isAll")]
@@ -48,5 +49,6 @@ namespace EvolveThisMatch.Core
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
+#endif
     }
 }

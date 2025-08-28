@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace EvolveThisMatch.Editor
 {
+#if UNITY_EDITOR
     public class LoadArtifactTemplateEditorWindow : LoadTemplateEditorWindow
     {
         protected override void ConvertCSVToTemplate(Dictionary<string, List<string>> csvDic)
@@ -78,4 +79,5 @@ namespace EvolveThisMatch.Editor
             AssetDatabase.Refresh();
         }
     }
+#endif
 }

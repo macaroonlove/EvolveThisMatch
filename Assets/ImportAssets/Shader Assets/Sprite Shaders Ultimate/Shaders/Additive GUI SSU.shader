@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.8
+// Made with Amplify Shader Editor v1.9.8.1
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 {
@@ -21,6 +21,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
         [Toggle(_ISTEXTMESHPRO_ON)] _IsTextMeshPro("Is Text Mesh Pro", Float) = 0
         _TMPThickness("TMP: Thickness", Range( -0.99 , 0)) = -0.45
         _TMPSmoothness("TMP: Smoothness", Float) = 5
+        [HideInInspector]_UIVertexColorAlwaysGammaSpace("UIVertexColorAlwaysGammaSpace", Int) = 0
         [Toggle(_VERTEXTINTFIRST_ON)] _VertexTintFirst("Vertex Tint First", Float) = 0
         [Toggle(_PIXELPERFECTSPACE_ON)] _PixelPerfectSpace("Pixel Perfect Space", Float) = 0
         [Toggle(_PIXELPERFECTUV_ON)] _PixelPerfectUV("Pixel Perfect UV", Float) = 0
@@ -126,6 +127,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
         _PixelOutlineFade("Pixel Outline: Fade", Range( 0 , 1)) = 1
         [HDR]_PixelOutlineColor("Pixel Outline: Color", Color) = (0,0,0,1)
         _PixelOutlineWidth("Pixel Outline: Width", Float) = 1
+        _PixelOutlineAlphaLimit("Pixel Outline: Alpha Limit", Range( 0 , 1)) = 0.5
         [Toggle(_PIXELOUTLINETEXTURETOGGLE_ON)] _PixelOutlineTextureToggle("Pixel Outline: Texture Toggle", Float) = 0
         _PixelOutlineTintTexture("Pixel Outline: Tint Texture", 2D) = "white" {}
         _PixelOutlineTextureSpeed("Pixel Outline: Texture Speed", Vector) = (0.5,0,0,0)
@@ -522,7 +524,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
         [Toggle(_ENABLESCREENTILING_ON)] _EnableScreenTiling("Enable Screen Tiling", Float) = 0
         _ScreenTilingScale("Screen Tiling: Scale", Vector) = (1,1,0,0)
         _ScreenTilingOffset("Screen Tiling: Offset", Vector) = (0,0,0,0)
-        [ASEEnd]_ScreenTilingPixelsPerUnit("Screen Tiling: Pixels Per Unit", Float) = 100
+        _ScreenTilingPixelsPerUnit("Screen Tiling: Pixels Per Unit", Float) = 100
         [HideInInspector] _texcoord( "", 2D ) = "white" {}
 
     }
@@ -561,10 +563,11 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
         {
             Name "Default"
         CGPROGRAM
-            
+            #define ASE_VERSION 19801
+
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 3.0
+            #pragma target 3.5
 
             #include "UnityCG.cginc"
             #include "UnityUI.cginc"
@@ -787,9 +790,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             uniform float _RectWidth;
             uniform float _RectHeight;
             #endif
-            #ifdef _SHADERSPACE_SCREEN
             uniform float _ScreenWidthUnits;
-            #endif
             uniform float2 _FadingNoiseScale;
             #ifdef _SHADERFADING_SPREAD
             uniform float2 _FadingPosition;
@@ -900,6 +901,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             uniform float _TMPThickness;
             uniform float _TMPSmoothness;
             #endif
+            uniform int _UIVertexColorAlwaysGammaSpace;
             #ifdef _ENABLESMOKE_ON
             uniform float _SmokeVertexSeed;
             uniform float _SmokeNoiseScale;
@@ -1040,6 +1042,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             uniform sampler2D _PixelOutlineTintTexture;
             uniform float2 _PixelOutlineTextureSpeed;
             uniform float _PixelOutlineFade;
+            uniform float _PixelOutlineAlphaLimit;
             uniform float _PixelOutlineWidth;
             #endif
             #ifdef _ENABLEPINGPONGGLOW_ON
@@ -1320,7 +1323,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1330,7 +1333,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1378,7 +1381,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1388,7 +1391,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1398,7 +1401,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1408,7 +1411,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1418,7 +1421,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1428,7 +1431,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1438,7 +1441,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1448,7 +1451,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1458,7 +1461,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1478,32 +1481,44 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	return tex2Dlod(tex, float4(clampedUV,0, min(mip.x, mip.y)));
             }
             
-            float MyCustomExpression16_g12143( float linValue )
+            float4 MyCustomExpression2_g13092( float4 InColor, int GammaSpace )
+            {
+            	if (GammaSpace)
+            	                {
+            	                    if(!IsGammaSpace())
+            	                    {
+            	                        InColor.rgb = UIGammaToLinear(InColor.rgb);
+            	                    }
+            	                }
+            	return InColor;
+            }
+            
+            float MyCustomExpression16_g13097( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12145( float linValue )
+            float MyCustomExpression16_g13099( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12149( float linValue )
+            float MyCustomExpression16_g13103( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
@@ -1517,7 +1532,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	float e = 1.0e-10;
             	return float3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
             }
-            float3 MyCustomExpression115_g12154( float3 In, float3 From, float3 To, float Fuzziness, float Range )
+            float3 MyCustomExpression115_g13108( float3 In, float3 From, float3 To, float Fuzziness, float Range )
             {
             	float Distance = distance(From, In);
             	return lerp(To, In, saturate((Distance - Range) / max(Fuzziness, 0.001)));
@@ -1530,197 +1545,197 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	return c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );
             }
             
-            float MyCustomExpression16_g12177( float linValue )
+            float MyCustomExpression16_g13131( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12161( float linValue )
+            float MyCustomExpression16_g13115( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12188( float linValue )
+            float MyCustomExpression16_g13142( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12196( float linValue )
+            float MyCustomExpression16_g13150( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12234( float linValue )
+            float MyCustomExpression16_g13188( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12231( float linValue )
+            float MyCustomExpression16_g13185( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12233( float linValue )
+            float MyCustomExpression16_g13187( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12223( float linValue )
+            float MyCustomExpression16_g13177( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12225( float linValue )
+            float MyCustomExpression16_g13179( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12216( float linValue )
+            float MyCustomExpression16_g13170( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12218( float linValue )
+            float MyCustomExpression16_g13172( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12219( float linValue )
+            float MyCustomExpression16_g13173( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12211( float linValue )
+            float MyCustomExpression16_g13165( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12209( float linValue )
+            float MyCustomExpression16_g13163( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12210( float linValue )
+            float MyCustomExpression16_g13164( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12205( float linValue )
+            float MyCustomExpression16_g13159( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12237( float linValue )
+            float MyCustomExpression16_g13191( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12242( float linValue )
+            float MyCustomExpression16_g13196( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12240( float linValue )
+            float MyCustomExpression16_g13194( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float2 MyCustomExpression10_g12252( float2 UV, int Width, int Height, float Tile, float2 Invert )
+            float2 MyCustomExpression10_g13206( float2 UV, int Width, int Height, float Tile, float2 Invert )
             {
             	Tile = fmod(Tile + 0.001, Width * Height);
             	float2 tileCount = float2(1, 1) / float2(Width, Height);
@@ -1729,7 +1744,7 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	return (UV + float2(tileX, tileY)) * tileCount;
             }
             
-            float2 MyCustomExpression10_g12248( float2 UV, int Width, int Height, float Tile, float2 Invert )
+            float2 MyCustomExpression10_g13202( float2 UV, int Width, int Height, float Tile, float2 Invert )
             {
             	Tile = fmod(Tile + 0.001, Width * Height);
             	float2 tileCount = float2(1, 1) / float2(Width, Height);
@@ -1738,68 +1753,68 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
             	return (UV + float2(tileX, tileY)) * tileCount;
             }
             
-            float MyCustomExpression16_g12259( float linValue )
+            float MyCustomExpression16_g13213( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12267( float linValue )
+            float MyCustomExpression16_g13221( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12269( float linValue )
+            float MyCustomExpression16_g13223( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12265( float linValue )
+            float MyCustomExpression16_g13219( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12261( float linValue )
+            float MyCustomExpression16_g13215( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
-            float MyCustomExpression16_g12263( float linValue )
+            float MyCustomExpression16_g13217( float linValue )
             {
             	#ifdef UNITY_COLORSPACE_GAMMA
             	return linValue;
             	#else
-            	linValue = max(linValue, half3(0.h, 0.h, 0.h));
+            	linValue = max(linValue, 0.h);
             	return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
             	#endif
             }
             
 
-            
+
             v2f vert(appdata_t v )
             {
                 v2f OUT;
@@ -1808,20 +1823,20 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 
                 float2 _ZeroVector = float2(0,0);
                 float2 texCoord363 = v.texcoord.xy * float2( 1,1 ) + float2( 0,0 );
-                float4 ase_clipPos = UnityObjectToClipPos(v.vertex);
-                float4 screenPos = ComputeScreenPos(ase_clipPos);
-                float4 ase_screenPosNorm = screenPos / screenPos.w;
+                float4 ase_positionCS = UnityObjectToClipPos( v.vertex );
+                float4 screenPos = ComputeScreenPos( ase_positionCS );
+                float4 ase_positionSSNorm = screenPos / screenPos.w;
                 #ifdef _ENABLESCREENTILING_ON
-                ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+                ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
                 float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-                float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+                float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
                 #else
                 float2 staticSwitch2_g11656 = texCoord363;
                 #endif
-                float3 ase_worldPos = mul(unity_ObjectToWorld, float4( (v.vertex).xyz, 1 )).xyz;
+                float3 ase_positionWS = mul( unity_ObjectToWorld, float4( ( v.vertex ).xyz, 1 ) ).xyz;
                 #ifdef _ENABLEWORLDTILING_ON
                 float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-                float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+                float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
                 #else
                 float2 staticSwitch2_g11657 = staticSwitch2_g11656;
                 #endif
@@ -1850,13 +1865,13 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
                 #endif
                 float2 fixedUV475 = staticSwitch366;
                 #ifdef _ENABLESQUISH_ON
-                float2 break77_g12285 = fixedUV475;
-                float2 appendResult72_g12285 = (float2(( _SquishStretch * ( break77_g12285.x - 0.5 ) * _SquishFade ) , ( _SquishFade * ( break77_g12285.y + _SquishFlip ) * -_SquishSquish )));
-                float2 staticSwitch198 = ( appendResult72_g12285 + _ZeroVector );
+                float2 break77_g13238 = fixedUV475;
+                float2 appendResult72_g13238 = (float2(( _SquishStretch * ( break77_g13238.x - 0.5 ) * _SquishFade ) , ( _SquishFade * ( break77_g13238.y + _SquishFlip ) * -_SquishSquish )));
+                float2 staticSwitch198 = ( appendResult72_g13238 + _ZeroVector );
                 #else
                 float2 staticSwitch198 = _ZeroVector;
                 #endif
-                float2 temp_output_2_0_g12287 = staticSwitch198;
+                float2 temp_output_2_0_g13241 = staticSwitch198;
                 #ifdef _TOGGLECUSTOMTIME_ON
                 float staticSwitch44_g11661 = _TimeValue;
                 #else
@@ -1883,25 +1898,25 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
                 float staticSwitch42_g11661 = staticSwitch38_g11661;
                 #endif
                 float shaderTime237 = staticSwitch42_g11661;
-                float temp_output_8_0_g12287 = shaderTime237;
+                float temp_output_8_0_g13241 = shaderTime237;
                 #ifdef _ENABLESINEMOVE_ON
-                float2 staticSwitch4_g12287 = ( ( sin( ( temp_output_8_0_g12287 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g12287 );
+                float2 staticSwitch4_g13241 = ( ( sin( ( temp_output_8_0_g13241 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g13241 );
                 #else
-                float2 staticSwitch4_g12287 = temp_output_2_0_g12287;
+                float2 staticSwitch4_g13241 = temp_output_2_0_g13241;
                 #endif
                 #ifdef _ENABLEVIBRATE_ON
-                float temp_output_30_0_g12288 = temp_output_8_0_g12287;
-                float3 rotatedValue21_g12288 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g12288 * _VibrateRotation ) );
-                float2 staticSwitch6_g12287 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g12288 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g12288).xy ) + staticSwitch4_g12287 );
+                float temp_output_30_0_g13242 = temp_output_8_0_g13241;
+                float3 rotatedValue21_g13242 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g13242 * _VibrateRotation ) );
+                float2 staticSwitch6_g13241 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g13242 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g13242).xy ) + staticSwitch4_g13241 );
                 #else
-                float2 staticSwitch6_g12287 = staticSwitch4_g12287;
+                float2 staticSwitch6_g13241 = staticSwitch4_g13241;
                 #endif
                 #ifdef _ENABLESINESCALE_ON
-                float2 staticSwitch10_g12287 = ( staticSwitch6_g12287 + ( (v.vertex.xyz).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g12287 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
+                float2 staticSwitch10_g13241 = ( staticSwitch6_g13241 + ( (v.vertex.xyz).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g13241 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
                 #else
-                float2 staticSwitch10_g12287 = staticSwitch6_g12287;
+                float2 staticSwitch10_g13241 = staticSwitch6_g13241;
                 #endif
-                float2 temp_output_424_0 = staticSwitch10_g12287;
+                float2 temp_output_424_0 = staticSwitch10_g13241;
 #ifdef _SHADERFADING_MASK
                 float2 uv_FadingMask = v.texcoord.xy * _FadingMask_ST.xy + _FadingMask_ST.zw;
 				#endif
@@ -1922,20 +1937,20 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 #ifdef _SHADERSPACE_UI_GRAPHIC
                 float2 appendResult28_g11662 = (float2(_RectWidth , _RectHeight));
 				#endif
-                #if defined(_SHADERSPACE_UV)
+                #if defined( _SHADERSPACE_UV )
                 float2 staticSwitch1_g11662 = ( temp_output_61_0_g11662 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-                #elif defined(_SHADERSPACE_UV_RAW)
+                #elif defined( _SHADERSPACE_UV_RAW )
                 float2 staticSwitch1_g11662 = temp_output_61_0_g11662;
-                #elif defined(_SHADERSPACE_OBJECT)
+                #elif defined( _SHADERSPACE_OBJECT )
                 float2 staticSwitch1_g11662 = (v.vertex.xyz).xy;
-                #elif defined(_SHADERSPACE_OBJECT_SCALED)
+                #elif defined( _SHADERSPACE_OBJECT_SCALED )
                 float2 staticSwitch1_g11662 = ( (v.vertex.xyz).xy * (ase_objectScale).xy );
-                #elif defined(_SHADERSPACE_WORLD)
-                float2 staticSwitch1_g11662 = (ase_worldPos).xy;
-                #elif defined(_SHADERSPACE_UI_GRAPHIC)
+                #elif defined( _SHADERSPACE_WORLD )
+                float2 staticSwitch1_g11662 = (ase_positionWS).xy;
+                #elif defined( _SHADERSPACE_UI_GRAPHIC )
                 float2 staticSwitch1_g11662 = ( texCoord23_g11662 * ( appendResult28_g11662 / _PixelsPerUnit ) );
-                #elif defined(_SHADERSPACE_SCREEN)
-                float2 staticSwitch1_g11662 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+                #elif defined( _SHADERSPACE_SCREEN )
+                float2 staticSwitch1_g11662 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
                 #else
                 float2 staticSwitch1_g11662 = ( temp_output_61_0_g11662 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
                 #endif
@@ -1949,37 +1964,37 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 #ifdef _SHADERFADING_SPREAD
                 float clampResult3_g11723 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11723 ) + ( localMyCustomExpression16_g11724 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-                #if defined(_SHADERFADING_NONE)
+                #if defined( _SHADERFADING_NONE )
                 float staticSwitch139 = _FadingFade;
-                #elif defined(_SHADERFADING_FULL)
+                #elif defined( _SHADERFADING_FULL )
                 float staticSwitch139 = _FadingFade;
-                #elif defined(_SHADERFADING_MASK)
+                #elif defined( _SHADERFADING_MASK )
                 float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11727.r * tex2DNode3_g11727.a ) );
-                #elif defined(_SHADERFADING_DISSOLVE)
+                #elif defined( _SHADERFADING_DISSOLVE )
                 float staticSwitch139 = clampResult14_g11725;
-                #elif defined(_SHADERFADING_SPREAD)
+                #elif defined( _SHADERFADING_SPREAD )
                 float staticSwitch139 = clampResult3_g11723;
                 #else
                 float staticSwitch139 = _FadingFade;
                 #endif
                 float fullFade123 = staticSwitch139;
                 float2 lerpResult121 = lerp( float2( 0,0 ) , temp_output_424_0 , fullFade123);
-                #if defined(_SHADERFADING_NONE)
+                #if defined( _SHADERFADING_NONE )
                 float2 staticSwitch142 = temp_output_424_0;
-                #elif defined(_SHADERFADING_FULL)
+                #elif defined( _SHADERFADING_FULL )
                 float2 staticSwitch142 = lerpResult121;
-                #elif defined(_SHADERFADING_MASK)
+                #elif defined( _SHADERFADING_MASK )
                 float2 staticSwitch142 = lerpResult121;
-                #elif defined(_SHADERFADING_DISSOLVE)
+                #elif defined( _SHADERFADING_DISSOLVE )
                 float2 staticSwitch142 = lerpResult121;
-                #elif defined(_SHADERFADING_SPREAD)
+                #elif defined( _SHADERFADING_SPREAD )
                 float2 staticSwitch142 = lerpResult121;
                 #else
                 float2 staticSwitch142 = temp_output_424_0;
                 #endif
                 
                 OUT.ase_texcoord3 = screenPos;
-                OUT.ase_texcoord4.xyz = ase_worldPos;
+                OUT.ase_texcoord4.xyz = ase_positionWS;
                 
                 OUT.ase_texcoord5 = v.vertex;
                 
@@ -2015,18 +2030,18 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 
                 float2 texCoord363 = IN.texcoord.xy * float2( 1,1 ) + float2( 0,0 );
                 float4 screenPos = IN.ase_texcoord3;
-                float4 ase_screenPosNorm = screenPos / screenPos.w;
+                float4 ase_positionSSNorm = screenPos / screenPos.w;
                 #ifdef _ENABLESCREENTILING_ON
-                ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+                ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
                 float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-                float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+                float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
                 #else
                 float2 staticSwitch2_g11656 = texCoord363;
                 #endif
-                float3 ase_worldPos = IN.ase_texcoord4.xyz;
+                float3 ase_positionWS = IN.ase_texcoord4.xyz;
                 #ifdef _ENABLEWORLDTILING_ON
                 float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-                float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+                float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
                 #else
                 float2 staticSwitch2_g11657 = staticSwitch2_g11656;
                 #endif
@@ -2151,20 +2166,20 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 #ifdef _SHADERSPACE_UI_GRAPHIC
                 float2 appendResult28_g11662 = (float2(_RectWidth , _RectHeight));
 				#endif
-                #if defined(_SHADERSPACE_UV)
+                #if defined( _SHADERSPACE_UV )
                 float2 staticSwitch1_g11662 = ( temp_output_61_0_g11662 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-                #elif defined(_SHADERSPACE_UV_RAW)
+                #elif defined( _SHADERSPACE_UV_RAW )
                 float2 staticSwitch1_g11662 = temp_output_61_0_g11662;
-                #elif defined(_SHADERSPACE_OBJECT)
+                #elif defined( _SHADERSPACE_OBJECT )
                 float2 staticSwitch1_g11662 = (IN.ase_texcoord5.xyz).xy;
-                #elif defined(_SHADERSPACE_OBJECT_SCALED)
+                #elif defined( _SHADERSPACE_OBJECT_SCALED )
                 float2 staticSwitch1_g11662 = ( (IN.ase_texcoord5.xyz).xy * (ase_objectScale).xy );
-                #elif defined(_SHADERSPACE_WORLD)
-                float2 staticSwitch1_g11662 = (ase_worldPos).xy;
-                #elif defined(_SHADERSPACE_UI_GRAPHIC)
+                #elif defined( _SHADERSPACE_WORLD )
+                float2 staticSwitch1_g11662 = (ase_positionWS).xy;
+                #elif defined( _SHADERSPACE_UI_GRAPHIC )
                 float2 staticSwitch1_g11662 = ( texCoord23_g11662 * ( appendResult28_g11662 / _PixelsPerUnit ) );
-                #elif defined(_SHADERSPACE_SCREEN)
-                float2 staticSwitch1_g11662 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+                #elif defined( _SHADERSPACE_SCREEN )
+                float2 staticSwitch1_g11662 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
                 #else
                 float2 staticSwitch1_g11662 = ( temp_output_61_0_g11662 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
                 #endif
@@ -2195,7 +2210,8 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
                 float2 staticSwitch82 = staticSwitch83;
                 #endif
                 #ifdef _ENABLEHOLOGRAM_ON
-                float temp_output_8_0_g11673 = ( ( ( shaderTime237 * _HologramDistortionSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y );
+                float temp_output_81_0_g11673 = 0.5;
+                float temp_output_8_0_g11673 = ( ( ( shaderTime237 * ( _HologramDistortionSpeed * temp_output_81_0_g11673 * 0.2 ) ) + ase_positionSSNorm.y ) / temp_output_81_0_g11673 );
                 float2 temp_cast_4 = (temp_output_8_0_g11673).xx;
                 float2 temp_cast_5 = (_HologramDistortionDensity).xx;
                 float linValue16_g11675 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
@@ -2310,30 +2326,30 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 #ifdef _SHADERFADING_SPREAD
                 float clampResult3_g11723 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11723 ) + ( localMyCustomExpression16_g11724 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-                #if defined(_SHADERFADING_NONE)
+                #if defined( _SHADERFADING_NONE )
                 float staticSwitch139 = _FadingFade;
-                #elif defined(_SHADERFADING_FULL)
+                #elif defined( _SHADERFADING_FULL )
                 float staticSwitch139 = _FadingFade;
-                #elif defined(_SHADERFADING_MASK)
+                #elif defined( _SHADERFADING_MASK )
                 float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11727.r * tex2DNode3_g11727.a ) );
-                #elif defined(_SHADERFADING_DISSOLVE)
+                #elif defined( _SHADERFADING_DISSOLVE )
                 float staticSwitch139 = clampResult14_g11725;
-                #elif defined(_SHADERFADING_SPREAD)
+                #elif defined( _SHADERFADING_SPREAD )
                 float staticSwitch139 = clampResult3_g11723;
                 #else
                 float staticSwitch139 = _FadingFade;
                 #endif
                 float fullFade123 = staticSwitch139;
                 float2 lerpResult130 = lerp( texCoord131 , temp_output_484_0 , fullFade123);
-                #if defined(_SHADERFADING_NONE)
+                #if defined( _SHADERFADING_NONE )
                 float2 staticSwitch145 = temp_output_484_0;
-                #elif defined(_SHADERFADING_FULL)
+                #elif defined( _SHADERFADING_FULL )
                 float2 staticSwitch145 = lerpResult130;
-                #elif defined(_SHADERFADING_MASK)
+                #elif defined( _SHADERFADING_MASK )
                 float2 staticSwitch145 = lerpResult130;
-                #elif defined(_SHADERFADING_DISSOLVE)
+                #elif defined( _SHADERFADING_DISSOLVE )
                 float2 staticSwitch145 = lerpResult130;
-                #elif defined(_SHADERFADING_SPREAD)
+                #elif defined( _SHADERFADING_SPREAD )
                 float2 staticSwitch145 = lerpResult130;
                 #else
                 float2 staticSwitch145 = temp_output_484_0;
@@ -2438,909 +2454,917 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
                 #else
                 float4 staticSwitch12_g11744 = staticSwitch3_g11744;
                 #endif
-                float4 temp_output_1_0_g12139 = staticSwitch12_g11744;
+                float4 temp_output_1_0_g13093 = staticSwitch12_g11744;
                 #ifdef _ISTEXT_ON
-                float4 appendResult6_g12139 = (float4(1.0 , 1.0 , 1.0 , temp_output_1_0_g12139.a));
-                float4 staticSwitch2_g12139 = appendResult6_g12139;
+                float4 appendResult6_g13093 = (float4(1.0 , 1.0 , 1.0 , temp_output_1_0_g13093.a));
+                float4 staticSwitch2_g13093 = appendResult6_g13093;
                 #else
-                float4 staticSwitch2_g12139 = temp_output_1_0_g12139;
+                float4 staticSwitch2_g13093 = temp_output_1_0_g13093;
                 #endif
                 #ifdef _ISTEXTMESHPRO_ON
-                float4 break8_g12139 = staticSwitch2_g12139;
-                float clampResult14_g12139 = clamp( ( ( break8_g12139.a + _TMPThickness ) * ( _TMPSmoothness / ( 1.0 + _TMPThickness ) ) ) , 0.0 , 1.0 );
-                float4 appendResult13_g12139 = (float4(break8_g12139.r , break8_g12139.g , break8_g12139.b , clampResult14_g12139));
-                float4 staticSwitch3_g12139 = appendResult13_g12139;
+                float4 break8_g13093 = staticSwitch2_g13093;
+                float clampResult14_g13093 = clamp( ( ( break8_g13093.a + _TMPThickness ) * ( _TMPSmoothness / ( 1.0 + _TMPThickness ) ) ) , 0.0 , 1.0 );
+                float4 appendResult13_g13093 = (float4(break8_g13093.r , break8_g13093.g , break8_g13093.b , clampResult14_g13093));
+                float4 staticSwitch3_g13093 = appendResult13_g13093;
                 #else
-                float4 staticSwitch3_g12139 = staticSwitch2_g12139;
+                float4 staticSwitch3_g13093 = staticSwitch2_g13093;
                 #endif
-                float4 temp_output_494_0 = staticSwitch3_g12139;
+                float4 temp_output_494_0 = staticSwitch3_g13093;
+                float4 temp_output_1_0_g13094 = temp_output_494_0;
+                float4 InColor2_g13092 = IN.color;
+                int GammaSpace2_g13092 = _UIVertexColorAlwaysGammaSpace;
+                float4 localMyCustomExpression2_g13092 = MyCustomExpression2_g13092( InColor2_g13092 , GammaSpace2_g13092 );
+                float4 UIVertexColor501 = localMyCustomExpression2_g13092;
                 #ifdef _VERTEXTINTFIRST_ON
-                float4 temp_output_1_0_g12140 = temp_output_494_0;
-                float4 appendResult8_g12140 = (float4(( (temp_output_1_0_g12140).rgb * (IN.color).rgb ) , temp_output_1_0_g12140.a));
-                float4 staticSwitch354 = appendResult8_g12140;
+                float4 appendResult8_g13094 = (float4(( (temp_output_1_0_g13094).rgb * (UIVertexColor501).rgb ) , temp_output_1_0_g13094.a));
+                float4 staticSwitch354 = appendResult8_g13094;
                 #else
                 float4 staticSwitch354 = temp_output_494_0;
                 #endif
                 float4 originalColor191 = staticSwitch354;
-                float4 temp_output_1_0_g12141 = originalColor191;
-                float4 temp_output_1_0_g12142 = temp_output_1_0_g12141;
-                float2 temp_output_7_0_g12141 = finalUV146;
+                float4 temp_output_1_0_g13095 = originalColor191;
+                float4 temp_output_1_0_g13096 = temp_output_1_0_g13095;
+                float2 temp_output_7_0_g13095 = finalUV146;
                 #ifdef _ENABLESMOKE_ON
-                float2 temp_output_43_0_g12142 = temp_output_7_0_g12141;
-                float2 temp_cast_17 = (_SmokeNoiseScale).xx;
-                float linValue16_g12143 = tex2D( _UberNoiseTexture, ( ( ( IN.color.r * (( _SmokeVertexSeed )?( 5.0 ):( 0.0 )) ) + temp_output_43_0_g12142 ) * temp_cast_17 ) ).r;
-                float localMyCustomExpression16_g12143 = MyCustomExpression16_g12143( linValue16_g12143 );
-                float clampResult28_g12142 = clamp( ( ( ( localMyCustomExpression16_g12143 - 1.0 ) * _SmokeNoiseFactor ) + ( ( ( IN.color.a / 2.5 ) - distance( temp_output_43_0_g12142 , float2( 0.5,0.5 ) ) ) * 2.5 * _SmokeSmoothness ) ) , 0.0 , 1.0 );
-                float3 lerpResult34_g12142 = lerp( (temp_output_1_0_g12142).rgb , float3( 0,0,0 ) , ( ( 1.0 - clampResult28_g12142 ) * _SmokeDarkEdge ));
-                float4 appendResult31_g12142 = (float4(lerpResult34_g12142 , ( clampResult28_g12142 * _SmokeAlpha * temp_output_1_0_g12142.a )));
-                float4 staticSwitch2_g12141 = appendResult31_g12142;
+                float2 temp_output_43_0_g13096 = temp_output_7_0_g13095;
+                float2 temp_cast_19 = (_SmokeNoiseScale).xx;
+                float linValue16_g13097 = tex2D( _UberNoiseTexture, ( ( ( IN.color.r * (( _SmokeVertexSeed )?( 5.0 ):( 0.0 )) ) + temp_output_43_0_g13096 ) * temp_cast_19 ) ).r;
+                float localMyCustomExpression16_g13097 = MyCustomExpression16_g13097( linValue16_g13097 );
+                float clampResult28_g13096 = clamp( ( ( ( localMyCustomExpression16_g13097 - 1.0 ) * _SmokeNoiseFactor ) + ( ( ( IN.color.a / 2.5 ) - distance( temp_output_43_0_g13096 , float2( 0.5,0.5 ) ) ) * 2.5 * _SmokeSmoothness ) ) , 0.0 , 1.0 );
+                float3 lerpResult34_g13096 = lerp( (temp_output_1_0_g13096).rgb , float3( 0,0,0 ) , ( ( 1.0 - clampResult28_g13096 ) * _SmokeDarkEdge ));
+                float4 appendResult31_g13096 = (float4(lerpResult34_g13096 , ( clampResult28_g13096 * _SmokeAlpha * temp_output_1_0_g13096.a )));
+                float4 staticSwitch2_g13095 = appendResult31_g13096;
                 #else
-                float4 staticSwitch2_g12141 = temp_output_1_0_g12141;
+                float4 staticSwitch2_g13095 = temp_output_1_0_g13095;
                 #endif
                 #ifdef _ENABLECUSTOMFADE_ON
-                float4 temp_output_1_0_g12144 = staticSwitch2_g12141;
-                float2 temp_output_57_0_g12144 = temp_output_7_0_g12141;
-                float4 tex2DNode3_g12144 = tex2D( _CustomFadeFadeMask, temp_output_57_0_g12144 );
-                float linValue16_g12145 = tex2D( _UberNoiseTexture, ( temp_output_57_0_g12144 * _CustomFadeNoiseScale ) ).r;
-                float localMyCustomExpression16_g12145 = MyCustomExpression16_g12145( linValue16_g12145 );
-                float clampResult37_g12144 = clamp( ( ( ( IN.color.a * 2.0 ) - 1.0 ) + ( tex2DNode3_g12144.r + ( localMyCustomExpression16_g12145 * _CustomFadeNoiseFactor ) ) ) , 0.0 , 1.0 );
-                float4 appendResult13_g12144 = (float4((temp_output_1_0_g12144).rgb , ( temp_output_1_0_g12144.a * pow( clampResult37_g12144 , ( _CustomFadeSmoothness / max( tex2DNode3_g12144.r , 0.05 ) ) ) * _CustomFadeAlpha )));
-                float4 staticSwitch3_g12141 = appendResult13_g12144;
+                float4 temp_output_1_0_g13098 = staticSwitch2_g13095;
+                float2 temp_output_57_0_g13098 = temp_output_7_0_g13095;
+                float4 tex2DNode3_g13098 = tex2D( _CustomFadeFadeMask, temp_output_57_0_g13098 );
+                float linValue16_g13099 = tex2D( _UberNoiseTexture, ( temp_output_57_0_g13098 * _CustomFadeNoiseScale ) ).r;
+                float localMyCustomExpression16_g13099 = MyCustomExpression16_g13099( linValue16_g13099 );
+                float clampResult37_g13098 = clamp( ( ( ( IN.color.a * 2.0 ) - 1.0 ) + ( tex2DNode3_g13098.r + ( localMyCustomExpression16_g13099 * _CustomFadeNoiseFactor ) ) ) , 0.0 , 1.0 );
+                float4 appendResult13_g13098 = (float4((temp_output_1_0_g13098).rgb , ( temp_output_1_0_g13098.a * pow( clampResult37_g13098 , ( _CustomFadeSmoothness / max( tex2DNode3_g13098.r , 0.05 ) ) ) * _CustomFadeAlpha )));
+                float4 staticSwitch3_g13095 = appendResult13_g13098;
                 #else
-                float4 staticSwitch3_g12141 = staticSwitch2_g12141;
+                float4 staticSwitch3_g13095 = staticSwitch2_g13095;
                 #endif
-                float4 temp_output_1_0_g12146 = staticSwitch3_g12141;
+                float4 temp_output_1_0_g13100 = staticSwitch3_g13095;
                 #ifdef _ENABLECHECKERBOARD_ON
-                float4 temp_output_1_0_g12147 = temp_output_1_0_g12146;
-                float2 appendResult4_g12147 = (float2(ase_worldPos.x , ase_worldPos.y));
-                float2 temp_output_44_0_g12147 = ( appendResult4_g12147 * _CheckerboardTiling * 0.5 );
-                float2 break12_g12147 = step( ( ceil( temp_output_44_0_g12147 ) - temp_output_44_0_g12147 ) , float2( 0.5,0.5 ) );
-                float4 appendResult42_g12147 = (float4(( (temp_output_1_0_g12147).rgb * min( ( _CheckerboardDarken + abs( ( -break12_g12147.x + break12_g12147.y ) ) ) , 1.0 ) ) , temp_output_1_0_g12147.a));
-                float4 staticSwitch2_g12146 = appendResult42_g12147;
+                float4 temp_output_1_0_g13101 = temp_output_1_0_g13100;
+                float2 appendResult4_g13101 = (float2(ase_positionWS.x , ase_positionWS.y));
+                float2 temp_output_44_0_g13101 = ( appendResult4_g13101 * _CheckerboardTiling * 0.5 );
+                float2 break12_g13101 = step( ( ceil( temp_output_44_0_g13101 ) - temp_output_44_0_g13101 ) , float2( 0.5,0.5 ) );
+                float4 appendResult42_g13101 = (float4(( (temp_output_1_0_g13101).rgb * min( ( _CheckerboardDarken + abs( ( -break12_g13101.x + break12_g13101.y ) ) ) , 1.0 ) ) , temp_output_1_0_g13101.a));
+                float4 staticSwitch2_g13100 = appendResult42_g13101;
                 #else
-                float4 staticSwitch2_g12146 = temp_output_1_0_g12146;
+                float4 staticSwitch2_g13100 = temp_output_1_0_g13100;
                 #endif
                 #ifdef _ENABLEFLAME_ON
-                float2 temp_output_75_0_g12148 = finalUV146;
-                float linValue16_g12149 = tex2D( _UberNoiseTexture, ( ( ( shaderTime237 * _FlameSpeed ) + temp_output_75_0_g12148 ) * _FlameNoiseScale ) ).r;
-                float localMyCustomExpression16_g12149 = MyCustomExpression16_g12149( linValue16_g12149 );
-                float saferPower57_g12148 = abs( max( ( temp_output_75_0_g12148.y - 0.2 ) , 0.0 ) );
-                float temp_output_47_0_g12148 = max( _FlameRadius , 0.01 );
-                float clampResult70_g12148 = clamp( ( ( ( localMyCustomExpression16_g12149 * pow( saferPower57_g12148 , _FlameNoiseHeightFactor ) * _FlameNoiseFactor ) + ( ( temp_output_47_0_g12148 - distance( temp_output_75_0_g12148 , float2( 0.5,0.4 ) ) ) / temp_output_47_0_g12148 ) ) * _FlameSmooth ) , 0.0 , 1.0 );
-                float temp_output_63_0_g12148 = ( clampResult70_g12148 * _FlameBrightness );
-                float4 appendResult31_g12148 = (float4(temp_output_63_0_g12148 , temp_output_63_0_g12148 , temp_output_63_0_g12148 , clampResult70_g12148));
-                float4 staticSwitch6_g12146 = ( appendResult31_g12148 * staticSwitch2_g12146 );
+                float2 temp_output_75_0_g13102 = finalUV146;
+                float linValue16_g13103 = tex2D( _UberNoiseTexture, ( ( ( shaderTime237 * _FlameSpeed ) + temp_output_75_0_g13102 ) * _FlameNoiseScale ) ).r;
+                float localMyCustomExpression16_g13103 = MyCustomExpression16_g13103( linValue16_g13103 );
+                float saferPower57_g13102 = abs( max( ( temp_output_75_0_g13102.y - 0.2 ) , 0.0 ) );
+                float temp_output_47_0_g13102 = max( _FlameRadius , 0.01 );
+                float clampResult70_g13102 = clamp( ( ( ( localMyCustomExpression16_g13103 * pow( saferPower57_g13102 , _FlameNoiseHeightFactor ) * _FlameNoiseFactor ) + ( ( temp_output_47_0_g13102 - distance( temp_output_75_0_g13102 , float2( 0.5,0.4 ) ) ) / temp_output_47_0_g13102 ) ) * _FlameSmooth ) , 0.0 , 1.0 );
+                float temp_output_63_0_g13102 = ( clampResult70_g13102 * _FlameBrightness );
+                float4 appendResult31_g13102 = (float4(temp_output_63_0_g13102 , temp_output_63_0_g13102 , temp_output_63_0_g13102 , clampResult70_g13102));
+                float4 staticSwitch6_g13100 = ( appendResult31_g13102 * staticSwitch2_g13100 );
                 #else
-                float4 staticSwitch6_g12146 = staticSwitch2_g12146;
+                float4 staticSwitch6_g13100 = staticSwitch2_g13100;
                 #endif
-                float4 temp_output_3_0_g12150 = staticSwitch6_g12146;
-                float4 temp_output_1_0_g12182 = temp_output_3_0_g12150;
-                float4 appendResult91_g12182 = (float4((temp_output_1_0_g12182).rgb , 1.0));
-                float2 temp_output_1_0_g12150 = finalUV146;
+                float4 temp_output_3_0_g13104 = staticSwitch6_g13100;
+                float4 temp_output_1_0_g13136 = temp_output_3_0_g13104;
+                float4 appendResult91_g13136 = (float4((temp_output_1_0_g13136).rgb , 1.0));
+                float2 temp_output_1_0_g13104 = finalUV146;
                 #ifdef _ENABLERECOLORRGB_ON
                 #ifdef _RECOLORRGBTEXTURETOGGLE_ON
-                float4 staticSwitch81_g12182 = tex2D( _RecolorRGBTexture, temp_output_1_0_g12150 );
+                float4 staticSwitch81_g13136 = tex2D( _RecolorRGBTexture, temp_output_1_0_g13104 );
                 #else
-                float4 staticSwitch81_g12182 = appendResult91_g12182;
+                float4 staticSwitch81_g13136 = appendResult91_g13136;
                 #endif
-                float3 break82_g12182 = (staticSwitch81_g12182).xyz;
-                float temp_output_84_0_g12182 = max( ( break82_g12182.x + break82_g12182.y + break82_g12182.z ) , 0.001 );
-                float4 break71_g12182 = ( ( _RecolorRGBRedTint * ( break82_g12182.x / temp_output_84_0_g12182 ) ) + ( _RecolorRGBGreenTint * ( break82_g12182.y / temp_output_84_0_g12182 ) ) + ( ( break82_g12182.z / temp_output_84_0_g12182 ) * _RecolorRGBBlueTint ) );
-                float3 appendResult56_g12182 = (float3(break71_g12182.r , break71_g12182.g , break71_g12182.b));
-                float4 break2_g12183 = temp_output_1_0_g12182;
-                float saferPower57_g12182 = abs( ( ( break2_g12183.x + break2_g12183.x + break2_g12183.y + break2_g12183.y + break2_g12183.y + break2_g12183.z ) / 6.0 ) );
-                float3 lerpResult26_g12182 = lerp( (temp_output_1_0_g12182).rgb , ( appendResult56_g12182 * pow( saferPower57_g12182 , ( max( break71_g12182.a , 0.01 ) * 2.0 ) ) ) , ( staticSwitch81_g12182.w * _RecolorRGBFade ));
-                float4 appendResult30_g12182 = (float4(lerpResult26_g12182 , temp_output_1_0_g12182.a));
-                float4 staticSwitch43_g12150 = appendResult30_g12182;
+                float3 break82_g13136 = (staticSwitch81_g13136).xyz;
+                float temp_output_84_0_g13136 = max( ( break82_g13136.x + break82_g13136.y + break82_g13136.z ) , 0.001 );
+                float4 break71_g13136 = ( ( _RecolorRGBRedTint * ( break82_g13136.x / temp_output_84_0_g13136 ) ) + ( _RecolorRGBGreenTint * ( break82_g13136.y / temp_output_84_0_g13136 ) ) + ( ( break82_g13136.z / temp_output_84_0_g13136 ) * _RecolorRGBBlueTint ) );
+                float3 appendResult56_g13136 = (float3(break71_g13136.r , break71_g13136.g , break71_g13136.b));
+                float4 break2_g13137 = temp_output_1_0_g13136;
+                float saferPower57_g13136 = abs( ( ( break2_g13137.x + break2_g13137.x + break2_g13137.y + break2_g13137.y + break2_g13137.y + break2_g13137.z ) / 6.0 ) );
+                float3 lerpResult26_g13136 = lerp( (temp_output_1_0_g13136).rgb , ( appendResult56_g13136 * pow( saferPower57_g13136 , ( max( break71_g13136.a , 0.01 ) * 2.0 ) ) ) , ( staticSwitch81_g13136.w * _RecolorRGBFade ));
+                float4 appendResult30_g13136 = (float4(lerpResult26_g13136 , temp_output_1_0_g13136.a));
+                float4 staticSwitch43_g13104 = appendResult30_g13136;
                 #else
-                float4 staticSwitch43_g12150 = temp_output_3_0_g12150;
+                float4 staticSwitch43_g13104 = temp_output_3_0_g13104;
                 #endif
-                float4 temp_output_1_0_g12180 = staticSwitch43_g12150;
+                float4 temp_output_1_0_g13134 = staticSwitch43_g13104;
                 #ifdef _RECOLORRGBYCPTEXTURETOGGLE_ON
-                float4 staticSwitch62_g12180 = tex2D( _RecolorRGBYCPTexture, temp_output_1_0_g12150 );
+                float4 staticSwitch62_g13134 = tex2D( _RecolorRGBYCPTexture, temp_output_1_0_g13104 );
                 #else
-                float4 staticSwitch62_g12180 = temp_output_1_0_g12180;
+                float4 staticSwitch62_g13134 = temp_output_1_0_g13134;
                 #endif
-                float3 hsvTorgb33_g12180 = RGBToHSV( staticSwitch62_g12180.rgb );
-                float temp_output_43_0_g12180 = ( ( hsvTorgb33_g12180.x + 0.08333334 ) % 1.0 );
-                float4 ifLocalVar46_g12180 = 0;
-                if( temp_output_43_0_g12180 >= 0.8333333 )
-                ifLocalVar46_g12180 = _RecolorRGBYCPPurpleTint;
+                float3 hsvTorgb33_g13134 = RGBToHSV( staticSwitch62_g13134.rgb );
+                float temp_output_43_0_g13134 = ( ( hsvTorgb33_g13134.x + 0.08333334 ) % 1.0 );
+                float4 ifLocalVar46_g13134 = 0;
+                if( temp_output_43_0_g13134 >= 0.8333333 )
+                ifLocalVar46_g13134 = _RecolorRGBYCPPurpleTint;
                 else
-                ifLocalVar46_g12180 = _RecolorRGBYCPBlueTint;
-                float4 ifLocalVar44_g12180 = 0;
-                if( temp_output_43_0_g12180 <= 0.6666667 )
-                ifLocalVar44_g12180 = _RecolorRGBYCPCyanTint;
+                ifLocalVar46_g13134 = _RecolorRGBYCPBlueTint;
+                float4 ifLocalVar44_g13134 = 0;
+                if( temp_output_43_0_g13134 <= 0.6666667 )
+                ifLocalVar44_g13134 = _RecolorRGBYCPCyanTint;
                 else
-                ifLocalVar44_g12180 = ifLocalVar46_g12180;
-                float4 ifLocalVar47_g12180 = 0;
-                if( temp_output_43_0_g12180 <= 0.3333333 )
-                ifLocalVar47_g12180 = _RecolorRGBYCPYellowTint;
+                ifLocalVar44_g13134 = ifLocalVar46_g13134;
+                float4 ifLocalVar47_g13134 = 0;
+                if( temp_output_43_0_g13134 <= 0.3333333 )
+                ifLocalVar47_g13134 = _RecolorRGBYCPYellowTint;
                 else
-                ifLocalVar47_g12180 = _RecolorRGBYCPGreenTint;
-                float4 ifLocalVar45_g12180 = 0;
-                if( temp_output_43_0_g12180 <= 0.1666667 )
-                ifLocalVar45_g12180 = _RecolorRGBYCPRedTint;
+                ifLocalVar47_g13134 = _RecolorRGBYCPGreenTint;
+                float4 ifLocalVar45_g13134 = 0;
+                if( temp_output_43_0_g13134 <= 0.1666667 )
+                ifLocalVar45_g13134 = _RecolorRGBYCPRedTint;
                 else
-                ifLocalVar45_g12180 = ifLocalVar47_g12180;
-                float4 ifLocalVar35_g12180 = 0;
-                if( temp_output_43_0_g12180 >= 0.5 )
-                ifLocalVar35_g12180 = ifLocalVar44_g12180;
+                ifLocalVar45_g13134 = ifLocalVar47_g13134;
+                float4 ifLocalVar35_g13134 = 0;
+                if( temp_output_43_0_g13134 >= 0.5 )
+                ifLocalVar35_g13134 = ifLocalVar44_g13134;
                 else
-                ifLocalVar35_g12180 = ifLocalVar45_g12180;
+                ifLocalVar35_g13134 = ifLocalVar45_g13134;
                 #ifdef _ENABLERECOLORRGBYCP_ON
-                float4 break55_g12180 = ifLocalVar35_g12180;
-                float3 appendResult56_g12180 = (float3(break55_g12180.r , break55_g12180.g , break55_g12180.b));
-                float4 break2_g12181 = temp_output_1_0_g12180;
-                float saferPower57_g12180 = abs( ( ( break2_g12181.x + break2_g12181.x + break2_g12181.y + break2_g12181.y + break2_g12181.y + break2_g12181.z ) / 6.0 ) );
-                float3 lerpResult26_g12180 = lerp( (temp_output_1_0_g12180).rgb , ( appendResult56_g12180 * pow( saferPower57_g12180 , max( ( break55_g12180.a * 2.0 ) , 0.01 ) ) ) , ( hsvTorgb33_g12180.z * _RecolorRGBYCPFade ));
-                float4 appendResult30_g12180 = (float4(lerpResult26_g12180 , temp_output_1_0_g12180.a));
-                float4 staticSwitch9_g12150 = appendResult30_g12180;
+                float4 break55_g13134 = ifLocalVar35_g13134;
+                float3 appendResult56_g13134 = (float3(break55_g13134.r , break55_g13134.g , break55_g13134.b));
+                float4 break2_g13135 = temp_output_1_0_g13134;
+                float saferPower57_g13134 = abs( ( ( break2_g13135.x + break2_g13135.x + break2_g13135.y + break2_g13135.y + break2_g13135.y + break2_g13135.z ) / 6.0 ) );
+                float3 lerpResult26_g13134 = lerp( (temp_output_1_0_g13134).rgb , ( appendResult56_g13134 * pow( saferPower57_g13134 , max( ( break55_g13134.a * 2.0 ) , 0.01 ) ) ) , ( hsvTorgb33_g13134.z * _RecolorRGBYCPFade ));
+                float4 appendResult30_g13134 = (float4(lerpResult26_g13134 , temp_output_1_0_g13134.a));
+                float4 staticSwitch9_g13104 = appendResult30_g13134;
                 #else
-                float4 staticSwitch9_g12150 = staticSwitch43_g12150;
+                float4 staticSwitch9_g13104 = staticSwitch43_g13104;
                 #endif
                 #ifdef _ENABLECOLORREPLACE_ON
-                float4 temp_output_1_0_g12154 = staticSwitch9_g12150;
-                float3 temp_output_2_0_g12154 = (temp_output_1_0_g12154).rgb;
-                float3 In115_g12154 = temp_output_2_0_g12154;
-                float3 From115_g12154 = (_ColorReplaceFromColor).rgb;
-                float4 break2_g12155 = temp_output_1_0_g12154;
-                float3 To115_g12154 = ( pow( ( ( break2_g12155.x + break2_g12155.x + break2_g12155.y + break2_g12155.y + break2_g12155.y + break2_g12155.z ) / 6.0 ) , max( _ColorReplaceContrast , 0.001 ) ) * (_ColorReplaceToColor).rgb );
-                float Fuzziness115_g12154 = _ColorReplaceSmoothness;
-                float Range115_g12154 = _ColorReplaceRange;
-                float3 localMyCustomExpression115_g12154 = MyCustomExpression115_g12154( In115_g12154 , From115_g12154 , To115_g12154 , Fuzziness115_g12154 , Range115_g12154 );
-                float3 lerpResult112_g12154 = lerp( temp_output_2_0_g12154 , localMyCustomExpression115_g12154 , _ColorReplaceFade);
-                float4 appendResult4_g12154 = (float4(lerpResult112_g12154 , temp_output_1_0_g12154.a));
-                float4 staticSwitch29_g12150 = appendResult4_g12154;
+                float4 temp_output_1_0_g13108 = staticSwitch9_g13104;
+                float3 temp_output_2_0_g13108 = (temp_output_1_0_g13108).rgb;
+                float3 In115_g13108 = temp_output_2_0_g13108;
+                float3 From115_g13108 = (_ColorReplaceFromColor).rgb;
+                float4 break2_g13109 = temp_output_1_0_g13108;
+                float3 To115_g13108 = ( pow( max( ( ( break2_g13109.x + break2_g13109.x + break2_g13109.y + break2_g13109.y + break2_g13109.y + break2_g13109.z ) / 6.0 ) , 0.0001 ) , max( _ColorReplaceContrast , 0.0001 ) ) * (_ColorReplaceToColor).rgb );
+                float Fuzziness115_g13108 = _ColorReplaceSmoothness;
+                float Range115_g13108 = _ColorReplaceRange;
+                float3 localMyCustomExpression115_g13108 = MyCustomExpression115_g13108( In115_g13108 , From115_g13108 , To115_g13108 , Fuzziness115_g13108 , Range115_g13108 );
+                float3 lerpResult112_g13108 = lerp( temp_output_2_0_g13108 , localMyCustomExpression115_g13108 , _ColorReplaceFade);
+                float4 appendResult4_g13108 = (float4(lerpResult112_g13108 , temp_output_1_0_g13108.a));
+                float4 staticSwitch29_g13104 = appendResult4_g13108;
                 #else
-                float4 staticSwitch29_g12150 = staticSwitch9_g12150;
+                float4 staticSwitch29_g13104 = staticSwitch9_g13104;
                 #endif
-                float4 temp_output_1_0_g12167 = staticSwitch29_g12150;
+                float4 temp_output_1_0_g13121 = staticSwitch29_g13104;
                 #ifdef _ENABLENEGATIVE_ON
-                float3 temp_output_9_0_g12167 = (temp_output_1_0_g12167).rgb;
-                float3 lerpResult3_g12167 = lerp( temp_output_9_0_g12167 , ( 1.0 - temp_output_9_0_g12167 ) , _NegativeFade);
-                float4 appendResult8_g12167 = (float4(lerpResult3_g12167 , temp_output_1_0_g12167.a));
-                float4 staticSwitch4_g12167 = appendResult8_g12167;
+                float3 temp_output_9_0_g13121 = (temp_output_1_0_g13121).rgb;
+                float3 lerpResult3_g13121 = lerp( temp_output_9_0_g13121 , ( 1.0 - temp_output_9_0_g13121 ) , _NegativeFade);
+                float4 appendResult8_g13121 = (float4(lerpResult3_g13121 , temp_output_1_0_g13121.a));
+                float4 staticSwitch4_g13121 = appendResult8_g13121;
                 #else
-                float4 staticSwitch4_g12167 = temp_output_1_0_g12167;
+                float4 staticSwitch4_g13121 = temp_output_1_0_g13121;
                 #endif
-                float4 temp_output_57_0_g12150 = staticSwitch4_g12167;
+                float4 temp_output_57_0_g13104 = staticSwitch4_g13121;
                 #ifdef _ENABLECONTRAST_ON
-                float4 temp_output_1_0_g12190 = temp_output_57_0_g12150;
-                float3 temp_cast_32 = (max( _Contrast , 0.001 )).xxx;
-                float4 appendResult4_g12190 = (float4(pow( (temp_output_1_0_g12190).rgb , temp_cast_32 ) , temp_output_1_0_g12190.a));
-                float4 staticSwitch32_g12150 = appendResult4_g12190;
+                float4 temp_output_1_0_g13144 = temp_output_57_0_g13104;
+                float3 temp_cast_34 = (max( _Contrast , 0.0001 )).xxx;
+                float4 appendResult4_g13144 = (float4(pow( max( (temp_output_1_0_g13144).rgb , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_34 ) , temp_output_1_0_g13144.a));
+                float4 staticSwitch32_g13104 = appendResult4_g13144;
                 #else
-                float4 staticSwitch32_g12150 = temp_output_57_0_g12150;
+                float4 staticSwitch32_g13104 = temp_output_57_0_g13104;
                 #endif
                 #ifdef _ENABLEBRIGHTNESS_ON
-                float4 temp_output_2_0_g12165 = staticSwitch32_g12150;
-                float4 appendResult6_g12165 = (float4(( (temp_output_2_0_g12165).rgb * _Brightness ) , temp_output_2_0_g12165.a));
-                float4 staticSwitch33_g12150 = appendResult6_g12165;
+                float4 temp_output_2_0_g13119 = staticSwitch32_g13104;
+                float4 appendResult6_g13119 = (float4(( (temp_output_2_0_g13119).rgb * _Brightness ) , temp_output_2_0_g13119.a));
+                float4 staticSwitch33_g13104 = appendResult6_g13119;
                 #else
-                float4 staticSwitch33_g12150 = staticSwitch32_g12150;
+                float4 staticSwitch33_g13104 = staticSwitch32_g13104;
                 #endif
                 #ifdef _ENABLEHUE_ON
-                float4 temp_output_2_0_g12166 = staticSwitch33_g12150;
-                float3 hsvTorgb1_g12166 = RGBToHSV( temp_output_2_0_g12166.rgb );
-                float3 hsvTorgb3_g12166 = HSVToRGB( float3(( hsvTorgb1_g12166.x + _Hue ),hsvTorgb1_g12166.y,hsvTorgb1_g12166.z) );
-                float4 appendResult8_g12166 = (float4(hsvTorgb3_g12166 , temp_output_2_0_g12166.a));
-                float4 staticSwitch36_g12150 = appendResult8_g12166;
+                float4 temp_output_2_0_g13120 = staticSwitch33_g13104;
+                float3 hsvTorgb1_g13120 = RGBToHSV( temp_output_2_0_g13120.rgb );
+                float3 hsvTorgb3_g13120 = HSVToRGB( float3(( hsvTorgb1_g13120.x + _Hue ),hsvTorgb1_g13120.y,hsvTorgb1_g13120.z) );
+                float4 appendResult8_g13120 = (float4(hsvTorgb3_g13120 , temp_output_2_0_g13120.a));
+                float4 staticSwitch36_g13104 = appendResult8_g13120;
                 #else
-                float4 staticSwitch36_g12150 = staticSwitch33_g12150;
+                float4 staticSwitch36_g13104 = staticSwitch33_g13104;
                 #endif
                 #ifdef _ENABLESPLITTONING_ON
-                float4 temp_output_1_0_g12184 = staticSwitch36_g12150;
-                float4 break2_g12185 = temp_output_1_0_g12184;
-                float temp_output_3_0_g12184 = ( ( break2_g12185.x + break2_g12185.x + break2_g12185.y + break2_g12185.y + break2_g12185.y + break2_g12185.z ) / 6.0 );
-                float clampResult25_g12184 = clamp( ( ( ( ( temp_output_3_0_g12184 + _SplitToningShift ) - 0.5 ) * _SplitToningBalance ) + 0.5 ) , 0.0 , 1.0 );
-                float3 lerpResult6_g12184 = lerp( (_SplitToningShadowsColor).rgb , (_SplitToningHighlightsColor).rgb , clampResult25_g12184);
-                float3 lerpResult11_g12184 = lerp( (temp_output_1_0_g12184).rgb , ( lerpResult6_g12184 * pow( temp_output_3_0_g12184 , max( _SplitToningContrast , 0.001 ) ) ) , _SplitToningFade);
-                float4 appendResult18_g12184 = (float4(lerpResult11_g12184 , temp_output_1_0_g12184.a));
-                float4 staticSwitch30_g12150 = appendResult18_g12184;
+                float4 temp_output_1_0_g13138 = staticSwitch36_g13104;
+                float4 break2_g13139 = temp_output_1_0_g13138;
+                float temp_output_3_0_g13138 = ( ( break2_g13139.x + break2_g13139.x + break2_g13139.y + break2_g13139.y + break2_g13139.y + break2_g13139.z ) / 6.0 );
+                float clampResult25_g13138 = clamp( ( ( ( ( temp_output_3_0_g13138 + _SplitToningShift ) - 0.5 ) * _SplitToningBalance ) + 0.5 ) , 0.0 , 1.0 );
+                float3 lerpResult6_g13138 = lerp( (_SplitToningShadowsColor).rgb , (_SplitToningHighlightsColor).rgb , clampResult25_g13138);
+                float3 lerpResult11_g13138 = lerp( (temp_output_1_0_g13138).rgb , ( lerpResult6_g13138 * pow( max( temp_output_3_0_g13138 , 0.0001 ) , max( _SplitToningContrast , 0.0001 ) ) ) , _SplitToningFade);
+                float4 appendResult18_g13138 = (float4(lerpResult11_g13138 , temp_output_1_0_g13138.a));
+                float4 staticSwitch30_g13104 = appendResult18_g13138;
                 #else
-                float4 staticSwitch30_g12150 = staticSwitch36_g12150;
+                float4 staticSwitch30_g13104 = staticSwitch36_g13104;
                 #endif
                 #ifdef _ENABLEBLACKTINT_ON
-                float4 temp_output_1_0_g12162 = staticSwitch30_g12150;
-                float3 temp_output_4_0_g12162 = (temp_output_1_0_g12162).rgb;
-                float4 break12_g12162 = temp_output_1_0_g12162;
-                float3 lerpResult7_g12162 = lerp( temp_output_4_0_g12162 , ( temp_output_4_0_g12162 + (_BlackTintColor).rgb ) , pow( ( 1.0 - min( max( max( break12_g12162.r , break12_g12162.g ) , break12_g12162.b ) , 1.0 ) ) , max( _BlackTintPower , 0.001 ) ));
-                float3 lerpResult13_g12162 = lerp( temp_output_4_0_g12162 , lerpResult7_g12162 , _BlackTintFade);
-                float4 appendResult11_g12162 = (float4(lerpResult13_g12162 , break12_g12162.a));
-                float4 staticSwitch20_g12150 = appendResult11_g12162;
+                float4 temp_output_1_0_g13116 = staticSwitch30_g13104;
+                float3 temp_output_4_0_g13116 = (temp_output_1_0_g13116).rgb;
+                float4 break12_g13116 = temp_output_1_0_g13116;
+                float3 lerpResult7_g13116 = lerp( temp_output_4_0_g13116 , ( temp_output_4_0_g13116 + (_BlackTintColor).rgb ) , pow( max( ( 1.0 - min( max( max( break12_g13116.r , break12_g13116.g ) , break12_g13116.b ) , 1.0 ) ) , 0.0001 ) , max( _BlackTintPower , 0.0001 ) ));
+                float3 lerpResult13_g13116 = lerp( temp_output_4_0_g13116 , lerpResult7_g13116 , _BlackTintFade);
+                float4 appendResult11_g13116 = (float4(lerpResult13_g13116 , break12_g13116.a));
+                float4 staticSwitch20_g13104 = appendResult11_g13116;
                 #else
-                float4 staticSwitch20_g12150 = staticSwitch30_g12150;
+                float4 staticSwitch20_g13104 = staticSwitch30_g13104;
                 #endif
                 #ifdef _ENABLEINKSPREAD_ON
-                float4 temp_output_1_0_g12176 = staticSwitch20_g12150;
-                float4 break2_g12178 = temp_output_1_0_g12176;
-                float2 temp_output_65_0_g12176 = shaderPosition235;
-                float linValue16_g12177 = tex2D( _UberNoiseTexture, ( temp_output_65_0_g12176 * _InkSpreadNoiseScale ) ).r;
-                float localMyCustomExpression16_g12177 = MyCustomExpression16_g12177( linValue16_g12177 );
-                float clampResult53_g12176 = clamp( ( ( ( _InkSpreadDistance - distance( _InkSpreadPosition , temp_output_65_0_g12176 ) ) + ( localMyCustomExpression16_g12177 * _InkSpreadNoiseFactor ) ) / max( _InkSpreadWidth , 0.001 ) ) , 0.0 , 1.0 );
-                float3 lerpResult7_g12176 = lerp( (temp_output_1_0_g12176).rgb , ( (_InkSpreadColor).rgb * pow( ( ( break2_g12178.x + break2_g12178.x + break2_g12178.y + break2_g12178.y + break2_g12178.y + break2_g12178.z ) / 6.0 ) , max( _InkSpreadContrast , 0.001 ) ) ) , ( _InkSpreadFade * clampResult53_g12176 ));
-                float4 appendResult9_g12176 = (float4(lerpResult7_g12176 , (temp_output_1_0_g12176).a));
-                float4 staticSwitch17_g12150 = appendResult9_g12176;
+                float4 temp_output_1_0_g13130 = staticSwitch20_g13104;
+                float4 break2_g13132 = temp_output_1_0_g13130;
+                float2 temp_output_65_0_g13130 = shaderPosition235;
+                float linValue16_g13131 = tex2D( _UberNoiseTexture, ( temp_output_65_0_g13130 * _InkSpreadNoiseScale ) ).r;
+                float localMyCustomExpression16_g13131 = MyCustomExpression16_g13131( linValue16_g13131 );
+                float clampResult53_g13130 = clamp( ( ( ( _InkSpreadDistance - distance( _InkSpreadPosition , temp_output_65_0_g13130 ) ) + ( localMyCustomExpression16_g13131 * _InkSpreadNoiseFactor ) ) / max( _InkSpreadWidth , 0.001 ) ) , 0.0 , 1.0 );
+                float3 lerpResult7_g13130 = lerp( (temp_output_1_0_g13130).rgb , ( (_InkSpreadColor).rgb * pow( max( ( ( break2_g13132.x + break2_g13132.x + break2_g13132.y + break2_g13132.y + break2_g13132.y + break2_g13132.z ) / 6.0 ) , 0.0001 ) , max( _InkSpreadContrast , 0.0001 ) ) ) , ( _InkSpreadFade * clampResult53_g13130 ));
+                float4 appendResult9_g13130 = (float4(lerpResult7_g13130 , (temp_output_1_0_g13130).a));
+                float4 staticSwitch17_g13104 = appendResult9_g13130;
                 #else
-                float4 staticSwitch17_g12150 = staticSwitch20_g12150;
+                float4 staticSwitch17_g13104 = staticSwitch20_g13104;
                 #endif
-                float temp_output_39_0_g12150 = shaderTime237;
+                float temp_output_39_0_g13104 = shaderTime237;
                 #ifdef _ENABLESHIFTHUE_ON
-                float4 temp_output_1_0_g12168 = staticSwitch17_g12150;
-                float3 hsvTorgb15_g12168 = RGBToHSV( (temp_output_1_0_g12168).rgb );
-                float3 hsvTorgb19_g12168 = HSVToRGB( float3(( ( temp_output_39_0_g12150 * _ShiftHueSpeed ) + hsvTorgb15_g12168.x ),hsvTorgb15_g12168.y,hsvTorgb15_g12168.z) );
-                float4 appendResult6_g12168 = (float4(hsvTorgb19_g12168 , temp_output_1_0_g12168.a));
-                float4 staticSwitch19_g12150 = appendResult6_g12168;
+                float4 temp_output_1_0_g13122 = staticSwitch17_g13104;
+                float3 hsvTorgb15_g13122 = RGBToHSV( (temp_output_1_0_g13122).rgb );
+                float3 hsvTorgb19_g13122 = HSVToRGB( float3(( ( temp_output_39_0_g13104 * _ShiftHueSpeed ) + hsvTorgb15_g13122.x ),hsvTorgb15_g13122.y,hsvTorgb15_g13122.z) );
+                float4 appendResult6_g13122 = (float4(hsvTorgb19_g13122 , temp_output_1_0_g13122.a));
+                float4 staticSwitch19_g13104 = appendResult6_g13122;
                 #else
-                float4 staticSwitch19_g12150 = staticSwitch17_g12150;
+                float4 staticSwitch19_g13104 = staticSwitch17_g13104;
                 #endif
                 #ifdef _ENABLEADDHUE_ON
-                float3 hsvTorgb19_g12172 = HSVToRGB( float3(( ( temp_output_39_0_g12150 * _AddHueSpeed ) % 1.0 ),_AddHueSaturation,_AddHueBrightness) );
-                float4 temp_output_1_0_g12172 = staticSwitch19_g12150;
-                float4 break2_g12174 = temp_output_1_0_g12172;
+                float3 hsvTorgb19_g13126 = HSVToRGB( float3(( ( temp_output_39_0_g13104 * _AddHueSpeed ) % 1.0 ),_AddHueSaturation,_AddHueBrightness) );
+                float4 temp_output_1_0_g13126 = staticSwitch19_g13104;
+                float4 break2_g13128 = temp_output_1_0_g13126;
                 float2 uv_AddHueMask = IN.texcoord.xy * _AddHueMask_ST.xy + _AddHueMask_ST.zw;
-                float4 tex2DNode3_g12173 = tex2D( _AddHueMask, uv_AddHueMask );
+                float4 tex2DNode3_g13127 = tex2D( _AddHueMask, uv_AddHueMask );
                 #ifdef _ADDHUEMASKTOGGLE_ON
-                float staticSwitch33_g12172 = ( _AddHueFade * ( tex2DNode3_g12173.r * tex2DNode3_g12173.a ) );
+                float staticSwitch33_g13126 = ( _AddHueFade * ( tex2DNode3_g13127.r * tex2DNode3_g13127.a ) );
                 #else
-                float staticSwitch33_g12172 = _AddHueFade;
+                float staticSwitch33_g13126 = _AddHueFade;
                 #endif
-                float4 appendResult6_g12172 = (float4(( ( hsvTorgb19_g12172 * pow( ( ( break2_g12174.x + break2_g12174.x + break2_g12174.y + break2_g12174.y + break2_g12174.y + break2_g12174.z ) / 6.0 ) , max( _AddHueContrast , 0.001 ) ) * staticSwitch33_g12172 ) + (temp_output_1_0_g12172).rgb ) , temp_output_1_0_g12172.a));
-                float4 staticSwitch23_g12150 = appendResult6_g12172;
+                float4 appendResult6_g13126 = (float4(( ( hsvTorgb19_g13126 * pow( max( ( ( break2_g13128.x + break2_g13128.x + break2_g13128.y + break2_g13128.y + break2_g13128.y + break2_g13128.z ) / 6.0 ) , 0.0001 ) , max( _AddHueContrast , 0.0001 ) ) * staticSwitch33_g13126 ) + (temp_output_1_0_g13126).rgb ) , temp_output_1_0_g13126.a));
+                float4 staticSwitch23_g13104 = appendResult6_g13126;
                 #else
-                float4 staticSwitch23_g12150 = staticSwitch19_g12150;
+                float4 staticSwitch23_g13104 = staticSwitch19_g13104;
                 #endif
                 #ifdef _ENABLESINEGLOW_ON
-                float4 temp_output_1_0_g12169 = staticSwitch23_g12150;
-                float4 break2_g12170 = temp_output_1_0_g12169;
-                float3 temp_output_13_0_g12169 = (_SineGlowColor).rgb;
+                float4 temp_output_1_0_g13123 = staticSwitch23_g13104;
+                float4 break2_g13124 = temp_output_1_0_g13123;
+                float3 temp_output_13_0_g13123 = (_SineGlowColor).rgb;
                 float2 uv_SineGlowMask = IN.texcoord.xy * _SineGlowMask_ST.xy + _SineGlowMask_ST.zw;
-                float4 tex2DNode30_g12169 = tex2D( _SineGlowMask, uv_SineGlowMask );
+                float4 tex2DNode30_g13123 = tex2D( _SineGlowMask, uv_SineGlowMask );
                 #ifdef _SINEGLOWMASKTOGGLE_ON
-                float3 staticSwitch27_g12169 = ( (tex2DNode30_g12169).rgb * temp_output_13_0_g12169 * tex2DNode30_g12169.a );
+                float3 staticSwitch27_g13123 = ( (tex2DNode30_g13123).rgb * temp_output_13_0_g13123 * tex2DNode30_g13123.a );
                 #else
-                float3 staticSwitch27_g12169 = temp_output_13_0_g12169;
+                float3 staticSwitch27_g13123 = temp_output_13_0_g13123;
                 #endif
-                float4 appendResult21_g12169 = (float4(( (temp_output_1_0_g12169).rgb + ( pow( ( ( break2_g12170.x + break2_g12170.x + break2_g12170.y + break2_g12170.y + break2_g12170.y + break2_g12170.z ) / 6.0 ) , max( _SineGlowContrast , 0.001 ) ) * staticSwitch27_g12169 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g12150 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g12169.a));
-                float4 staticSwitch28_g12150 = appendResult21_g12169;
+                float4 appendResult21_g13123 = (float4(( (temp_output_1_0_g13123).rgb + ( pow( max( ( ( break2_g13124.x + break2_g13124.x + break2_g13124.y + break2_g13124.y + break2_g13124.y + break2_g13124.z ) / 6.0 ) , 0.0001 ) , max( _SineGlowContrast , 0.0001 ) ) * staticSwitch27_g13123 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g13104 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g13123.a));
+                float4 staticSwitch28_g13104 = appendResult21_g13123;
                 #else
-                float4 staticSwitch28_g12150 = staticSwitch23_g12150;
+                float4 staticSwitch28_g13104 = staticSwitch23_g13104;
                 #endif
                 #ifdef _ENABLESATURATION_ON
-                float4 temp_output_1_0_g12157 = staticSwitch28_g12150;
-                float4 break2_g12158 = temp_output_1_0_g12157;
-                float3 temp_cast_48 = (( ( break2_g12158.x + break2_g12158.x + break2_g12158.y + break2_g12158.y + break2_g12158.y + break2_g12158.z ) / 6.0 )).xxx;
-                float3 lerpResult5_g12157 = lerp( temp_cast_48 , (temp_output_1_0_g12157).rgb , _Saturation);
-                float4 appendResult8_g12157 = (float4(lerpResult5_g12157 , temp_output_1_0_g12157.a));
-                float4 staticSwitch38_g12150 = appendResult8_g12157;
+                float4 temp_output_1_0_g13111 = staticSwitch28_g13104;
+                float4 break2_g13112 = temp_output_1_0_g13111;
+                float3 temp_cast_50 = (( ( break2_g13112.x + break2_g13112.x + break2_g13112.y + break2_g13112.y + break2_g13112.y + break2_g13112.z ) / 6.0 )).xxx;
+                float3 lerpResult5_g13111 = lerp( temp_cast_50 , (temp_output_1_0_g13111).rgb , _Saturation);
+                float4 appendResult8_g13111 = (float4(lerpResult5_g13111 , temp_output_1_0_g13111.a));
+                float4 staticSwitch38_g13104 = appendResult8_g13111;
                 #else
-                float4 staticSwitch38_g12150 = staticSwitch28_g12150;
+                float4 staticSwitch38_g13104 = staticSwitch28_g13104;
                 #endif
                 #ifdef _ENABLEINNEROUTLINE_ON
-                float4 temp_output_15_0_g12159 = staticSwitch38_g12150;
-                float3 temp_output_82_0_g12159 = (_InnerOutlineColor).rgb;
-                float2 temp_output_7_0_g12159 = temp_output_1_0_g12150;
-                float temp_output_179_0_g12159 = temp_output_39_0_g12150;
+                float4 temp_output_15_0_g13113 = staticSwitch38_g13104;
+                float3 temp_output_82_0_g13113 = (_InnerOutlineColor).rgb;
+                float2 temp_output_7_0_g13113 = temp_output_1_0_g13104;
+                float temp_output_179_0_g13113 = temp_output_39_0_g13104;
                 #ifdef _INNEROUTLINETEXTURETOGGLE_ON
-                float3 staticSwitch187_g12159 = ( (tex2D( _InnerOutlineTintTexture, ( temp_output_7_0_g12159 + ( _InnerOutlineTextureSpeed * temp_output_179_0_g12159 ) ) )).rgb * temp_output_82_0_g12159 );
+                float3 staticSwitch187_g13113 = ( (tex2D( _InnerOutlineTintTexture, ( temp_output_7_0_g13113 + ( _InnerOutlineTextureSpeed * temp_output_179_0_g13113 ) ) )).rgb * temp_output_82_0_g13113 );
                 #else
-                float3 staticSwitch187_g12159 = temp_output_82_0_g12159;
+                float3 staticSwitch187_g13113 = temp_output_82_0_g13113;
                 #endif
-                float linValue16_g12161 = tex2D( _UberNoiseTexture, ( ( ( temp_output_179_0_g12159 * _InnerOutlineNoiseSpeed ) + temp_output_7_0_g12159 ) * _InnerOutlineNoiseScale ) ).r;
-                float localMyCustomExpression16_g12161 = MyCustomExpression16_g12161( linValue16_g12161 );
+                float linValue16_g13115 = tex2D( _UberNoiseTexture, ( ( ( temp_output_179_0_g13113 * _InnerOutlineNoiseSpeed ) + temp_output_7_0_g13113 ) * _InnerOutlineNoiseScale ) ).r;
+                float localMyCustomExpression16_g13115 = MyCustomExpression16_g13115( linValue16_g13115 );
                 #ifdef _INNEROUTLINEDISTORTIONTOGGLE_ON
-                float2 staticSwitch169_g12159 = ( ( localMyCustomExpression16_g12161 - 0.5 ) * _InnerOutlineDistortionIntensity );
+                float2 staticSwitch169_g13113 = ( ( localMyCustomExpression16_g13115 - 0.5 ) * _InnerOutlineDistortionIntensity );
                 #else
-                float2 staticSwitch169_g12159 = float2( 0,0 );
+                float2 staticSwitch169_g13113 = float2( 0,0 );
                 #endif
-                float2 temp_output_131_0_g12159 = ( staticSwitch169_g12159 + temp_output_7_0_g12159 );
-                float2 appendResult2_g12160 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
-                float2 temp_output_25_0_g12159 = ( 100.0 / appendResult2_g12160 );
-                float temp_output_178_0_g12159 = ( _InnerOutlineFade * ( 1.0 - min( min( min( min( min( min( min( tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( 0,-1 ) ) * temp_output_25_0_g12159 ) ) ).a , tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( 0,1 ) ) * temp_output_25_0_g12159 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( -1,0 ) ) * temp_output_25_0_g12159 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( 1,0 ) ) * temp_output_25_0_g12159 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( 0.705,0.705 ) ) * temp_output_25_0_g12159 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( -0.705,0.705 ) ) * temp_output_25_0_g12159 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( 0.705,-0.705 ) ) * temp_output_25_0_g12159 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12159 + ( ( _InnerOutlineWidth * float2( -0.705,-0.705 ) ) * temp_output_25_0_g12159 ) ) ).a ) ) );
-                float3 lerpResult176_g12159 = lerp( (temp_output_15_0_g12159).rgb , staticSwitch187_g12159 , temp_output_178_0_g12159);
+                float2 temp_output_131_0_g13113 = ( staticSwitch169_g13113 + temp_output_7_0_g13113 );
+                float2 appendResult2_g13114 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+                float2 temp_output_25_0_g13113 = ( 100.0 / appendResult2_g13114 );
+                float temp_output_178_0_g13113 = ( _InnerOutlineFade * ( 1.0 - min( min( min( min( min( min( min( tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( 0,-1 ) ) * temp_output_25_0_g13113 ) ) ).a , tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( 0,1 ) ) * temp_output_25_0_g13113 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( -1,0 ) ) * temp_output_25_0_g13113 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( 1,0 ) ) * temp_output_25_0_g13113 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( 0.705,0.705 ) ) * temp_output_25_0_g13113 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( -0.705,0.705 ) ) * temp_output_25_0_g13113 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( 0.705,-0.705 ) ) * temp_output_25_0_g13113 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13113 + ( ( _InnerOutlineWidth * float2( -0.705,-0.705 ) ) * temp_output_25_0_g13113 ) ) ).a ) ) );
+                float3 lerpResult176_g13113 = lerp( (temp_output_15_0_g13113).rgb , staticSwitch187_g13113 , temp_output_178_0_g13113);
                 #ifdef _INNEROUTLINEOUTLINEONLYTOGGLE_ON
-                float staticSwitch188_g12159 = ( temp_output_178_0_g12159 * temp_output_15_0_g12159.a );
+                float staticSwitch188_g13113 = ( temp_output_178_0_g13113 * temp_output_15_0_g13113.a );
                 #else
-                float staticSwitch188_g12159 = temp_output_15_0_g12159.a;
+                float staticSwitch188_g13113 = temp_output_15_0_g13113.a;
                 #endif
-                float4 appendResult177_g12159 = (float4(lerpResult176_g12159 , staticSwitch188_g12159));
-                float4 staticSwitch12_g12150 = appendResult177_g12159;
+                float4 appendResult177_g13113 = (float4(lerpResult176_g13113 , staticSwitch188_g13113));
+                float4 staticSwitch12_g13104 = appendResult177_g13113;
                 #else
-                float4 staticSwitch12_g12150 = staticSwitch38_g12150;
+                float4 staticSwitch12_g13104 = staticSwitch38_g13104;
                 #endif
                 #ifdef _ENABLEOUTEROUTLINE_ON
-                float4 temp_output_15_0_g12187 = staticSwitch12_g12150;
-                float3 temp_output_82_0_g12187 = (_OuterOutlineColor).rgb;
-                float2 temp_output_7_0_g12187 = temp_output_1_0_g12150;
-                float temp_output_186_0_g12187 = temp_output_39_0_g12150;
+                float4 temp_output_15_0_g13141 = staticSwitch12_g13104;
+                float3 temp_output_82_0_g13141 = (_OuterOutlineColor).rgb;
+                float2 temp_output_7_0_g13141 = temp_output_1_0_g13104;
+                float temp_output_186_0_g13141 = temp_output_39_0_g13104;
                 #ifdef _OUTEROUTLINETEXTURETOGGLE_ON
-                float3 staticSwitch199_g12187 = ( (tex2D( _OuterOutlineTintTexture, ( temp_output_7_0_g12187 + ( _OuterOutlineTextureSpeed * temp_output_186_0_g12187 ) ) )).rgb * temp_output_82_0_g12187 );
+                float3 staticSwitch199_g13141 = ( (tex2D( _OuterOutlineTintTexture, ( temp_output_7_0_g13141 + ( _OuterOutlineTextureSpeed * temp_output_186_0_g13141 ) ) )).rgb * temp_output_82_0_g13141 );
                 #else
-                float3 staticSwitch199_g12187 = temp_output_82_0_g12187;
+                float3 staticSwitch199_g13141 = temp_output_82_0_g13141;
                 #endif
-                float temp_output_182_0_g12187 = ( ( 1.0 - temp_output_15_0_g12187.a ) * min( ( _OuterOutlineFade * 3.0 ) , 1.0 ) );
+                float temp_output_182_0_g13141 = ( ( 1.0 - temp_output_15_0_g13141.a ) * min( ( _OuterOutlineFade * 3.0 ) , 1.0 ) );
                 #ifdef _OUTEROUTLINEOUTLINEONLYTOGGLE_ON
-                float staticSwitch203_g12187 = 1.0;
+                float staticSwitch203_g13141 = 1.0;
                 #else
-                float staticSwitch203_g12187 = temp_output_182_0_g12187;
+                float staticSwitch203_g13141 = temp_output_182_0_g13141;
                 #endif
-                float3 lerpResult178_g12187 = lerp( (temp_output_15_0_g12187).rgb , staticSwitch199_g12187 , staticSwitch203_g12187);
-                float3 lerpResult170_g12187 = lerp( lerpResult178_g12187 , staticSwitch199_g12187 , staticSwitch203_g12187);
-                float linValue16_g12188 = tex2D( _UberNoiseTexture, ( ( ( temp_output_186_0_g12187 * _OuterOutlineNoiseSpeed ) + temp_output_7_0_g12187 ) * _OuterOutlineNoiseScale ) ).r;
-                float localMyCustomExpression16_g12188 = MyCustomExpression16_g12188( linValue16_g12188 );
+                float3 lerpResult178_g13141 = lerp( (temp_output_15_0_g13141).rgb , staticSwitch199_g13141 , staticSwitch203_g13141);
+                float3 lerpResult170_g13141 = lerp( lerpResult178_g13141 , staticSwitch199_g13141 , staticSwitch203_g13141);
+                float linValue16_g13142 = tex2D( _UberNoiseTexture, ( ( ( temp_output_186_0_g13141 * _OuterOutlineNoiseSpeed ) + temp_output_7_0_g13141 ) * _OuterOutlineNoiseScale ) ).r;
+                float localMyCustomExpression16_g13142 = MyCustomExpression16_g13142( linValue16_g13142 );
                 #ifdef _OUTEROUTLINEDISTORTIONTOGGLE_ON
-                float2 staticSwitch157_g12187 = ( ( localMyCustomExpression16_g12188 - 0.5 ) * _OuterOutlineDistortionIntensity );
+                float2 staticSwitch157_g13141 = ( ( localMyCustomExpression16_g13142 - 0.5 ) * _OuterOutlineDistortionIntensity );
                 #else
-                float2 staticSwitch157_g12187 = float2( 0,0 );
+                float2 staticSwitch157_g13141 = float2( 0,0 );
                 #endif
-                float2 temp_output_131_0_g12187 = ( staticSwitch157_g12187 + temp_output_7_0_g12187 );
-                float2 appendResult2_g12189 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
-                float2 temp_output_25_0_g12187 = ( 100.0 / appendResult2_g12189 );
-                float lerpResult168_g12187 = lerp( temp_output_15_0_g12187.a , min( ( max( max( max( max( max( max( max( tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( 0,-1 ) ) * temp_output_25_0_g12187 ) ) ).a , tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( 0,1 ) ) * temp_output_25_0_g12187 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( -1,0 ) ) * temp_output_25_0_g12187 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( 1,0 ) ) * temp_output_25_0_g12187 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( 0.705,0.705 ) ) * temp_output_25_0_g12187 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( -0.705,0.705 ) ) * temp_output_25_0_g12187 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( 0.705,-0.705 ) ) * temp_output_25_0_g12187 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g12187 + ( ( _OuterOutlineWidth * float2( -0.705,-0.705 ) ) * temp_output_25_0_g12187 ) ) ).a ) * 3.0 ) , 1.0 ) , _OuterOutlineFade);
+                float2 temp_output_131_0_g13141 = ( staticSwitch157_g13141 + temp_output_7_0_g13141 );
+                float2 appendResult2_g13143 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+                float2 temp_output_25_0_g13141 = ( 100.0 / appendResult2_g13143 );
+                float lerpResult168_g13141 = lerp( temp_output_15_0_g13141.a , min( ( max( max( max( max( max( max( max( tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( 0,-1 ) ) * temp_output_25_0_g13141 ) ) ).a , tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( 0,1 ) ) * temp_output_25_0_g13141 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( -1,0 ) ) * temp_output_25_0_g13141 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( 1,0 ) ) * temp_output_25_0_g13141 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( 0.705,0.705 ) ) * temp_output_25_0_g13141 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( -0.705,0.705 ) ) * temp_output_25_0_g13141 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( 0.705,-0.705 ) ) * temp_output_25_0_g13141 ) ) ).a ) , tex2D( _MainTex, ( temp_output_131_0_g13141 + ( ( _OuterOutlineWidth * float2( -0.705,-0.705 ) ) * temp_output_25_0_g13141 ) ) ).a ) * 3.0 ) , 1.0 ) , _OuterOutlineFade);
                 #ifdef _OUTEROUTLINEOUTLINEONLYTOGGLE_ON
-                float staticSwitch200_g12187 = ( temp_output_182_0_g12187 * lerpResult168_g12187 );
+                float staticSwitch200_g13141 = ( temp_output_182_0_g13141 * lerpResult168_g13141 );
                 #else
-                float staticSwitch200_g12187 = lerpResult168_g12187;
+                float staticSwitch200_g13141 = lerpResult168_g13141;
                 #endif
-                float4 appendResult174_g12187 = (float4(lerpResult170_g12187 , staticSwitch200_g12187));
-                float4 staticSwitch13_g12150 = appendResult174_g12187;
+                float4 appendResult174_g13141 = (float4(lerpResult170_g13141 , staticSwitch200_g13141));
+                float4 staticSwitch13_g13104 = appendResult174_g13141;
                 #else
-                float4 staticSwitch13_g12150 = staticSwitch12_g12150;
+                float4 staticSwitch13_g13104 = staticSwitch12_g13104;
                 #endif
                 #ifdef _ENABLEPIXELOUTLINE_ON
-                float4 temp_output_15_0_g12164 = staticSwitch13_g12150;
-                float3 temp_output_82_0_g12164 = (_PixelOutlineColor).rgb;
-                float2 temp_output_7_0_g12164 = temp_output_1_0_g12150;
+                float4 temp_output_15_0_g13118 = staticSwitch13_g13104;
+                float3 temp_output_82_0_g13118 = (_PixelOutlineColor).rgb;
+                float2 temp_output_7_0_g13118 = temp_output_1_0_g13104;
                 #ifdef _PIXELOUTLINETEXTURETOGGLE_ON
-                float3 staticSwitch199_g12164 = ( (tex2D( _PixelOutlineTintTexture, ( temp_output_7_0_g12164 + ( _PixelOutlineTextureSpeed * temp_output_39_0_g12150 ) ) )).rgb * temp_output_82_0_g12164 );
+                float3 staticSwitch199_g13118 = ( (tex2D( _PixelOutlineTintTexture, ( temp_output_7_0_g13118 + ( _PixelOutlineTextureSpeed * temp_output_39_0_g13104 ) ) )).rgb * temp_output_82_0_g13118 );
                 #else
-                float3 staticSwitch199_g12164 = temp_output_82_0_g12164;
+                float3 staticSwitch199_g13118 = temp_output_82_0_g13118;
                 #endif
-                float temp_output_182_0_g12164 = ( ( 1.0 - temp_output_15_0_g12164.a ) * min( ( _PixelOutlineFade * 3.0 ) , 1.0 ) );
+                float temp_output_213_0_g13118 = ( _PixelOutlineFade * step( temp_output_15_0_g13118.a , _PixelOutlineAlphaLimit ) );
+                float temp_output_182_0_g13118 = ( ( 1.0 - temp_output_15_0_g13118.a ) * min( ( temp_output_213_0_g13118 * 3.0 ) , 1.0 ) );
                 #ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
-                float staticSwitch203_g12164 = 1.0;
+                float staticSwitch203_g13118 = 1.0;
                 #else
-                float staticSwitch203_g12164 = temp_output_182_0_g12164;
+                float staticSwitch203_g13118 = temp_output_182_0_g13118;
                 #endif
-                float3 lerpResult178_g12164 = lerp( (temp_output_15_0_g12164).rgb , staticSwitch199_g12164 , staticSwitch203_g12164);
-                float3 lerpResult170_g12164 = lerp( lerpResult178_g12164 , staticSwitch199_g12164 , staticSwitch203_g12164);
-                float2 appendResult206_g12164 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
-                float2 temp_output_209_0_g12164 = ( float2( 1,1 ) / appendResult206_g12164 );
-                float lerpResult168_g12164 = lerp( temp_output_15_0_g12164.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g12164 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g12164 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g12164 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g12164 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g12164 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g12164 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g12164 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g12164 ) ) ).a ) * 3.0 ) , 1.0 ) , _PixelOutlineFade);
+                float3 lerpResult178_g13118 = lerp( (temp_output_15_0_g13118).rgb , staticSwitch199_g13118 , staticSwitch203_g13118);
+                float3 lerpResult170_g13118 = lerp( lerpResult178_g13118 , staticSwitch199_g13118 , staticSwitch203_g13118);
+                float2 appendResult206_g13118 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+                float2 temp_output_209_0_g13118 = ( float2( 1,1 ) / appendResult206_g13118 );
+                float lerpResult168_g13118 = lerp( temp_output_15_0_g13118.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g13118 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g13118 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g13118 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g13118 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g13118 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g13118 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g13118 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g13118 ) ) ).a ) * 3.0 ) , 1.0 ) , temp_output_213_0_g13118);
                 #ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
-                float staticSwitch200_g12164 = ( temp_output_182_0_g12164 * lerpResult168_g12164 );
+                float staticSwitch200_g13118 = ( temp_output_182_0_g13118 * lerpResult168_g13118 );
                 #else
-                float staticSwitch200_g12164 = lerpResult168_g12164;
+                float staticSwitch200_g13118 = lerpResult168_g13118;
                 #endif
-                float4 appendResult174_g12164 = (float4(lerpResult170_g12164 , staticSwitch200_g12164));
-                float4 staticSwitch48_g12150 = appendResult174_g12164;
+                float4 appendResult174_g13118 = (float4(lerpResult170_g13118 , staticSwitch200_g13118));
+                float4 staticSwitch48_g13104 = appendResult174_g13118;
                 #else
-                float4 staticSwitch48_g12150 = staticSwitch13_g12150;
+                float4 staticSwitch48_g13104 = staticSwitch13_g13104;
                 #endif
                 #ifdef _ENABLEPINGPONGGLOW_ON
-                float3 lerpResult15_g12151 = lerp( (_PingPongGlowFrom).rgb , (_PingPongGlowTo).rgb , ( ( sin( ( temp_output_39_0_g12150 * _PingPongGlowFrequency ) ) + 1.0 ) / 2.0 ));
-                float4 temp_output_5_0_g12151 = staticSwitch48_g12150;
-                float4 break2_g12152 = temp_output_5_0_g12151;
-                float4 appendResult12_g12151 = (float4(( ( lerpResult15_g12151 * _PingPongGlowFade * pow( ( ( break2_g12152.x + break2_g12152.x + break2_g12152.y + break2_g12152.y + break2_g12152.y + break2_g12152.z ) / 6.0 ) , max( _PingPongGlowContrast , 0.001 ) ) ) + (temp_output_5_0_g12151).rgb ) , temp_output_5_0_g12151.a));
-                float4 staticSwitch46_g12150 = appendResult12_g12151;
+                float3 lerpResult15_g13105 = lerp( (_PingPongGlowFrom).rgb , (_PingPongGlowTo).rgb , ( ( sin( ( temp_output_39_0_g13104 * _PingPongGlowFrequency ) ) + 1.0 ) / 2.0 ));
+                float4 temp_output_5_0_g13105 = staticSwitch48_g13104;
+                float4 break2_g13106 = temp_output_5_0_g13105;
+                float4 appendResult12_g13105 = (float4(( ( lerpResult15_g13105 * _PingPongGlowFade * pow( max( ( ( break2_g13106.x + break2_g13106.x + break2_g13106.y + break2_g13106.y + break2_g13106.y + break2_g13106.z ) / 6.0 ) , 0.0001 ) , max( _PingPongGlowContrast , 0.0001 ) ) ) + (temp_output_5_0_g13105).rgb ) , temp_output_5_0_g13105.a));
+                float4 staticSwitch46_g13104 = appendResult12_g13105;
                 #else
-                float4 staticSwitch46_g12150 = staticSwitch48_g12150;
+                float4 staticSwitch46_g13104 = staticSwitch48_g13104;
                 #endif
-                float4 temp_output_361_0 = staticSwitch46_g12150;
+                float4 temp_output_361_0 = staticSwitch46_g13104;
                 #ifdef _ENABLEHOLOGRAM_ON
-                float4 temp_output_1_0_g12192 = temp_output_361_0;
-                float4 break2_g12193 = temp_output_1_0_g12192;
-                float4 appendResult22_g12192 = (float4(( (_HologramTint).rgb * pow( ( ( break2_g12193.x + break2_g12193.x + break2_g12193.y + break2_g12193.y + break2_g12193.y + break2_g12193.z ) / 6.0 ) , max( _HologramContrast , 0.001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * _HologramLineSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g12192.a )));
-                float4 lerpResult37_g12192 = lerp( temp_output_1_0_g12192 , appendResult22_g12192 , hologramFade182);
-                float4 staticSwitch56 = lerpResult37_g12192;
+                float4 temp_output_1_0_g13146 = temp_output_361_0;
+                float4 break2_g13147 = temp_output_1_0_g13146;
+                float temp_output_44_0_g13146 = 0.5;
+                float4 appendResult22_g13146 = (float4(( (_HologramTint).rgb * pow( max( ( ( break2_g13147.x + break2_g13147.x + break2_g13147.y + break2_g13147.y + break2_g13147.y + break2_g13147.z ) / 6.0 ) , 0.0001 ) , max( _HologramContrast , 0.0001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * ( _HologramLineSpeed * temp_output_44_0_g13146 * 0.2 ) ) + ase_positionSSNorm.y ) / temp_output_44_0_g13146 ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g13146.a )));
+                float4 lerpResult37_g13146 = lerp( temp_output_1_0_g13146 , appendResult22_g13146 , hologramFade182);
+                float4 staticSwitch56 = lerpResult37_g13146;
                 #else
                 float4 staticSwitch56 = temp_output_361_0;
                 #endif
                 #ifdef _ENABLEGLITCH_ON
-                float4 temp_output_1_0_g12195 = staticSwitch56;
-                float4 break2_g12197 = temp_output_1_0_g12195;
-                float temp_output_34_0_g12195 = shaderTime237;
-                float linValue16_g12196 = tex2D( _UberNoiseTexture, ( ( glitchPosition154 + ( _GlitchNoiseSpeed * temp_output_34_0_g12195 ) ) * _GlitchNoiseScale ) ).r;
-                float localMyCustomExpression16_g12196 = MyCustomExpression16_g12196( linValue16_g12196 );
-                float3 hsvTorgb3_g12198 = HSVToRGB( float3(( localMyCustomExpression16_g12196 + ( temp_output_34_0_g12195 * _GlitchHueSpeed ) ),1.0,1.0) );
-                float3 lerpResult23_g12195 = lerp( (temp_output_1_0_g12195).rgb , ( ( ( break2_g12197.x + break2_g12197.x + break2_g12197.y + break2_g12197.y + break2_g12197.y + break2_g12197.z ) / 6.0 ) * _GlitchBrightness * hsvTorgb3_g12198 ) , glitchFade152);
-                float4 appendResult27_g12195 = (float4(lerpResult23_g12195 , temp_output_1_0_g12195.a));
-                float4 staticSwitch57 = appendResult27_g12195;
+                float4 temp_output_1_0_g13149 = staticSwitch56;
+                float4 break2_g13151 = temp_output_1_0_g13149;
+                float temp_output_34_0_g13149 = shaderTime237;
+                float linValue16_g13150 = tex2D( _UberNoiseTexture, ( ( glitchPosition154 + ( _GlitchNoiseSpeed * temp_output_34_0_g13149 ) ) * _GlitchNoiseScale ) ).r;
+                float localMyCustomExpression16_g13150 = MyCustomExpression16_g13150( linValue16_g13150 );
+                float3 hsvTorgb3_g13152 = HSVToRGB( float3(( localMyCustomExpression16_g13150 + ( temp_output_34_0_g13149 * _GlitchHueSpeed ) ),1.0,1.0) );
+                float3 lerpResult23_g13149 = lerp( (temp_output_1_0_g13149).rgb , ( ( ( break2_g13151.x + break2_g13151.x + break2_g13151.y + break2_g13151.y + break2_g13151.y + break2_g13151.z ) / 6.0 ) * _GlitchBrightness * hsvTorgb3_g13152 ) , glitchFade152);
+                float4 appendResult27_g13149 = (float4(lerpResult23_g13149 , temp_output_1_0_g13149.a));
+                float4 staticSwitch57 = appendResult27_g13149;
                 #else
                 float4 staticSwitch57 = staticSwitch56;
                 #endif
-                float4 temp_output_3_0_g12199 = staticSwitch57;
-                float4 temp_output_1_0_g12229 = temp_output_3_0_g12199;
-                float2 temp_output_41_0_g12199 = shaderPosition235;
-                float2 temp_output_99_0_g12229 = temp_output_41_0_g12199;
-                float temp_output_40_0_g12199 = shaderTime237;
+                float4 temp_output_3_0_g13153 = staticSwitch57;
+                float4 temp_output_1_0_g13183 = temp_output_3_0_g13153;
+                float2 temp_output_41_0_g13153 = shaderPosition235;
+                float2 temp_output_99_0_g13183 = temp_output_41_0_g13153;
+                float temp_output_40_0_g13153 = shaderTime237;
                 #ifdef _ENABLECAMOUFLAGE_ON
-                float linValue16_g12234 = tex2D( _UberNoiseTexture, ( ( ( temp_output_40_0_g12199 * _CamouflageDistortionSpeed ) + temp_output_99_0_g12229 ) * _CamouflageDistortionScale ) ).r;
-                float localMyCustomExpression16_g12234 = MyCustomExpression16_g12234( linValue16_g12234 );
+                float linValue16_g13188 = tex2D( _UberNoiseTexture, ( ( ( temp_output_40_0_g13153 * _CamouflageDistortionSpeed ) + temp_output_99_0_g13183 ) * _CamouflageDistortionScale ) ).r;
+                float localMyCustomExpression16_g13188 = MyCustomExpression16_g13188( linValue16_g13188 );
                 #ifdef _CAMOUFLAGEANIMATIONTOGGLE_ON
-                float2 staticSwitch101_g12229 = ( ( ( localMyCustomExpression16_g12234 - 0.25 ) * _CamouflageDistortionIntensity ) + temp_output_99_0_g12229 );
+                float2 staticSwitch101_g13183 = ( ( ( localMyCustomExpression16_g13188 - 0.25 ) * _CamouflageDistortionIntensity ) + temp_output_99_0_g13183 );
                 #else
-                float2 staticSwitch101_g12229 = temp_output_99_0_g12229;
+                float2 staticSwitch101_g13183 = temp_output_99_0_g13183;
                 #endif
-                float linValue16_g12231 = tex2D( _UberNoiseTexture, ( staticSwitch101_g12229 * _CamouflageNoiseScaleA ) ).r;
-                float localMyCustomExpression16_g12231 = MyCustomExpression16_g12231( linValue16_g12231 );
-                float clampResult52_g12229 = clamp( ( ( _CamouflageDensityA - localMyCustomExpression16_g12231 ) / max( _CamouflageSmoothnessA , 0.005 ) ) , 0.0 , 1.0 );
-                float4 lerpResult55_g12229 = lerp( _CamouflageBaseColor , ( _CamouflageColorA * clampResult52_g12229 ) , clampResult52_g12229);
-                float linValue16_g12233 = tex2D( _UberNoiseTexture, ( ( staticSwitch101_g12229 + float2( 12.3,12.3 ) ) * _CamouflageNoiseScaleB ) ).r;
-                float localMyCustomExpression16_g12233 = MyCustomExpression16_g12233( linValue16_g12233 );
-                float clampResult65_g12229 = clamp( ( ( _CamouflageDensityB - localMyCustomExpression16_g12233 ) / max( _CamouflageSmoothnessB , 0.005 ) ) , 0.0 , 1.0 );
-                float4 lerpResult68_g12229 = lerp( lerpResult55_g12229 , ( _CamouflageColorB * clampResult65_g12229 ) , clampResult65_g12229);
-                float4 break2_g12232 = temp_output_1_0_g12229;
-                float3 lerpResult4_g12229 = lerp( (temp_output_1_0_g12229).rgb , ( (lerpResult68_g12229).rgb * pow( ( ( break2_g12232.x + break2_g12232.x + break2_g12232.y + break2_g12232.y + break2_g12232.y + break2_g12232.z ) / 6.0 ) , max( _CamouflageContrast , 0.001 ) ) ) , _CamouflageFade);
-                float4 appendResult7_g12229 = (float4(lerpResult4_g12229 , temp_output_1_0_g12229.a));
-                float4 staticSwitch26_g12199 = appendResult7_g12229;
+                float linValue16_g13185 = tex2D( _UberNoiseTexture, ( staticSwitch101_g13183 * _CamouflageNoiseScaleA ) ).r;
+                float localMyCustomExpression16_g13185 = MyCustomExpression16_g13185( linValue16_g13185 );
+                float clampResult52_g13183 = clamp( ( ( _CamouflageDensityA - localMyCustomExpression16_g13185 ) / max( _CamouflageSmoothnessA , 0.005 ) ) , 0.0 , 1.0 );
+                float4 lerpResult55_g13183 = lerp( _CamouflageBaseColor , ( _CamouflageColorA * clampResult52_g13183 ) , clampResult52_g13183);
+                float linValue16_g13187 = tex2D( _UberNoiseTexture, ( ( staticSwitch101_g13183 + float2( 12.3,12.3 ) ) * _CamouflageNoiseScaleB ) ).r;
+                float localMyCustomExpression16_g13187 = MyCustomExpression16_g13187( linValue16_g13187 );
+                float clampResult65_g13183 = clamp( ( ( _CamouflageDensityB - localMyCustomExpression16_g13187 ) / max( _CamouflageSmoothnessB , 0.005 ) ) , 0.0 , 1.0 );
+                float4 lerpResult68_g13183 = lerp( lerpResult55_g13183 , ( _CamouflageColorB * clampResult65_g13183 ) , clampResult65_g13183);
+                float4 break2_g13186 = temp_output_1_0_g13183;
+                float3 lerpResult4_g13183 = lerp( (temp_output_1_0_g13183).rgb , ( (lerpResult68_g13183).rgb * pow( max( ( ( break2_g13186.x + break2_g13186.x + break2_g13186.y + break2_g13186.y + break2_g13186.y + break2_g13186.z ) / 6.0 ) , 0.0001 ) , max( _CamouflageContrast , 0.0001 ) ) ) , _CamouflageFade);
+                float4 appendResult7_g13183 = (float4(lerpResult4_g13183 , temp_output_1_0_g13183.a));
+                float4 staticSwitch26_g13153 = appendResult7_g13183;
                 #else
-                float4 staticSwitch26_g12199 = temp_output_3_0_g12199;
+                float4 staticSwitch26_g13153 = temp_output_3_0_g13153;
                 #endif
                 #ifdef _ENABLEMETAL_ON
-                float4 temp_output_1_0_g12222 = staticSwitch26_g12199;
-                float temp_output_59_0_g12222 = temp_output_40_0_g12199;
-                float2 temp_output_58_0_g12222 = temp_output_41_0_g12199;
-                float linValue16_g12223 = tex2D( _UberNoiseTexture, ( ( ( temp_output_59_0_g12222 * _MetalNoiseDistortionSpeed ) + temp_output_58_0_g12222 ) * _MetalNoiseDistortionScale ) ).r;
-                float localMyCustomExpression16_g12223 = MyCustomExpression16_g12223( linValue16_g12223 );
-                float linValue16_g12225 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g12223 - 0.25 ) * _MetalNoiseDistortion ) + ( ( temp_output_59_0_g12222 * _MetalNoiseSpeed ) + temp_output_58_0_g12222 ) ) * _MetalNoiseScale ) ).r;
-                float localMyCustomExpression16_g12225 = MyCustomExpression16_g12225( linValue16_g12225 );
-                float4 break2_g12224 = temp_output_1_0_g12222;
-                float temp_output_5_0_g12222 = ( ( break2_g12224.x + break2_g12224.x + break2_g12224.y + break2_g12224.y + break2_g12224.y + break2_g12224.z ) / 6.0 );
+                float4 temp_output_1_0_g13176 = staticSwitch26_g13153;
+                float temp_output_59_0_g13176 = temp_output_40_0_g13153;
+                float2 temp_output_58_0_g13176 = temp_output_41_0_g13153;
+                float linValue16_g13177 = tex2D( _UberNoiseTexture, ( ( ( temp_output_59_0_g13176 * _MetalNoiseDistortionSpeed ) + temp_output_58_0_g13176 ) * _MetalNoiseDistortionScale ) ).r;
+                float localMyCustomExpression16_g13177 = MyCustomExpression16_g13177( linValue16_g13177 );
+                float linValue16_g13179 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g13177 - 0.25 ) * _MetalNoiseDistortion ) + ( ( temp_output_59_0_g13176 * _MetalNoiseSpeed ) + temp_output_58_0_g13176 ) ) * _MetalNoiseScale ) ).r;
+                float localMyCustomExpression16_g13179 = MyCustomExpression16_g13179( linValue16_g13179 );
+                float4 break2_g13178 = temp_output_1_0_g13176;
+                float temp_output_5_0_g13176 = ( ( break2_g13178.x + break2_g13178.x + break2_g13178.y + break2_g13178.y + break2_g13178.y + break2_g13178.z ) / 6.0 );
                 float2 uv_MetalMask = IN.texcoord.xy * _MetalMask_ST.xy + _MetalMask_ST.zw;
-                float4 tex2DNode3_g12227 = tex2D( _MetalMask, uv_MetalMask );
+                float4 tex2DNode3_g13181 = tex2D( _MetalMask, uv_MetalMask );
                 #ifdef _METALMASKTOGGLE_ON
-                float staticSwitch60_g12222 = ( _MetalFade * ( tex2DNode3_g12227.r * tex2DNode3_g12227.a ) );
+                float staticSwitch60_g13176 = ( _MetalFade * ( tex2DNode3_g13181.r * tex2DNode3_g13181.a ) );
                 #else
-                float staticSwitch60_g12222 = _MetalFade;
+                float staticSwitch60_g13176 = _MetalFade;
                 #endif
-                float4 lerpResult45_g12222 = lerp( temp_output_1_0_g12222 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g12225 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( temp_output_5_0_g12222 , max( _MetalHighlightContrast , 0.001 ) ) ) + ( pow( temp_output_5_0_g12222 , max( _MetalContrast , 0.001 ) ) * _MetalColor ) ) , staticSwitch60_g12222);
-                float4 appendResult8_g12222 = (float4((lerpResult45_g12222).rgb , (temp_output_1_0_g12222).a));
-                float4 staticSwitch28_g12199 = appendResult8_g12222;
+                float4 lerpResult45_g13176 = lerp( temp_output_1_0_g13176 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g13179 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( max( temp_output_5_0_g13176 , 0.0001 ) , max( _MetalHighlightContrast , 0.0001 ) ) ) + ( pow( max( temp_output_5_0_g13176 , 0.0001 ) , max( _MetalContrast , 0.0001 ) ) * _MetalColor ) ) , staticSwitch60_g13176);
+                float4 appendResult8_g13176 = (float4((lerpResult45_g13176).rgb , (temp_output_1_0_g13176).a));
+                float4 staticSwitch28_g13153 = appendResult8_g13176;
                 #else
-                float4 staticSwitch28_g12199 = staticSwitch26_g12199;
+                float4 staticSwitch28_g13153 = staticSwitch26_g13153;
                 #endif
                 #ifdef _ENABLEFROZEN_ON
-                float4 temp_output_1_0_g12214 = staticSwitch28_g12199;
-                float4 break2_g12215 = temp_output_1_0_g12214;
-                float temp_output_7_0_g12214 = ( ( break2_g12215.x + break2_g12215.x + break2_g12215.y + break2_g12215.y + break2_g12215.y + break2_g12215.z ) / 6.0 );
-                float2 temp_output_72_0_g12214 = temp_output_41_0_g12199;
-                float linValue16_g12216 = tex2D( _UberNoiseTexture, ( temp_output_72_0_g12214 * _FrozenSnowScale ) ).r;
-                float localMyCustomExpression16_g12216 = MyCustomExpression16_g12216( linValue16_g12216 );
-                float temp_output_73_0_g12214 = temp_output_40_0_g12199;
-                float linValue16_g12218 = tex2D( _UberNoiseTexture, ( ( ( temp_output_73_0_g12214 * _FrozenHighlightDistortionSpeed ) + temp_output_72_0_g12214 ) * _FrozenHighlightDistortionScale ) ).r;
-                float localMyCustomExpression16_g12218 = MyCustomExpression16_g12218( linValue16_g12218 );
-                float linValue16_g12219 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g12218 - 0.25 ) * _FrozenHighlightDistortion ) + ( ( temp_output_73_0_g12214 * _FrozenHighlightSpeed ) + temp_output_72_0_g12214 ) ) * _FrozenHighlightScale ) ).r;
-                float localMyCustomExpression16_g12219 = MyCustomExpression16_g12219( linValue16_g12219 );
-                float3 lerpResult57_g12214 = lerp( (temp_output_1_0_g12214).rgb , ( ( pow( temp_output_7_0_g12214 , max( _FrozenContrast , 0.001 ) ) * (_FrozenTint).rgb ) + ( pow( temp_output_7_0_g12214 , max( _FrozenSnowContrast , 0.001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g12216 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g12219 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( temp_output_7_0_g12214 , max( _FrozenHighlightContrast , 0.001 ) ) )).rgb ) , _FrozenFade);
-                float4 appendResult26_g12214 = (float4(lerpResult57_g12214 , temp_output_1_0_g12214.a));
-                float4 staticSwitch29_g12199 = appendResult26_g12214;
+                float4 temp_output_1_0_g13168 = staticSwitch28_g13153;
+                float4 break2_g13169 = temp_output_1_0_g13168;
+                float temp_output_7_0_g13168 = ( ( break2_g13169.x + break2_g13169.x + break2_g13169.y + break2_g13169.y + break2_g13169.y + break2_g13169.z ) / 6.0 );
+                float2 temp_output_72_0_g13168 = temp_output_41_0_g13153;
+                float linValue16_g13170 = tex2D( _UberNoiseTexture, ( temp_output_72_0_g13168 * _FrozenSnowScale ) ).r;
+                float localMyCustomExpression16_g13170 = MyCustomExpression16_g13170( linValue16_g13170 );
+                float temp_output_73_0_g13168 = temp_output_40_0_g13153;
+                float linValue16_g13172 = tex2D( _UberNoiseTexture, ( ( ( temp_output_73_0_g13168 * _FrozenHighlightDistortionSpeed ) + temp_output_72_0_g13168 ) * _FrozenHighlightDistortionScale ) ).r;
+                float localMyCustomExpression16_g13172 = MyCustomExpression16_g13172( linValue16_g13172 );
+                float linValue16_g13173 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g13172 - 0.25 ) * _FrozenHighlightDistortion ) + ( ( temp_output_73_0_g13168 * _FrozenHighlightSpeed ) + temp_output_72_0_g13168 ) ) * _FrozenHighlightScale ) ).r;
+                float localMyCustomExpression16_g13173 = MyCustomExpression16_g13173( linValue16_g13173 );
+                float3 lerpResult57_g13168 = lerp( (temp_output_1_0_g13168).rgb , ( ( pow( max( temp_output_7_0_g13168 , 0.0001 ) , max( _FrozenContrast , 0.0001 ) ) * (_FrozenTint).rgb ) + ( pow( max( temp_output_7_0_g13168 , 0.0001 ) , max( _FrozenSnowContrast , 0.0001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g13170 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g13173 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( max( temp_output_7_0_g13168 , 0.0001 ) , max( _FrozenHighlightContrast , 0.0001 ) ) )).rgb ) , _FrozenFade);
+                float4 appendResult26_g13168 = (float4(lerpResult57_g13168 , temp_output_1_0_g13168.a));
+                float4 staticSwitch29_g13153 = appendResult26_g13168;
                 #else
-                float4 staticSwitch29_g12199 = staticSwitch28_g12199;
+                float4 staticSwitch29_g13153 = staticSwitch28_g13153;
                 #endif
                 #ifdef _ENABLEBURN_ON
-                float4 temp_output_1_0_g12208 = staticSwitch29_g12199;
-                float3 temp_output_28_0_g12208 = (temp_output_1_0_g12208).rgb;
-                float4 break2_g12212 = float4( temp_output_28_0_g12208 , 0.0 );
-                float2 temp_output_72_0_g12208 = temp_output_41_0_g12199;
-                float linValue16_g12211 = tex2D( _UberNoiseTexture, ( temp_output_72_0_g12208 * _BurnSwirlNoiseScale ) ).r;
-                float localMyCustomExpression16_g12211 = MyCustomExpression16_g12211( linValue16_g12211 );
-                float linValue16_g12209 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g12211 - 0.5 ) * float2( 1,1 ) * _BurnSwirlFactor ) + temp_output_72_0_g12208 ) * _BurnInsideNoiseScale ) ).r;
-                float localMyCustomExpression16_g12209 = MyCustomExpression16_g12209( linValue16_g12209 );
-                float clampResult68_g12208 = clamp( ( _BurnInsideNoiseFactor - localMyCustomExpression16_g12209 ) , 0.0 , 1.0 );
-                float linValue16_g12210 = tex2D( _UberNoiseTexture, ( temp_output_72_0_g12208 * _BurnEdgeNoiseScale ) ).r;
-                float localMyCustomExpression16_g12210 = MyCustomExpression16_g12210( linValue16_g12210 );
-                float temp_output_15_0_g12208 = ( ( ( _BurnRadius - distance( temp_output_72_0_g12208 , _BurnPosition ) ) + ( localMyCustomExpression16_g12210 * _BurnEdgeNoiseFactor ) ) / max( _BurnWidth , 0.01 ) );
-                float clampResult18_g12208 = clamp( temp_output_15_0_g12208 , 0.0 , 1.0 );
-                float3 lerpResult29_g12208 = lerp( temp_output_28_0_g12208 , ( pow( ( ( break2_g12212.x + break2_g12212.x + break2_g12212.y + break2_g12212.y + break2_g12212.y + break2_g12212.z ) / 6.0 ) , max( _BurnInsideContrast , 0.001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g12208 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g12208);
-                float3 lerpResult40_g12208 = lerp( temp_output_28_0_g12208 , ( lerpResult29_g12208 + ( ( step( temp_output_15_0_g12208 , 1.0 ) * step( 0.0 , temp_output_15_0_g12208 ) ) * (_BurnEdgeColor).rgb ) ) , _BurnFade);
-                float4 appendResult43_g12208 = (float4(lerpResult40_g12208 , temp_output_1_0_g12208.a));
-                float4 staticSwitch32_g12199 = appendResult43_g12208;
+                float4 temp_output_1_0_g13162 = staticSwitch29_g13153;
+                float3 temp_output_28_0_g13162 = (temp_output_1_0_g13162).rgb;
+                float4 break2_g13166 = float4( temp_output_28_0_g13162 , 0.0 );
+                float2 temp_output_72_0_g13162 = temp_output_41_0_g13153;
+                float linValue16_g13165 = tex2D( _UberNoiseTexture, ( temp_output_72_0_g13162 * _BurnSwirlNoiseScale ) ).r;
+                float localMyCustomExpression16_g13165 = MyCustomExpression16_g13165( linValue16_g13165 );
+                float linValue16_g13163 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g13165 - 0.5 ) * float2( 1,1 ) * _BurnSwirlFactor ) + temp_output_72_0_g13162 ) * _BurnInsideNoiseScale ) ).r;
+                float localMyCustomExpression16_g13163 = MyCustomExpression16_g13163( linValue16_g13163 );
+                float clampResult68_g13162 = clamp( ( _BurnInsideNoiseFactor - localMyCustomExpression16_g13163 ) , 0.0 , 1.0 );
+                float linValue16_g13164 = tex2D( _UberNoiseTexture, ( temp_output_72_0_g13162 * _BurnEdgeNoiseScale ) ).r;
+                float localMyCustomExpression16_g13164 = MyCustomExpression16_g13164( linValue16_g13164 );
+                float temp_output_15_0_g13162 = ( ( ( _BurnRadius - distance( temp_output_72_0_g13162 , _BurnPosition ) ) + ( localMyCustomExpression16_g13164 * _BurnEdgeNoiseFactor ) ) / max( _BurnWidth , 0.01 ) );
+                float clampResult18_g13162 = clamp( temp_output_15_0_g13162 , 0.0 , 1.0 );
+                float3 lerpResult29_g13162 = lerp( temp_output_28_0_g13162 , ( pow( max( ( ( break2_g13166.x + break2_g13166.x + break2_g13166.y + break2_g13166.y + break2_g13166.y + break2_g13166.z ) / 6.0 ) , 0.0001 ) , max( _BurnInsideContrast , 0.0001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g13162 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g13162);
+                float3 lerpResult40_g13162 = lerp( temp_output_28_0_g13162 , ( lerpResult29_g13162 + ( ( step( temp_output_15_0_g13162 , 1.0 ) * step( 0.0 , temp_output_15_0_g13162 ) ) * (_BurnEdgeColor).rgb ) ) , _BurnFade);
+                float4 appendResult43_g13162 = (float4(lerpResult40_g13162 , temp_output_1_0_g13162.a));
+                float4 staticSwitch32_g13153 = appendResult43_g13162;
                 #else
-                float4 staticSwitch32_g12199 = staticSwitch29_g12199;
+                float4 staticSwitch32_g13153 = staticSwitch29_g13153;
                 #endif
                 #ifdef _ENABLERAINBOW_ON
-                float2 temp_output_42_0_g12204 = temp_output_41_0_g12199;
-                float linValue16_g12205 = tex2D( _UberNoiseTexture, ( temp_output_42_0_g12204 * _RainbowNoiseScale ) ).r;
-                float localMyCustomExpression16_g12205 = MyCustomExpression16_g12205( linValue16_g12205 );
-                float3 hsvTorgb3_g12207 = HSVToRGB( float3(( ( ( distance( temp_output_42_0_g12204 , _RainbowCenter ) + ( localMyCustomExpression16_g12205 * _RainbowNoiseFactor ) ) * _RainbowDensity ) + ( _RainbowSpeed * temp_output_40_0_g12199 ) ),1.0,1.0) );
-                float3 hsvTorgb36_g12204 = RGBToHSV( hsvTorgb3_g12207 );
-                float3 hsvTorgb37_g12204 = HSVToRGB( float3(hsvTorgb36_g12204.x,_RainbowSaturation,( hsvTorgb36_g12204.z * _RainbowBrightness )) );
-                float4 temp_output_1_0_g12204 = staticSwitch32_g12199;
-                float4 break2_g12206 = temp_output_1_0_g12204;
-                float saferPower24_g12204 = abs( ( ( break2_g12206.x + break2_g12206.x + break2_g12206.y + break2_g12206.y + break2_g12206.y + break2_g12206.z ) / 6.0 ) );
-                float4 appendResult29_g12204 = (float4(( ( hsvTorgb37_g12204 * pow( saferPower24_g12204 , max( _RainbowContrast , 0.001 ) ) * _RainbowFade ) + (temp_output_1_0_g12204).rgb ) , temp_output_1_0_g12204.a));
-                float4 staticSwitch34_g12199 = appendResult29_g12204;
+                float2 temp_output_42_0_g13158 = temp_output_41_0_g13153;
+                float linValue16_g13159 = tex2D( _UberNoiseTexture, ( temp_output_42_0_g13158 * _RainbowNoiseScale ) ).r;
+                float localMyCustomExpression16_g13159 = MyCustomExpression16_g13159( linValue16_g13159 );
+                float3 hsvTorgb3_g13161 = HSVToRGB( float3(( ( ( distance( temp_output_42_0_g13158 , _RainbowCenter ) + ( localMyCustomExpression16_g13159 * _RainbowNoiseFactor ) ) * _RainbowDensity ) + ( _RainbowSpeed * temp_output_40_0_g13153 ) ),1.0,1.0) );
+                float3 hsvTorgb36_g13158 = RGBToHSV( hsvTorgb3_g13161 );
+                float3 hsvTorgb37_g13158 = HSVToRGB( float3(hsvTorgb36_g13158.x,_RainbowSaturation,( hsvTorgb36_g13158.z * _RainbowBrightness )) );
+                float4 temp_output_1_0_g13158 = staticSwitch32_g13153;
+                float4 break2_g13160 = temp_output_1_0_g13158;
+                float saferPower24_g13158 = abs( ( ( break2_g13160.x + break2_g13160.x + break2_g13160.y + break2_g13160.y + break2_g13160.y + break2_g13160.z ) / 6.0 ) );
+                float4 appendResult29_g13158 = (float4(( ( hsvTorgb37_g13158 * pow( saferPower24_g13158 , max( _RainbowContrast , 0.001 ) ) * _RainbowFade ) + (temp_output_1_0_g13158).rgb ) , temp_output_1_0_g13158.a));
+                float4 staticSwitch34_g13153 = appendResult29_g13158;
                 #else
-                float4 staticSwitch34_g12199 = staticSwitch32_g12199;
+                float4 staticSwitch34_g13153 = staticSwitch32_g13153;
                 #endif
                 #ifdef _ENABLESHINE_ON
-                float4 temp_output_1_0_g12200 = staticSwitch34_g12199;
-                float3 temp_output_57_0_g12200 = (temp_output_1_0_g12200).rgb;
-                float4 break2_g12202 = temp_output_1_0_g12200;
-                float3 temp_cast_71 = (( ( break2_g12202.x + break2_g12202.x + break2_g12202.y + break2_g12202.y + break2_g12202.y + break2_g12202.z ) / 6.0 )).xxx;
-                float3 lerpResult92_g12200 = lerp( temp_cast_71 , temp_output_57_0_g12200 , _ShineSaturation);
-                float3 temp_cast_72 = (max( max( _ShineContrast , 0.001 ) , 0.001 )).xxx;
-                float3 rotatedValue69_g12200 = RotateAroundAxis( float3( 0,0,0 ), float3( ( _ShineFrequency * temp_output_41_0_g12199 ) ,  0.0 ), float3( 0,0,1 ), ( ( _ShineRotation / 180.0 ) * UNITY_PI ) );
-                float temp_output_103_0_g12200 = ( _ShineFrequency * _ShineWidth );
-                float clampResult80_g12200 = clamp( ( ( ( sin( ( rotatedValue69_g12200.x - ( temp_output_40_0_g12199 * _ShineSpeed * _ShineFrequency ) ) ) - ( 1.0 - temp_output_103_0_g12200 ) ) / temp_output_103_0_g12200 ) * _ShineSmooth ) , 0.0 , 1.0 );
+                float4 temp_output_1_0_g13154 = staticSwitch34_g13153;
+                float3 temp_output_57_0_g13154 = (temp_output_1_0_g13154).rgb;
+                float4 break2_g13156 = temp_output_1_0_g13154;
+                float3 temp_cast_73 = (( ( break2_g13156.x + break2_g13156.x + break2_g13156.y + break2_g13156.y + break2_g13156.y + break2_g13156.z ) / 6.0 )).xxx;
+                float3 lerpResult92_g13154 = lerp( temp_cast_73 , temp_output_57_0_g13154 , _ShineSaturation);
+                float3 temp_cast_74 = (max( max( _ShineContrast , 0.001 ) , 0.0001 )).xxx;
+                float3 rotatedValue69_g13154 = RotateAroundAxis( float3( 0,0,0 ), float3( ( _ShineFrequency * temp_output_41_0_g13153 ) ,  0.0 ), float3( 0,0,1 ), ( ( _ShineRotation / 180.0 ) * UNITY_PI ) );
+                float temp_output_103_0_g13154 = ( _ShineFrequency * _ShineWidth );
+                float clampResult80_g13154 = clamp( ( ( ( sin( ( rotatedValue69_g13154.x - ( temp_output_40_0_g13153 * _ShineSpeed * _ShineFrequency ) ) ) - ( 1.0 - temp_output_103_0_g13154 ) ) / temp_output_103_0_g13154 ) * _ShineSmooth ) , 0.0 , 1.0 );
                 float2 uv_ShineMask = IN.texcoord.xy * _ShineMask_ST.xy + _ShineMask_ST.zw;
-                float4 tex2DNode3_g12201 = tex2D( _ShineMask, uv_ShineMask );
+                float4 tex2DNode3_g13155 = tex2D( _ShineMask, uv_ShineMask );
                 #ifdef _SHINEMASKTOGGLE_ON
-                float staticSwitch98_g12200 = ( _ShineFade * ( tex2DNode3_g12201.r * tex2DNode3_g12201.a ) );
+                float staticSwitch98_g13154 = ( _ShineFade * ( tex2DNode3_g13155.r * tex2DNode3_g13155.a ) );
                 #else
-                float staticSwitch98_g12200 = _ShineFade;
+                float staticSwitch98_g13154 = _ShineFade;
                 #endif
-                float4 appendResult8_g12200 = (float4(( temp_output_57_0_g12200 + ( ( pow( lerpResult92_g12200 , temp_cast_72 ) * (_ShineColor).rgb ) * clampResult80_g12200 * staticSwitch98_g12200 ) ) , (temp_output_1_0_g12200).a));
-                float4 staticSwitch36_g12199 = appendResult8_g12200;
+                float4 appendResult8_g13154 = (float4(( temp_output_57_0_g13154 + ( ( pow( max( lerpResult92_g13154 , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_74 ) * (_ShineColor).rgb ) * clampResult80_g13154 * staticSwitch98_g13154 ) ) , (temp_output_1_0_g13154).a));
+                float4 staticSwitch36_g13153 = appendResult8_g13154;
                 #else
-                float4 staticSwitch36_g12199 = staticSwitch34_g12199;
+                float4 staticSwitch36_g13153 = staticSwitch34_g13153;
                 #endif
                 #ifdef _ENABLEPOISON_ON
-                float temp_output_41_0_g12235 = temp_output_40_0_g12199;
-                float linValue16_g12237 = tex2D( _UberNoiseTexture, ( ( ( temp_output_41_0_g12235 * _PoisonNoiseSpeed ) + temp_output_41_0_g12199 ) * _PoisonNoiseScale ) ).r;
-                float localMyCustomExpression16_g12237 = MyCustomExpression16_g12237( linValue16_g12237 );
-                float3 temp_output_24_0_g12235 = (_PoisonColor).rgb;
-                float4 temp_output_1_0_g12235 = staticSwitch36_g12199;
-                float3 temp_output_28_0_g12235 = (temp_output_1_0_g12235).rgb;
-                float4 break2_g12236 = float4( temp_output_28_0_g12235 , 0.0 );
-                float3 lerpResult32_g12235 = lerp( temp_output_28_0_g12235 , ( temp_output_24_0_g12235 * ( ( break2_g12236.x + break2_g12236.x + break2_g12236.y + break2_g12236.y + break2_g12236.y + break2_g12236.z ) / 6.0 ) ) , ( _PoisonFade * _PoisonRecolorFactor ));
-                float4 appendResult27_g12235 = (float4(( ( max( pow( abs( ( ( ( localMyCustomExpression16_g12237 + ( temp_output_41_0_g12235 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , max( _PoisonDensity , 0.001 ) ) , 0.0 ) * temp_output_24_0_g12235 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g12235 ) , temp_output_1_0_g12235.a));
-                float4 staticSwitch39_g12199 = appendResult27_g12235;
+                float temp_output_41_0_g13189 = temp_output_40_0_g13153;
+                float linValue16_g13191 = tex2D( _UberNoiseTexture, ( ( ( temp_output_41_0_g13189 * _PoisonNoiseSpeed ) + temp_output_41_0_g13153 ) * _PoisonNoiseScale ) ).r;
+                float localMyCustomExpression16_g13191 = MyCustomExpression16_g13191( linValue16_g13191 );
+                float3 temp_output_24_0_g13189 = (_PoisonColor).rgb;
+                float4 temp_output_1_0_g13189 = staticSwitch36_g13153;
+                float3 temp_output_28_0_g13189 = (temp_output_1_0_g13189).rgb;
+                float4 break2_g13190 = float4( temp_output_28_0_g13189 , 0.0 );
+                float3 lerpResult32_g13189 = lerp( temp_output_28_0_g13189 , ( temp_output_24_0_g13189 * ( ( break2_g13190.x + break2_g13190.x + break2_g13190.y + break2_g13190.y + break2_g13190.y + break2_g13190.z ) / 6.0 ) ) , ( _PoisonFade * _PoisonRecolorFactor ));
+                float4 appendResult27_g13189 = (float4(( ( max( pow( max( abs( ( ( ( localMyCustomExpression16_g13191 + ( temp_output_41_0_g13189 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , 0.0001 ) , max( _PoisonDensity , 0.0001 ) ) , 0.0 ) * temp_output_24_0_g13189 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g13189 ) , temp_output_1_0_g13189.a));
+                float4 staticSwitch39_g13153 = appendResult27_g13189;
                 #else
-                float4 staticSwitch39_g12199 = staticSwitch36_g12199;
+                float4 staticSwitch39_g13153 = staticSwitch36_g13153;
                 #endif
-                float4 temp_output_10_0_g12239 = staticSwitch39_g12199;
+                float4 temp_output_10_0_g13193 = staticSwitch39_g13153;
                 #ifdef _ENABLEENCHANTED_ON
-                float3 temp_output_12_0_g12239 = (temp_output_10_0_g12239).rgb;
-                float2 temp_output_2_0_g12239 = temp_output_41_0_g12199;
-                float temp_output_1_0_g12239 = temp_output_40_0_g12199;
-                float2 temp_output_6_0_g12239 = ( temp_output_1_0_g12239 * _EnchantedSpeed );
-                float linValue16_g12242 = tex2D( _UberNoiseTexture, ( ( ( temp_output_2_0_g12239 - ( ( temp_output_6_0_g12239 + float2( 1.234,5.6789 ) ) * float2( 0.95,1.05 ) ) ) * _EnchantedScale ) * float2( 1,1 ) ) ).r;
-                float localMyCustomExpression16_g12242 = MyCustomExpression16_g12242( linValue16_g12242 );
-                float linValue16_g12240 = tex2D( _UberNoiseTexture, ( ( ( temp_output_6_0_g12239 + temp_output_2_0_g12239 ) * _EnchantedScale ) * float2( 1,1 ) ) ).r;
-                float localMyCustomExpression16_g12240 = MyCustomExpression16_g12240( linValue16_g12240 );
-                float temp_output_36_0_g12239 = ( localMyCustomExpression16_g12242 + localMyCustomExpression16_g12240 );
-                float temp_output_43_0_g12239 = ( temp_output_36_0_g12239 * 0.5 );
-                float3 lerpResult42_g12239 = lerp( (_EnchantedLowColor).rgb , (_EnchantedHighColor).rgb , temp_output_43_0_g12239);
-                float3 hsvTorgb53_g12239 = HSVToRGB( float3(( ( temp_output_43_0_g12239 * _EnchantedRainbowDensity ) + ( _EnchantedRainbowSpeed * temp_output_1_0_g12239 ) ),_EnchantedRainbowSaturation,1.0) );
+                float3 temp_output_12_0_g13193 = (temp_output_10_0_g13193).rgb;
+                float2 temp_output_2_0_g13193 = temp_output_41_0_g13153;
+                float temp_output_1_0_g13193 = temp_output_40_0_g13153;
+                float2 temp_output_6_0_g13193 = ( temp_output_1_0_g13193 * _EnchantedSpeed );
+                float linValue16_g13196 = tex2D( _UberNoiseTexture, ( ( ( temp_output_2_0_g13193 - ( ( temp_output_6_0_g13193 + float2( 1.234,5.6789 ) ) * float2( 0.95,1.05 ) ) ) * _EnchantedScale ) * float2( 1,1 ) ) ).r;
+                float localMyCustomExpression16_g13196 = MyCustomExpression16_g13196( linValue16_g13196 );
+                float linValue16_g13194 = tex2D( _UberNoiseTexture, ( ( ( temp_output_6_0_g13193 + temp_output_2_0_g13193 ) * _EnchantedScale ) * float2( 1,1 ) ) ).r;
+                float localMyCustomExpression16_g13194 = MyCustomExpression16_g13194( linValue16_g13194 );
+                float temp_output_36_0_g13193 = ( localMyCustomExpression16_g13196 + localMyCustomExpression16_g13194 );
+                float temp_output_43_0_g13193 = ( temp_output_36_0_g13193 * 0.5 );
+                float3 lerpResult42_g13193 = lerp( (_EnchantedLowColor).rgb , (_EnchantedHighColor).rgb , temp_output_43_0_g13193);
+                float3 hsvTorgb53_g13193 = HSVToRGB( float3(( ( temp_output_43_0_g13193 * _EnchantedRainbowDensity ) + ( _EnchantedRainbowSpeed * temp_output_1_0_g13193 ) ),_EnchantedRainbowSaturation,1.0) );
                 #ifdef _ENCHANTEDRAINBOWTOGGLE_ON
-                float3 staticSwitch50_g12239 = hsvTorgb53_g12239;
+                float3 staticSwitch50_g13193 = hsvTorgb53_g13193;
                 #else
-                float3 staticSwitch50_g12239 = lerpResult42_g12239;
+                float3 staticSwitch50_g13193 = lerpResult42_g13193;
                 #endif
-                float4 break2_g12241 = temp_output_10_0_g12239;
-                float3 temp_output_40_0_g12239 = ( staticSwitch50_g12239 * pow( ( ( break2_g12241.x + break2_g12241.x + break2_g12241.y + break2_g12241.y + break2_g12241.y + break2_g12241.z ) / 6.0 ) , max( _EnchantedContrast , 0.001 ) ) * _EnchantedBrightness );
-                float temp_output_45_0_g12239 = ( max( ( temp_output_36_0_g12239 - _EnchantedReduce ) , 0.0 ) * _EnchantedFade );
-                float3 lerpResult44_g12239 = lerp( temp_output_12_0_g12239 , temp_output_40_0_g12239 , temp_output_45_0_g12239);
+                float4 break2_g13195 = temp_output_10_0_g13193;
+                float3 temp_output_40_0_g13193 = ( staticSwitch50_g13193 * pow( max( ( ( break2_g13195.x + break2_g13195.x + break2_g13195.y + break2_g13195.y + break2_g13195.y + break2_g13195.z ) / 6.0 ) , 0.0001 ) , max( _EnchantedContrast , 0.0001 ) ) * _EnchantedBrightness );
+                float temp_output_45_0_g13193 = ( max( ( temp_output_36_0_g13193 - _EnchantedReduce ) , 0.0 ) * _EnchantedFade );
+                float3 lerpResult44_g13193 = lerp( temp_output_12_0_g13193 , temp_output_40_0_g13193 , temp_output_45_0_g13193);
                 #ifdef _ENCHANTEDLERPTOGGLE_ON
-                float3 staticSwitch47_g12239 = lerpResult44_g12239;
+                float3 staticSwitch47_g13193 = lerpResult44_g13193;
                 #else
-                float3 staticSwitch47_g12239 = ( temp_output_12_0_g12239 + ( temp_output_40_0_g12239 * temp_output_45_0_g12239 ) );
+                float3 staticSwitch47_g13193 = ( temp_output_12_0_g13193 + ( temp_output_40_0_g13193 * temp_output_45_0_g13193 ) );
                 #endif
-                float4 appendResult19_g12239 = (float4(staticSwitch47_g12239 , temp_output_10_0_g12239.a));
-                float4 staticSwitch11_g12239 = appendResult19_g12239;
+                float4 appendResult19_g13193 = (float4(staticSwitch47_g13193 , temp_output_10_0_g13193.a));
+                float4 staticSwitch11_g13193 = appendResult19_g13193;
                 #else
-                float4 staticSwitch11_g12239 = temp_output_10_0_g12239;
+                float4 staticSwitch11_g13193 = temp_output_10_0_g13193;
                 #endif
-                float4 temp_output_1_0_g12244 = staticSwitch11_g12239;
+                float4 temp_output_1_0_g13198 = staticSwitch11_g13193;
                 #ifdef _ENABLESHIFTING_ON
-                float4 break5_g12244 = temp_output_1_0_g12244;
-                float3 appendResult32_g12244 = (float3(break5_g12244.r , break5_g12244.g , break5_g12244.b));
-                float4 break2_g12245 = temp_output_1_0_g12244;
-                float temp_output_4_0_g12244 = ( ( break2_g12245.x + break2_g12245.x + break2_g12245.y + break2_g12245.y + break2_g12245.y + break2_g12245.z ) / 6.0 );
-                float temp_output_11_0_g12244 = ( ( ( temp_output_4_0_g12244 + ( temp_output_40_0_g12199 * _ShiftingSpeed ) ) * _ShiftingDensity ) % 1.0 );
-                float3 lerpResult20_g12244 = lerp( (_ShiftingColorA).rgb , (_ShiftingColorB).rgb , ( abs( ( temp_output_11_0_g12244 - 0.5 ) ) * 2.0 ));
-                float3 hsvTorgb12_g12244 = HSVToRGB( float3(temp_output_11_0_g12244,_ShiftingSaturation,_ShiftingBrightness) );
+                float4 break5_g13198 = temp_output_1_0_g13198;
+                float3 appendResult32_g13198 = (float3(break5_g13198.r , break5_g13198.g , break5_g13198.b));
+                float4 break2_g13199 = temp_output_1_0_g13198;
+                float temp_output_4_0_g13198 = ( ( break2_g13199.x + break2_g13199.x + break2_g13199.y + break2_g13199.y + break2_g13199.y + break2_g13199.z ) / 6.0 );
+                float temp_output_11_0_g13198 = ( ( ( temp_output_4_0_g13198 + ( temp_output_40_0_g13153 * _ShiftingSpeed ) ) * _ShiftingDensity ) % 1.0 );
+                float3 lerpResult20_g13198 = lerp( (_ShiftingColorA).rgb , (_ShiftingColorB).rgb , ( abs( ( temp_output_11_0_g13198 - 0.5 ) ) * 2.0 ));
+                float3 hsvTorgb12_g13198 = HSVToRGB( float3(temp_output_11_0_g13198,_ShiftingSaturation,_ShiftingBrightness) );
                 #ifdef _SHIFTINGRAINBOWTOGGLE_ON
-                float3 staticSwitch26_g12244 = hsvTorgb12_g12244;
+                float3 staticSwitch26_g13198 = hsvTorgb12_g13198;
                 #else
-                float3 staticSwitch26_g12244 = ( lerpResult20_g12244 * _ShiftingBrightness );
+                float3 staticSwitch26_g13198 = ( lerpResult20_g13198 * _ShiftingBrightness );
                 #endif
-                float3 lerpResult31_g12244 = lerp( appendResult32_g12244 , ( staticSwitch26_g12244 * pow( temp_output_4_0_g12244 , max( _ShiftingContrast , 0.001 ) ) ) , _ShiftingFade);
-                float4 appendResult6_g12244 = (float4(lerpResult31_g12244 , break5_g12244.a));
-                float4 staticSwitch33_g12244 = appendResult6_g12244;
+                float3 lerpResult31_g13198 = lerp( appendResult32_g13198 , ( staticSwitch26_g13198 * pow( max( temp_output_4_0_g13198 , 0.0001 ) , max( _ShiftingContrast , 0.0001 ) ) ) , _ShiftingFade);
+                float4 appendResult6_g13198 = (float4(lerpResult31_g13198 , break5_g13198.a));
+                float4 staticSwitch33_g13198 = appendResult6_g13198;
                 #else
-                float4 staticSwitch33_g12244 = temp_output_1_0_g12244;
+                float4 staticSwitch33_g13198 = temp_output_1_0_g13198;
                 #endif
-                float4 temp_output_5_0_g12251 = staticSwitch33_g12244;
+                float4 temp_output_5_0_g13205 = staticSwitch33_g13198;
                 #ifdef _ENABLETEXTURELAYER1_ON
-                float4 break6_g12251 = temp_output_5_0_g12251;
-                float3 appendResult11_g12251 = (float3(break6_g12251.r , break6_g12251.g , break6_g12251.b));
-                float temp_output_27_0_g12251 = temp_output_40_0_g12199;
+                float4 break6_g13205 = temp_output_5_0_g13205;
+                float3 appendResult11_g13205 = (float3(break6_g13205.r , break6_g13205.g , break6_g13205.b));
+                float temp_output_27_0_g13205 = temp_output_40_0_g13153;
                 #ifdef _TEXTURELAYER1SCROLLTOGGLE_ON
-                float2 staticSwitch73_g12251 = ( _TextureLayer1Offset + ( _TextureLayer1ScrollSpeed * temp_output_27_0_g12251 ) );
+                float2 staticSwitch73_g13205 = ( _TextureLayer1Offset + ( _TextureLayer1ScrollSpeed * temp_output_27_0_g13205 ) );
                 #else
-                float2 staticSwitch73_g12251 = _TextureLayer1Offset;
+                float2 staticSwitch73_g13205 = _TextureLayer1Offset;
                 #endif
-                float2 temp_output_72_0_g12251 = ( ( _TextureLayer1Scale * temp_output_41_0_g12199 ) - staticSwitch73_g12251 );
-                float2 temp_cast_81 = (_TextureLayer1EdgeClip).xx;
-                float2 UV10_g12252 = ( ( ( ( ( ( ( ( ( temp_output_72_0_g12251 % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) ) - float2( 0.5,0.5 ) ) * ( float2( 1,1 ) - temp_cast_81 ) ) + float2( 0.5,0.5 ) ) % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) );
-                int Width10_g12252 = _TextureLayer1Columns;
-                int Height10_g12252 = _TextureLayer1Rows;
-                float Tile10_g12252 = round( ( ( _TextureLayer1Speed * temp_output_27_0_g12251 ) + _TextureLayer1StartFrame ) );
-                float2 Invert10_g12252 = float2( 0,1 );
-                float2 localMyCustomExpression10_g12252 = MyCustomExpression10_g12252( UV10_g12252 , Width10_g12252 , Height10_g12252 , Tile10_g12252 , Invert10_g12252 );
+                float2 temp_output_72_0_g13205 = ( ( _TextureLayer1Scale * temp_output_41_0_g13153 ) - staticSwitch73_g13205 );
+                float2 temp_cast_83 = (_TextureLayer1EdgeClip).xx;
+                float2 UV10_g13206 = ( ( ( ( ( ( ( ( ( temp_output_72_0_g13205 % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) ) - float2( 0.5,0.5 ) ) * ( float2( 1,1 ) - temp_cast_83 ) ) + float2( 0.5,0.5 ) ) % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) );
+                int Width10_g13206 = _TextureLayer1Columns;
+                int Height10_g13206 = _TextureLayer1Rows;
+                float Tile10_g13206 = round( ( ( _TextureLayer1Speed * temp_output_27_0_g13205 ) + _TextureLayer1StartFrame ) );
+                float2 Invert10_g13206 = float2( 0,1 );
+                float2 localMyCustomExpression10_g13206 = MyCustomExpression10_g13206( UV10_g13206 , Width10_g13206 , Height10_g13206 , Tile10_g13206 , Invert10_g13206 );
                 #ifdef _TEXTURELAYER1SHEETTOGGLE_ON
-                float2 staticSwitch20_g12251 = localMyCustomExpression10_g12252;
+                float2 staticSwitch20_g13205 = localMyCustomExpression10_g13206;
                 #else
-                float2 staticSwitch20_g12251 = temp_output_72_0_g12251;
+                float2 staticSwitch20_g13205 = temp_output_72_0_g13205;
                 #endif
-                float4 tex2DNode3_g12251 = tex2D( _TextureLayer1Texture, staticSwitch20_g12251 );
-                float3 appendResult13_g12251 = (float3(tex2DNode3_g12251.r , tex2DNode3_g12251.g , tex2DNode3_g12251.b));
-                float3 appendResult18_g12251 = (float3(_TextureLayer1Color.r , _TextureLayer1Color.g , _TextureLayer1Color.b));
-                float3 temp_output_16_0_g12251 = ( appendResult13_g12251 * appendResult18_g12251 );
-                float4 break2_g12253 = temp_output_5_0_g12251;
+                float4 tex2DNode3_g13205 = tex2D( _TextureLayer1Texture, staticSwitch20_g13205 );
+                float3 appendResult13_g13205 = (float3(tex2DNode3_g13205.r , tex2DNode3_g13205.g , tex2DNode3_g13205.b));
+                float3 appendResult18_g13205 = (float3(_TextureLayer1Color.r , _TextureLayer1Color.g , _TextureLayer1Color.b));
+                float3 temp_output_16_0_g13205 = ( appendResult13_g13205 * appendResult18_g13205 );
+                float4 break2_g13207 = temp_output_5_0_g13205;
                 #ifdef _TEXTURELAYER1CONTRASTTOGGLE_ON
-                float3 staticSwitch80_g12251 = ( pow( ( ( break2_g12253.x + break2_g12253.x + break2_g12253.y + break2_g12253.y + break2_g12253.y + break2_g12253.z ) / 6.0 ) , max( _TextureLayer1Contrast , 0.001 ) ) * temp_output_16_0_g12251 );
+                float3 staticSwitch80_g13205 = ( pow( max( ( ( break2_g13207.x + break2_g13207.x + break2_g13207.y + break2_g13207.y + break2_g13207.y + break2_g13207.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer1Contrast , 0.0001 ) ) * temp_output_16_0_g13205 );
                 #else
-                float3 staticSwitch80_g12251 = temp_output_16_0_g12251;
+                float3 staticSwitch80_g13205 = temp_output_16_0_g13205;
                 #endif
-                float3 lerpResult12_g12251 = lerp( appendResult11_g12251 , staticSwitch80_g12251 , ( tex2DNode3_g12251.a * _TextureLayer1Fade ));
-                float4 appendResult14_g12251 = (float4(lerpResult12_g12251 , break6_g12251.a));
-                float4 staticSwitch15_g12251 = appendResult14_g12251;
+                float3 lerpResult12_g13205 = lerp( appendResult11_g13205 , staticSwitch80_g13205 , ( tex2DNode3_g13205.a * _TextureLayer1Fade ));
+                float4 appendResult14_g13205 = (float4(lerpResult12_g13205 , break6_g13205.a));
+                float4 staticSwitch15_g13205 = appendResult14_g13205;
                 #else
-                float4 staticSwitch15_g12251 = temp_output_5_0_g12251;
+                float4 staticSwitch15_g13205 = temp_output_5_0_g13205;
                 #endif
-                float4 temp_output_5_0_g12247 = staticSwitch15_g12251;
+                float4 temp_output_5_0_g13201 = staticSwitch15_g13205;
                 #ifdef _ENABLETEXTURELAYER2_ON
-                float4 break6_g12247 = temp_output_5_0_g12247;
-                float3 appendResult11_g12247 = (float3(break6_g12247.r , break6_g12247.g , break6_g12247.b));
-                float temp_output_27_0_g12247 = temp_output_40_0_g12199;
+                float4 break6_g13201 = temp_output_5_0_g13201;
+                float3 appendResult11_g13201 = (float3(break6_g13201.r , break6_g13201.g , break6_g13201.b));
+                float temp_output_27_0_g13201 = temp_output_40_0_g13153;
                 #ifdef _TEXTURELAYER2SCROLLTOGGLE_ON
-                float2 staticSwitch73_g12247 = ( _TextureLayer2Offset + ( _TextureLayer2ScrollSpeed * temp_output_27_0_g12247 ) );
+                float2 staticSwitch73_g13201 = ( _TextureLayer2Offset + ( _TextureLayer2ScrollSpeed * temp_output_27_0_g13201 ) );
                 #else
-                float2 staticSwitch73_g12247 = _TextureLayer2Offset;
+                float2 staticSwitch73_g13201 = _TextureLayer2Offset;
                 #endif
-                float2 temp_output_72_0_g12247 = ( ( _TextureLayer2Scale * temp_output_41_0_g12199 ) - staticSwitch73_g12247 );
-                float2 temp_cast_84 = (_TextureLayer2EdgeClip).xx;
-                float2 UV10_g12248 = ( ( ( ( ( ( ( ( ( temp_output_72_0_g12247 % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) ) - float2( 0.5,0.5 ) ) * ( float2( 1,1 ) - temp_cast_84 ) ) + float2( 0.5,0.5 ) ) % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) );
-                int Width10_g12248 = _TextureLayer2Columns;
-                int Height10_g12248 = _TextureLayer2Rows;
-                float Tile10_g12248 = round( ( ( _TextureLayer2Speed * temp_output_27_0_g12247 ) + _TextureLayer2StartFrame ) );
-                float2 Invert10_g12248 = float2( 0,1 );
-                float2 localMyCustomExpression10_g12248 = MyCustomExpression10_g12248( UV10_g12248 , Width10_g12248 , Height10_g12248 , Tile10_g12248 , Invert10_g12248 );
+                float2 temp_output_72_0_g13201 = ( ( _TextureLayer2Scale * temp_output_41_0_g13153 ) - staticSwitch73_g13201 );
+                float2 temp_cast_86 = (_TextureLayer2EdgeClip).xx;
+                float2 UV10_g13202 = ( ( ( ( ( ( ( ( ( temp_output_72_0_g13201 % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) ) - float2( 0.5,0.5 ) ) * ( float2( 1,1 ) - temp_cast_86 ) ) + float2( 0.5,0.5 ) ) % float2( 1,1 ) ) + float2( 1,1 ) ) % float2( 1,1 ) );
+                int Width10_g13202 = _TextureLayer2Columns;
+                int Height10_g13202 = _TextureLayer2Rows;
+                float Tile10_g13202 = round( ( ( _TextureLayer2Speed * temp_output_27_0_g13201 ) + _TextureLayer2StartFrame ) );
+                float2 Invert10_g13202 = float2( 0,1 );
+                float2 localMyCustomExpression10_g13202 = MyCustomExpression10_g13202( UV10_g13202 , Width10_g13202 , Height10_g13202 , Tile10_g13202 , Invert10_g13202 );
                 #ifdef _TEXTURELAYER2SHEETTOGGLE_ON
-                float2 staticSwitch20_g12247 = localMyCustomExpression10_g12248;
+                float2 staticSwitch20_g13201 = localMyCustomExpression10_g13202;
                 #else
-                float2 staticSwitch20_g12247 = temp_output_72_0_g12247;
+                float2 staticSwitch20_g13201 = temp_output_72_0_g13201;
                 #endif
-                float4 tex2DNode3_g12247 = tex2D( _TextureLayer2Texture, staticSwitch20_g12247 );
-                float3 appendResult13_g12247 = (float3(tex2DNode3_g12247.r , tex2DNode3_g12247.g , tex2DNode3_g12247.b));
-                float3 appendResult18_g12247 = (float3(_TextureLayer2Color.r , _TextureLayer2Color.g , _TextureLayer2Color.b));
-                float3 temp_output_16_0_g12247 = ( appendResult13_g12247 * appendResult18_g12247 );
-                float4 break2_g12249 = temp_output_5_0_g12247;
+                float4 tex2DNode3_g13201 = tex2D( _TextureLayer2Texture, staticSwitch20_g13201 );
+                float3 appendResult13_g13201 = (float3(tex2DNode3_g13201.r , tex2DNode3_g13201.g , tex2DNode3_g13201.b));
+                float3 appendResult18_g13201 = (float3(_TextureLayer2Color.r , _TextureLayer2Color.g , _TextureLayer2Color.b));
+                float3 temp_output_16_0_g13201 = ( appendResult13_g13201 * appendResult18_g13201 );
+                float4 break2_g13203 = temp_output_5_0_g13201;
                 #ifdef _TEXTURELAYER2CONTRASTTOGGLE_ON
-                float3 staticSwitch84_g12247 = ( pow( ( ( break2_g12249.x + break2_g12249.x + break2_g12249.y + break2_g12249.y + break2_g12249.y + break2_g12249.z ) / 6.0 ) , max( _TextureLayer2Contrast , 0.001 ) ) * temp_output_16_0_g12247 );
+                float3 staticSwitch84_g13201 = ( pow( max( ( ( break2_g13203.x + break2_g13203.x + break2_g13203.y + break2_g13203.y + break2_g13203.y + break2_g13203.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer2Contrast , 0.0001 ) ) * temp_output_16_0_g13201 );
                 #else
-                float3 staticSwitch84_g12247 = temp_output_16_0_g12247;
+                float3 staticSwitch84_g13201 = temp_output_16_0_g13201;
                 #endif
-                float3 lerpResult12_g12247 = lerp( appendResult11_g12247 , staticSwitch84_g12247 , ( tex2DNode3_g12247.a * _TextureLayer2Fade ));
-                float4 appendResult14_g12247 = (float4(lerpResult12_g12247 , break6_g12247.a));
-                float4 staticSwitch15_g12247 = appendResult14_g12247;
+                float3 lerpResult12_g13201 = lerp( appendResult11_g13201 , staticSwitch84_g13201 , ( tex2DNode3_g13201.a * _TextureLayer2Fade ));
+                float4 appendResult14_g13201 = (float4(lerpResult12_g13201 , break6_g13201.a));
+                float4 staticSwitch15_g13201 = appendResult14_g13201;
                 #else
-                float4 staticSwitch15_g12247 = temp_output_5_0_g12247;
+                float4 staticSwitch15_g13201 = temp_output_5_0_g13201;
                 #endif
-                float4 temp_output_473_0 = staticSwitch15_g12247;
+                float4 temp_output_473_0 = staticSwitch15_g13201;
                 #ifdef _ENABLEFULLDISTORTION_ON
-                float4 break4_g12255 = temp_output_473_0;
+                float4 break4_g13209 = temp_output_473_0;
                 float fullDistortionAlpha164 = _FullDistortionFade;
-                float4 appendResult5_g12255 = (float4(break4_g12255.r , break4_g12255.g , break4_g12255.b , ( break4_g12255.a * fullDistortionAlpha164 )));
-                float4 staticSwitch77 = appendResult5_g12255;
+                float4 appendResult5_g13209 = (float4(break4_g13209.r , break4_g13209.g , break4_g13209.b , ( break4_g13209.a * fullDistortionAlpha164 )));
+                float4 staticSwitch77 = appendResult5_g13209;
                 #else
                 float4 staticSwitch77 = temp_output_473_0;
                 #endif
                 #ifdef _ENABLEDIRECTIONALDISTORTION_ON
-                float4 break4_g12256 = staticSwitch77;
+                float4 break4_g13210 = staticSwitch77;
                 float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11668 ) ):( clampResult154_g11668 ));
-                float4 appendResult5_g12256 = (float4(break4_g12256.r , break4_g12256.g , break4_g12256.b , ( break4_g12256.a * directionalDistortionAlpha167 )));
-                float4 staticSwitch75 = appendResult5_g12256;
+                float4 appendResult5_g13210 = (float4(break4_g13210.r , break4_g13210.g , break4_g13210.b , ( break4_g13210.a * directionalDistortionAlpha167 )));
+                float4 staticSwitch75 = appendResult5_g13210;
                 #else
                 float4 staticSwitch75 = staticSwitch77;
                 #endif
-                float4 temp_output_1_0_g12257 = staticSwitch75;
-                float4 temp_output_1_0_g12258 = temp_output_1_0_g12257;
+                float4 temp_output_1_0_g13211 = staticSwitch75;
+                float4 temp_output_1_0_g13212 = temp_output_1_0_g13211;
 #ifdef _ENABLEFULLALPHADISSOLVE_ON
-                float temp_output_53_0_g12258 = max( _FullAlphaDissolveWidth , 0.001 );
+                float temp_output_53_0_g13212 = max( _FullAlphaDissolveWidth , 0.001 );
 				#endif
-                float2 temp_output_18_0_g12257 = shaderPosition235;
+                float2 temp_output_18_0_g13211 = shaderPosition235;
                 #ifdef _ENABLEFULLALPHADISSOLVE_ON
-                float linValue16_g12259 = tex2D( _UberNoiseTexture, ( temp_output_18_0_g12257 * _FullAlphaDissolveNoiseScale ) ).r;
-                float localMyCustomExpression16_g12259 = MyCustomExpression16_g12259( linValue16_g12259 );
-                float clampResult17_g12258 = clamp( ( ( ( _FullAlphaDissolveFade * ( 1.0 + temp_output_53_0_g12258 ) ) - localMyCustomExpression16_g12259 ) / temp_output_53_0_g12258 ) , 0.0 , 1.0 );
-                float4 appendResult3_g12258 = (float4((temp_output_1_0_g12258).rgb , ( temp_output_1_0_g12258.a * clampResult17_g12258 )));
-                float4 staticSwitch3_g12257 = appendResult3_g12258;
+                float linValue16_g13213 = tex2D( _UberNoiseTexture, ( temp_output_18_0_g13211 * _FullAlphaDissolveNoiseScale ) ).r;
+                float localMyCustomExpression16_g13213 = MyCustomExpression16_g13213( linValue16_g13213 );
+                float clampResult17_g13212 = clamp( ( ( ( _FullAlphaDissolveFade * ( 1.0 + temp_output_53_0_g13212 ) ) - localMyCustomExpression16_g13213 ) / temp_output_53_0_g13212 ) , 0.0 , 1.0 );
+                float4 appendResult3_g13212 = (float4((temp_output_1_0_g13212).rgb , ( temp_output_1_0_g13212.a * clampResult17_g13212 )));
+                float4 staticSwitch3_g13211 = appendResult3_g13212;
                 #else
-                float4 staticSwitch3_g12257 = temp_output_1_0_g12257;
+                float4 staticSwitch3_g13211 = temp_output_1_0_g13211;
                 #endif
                 #ifdef _ENABLEFULLGLOWDISSOLVE_ON
-                float linValue16_g12267 = tex2D( _UberNoiseTexture, ( temp_output_18_0_g12257 * _FullGlowDissolveNoiseScale ) ).r;
-                float localMyCustomExpression16_g12267 = MyCustomExpression16_g12267( linValue16_g12267 );
-                float temp_output_5_0_g12266 = localMyCustomExpression16_g12267;
-                float temp_output_61_0_g12266 = step( temp_output_5_0_g12266 , _FullGlowDissolveFade );
-                float temp_output_53_0_g12266 = max( ( _FullGlowDissolveFade * _FullGlowDissolveWidth ) , 0.001 );
-                float4 temp_output_1_0_g12266 = staticSwitch3_g12257;
-                float4 appendResult3_g12266 = (float4(( ( (_FullGlowDissolveEdgeColor).rgb * ( temp_output_61_0_g12266 - step( temp_output_5_0_g12266 , ( ( _FullGlowDissolveFade * ( 1.01 + temp_output_53_0_g12266 ) ) - temp_output_53_0_g12266 ) ) ) ) + (temp_output_1_0_g12266).rgb ) , ( temp_output_1_0_g12266.a * temp_output_61_0_g12266 )));
-                float4 staticSwitch5_g12257 = appendResult3_g12266;
+                float linValue16_g13221 = tex2D( _UberNoiseTexture, ( temp_output_18_0_g13211 * _FullGlowDissolveNoiseScale ) ).r;
+                float localMyCustomExpression16_g13221 = MyCustomExpression16_g13221( linValue16_g13221 );
+                float temp_output_5_0_g13220 = localMyCustomExpression16_g13221;
+                float temp_output_61_0_g13220 = step( temp_output_5_0_g13220 , _FullGlowDissolveFade );
+                float temp_output_53_0_g13220 = max( ( _FullGlowDissolveFade * _FullGlowDissolveWidth ) , 0.001 );
+                float4 temp_output_1_0_g13220 = staticSwitch3_g13211;
+                float4 appendResult3_g13220 = (float4(( ( (_FullGlowDissolveEdgeColor).rgb * ( temp_output_61_0_g13220 - step( temp_output_5_0_g13220 , ( ( _FullGlowDissolveFade * ( 1.01 + temp_output_53_0_g13220 ) ) - temp_output_53_0_g13220 ) ) ) ) + (temp_output_1_0_g13220).rgb ) , ( temp_output_1_0_g13220.a * temp_output_61_0_g13220 )));
+                float4 staticSwitch5_g13211 = appendResult3_g13220;
                 #else
-                float4 staticSwitch5_g12257 = staticSwitch3_g12257;
+                float4 staticSwitch5_g13211 = staticSwitch3_g13211;
                 #endif
                 #ifdef _ENABLESOURCEALPHADISSOLVE_ON
-                float4 temp_output_1_0_g12268 = staticSwitch5_g12257;
-                float2 temp_output_76_0_g12268 = temp_output_18_0_g12257;
-                float linValue16_g12269 = tex2D( _UberNoiseTexture, ( temp_output_76_0_g12268 * _SourceAlphaDissolveNoiseScale ) ).r;
-                float localMyCustomExpression16_g12269 = MyCustomExpression16_g12269( linValue16_g12269 );
-                float clampResult17_g12268 = clamp( ( ( _SourceAlphaDissolveFade - ( distance( _SourceAlphaDissolvePosition , temp_output_76_0_g12268 ) + ( localMyCustomExpression16_g12269 * _SourceAlphaDissolveNoiseFactor ) ) ) / max( _SourceAlphaDissolveWidth , 0.001 ) ) , 0.0 , 1.0 );
-                float4 appendResult3_g12268 = (float4((temp_output_1_0_g12268).rgb , ( temp_output_1_0_g12268.a * (( _SourceAlphaDissolveInvert )?( ( 1.0 - clampResult17_g12268 ) ):( clampResult17_g12268 )) )));
-                float4 staticSwitch8_g12257 = appendResult3_g12268;
+                float4 temp_output_1_0_g13222 = staticSwitch5_g13211;
+                float2 temp_output_76_0_g13222 = temp_output_18_0_g13211;
+                float linValue16_g13223 = tex2D( _UberNoiseTexture, ( temp_output_76_0_g13222 * _SourceAlphaDissolveNoiseScale ) ).r;
+                float localMyCustomExpression16_g13223 = MyCustomExpression16_g13223( linValue16_g13223 );
+                float clampResult17_g13222 = clamp( ( ( _SourceAlphaDissolveFade - ( distance( _SourceAlphaDissolvePosition , temp_output_76_0_g13222 ) + ( localMyCustomExpression16_g13223 * _SourceAlphaDissolveNoiseFactor ) ) ) / max( _SourceAlphaDissolveWidth , 0.001 ) ) , 0.0 , 1.0 );
+                float4 appendResult3_g13222 = (float4((temp_output_1_0_g13222).rgb , ( temp_output_1_0_g13222.a * (( _SourceAlphaDissolveInvert )?( ( 1.0 - clampResult17_g13222 ) ):( clampResult17_g13222 )) )));
+                float4 staticSwitch8_g13211 = appendResult3_g13222;
                 #else
-                float4 staticSwitch8_g12257 = staticSwitch5_g12257;
+                float4 staticSwitch8_g13211 = staticSwitch5_g13211;
                 #endif
                 #ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-                float2 temp_output_90_0_g12264 = temp_output_18_0_g12257;
-                float linValue16_g12265 = tex2D( _UberNoiseTexture, ( temp_output_90_0_g12264 * _SourceGlowDissolveNoiseScale ) ).r;
-                float localMyCustomExpression16_g12265 = MyCustomExpression16_g12265( linValue16_g12265 );
-                float temp_output_65_0_g12264 = ( distance( _SourceGlowDissolvePosition , temp_output_90_0_g12264 ) + ( localMyCustomExpression16_g12265 * _SourceGlowDissolveNoiseFactor ) );
-                float temp_output_75_0_g12264 = step( temp_output_65_0_g12264 , _SourceGlowDissolveFade );
-                float temp_output_76_0_g12264 = step( temp_output_65_0_g12264 , ( _SourceGlowDissolveFade - max( _SourceGlowDissolveWidth , 0.001 ) ) );
-                float4 temp_output_1_0_g12264 = staticSwitch8_g12257;
-                float4 appendResult3_g12264 = (float4(( ( max( ( temp_output_75_0_g12264 - temp_output_76_0_g12264 ) , 0.0 ) * (_SourceGlowDissolveEdgeColor).rgb ) + (temp_output_1_0_g12264).rgb ) , ( temp_output_1_0_g12264.a * (( _SourceGlowDissolveInvert )?( ( 1.0 - temp_output_76_0_g12264 ) ):( temp_output_75_0_g12264 )) )));
-                float4 staticSwitch9_g12257 = appendResult3_g12264;
+                float2 temp_output_90_0_g13218 = temp_output_18_0_g13211;
+                float linValue16_g13219 = tex2D( _UberNoiseTexture, ( temp_output_90_0_g13218 * _SourceGlowDissolveNoiseScale ) ).r;
+                float localMyCustomExpression16_g13219 = MyCustomExpression16_g13219( linValue16_g13219 );
+                float temp_output_65_0_g13218 = ( distance( _SourceGlowDissolvePosition , temp_output_90_0_g13218 ) + ( localMyCustomExpression16_g13219 * _SourceGlowDissolveNoiseFactor ) );
+                float temp_output_75_0_g13218 = step( temp_output_65_0_g13218 , _SourceGlowDissolveFade );
+                float temp_output_76_0_g13218 = step( temp_output_65_0_g13218 , ( _SourceGlowDissolveFade - max( _SourceGlowDissolveWidth , 0.001 ) ) );
+                float4 temp_output_1_0_g13218 = staticSwitch8_g13211;
+                float4 appendResult3_g13218 = (float4(( ( max( ( temp_output_75_0_g13218 - temp_output_76_0_g13218 ) , 0.0 ) * (_SourceGlowDissolveEdgeColor).rgb ) + (temp_output_1_0_g13218).rgb ) , ( temp_output_1_0_g13218.a * (( _SourceGlowDissolveInvert )?( ( 1.0 - temp_output_76_0_g13218 ) ):( temp_output_75_0_g13218 )) )));
+                float4 staticSwitch9_g13211 = appendResult3_g13218;
                 #else
-                float4 staticSwitch9_g12257 = staticSwitch8_g12257;
+                float4 staticSwitch9_g13211 = staticSwitch8_g13211;
                 #endif
                 #ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-                float4 temp_output_1_0_g12260 = staticSwitch9_g12257;
-                float2 temp_output_161_0_g12260 = temp_output_18_0_g12257;
-                float3 rotatedValue136_g12260 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_161_0_g12260 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalAlphaFadeRotation / 180.0 ) + -0.25 ) * UNITY_PI ) );
-                float3 break130_g12260 = rotatedValue136_g12260;
-                float linValue16_g12261 = tex2D( _UberNoiseTexture, ( temp_output_161_0_g12260 * _DirectionalAlphaFadeNoiseScale ) ).r;
-                float localMyCustomExpression16_g12261 = MyCustomExpression16_g12261( linValue16_g12261 );
-                float clampResult154_g12260 = clamp( ( ( break130_g12260.x + break130_g12260.y + _DirectionalAlphaFadeFade + ( localMyCustomExpression16_g12261 * _DirectionalAlphaFadeNoiseFactor ) ) / max( _DirectionalAlphaFadeWidth , 0.001 ) ) , 0.0 , 1.0 );
-                float4 appendResult3_g12260 = (float4((temp_output_1_0_g12260).rgb , ( temp_output_1_0_g12260.a * (( _DirectionalAlphaFadeInvert )?( ( 1.0 - clampResult154_g12260 ) ):( clampResult154_g12260 )) )));
-                float4 staticSwitch11_g12257 = appendResult3_g12260;
+                float4 temp_output_1_0_g13214 = staticSwitch9_g13211;
+                float2 temp_output_161_0_g13214 = temp_output_18_0_g13211;
+                float3 rotatedValue136_g13214 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_161_0_g13214 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalAlphaFadeRotation / 180.0 ) + -0.25 ) * UNITY_PI ) );
+                float3 break130_g13214 = rotatedValue136_g13214;
+                float linValue16_g13215 = tex2D( _UberNoiseTexture, ( temp_output_161_0_g13214 * _DirectionalAlphaFadeNoiseScale ) ).r;
+                float localMyCustomExpression16_g13215 = MyCustomExpression16_g13215( linValue16_g13215 );
+                float clampResult154_g13214 = clamp( ( ( break130_g13214.x + break130_g13214.y + _DirectionalAlphaFadeFade + ( localMyCustomExpression16_g13215 * _DirectionalAlphaFadeNoiseFactor ) ) / max( _DirectionalAlphaFadeWidth , 0.001 ) ) , 0.0 , 1.0 );
+                float4 appendResult3_g13214 = (float4((temp_output_1_0_g13214).rgb , ( temp_output_1_0_g13214.a * (( _DirectionalAlphaFadeInvert )?( ( 1.0 - clampResult154_g13214 ) ):( clampResult154_g13214 )) )));
+                float4 staticSwitch11_g13211 = appendResult3_g13214;
                 #else
-                float4 staticSwitch11_g12257 = staticSwitch9_g12257;
+                float4 staticSwitch11_g13211 = staticSwitch9_g13211;
                 #endif
                 #ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-                float2 temp_output_171_0_g12262 = temp_output_18_0_g12257;
-                float3 rotatedValue136_g12262 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_171_0_g12262 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalGlowFadeRotation / 180.0 ) + -0.25 ) * UNITY_PI ) );
-                float3 break130_g12262 = rotatedValue136_g12262;
-                float linValue16_g12263 = tex2D( _UberNoiseTexture, ( temp_output_171_0_g12262 * _DirectionalGlowFadeNoiseScale ) ).r;
-                float localMyCustomExpression16_g12263 = MyCustomExpression16_g12263( linValue16_g12263 );
-                float temp_output_168_0_g12262 = max( ( ( break130_g12262.x + break130_g12262.y + _DirectionalGlowFadeFade + ( localMyCustomExpression16_g12263 * _DirectionalGlowFadeNoiseFactor ) ) / max( _DirectionalGlowFadeWidth , 0.001 ) ) , 0.0 );
-                float temp_output_161_0_g12262 = step( 0.1 , (( _DirectionalGlowFadeInvert )?( ( 1.0 - temp_output_168_0_g12262 ) ):( temp_output_168_0_g12262 )) );
-                float4 temp_output_1_0_g12262 = staticSwitch11_g12257;
-                float clampResult154_g12262 = clamp( temp_output_161_0_g12262 , 0.0 , 1.0 );
-                float4 appendResult3_g12262 = (float4(( ( (_DirectionalGlowFadeEdgeColor).rgb * ( temp_output_161_0_g12262 - step( 1.0 , (( _DirectionalGlowFadeInvert )?( ( 1.0 - temp_output_168_0_g12262 ) ):( temp_output_168_0_g12262 )) ) ) ) + (temp_output_1_0_g12262).rgb ) , ( temp_output_1_0_g12262.a * clampResult154_g12262 )));
-                float4 staticSwitch15_g12257 = appendResult3_g12262;
+                float2 temp_output_171_0_g13216 = temp_output_18_0_g13211;
+                float3 rotatedValue136_g13216 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_171_0_g13216 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalGlowFadeRotation / 180.0 ) + -0.25 ) * UNITY_PI ) );
+                float3 break130_g13216 = rotatedValue136_g13216;
+                float linValue16_g13217 = tex2D( _UberNoiseTexture, ( temp_output_171_0_g13216 * _DirectionalGlowFadeNoiseScale ) ).r;
+                float localMyCustomExpression16_g13217 = MyCustomExpression16_g13217( linValue16_g13217 );
+                float temp_output_168_0_g13216 = max( ( ( break130_g13216.x + break130_g13216.y + _DirectionalGlowFadeFade + ( localMyCustomExpression16_g13217 * _DirectionalGlowFadeNoiseFactor ) ) / max( _DirectionalGlowFadeWidth , 0.001 ) ) , 0.0 );
+                float temp_output_161_0_g13216 = step( 0.1 , (( _DirectionalGlowFadeInvert )?( ( 1.0 - temp_output_168_0_g13216 ) ):( temp_output_168_0_g13216 )) );
+                float4 temp_output_1_0_g13216 = staticSwitch11_g13211;
+                float clampResult154_g13216 = clamp( temp_output_161_0_g13216 , 0.0 , 1.0 );
+                float4 appendResult3_g13216 = (float4(( ( (_DirectionalGlowFadeEdgeColor).rgb * ( temp_output_161_0_g13216 - step( 1.0 , (( _DirectionalGlowFadeInvert )?( ( 1.0 - temp_output_168_0_g13216 ) ):( temp_output_168_0_g13216 )) ) ) ) + (temp_output_1_0_g13216).rgb ) , ( temp_output_1_0_g13216.a * clampResult154_g13216 )));
+                float4 staticSwitch15_g13211 = appendResult3_g13216;
                 #else
-                float4 staticSwitch15_g12257 = staticSwitch11_g12257;
+                float4 staticSwitch15_g13211 = staticSwitch11_g13211;
                 #endif
                 #ifdef _ENABLEHALFTONE_ON
-                float4 temp_output_1_0_g12270 = staticSwitch15_g12257;
-                float2 temp_output_126_0_g12270 = temp_output_18_0_g12257;
-                float temp_output_121_0_g12270 = max( ( ( _HalftoneFade - distance( _HalftonePosition , temp_output_126_0_g12270 ) ) / max( 0.01 , _HalftoneFadeWidth ) ) , 0.0 );
-                float2 appendResult11_g12271 = (float2(temp_output_121_0_g12270 , temp_output_121_0_g12270));
-                float temp_output_17_0_g12271 = length( ( (( ( abs( temp_output_126_0_g12270 ) * _HalftoneTiling ) % float2( 1,1 ) )*2.0 + -1.0) / appendResult11_g12271 ) );
-                float clampResult17_g12270 = clamp( saturate( ( ( 1.0 - temp_output_17_0_g12271 ) / fwidth( temp_output_17_0_g12271 ) ) ) , 0.0 , 1.0 );
-                float4 appendResult3_g12270 = (float4((temp_output_1_0_g12270).rgb , ( temp_output_1_0_g12270.a * (( _HalftoneInvert )?( ( 1.0 - clampResult17_g12270 ) ):( clampResult17_g12270 )) )));
-                float4 staticSwitch13_g12257 = appendResult3_g12270;
+                float4 temp_output_1_0_g13224 = staticSwitch15_g13211;
+                float2 temp_output_126_0_g13224 = temp_output_18_0_g13211;
+                float temp_output_121_0_g13224 = max( ( ( _HalftoneFade - distance( _HalftonePosition , temp_output_126_0_g13224 ) ) / max( 0.01 , _HalftoneFadeWidth ) ) , 0.0 );
+                float2 appendResult11_g13225 = (float2(temp_output_121_0_g13224 , temp_output_121_0_g13224));
+                float temp_output_17_0_g13225 = length( ( (( ( abs( temp_output_126_0_g13224 ) * _HalftoneTiling ) % float2( 1,1 ) )*2.0 + -1.0) / appendResult11_g13225 ) );
+                float clampResult17_g13224 = clamp( saturate( ( ( 1.0 - temp_output_17_0_g13225 ) / fwidth( temp_output_17_0_g13225 ) ) ) , 0.0 , 1.0 );
+                float4 appendResult3_g13224 = (float4((temp_output_1_0_g13224).rgb , ( temp_output_1_0_g13224.a * (( _HalftoneInvert )?( ( 1.0 - clampResult17_g13224 ) ):( clampResult17_g13224 )) )));
+                float4 staticSwitch13_g13211 = appendResult3_g13224;
                 #else
-                float4 staticSwitch13_g12257 = staticSwitch15_g12257;
+                float4 staticSwitch13_g13211 = staticSwitch15_g13211;
                 #endif
                 #ifdef _ENABLEADDCOLOR_ON
-                float3 temp_output_3_0_g12273 = (_AddColorColor).rgb;
+                float3 temp_output_3_0_g13227 = (_AddColorColor).rgb;
                 float2 uv_AddColorMask = IN.texcoord.xy * _AddColorMask_ST.xy + _AddColorMask_ST.zw;
-                float4 tex2DNode19_g12273 = tex2D( _AddColorMask, uv_AddColorMask );
+                float4 tex2DNode19_g13227 = tex2D( _AddColorMask, uv_AddColorMask );
                 #ifdef _ADDCOLORMASKTOGGLE_ON
-                float3 staticSwitch16_g12273 = ( temp_output_3_0_g12273 * ( (tex2DNode19_g12273).rgb * tex2DNode19_g12273.a ) );
+                float3 staticSwitch16_g13227 = ( temp_output_3_0_g13227 * ( (tex2DNode19_g13227).rgb * tex2DNode19_g13227.a ) );
                 #else
-                float3 staticSwitch16_g12273 = temp_output_3_0_g12273;
+                float3 staticSwitch16_g13227 = temp_output_3_0_g13227;
                 #endif
-                float4 temp_output_1_0_g12273 = staticSwitch13_g12257;
-                float4 break2_g12275 = temp_output_1_0_g12273;
+                float4 temp_output_1_0_g13227 = staticSwitch13_g13211;
+                float4 break2_g13229 = temp_output_1_0_g13227;
                 #ifdef _ADDCOLORCONTRASTTOGGLE_ON
-                float3 staticSwitch17_g12273 = ( staticSwitch16_g12273 * pow( ( ( break2_g12275.x + break2_g12275.x + break2_g12275.y + break2_g12275.y + break2_g12275.y + break2_g12275.z ) / 6.0 ) , max( _AddColorContrast , 0.001 ) ) );
+                float3 staticSwitch17_g13227 = ( staticSwitch16_g13227 * pow( max( ( ( break2_g13229.x + break2_g13229.x + break2_g13229.y + break2_g13229.y + break2_g13229.y + break2_g13229.z ) / 6.0 ) , 0.0001 ) , max( _AddColorContrast , 0.0001 ) ) );
                 #else
-                float3 staticSwitch17_g12273 = staticSwitch16_g12273;
+                float3 staticSwitch17_g13227 = staticSwitch16_g13227;
                 #endif
-                float4 appendResult6_g12273 = (float4(( ( staticSwitch17_g12273 * _AddColorFade ) + (temp_output_1_0_g12273).rgb ) , temp_output_1_0_g12273.a));
-                float4 staticSwitch5_g12272 = appendResult6_g12273;
+                float4 appendResult6_g13227 = (float4(( ( staticSwitch17_g13227 * _AddColorFade ) + (temp_output_1_0_g13227).rgb ) , temp_output_1_0_g13227.a));
+                float4 staticSwitch5_g13226 = appendResult6_g13227;
                 #else
-                float4 staticSwitch5_g12272 = staticSwitch13_g12257;
+                float4 staticSwitch5_g13226 = staticSwitch13_g13211;
                 #endif
                 #ifdef _ENABLEALPHATINT_ON
-                float4 temp_output_1_0_g12276 = staticSwitch5_g12272;
-                float3 lerpResult4_g12276 = lerp( (temp_output_1_0_g12276).rgb , (_AlphaTintColor).rgb , ( ( 1.0 - temp_output_1_0_g12276.a ) * step( _AlphaTintMinAlpha , temp_output_1_0_g12276.a ) * _AlphaTintFade ));
-                float4 appendResult13_g12276 = (float4(lerpResult4_g12276 , temp_output_1_0_g12276.a));
-                float4 staticSwitch11_g12272 = appendResult13_g12276;
+                float4 temp_output_1_0_g13230 = staticSwitch5_g13226;
+                float3 lerpResult4_g13230 = lerp( (temp_output_1_0_g13230).rgb , (_AlphaTintColor).rgb , ( ( 1.0 - temp_output_1_0_g13230.a ) * step( _AlphaTintMinAlpha , temp_output_1_0_g13230.a ) * _AlphaTintFade ));
+                float4 appendResult13_g13230 = (float4(lerpResult4_g13230 , temp_output_1_0_g13230.a));
+                float4 staticSwitch11_g13226 = appendResult13_g13230;
                 #else
-                float4 staticSwitch11_g12272 = staticSwitch5_g12272;
+                float4 staticSwitch11_g13226 = staticSwitch5_g13226;
                 #endif
                 #ifdef _ENABLESTRONGTINT_ON
-                float4 temp_output_1_0_g12277 = staticSwitch11_g12272;
-                float3 temp_output_6_0_g12277 = (_StrongTintTint).rgb;
+                float4 temp_output_1_0_g13231 = staticSwitch11_g13226;
+                float3 temp_output_6_0_g13231 = (_StrongTintTint).rgb;
                 float2 uv_StrongTintMask = IN.texcoord.xy * _StrongTintMask_ST.xy + _StrongTintMask_ST.zw;
-                float4 tex2DNode23_g12277 = tex2D( _StrongTintMask, uv_StrongTintMask );
+                float4 tex2DNode23_g13231 = tex2D( _StrongTintMask, uv_StrongTintMask );
                 #ifdef _STRONGTINTMASKTOGGLE_ON
-                float3 staticSwitch21_g12277 = ( temp_output_6_0_g12277 * ( (tex2DNode23_g12277).rgb * tex2DNode23_g12277.a ) );
+                float3 staticSwitch21_g13231 = ( temp_output_6_0_g13231 * ( (tex2DNode23_g13231).rgb * tex2DNode23_g13231.a ) );
                 #else
-                float3 staticSwitch21_g12277 = temp_output_6_0_g12277;
+                float3 staticSwitch21_g13231 = temp_output_6_0_g13231;
                 #endif
-                float4 break2_g12279 = temp_output_1_0_g12277;
+                float4 break2_g13233 = temp_output_1_0_g13231;
                 #ifdef _STRONGTINTCONTRASTTOGGLE_ON
-                float3 staticSwitch22_g12277 = ( pow( ( ( break2_g12279.x + break2_g12279.x + break2_g12279.y + break2_g12279.y + break2_g12279.y + break2_g12279.z ) / 6.0 ) , max( _StrongTintContrast , 0.001 ) ) * staticSwitch21_g12277 );
+                float3 staticSwitch22_g13231 = ( pow( max( ( ( break2_g13233.x + break2_g13233.x + break2_g13233.y + break2_g13233.y + break2_g13233.y + break2_g13233.z ) / 6.0 ) , 0.0001 ) , max( _StrongTintContrast , 0.0001 ) ) * staticSwitch21_g13231 );
                 #else
-                float3 staticSwitch22_g12277 = staticSwitch21_g12277;
+                float3 staticSwitch22_g13231 = staticSwitch21_g13231;
                 #endif
-                float3 lerpResult7_g12277 = lerp( (temp_output_1_0_g12277).rgb , staticSwitch22_g12277 , _StrongTintFade);
-                float4 appendResult9_g12277 = (float4(lerpResult7_g12277 , (temp_output_1_0_g12277).a));
-                float4 staticSwitch7_g12272 = appendResult9_g12277;
+                float3 lerpResult7_g13231 = lerp( (temp_output_1_0_g13231).rgb , staticSwitch22_g13231 , _StrongTintFade);
+                float4 appendResult9_g13231 = (float4(lerpResult7_g13231 , (temp_output_1_0_g13231).a));
+                float4 staticSwitch7_g13226 = appendResult9_g13231;
                 #else
-                float4 staticSwitch7_g12272 = staticSwitch11_g12272;
+                float4 staticSwitch7_g13226 = staticSwitch11_g13226;
                 #endif
-                float4 temp_output_2_0_g12280 = staticSwitch7_g12272;
+                float4 temp_output_2_0_g13234 = staticSwitch7_g13226;
                 #ifdef _ENABLESHADOW_ON
-                float4 break4_g12282 = temp_output_2_0_g12280;
-                float3 appendResult5_g12282 = (float3(break4_g12282.r , break4_g12282.g , break4_g12282.b));
-                float2 appendResult2_g12281 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
-                float4 appendResult85_g12280 = (float4(_ShadowColor.r , _ShadowColor.g , _ShadowColor.b , ( _ShadowFade * tex2D( _MainTex, ( finalUV146 - ( ( 100.0 / appendResult2_g12281 ) * _ShadowOffset ) ) ).a )));
-                float4 break6_g12282 = appendResult85_g12280;
-                float3 appendResult7_g12282 = (float3(break6_g12282.r , break6_g12282.g , break6_g12282.b));
-                float temp_output_11_0_g12282 = ( ( 1.0 - break4_g12282.a ) * break6_g12282.a );
-                float temp_output_32_0_g12282 = ( break4_g12282.a + temp_output_11_0_g12282 );
-                float4 appendResult18_g12282 = (float4(( ( ( appendResult5_g12282 * break4_g12282.a ) + ( appendResult7_g12282 * temp_output_11_0_g12282 ) ) * ( 1.0 / max( temp_output_32_0_g12282 , 0.01 ) ) ) , temp_output_32_0_g12282));
-                float4 staticSwitch82_g12280 = appendResult18_g12282;
+                float4 break4_g13236 = temp_output_2_0_g13234;
+                float3 appendResult5_g13236 = (float3(break4_g13236.r , break4_g13236.g , break4_g13236.b));
+                float2 appendResult2_g13235 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+                float4 appendResult85_g13234 = (float4(_ShadowColor.r , _ShadowColor.g , _ShadowColor.b , ( _ShadowFade * tex2D( _MainTex, ( finalUV146 - ( ( 100.0 / appendResult2_g13235 ) * _ShadowOffset ) ) ).a )));
+                float4 break6_g13236 = appendResult85_g13234;
+                float3 appendResult7_g13236 = (float3(break6_g13236.r , break6_g13236.g , break6_g13236.b));
+                float temp_output_11_0_g13236 = ( ( 1.0 - break4_g13236.a ) * break6_g13236.a );
+                float temp_output_32_0_g13236 = ( break4_g13236.a + temp_output_11_0_g13236 );
+                float4 appendResult18_g13236 = (float4(( ( ( appendResult5_g13236 * break4_g13236.a ) + ( appendResult7_g13236 * temp_output_11_0_g13236 ) ) * ( 1.0 / max( temp_output_32_0_g13236 , 0.01 ) ) ) , temp_output_32_0_g13236));
+                float4 staticSwitch82_g13234 = appendResult18_g13236;
                 #else
-                float4 staticSwitch82_g12280 = temp_output_2_0_g12280;
+                float4 staticSwitch82_g13234 = temp_output_2_0_g13234;
                 #endif
-                float4 break4_g12283 = staticSwitch82_g12280;
+                float4 break4_g13237 = staticSwitch82_g13234;
                 #ifdef _ENABLECUSTOMFADE_ON
-                float staticSwitch8_g12141 = 1.0;
+                float staticSwitch8_g13095 = 1.0;
                 #else
-                float staticSwitch8_g12141 = IN.color.a;
+                float staticSwitch8_g13095 = IN.color.a;
                 #endif
                 #ifdef _ENABLESMOKE_ON
-                float staticSwitch9_g12141 = 1.0;
+                float staticSwitch9_g13095 = 1.0;
                 #else
-                float staticSwitch9_g12141 = staticSwitch8_g12141;
+                float staticSwitch9_g13095 = staticSwitch8_g13095;
                 #endif
-                float customVertexAlpha193 = staticSwitch9_g12141;
-                float4 appendResult5_g12283 = (float4(break4_g12283.r , break4_g12283.g , break4_g12283.b , ( break4_g12283.a * customVertexAlpha193 )));
-                float4 temp_output_344_0 = appendResult5_g12283;
-                float4 temp_output_1_0_g12284 = temp_output_344_0;
-                float4 appendResult8_g12284 = (float4(( (temp_output_1_0_g12284).rgb * (IN.color).rgb ) , temp_output_1_0_g12284.a));
+                float customVertexAlpha193 = staticSwitch9_g13095;
+                float4 appendResult5_g13237 = (float4(break4_g13237.r , break4_g13237.g , break4_g13237.b , ( break4_g13237.a * customVertexAlpha193 )));
+                float4 temp_output_344_0 = appendResult5_g13237;
+                float4 temp_output_1_0_g13239 = temp_output_344_0;
+                float4 appendResult8_g13239 = (float4(( (temp_output_1_0_g13239).rgb * (UIVertexColor501).rgb ) , temp_output_1_0_g13239.a));
                 #ifdef _VERTEXTINTFIRST_ON
                 float4 staticSwitch342 = temp_output_344_0;
                 #else
-                float4 staticSwitch342 = appendResult8_g12284;
+                float4 staticSwitch342 = appendResult8_g13239;
                 #endif
-                float4 lerpResult125 = lerp( ( originalColor191 * IN.color ) , staticSwitch342 , fullFade123);
-                #if defined(_SHADERFADING_NONE)
+                float4 temp_output_1_0_g13240 = originalColor191;
+                float4 appendResult8_g13240 = (float4(( (temp_output_1_0_g13240).rgb * (UIVertexColor501).rgb ) , temp_output_1_0_g13240.a));
+                float4 lerpResult125 = lerp( appendResult8_g13240 , staticSwitch342 , fullFade123);
+                #if defined( _SHADERFADING_NONE )
                 float4 staticSwitch143 = staticSwitch342;
-                #elif defined(_SHADERFADING_FULL)
+                #elif defined( _SHADERFADING_FULL )
                 float4 staticSwitch143 = lerpResult125;
-                #elif defined(_SHADERFADING_MASK)
+                #elif defined( _SHADERFADING_MASK )
                 float4 staticSwitch143 = lerpResult125;
-                #elif defined(_SHADERFADING_DISSOLVE)
+                #elif defined( _SHADERFADING_DISSOLVE )
                 float4 staticSwitch143 = lerpResult125;
-                #elif defined(_SHADERFADING_SPREAD)
+                #elif defined( _SHADERFADING_SPREAD )
                 float4 staticSwitch143 = lerpResult125;
                 #else
                 float4 staticSwitch143 = staticSwitch342;
                 #endif
-                float4 temp_output_7_0_g12291 = staticSwitch143;
+                float4 temp_output_7_0_g13245 = staticSwitch143;
                 #ifdef _BAKEDMATERIAL_ON
-                float4 appendResult2_g12291 = (float4(( (temp_output_7_0_g12291).rgb / max( temp_output_7_0_g12291.a , 1E-05 ) ) , temp_output_7_0_g12291.a));
-                float4 staticSwitch6_g12291 = appendResult2_g12291;
+                float4 appendResult2_g13245 = (float4(( (temp_output_7_0_g13245).rgb / max( temp_output_7_0_g13245.a , 1E-05 ) ) , temp_output_7_0_g13245.a));
+                float4 staticSwitch6_g13245 = appendResult2_g13245;
                 #else
-                float4 staticSwitch6_g12291 = temp_output_7_0_g12291;
+                float4 staticSwitch6_g13245 = temp_output_7_0_g13245;
                 #endif
                 
 
-                half4 color = staticSwitch6_g12291;
+                half4 color = staticSwitch6_g13245;
 
                 #ifdef UNITY_UI_CLIP_RECT
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(IN.mask.xy)) * IN.mask.zw);
@@ -3363,22 +3387,22 @@ Shader "Sprite Shaders Ultimate/Additive GUI SSU"
 	Fallback Off
 }
 /*ASEBEGIN
-Version=19108
+Version=19801
 Node;AmplifyShaderEditor.TemplateShaderPropertyNode;30;1182.59,1001.108;Inherit;False;0;0;_MainTex;Shader;False;0;5;SAMPLER2D;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RelayNode;105;1425.709,1004.581;Inherit;False;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;157;1638.393,1000.485;Inherit;False;spriteTexture;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;411;-3081.191,-3627.324;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;363;-3105.9,-3835.053;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.FunctionNode;483;-2758.191,-3709.324;Inherit;False;_ScreenTiling;604;;11656;f5939d1b891718b468aa402ddf2c75e0;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;482;-2458.77,-3622.03;Inherit;False;_WorldTiling;599;;11657;5075a3cd4854af640aa8d277732c8893;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TexelSizeNode;438;1931.978,1144.547;Inherit;False;-1;1;0;SAMPLER2D;;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.FunctionNode;483;-2758.191,-3709.324;Inherit;False;_ScreenTiling;606;;11656;f5939d1b891718b468aa402ddf2c75e0;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;482;-2458.77,-3622.03;Inherit;False;_WorldTiling;601;;11657;5075a3cd4854af640aa8d277732c8893;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.TexelSizeNode;438;1931.978,1144.547;Inherit;False;-1;Create;1;0;SAMPLER2D;;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;460;-2186.147,-3620.607;Inherit;False;originalUV;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;469;-1956.314,-3488.134;Inherit;False;_PixelArtUV_1;-1;;11658;0e4f4d9760e013e4ea49a4cc7c42c155;0;2;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.Vector4Node;373;-2003.491,-3335.527;Inherit;False;Property;_SpriteSheetRect;Sprite Sheet Rect;9;0;Create;True;0;0;0;False;0;False;0,0,1,1;0,0,1,1;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.Vector4Node;373;-2003.491,-3335.527;Inherit;False;Property;_SpriteSheetRect;Sprite Sheet Rect;10;0;Create;True;0;0;0;False;0;False;0,0,1,1;0,0,1,1;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.TextureCoordinatesNode;435;2252.064,903.7132;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.ComponentMaskNode;432;2227.661,1200.654;Inherit;False;False;False;True;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.DynamicAppendNode;374;-1729.456,-3326.936;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;449;-1697.482,-3566.466;Inherit;False;Property;_Keyword1;Keyword 1;7;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;427;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;449;-1697.482,-3566.466;Inherit;False;Property;_Keyword1;Keyword 1;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;427;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.DynamicAppendNode;375;-1731.491,-3207.527;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;434;2534.932,1066.922;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;450;-1448.75,-3526.053;Inherit;False;uvAfterPixelArt;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
@@ -3386,31 +3410,31 @@ Node;AmplifyShaderEditor.RegisterLocalVarNode;376;-1493.884,-3326.405;Inherit;Fa
 Node;AmplifyShaderEditor.RegisterLocalVarNode;377;-1494.584,-3224.105;Inherit;False;spriteRectMax;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FloorOpNode;433;2745.127,1095.848;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;370;-1198.361,-3311.903;Inherit;False;Remap2D;-1;;11660;f79f855c0a5c94649b58f3d8127375ae;0;5;13;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;1,1;False;5;FLOAT2;0,0;False;6;FLOAT2;1,1;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;341;2716.61,1541.034;Inherit;False;ShaderTime;26;;11661;06a15e67904f217499045f361bad56e7;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;341;2716.61,1541.034;Inherit;False;ShaderTime;27;;11661;06a15e67904f217499045f361bad56e7;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleDivideOpNode;436;2945.127,1149.848;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TexturePropertyNode;101;2238.417,1562.63;Inherit;True;Property;_UberNoiseTexture;Uber Noise Texture;37;0;Create;True;0;0;0;False;0;False;b8d18cd117976254d94a812a0bfc336e;b8d18cd117976254d94a812a0bfc336e;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.StaticSwitch;366;-905.3608,-3353.903;Inherit;False;Property;_SpriteSheetFix;Sprite Sheet Fix;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.TexturePropertyNode;101;2238.417,1562.63;Inherit;True;Property;_UberNoiseTexture;Uber Noise Texture;38;0;Create;True;0;0;0;False;0;False;b8d18cd117976254d94a812a0bfc336e;b8d18cd117976254d94a812a0bfc336e;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.StaticSwitch;366;-905.3608,-3353.903;Inherit;False;Property;_SpriteSheetFix;Sprite Sheet Fix;9;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;237;2948.598,1594.428;Inherit;False;shaderTime;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;441;3148.675,1260.326;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.StaticSwitch;437;3093.581,1032.267;Inherit;False;Property;_PixelPerfectSpace;Pixel Perfect Space;6;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;437;3093.581,1032.267;Inherit;False;Property;_PixelPerfectSpace;Pixel Perfect Space;7;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;475;-584.1226,-3343.809;Inherit;False;fixedUV;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;439;3389.449,1182.896;Inherit;False;ShaderSpace;13;;11662;be729ef05db9c224caec82a3516038dc;0;2;61;FLOAT2;0,0;False;3;SAMPLER2D;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;439;3389.449,1182.896;Inherit;False;ShaderSpace;14;;11662;be729ef05db9c224caec82a3516038dc;0;2;61;FLOAT2;0,0;False;3;SAMPLER2D;0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;477;-582.6621,-3244.321;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RelayNode;99;2506.903,1635.005;Inherit;False;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;365;-372.9774,-3275.82;Inherit;False;_UberInteractive;532;;11663;f8a4d7008519ad249b29e4a9381f963f;0;2;9;FLOAT;0;False;3;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;365;-372.9774,-3275.82;Inherit;False;_UberInteractive;534;;11663;f8a4d7008519ad249b29e4a9381f963f;0;2;9;FLOAT;0;False;3;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;159;2660.32,1715.519;Inherit;False;uberNoiseTexture;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;235;3662.626,1220.644;Inherit;False;shaderPosition;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;253;-334.9839,-3014.146;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RelayNode;84;-178.5299,-3184.649;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;184;-340.3444,-2931.6;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;79;-47.4363,-2946.944;Inherit;False;_FullDistortion;466;;11665;62960fe27c1c398408207bb462ffd10e;0;3;195;FLOAT2;0,0;False;160;FLOAT2;0,0;False;194;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;83;355.5295,-3077.305;Inherit;False;Property;_EnableShine;Enable Shine;465;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;77;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;79;-47.4363,-2946.944;Inherit;False;_FullDistortion;468;;11665;62960fe27c1c398408207bb462ffd10e;0;3;195;FLOAT2;0,0;False;160;FLOAT2;0,0;False;194;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;83;355.5295,-3077.305;Inherit;False;Property;_EnableShine;Enable Shine;467;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;77;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;254;496.0161,-2937.146;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;188;476.926,-2831.78;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;81;747.3577,-2918.135;Inherit;False;_DirectionalDistortion;454;;11668;30e6ac39427ee11419083602d572972f;0;3;182;FLOAT2;0,0;False;160;FLOAT2;0,0;False;181;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;82;1064.56,-3052.917;Inherit;False;Property;_EnableShine;Enable Shine;453;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;75;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;81;747.3577,-2918.135;Inherit;False;_DirectionalDistortion;456;;11668;30e6ac39427ee11419083602d572972f;0;3;182;FLOAT2;0,0;False;160;FLOAT2;0,0;False;181;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;82;1064.56,-3052.917;Inherit;False;Property;_EnableShine;Enable Shine;455;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;75;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;160;658.3505,-580.0461;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.RangedFloatNode;53;1165.579,-2580.498;Inherit;False;Property;_HologramFade;Hologram: Fade;199;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;53;1165.579,-2580.498;Inherit;False;Property;_HologramFade;Hologram: Fade;201;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;244;685.5539,-740.5018;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;243;665.8691,-664.6964;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;255;1530.016,-2640.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
@@ -3418,124 +3442,131 @@ Node;AmplifyShaderEditor.RegisterLocalVarNode;182;1537.252,-2554.561;Inherit;Fal
 Node;AmplifyShaderEditor.GetLocalVarNode;173;1547.656,-2458.612;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.RelayNode;38;1602.103,-2721.81;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;174;1562.277,-2362.367;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;102;919.0109,-667.4209;Inherit;False;_GlitchPre;214;;11671;b8ad29d751d87bd4d9cbf14898be6163;0;3;19;FLOAT;0;False;18;FLOAT2;0,0;False;16;SAMPLER2D;;False;2;FLOAT;15;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;102;919.0109,-667.4209;Inherit;False;_GlitchPre;216;;11671;b8ad29d751d87bd4d9cbf14898be6163;0;3;19;FLOAT;0;False;18;FLOAT2;0,0;False;16;SAMPLER2D;;False;2;FLOAT;15;FLOAT2;0
+Node;AmplifyShaderEditor.RangedFloatNode;498;1616,-2288;Inherit;False;Constant;_Float3;Float 1;102;0;Create;True;0;0;0;False;0;False;0.5;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.ScreenPosInputsNode;497;1568,-2192;Float;False;0;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;154;1243.538,-600.6849;Inherit;False;glitchPosition;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TexturePropertyNode;204;4801.255,1506.884;Inherit;True;Property;_FadingMask;Fading: Mask;25;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;230;4630.415,2681.855;Inherit;False;Property;_FadingNoiseFactor;Fading: Noise Factor;23;0;Create;True;0;0;0;False;0;False;0.2;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;204;4801.255,1506.884;Inherit;True;Property;_FadingMask;Fading: Mask;26;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;230;4630.415,2681.855;Inherit;False;Property;_FadingNoiseFactor;Fading: Noise Factor;24;0;Create;True;0;0;0;False;0;False;0.2;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;152;1246.533,-755.1426;Inherit;False;glitchFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.Vector2Node;208;4401.642,1937.264;Inherit;False;Property;_FadingNoiseScale;Fading: Noise Scale;24;0;Create;True;0;0;0;False;0;False;0.2,0.2;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
-Node;AmplifyShaderEditor.RangedFloatNode;210;4416.092,2114.768;Inherit;False;Property;_FadingWidth;Fading: Width;22;0;Create;True;0;0;0;False;0;False;0.3;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.Vector2Node;208;4401.642,1937.264;Inherit;False;Property;_FadingNoiseScale;Fading: Noise Scale;25;0;Create;True;0;0;0;False;0;False;0.2,0.2;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.RangedFloatNode;210;4416.092,2114.768;Inherit;False;Property;_FadingWidth;Fading: Width;23;0;Create;True;0;0;0;False;0;False;0.3;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;219;4515.66,1836.189;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.Vector2Node;229;4660.594,2553.942;Inherit;False;Property;_FadingPosition;Fading: Position;21;0;Create;True;0;0;0;False;0;False;0,0;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.Vector2Node;229;4660.594,2553.942;Inherit;False;Property;_FadingPosition;Fading: Position;22;0;Create;True;0;0;0;False;0;False;0,0;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
 Node;AmplifyShaderEditor.GetLocalVarNode;228;4626.359,2471.966;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.RangedFloatNode;122;3995.099,1279.389;Inherit;False;Property;_FadingFade;Fading: Fade;20;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;52;1839.482,-2552.931;Inherit;False;_HologramUV;207;;11673;7c71b1b031ffcbe48805e17b94671163;0;5;77;FLOAT;0;False;55;FLOAT;0;False;76;SAMPLER2D;;False;37;FLOAT2;0,0;False;39;SAMPLER2D;;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.RangedFloatNode;122;3995.099,1279.389;Inherit;False;Property;_FadingFade;Fading: Fade;21;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;52;1839.482,-2552.931;Inherit;False;_HologramUV;209;;11673;7c71b1b031ffcbe48805e17b94671163;0;7;77;FLOAT;0;False;55;FLOAT;0;False;76;SAMPLER2D;;False;37;FLOAT2;0,0;False;39;SAMPLER2D;;False;81;FLOAT;0;False;79;FLOAT;0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;261;4535.53,1746.504;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;231;4899.456,2440.854;Inherit;False;_UberSpreadFade;-1;;11723;777ca8ab10170fb48b24b7cd1c44f075;0;7;27;FLOAT2;0,0;False;22;FLOAT;0;False;18;SAMPLER2D;0;False;25;FLOAT2;0,0;False;23;FLOAT2;0,0;False;21;FLOAT;0;False;26;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;223;4905.316,1828.167;Inherit;False;_UberDissolveFade;-1;;11725;cb957eb9b67f4f243aa8ba0547208263;0;5;21;FLOAT2;0,0;False;1;FLOAT;0;False;16;SAMPLER2D;0;False;18;FLOAT2;0,0;False;20;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;59;2242.011,-2636.393;Inherit;False;Property;_EnableShine;Enable Shine;198;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;56;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;59;2242.011,-2636.393;Inherit;False;Property;_EnableShine;Enable Shine;200;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;56;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;256;2394.016,-2741.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;292;5091.561,1459.408;Inherit;False;ShaderMasker;-1;;11727;3d25b55dbfdd24f48b9bd371bdde0e97;0;2;1;FLOAT;0;False;2;SAMPLER2D;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;155;2400.558,-2511.178;Inherit;False;154;glitchPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;175;2375.652,-2434.015;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;153;2413.1,-2367.982;Inherit;False;152;glitchFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;103;2715.721,-2556.586;Inherit;False;_GlitchUV;226;;11728;2addb21417fb5d745a5abfe02cbcd453;0;5;23;FLOAT;0;False;13;FLOAT2;0,0;False;22;SAMPLER2D;;False;3;FLOAT;0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;139;5964.391,1365.661;Inherit;False;Property;_ShaderFading;Shader Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;5;None;Full;Mask;Dissolve;Spread;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;62;3040.934,-2600.272;Inherit;False;Property;_EnableShine;Enable Shine;213;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;57;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;103;2715.721,-2556.586;Inherit;False;_GlitchUV;228;;11728;2addb21417fb5d745a5abfe02cbcd453;0;5;23;FLOAT;0;False;13;FLOAT2;0,0;False;22;SAMPLER2D;;False;3;FLOAT;0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;139;5964.391,1365.661;Inherit;False;Property;_ShaderFading;Shader Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;5;None;Full;Mask;Dissolve;Spread;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;62;3040.934,-2600.272;Inherit;False;Property;_EnableShine;Enable Shine;215;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;57;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;123;6281.453,1414.289;Inherit;False;fullFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;259;2999.016,-2403.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;177;3015.115,-2149.526;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;258;2972.016,-2323.146;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;176;2993.115,-2238.526;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;129;3305.944,-1988.403;Inherit;False;123;fullFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;484;3382.41,-2373.518;Inherit;False;_UberTransformUV;471;;11730;894b1de51a5f4c74cbe7828262f1344b;0;5;25;FLOAT;0;False;26;FLOAT2;0,0;False;1;FLOAT2;0,0;False;18;SAMPLER2D;0;False;3;SAMPLER2D;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;484;3382.41,-2373.518;Inherit;False;_UberTransformUV;473;;11730;894b1de51a5f4c74cbe7828262f1344b;0;5;25;FLOAT;0;False;26;FLOAT2;0,0;False;1;FLOAT2;0,0;False;18;SAMPLER2D;0;False;3;SAMPLER2D;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;131;3266.866,-2134.612;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.LerpOp;130;3651.881,-2106.533;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;145;3940.446,-2146.193;Inherit;False;Property;_UberFading;Uber Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;145;3940.446,-2146.193;Inherit;False;Property;_UberFading;Uber Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleRemainderNode;486;4222.693,-2046.305;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;1,1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;487;4449.801,-1972.639;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;1,1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleRemainderNode;488;4664.06,-2056.074;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;1,1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;381;5159.958,-1852.951;Inherit;False;377;spriteRectMax;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;485;4859.071,-2156.215;Inherit;False;Property;_TilingFix;Tiling Fix;10;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;485;4859.071,-2156.215;Inherit;False;Property;_TilingFix;Tiling Fix;11;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;380;5166.152,-1941.533;Inherit;False;376;spriteRectMin;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;378;5475.994,-2043.135;Inherit;False;Remap2D;-1;;11742;f79f855c0a5c94649b58f3d8127375ae;0;5;13;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;1,1;False;5;FLOAT2;0,0;False;6;FLOAT2;1,1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleMaxOpNode;382;5739.72,-1830.532;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleMinOpNode;383;5870.72,-1934.532;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;452;6307.805,-1976.09;Inherit;False;450;uvAfterPixelArt;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;371;6107.095,-2156.984;Inherit;False;Property;_SpriteSheetFix1;Sprite Sheet Fix;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;366;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;371;6107.095,-2156.984;Inherit;False;Property;_SpriteSheetFix1;Sprite Sheet Fix;9;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;366;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;442;6299.205,-1884.911;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;463;6361.842,-2067.504;Inherit;False;460;originalUV;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;470;6618.802,-2035.91;Inherit;False;_PixelArtUV_2;-1;;11743;4b65626ba2313ca40a96813b19044794;0;4;21;FLOAT2;0,0;False;17;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;427;7006.263,-2158.381;Inherit;False;Property;_PixelPerfectUV;Pixel Perfect UV;7;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;427;7006.263,-2158.381;Inherit;False;Property;_PixelPerfectUV;Pixel Perfect UV;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;146;7280.32,-2157.36;Inherit;False;finalUV;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;189;-2505.721,-234.4758;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;147;-2484.428,-386.3136;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;471;-2266.589,-335.832;Inherit;False;_UberSample;570;;11744;1028d755b36e2b04da25c3b882a2e2ec;0;2;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;COLOR;0
-Node;AmplifyShaderEditor.VertexColorNode;358;-1921.027,-115.7738;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.FunctionNode;494;-1944.149,-267.9059;Inherit;False;_GUIUber;0;;12139;c9d186c63c4d98140945bb82e35de84d;0;1;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.FunctionNode;356;-1686.027,-106.7738;Inherit;False;ColorMultiply;-1;;12140;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StaticSwitch;354;-1350.718,-125.6577;Inherit;False;Property;_Keyword0;Keyword 0;5;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;342;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.IntNode;499;-2720,-48;Inherit;False;Property;_UIVertexColorAlwaysGammaSpace;UIVertexColorAlwaysGammaSpace;5;1;[HideInInspector];Create;True;0;0;0;True;0;False;0;0;False;0;1;INT;0
+Node;AmplifyShaderEditor.FunctionNode;471;-2266.589,-335.832;Inherit;False;_UberSample;572;;11744;1028d755b36e2b04da25c3b882a2e2ec;0;2;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;500;-2384,-48;Inherit;False;UIVertex;-1;;13092;df2da7897c6c4a5489965ec6027965da;0;1;3;INT;0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.FunctionNode;494;-1944.149,-267.9059;Inherit;False;_GUIUber;0;;13093;c9d186c63c4d98140945bb82e35de84d;0;1;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;501;-1968,-48;Inherit;False;UIVertexColor;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.FunctionNode;356;-1686.027,-106.7738;Inherit;False;ColorMultiply;-1;;13094;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.StaticSwitch;354;-1350.718,-125.6577;Inherit;False;Property;_Keyword0;Keyword 0;6;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;342;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;149;-977.8615,164.14;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;191;-1018.041,-121.917;Inherit;False;originalColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;179;-1036.103,27.02582;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;180;-687.1025,-126.9742;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;343;-737.796,35.8288;Inherit;False;_UberCustomAlpha;581;;12141;d68af6e3188f53845b23cf6e39df15fe;0;3;1;COLOR;0,0,0,0;False;6;SAMPLER2D;0;False;7;FLOAT2;0,0;False;2;FLOAT;12;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;343;-737.796,35.8288;Inherit;False;_UberCustomAlpha;583;;13095;d68af6e3188f53845b23cf6e39df15fe;0;3;1;COLOR;0,0,0,0;False;6;SAMPLER2D;0;False;7;FLOAT2;0,0;False;2;FLOAT;12;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;148;-614.0953,-401.0159;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;240;-683.451,-246.0232;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;178;-455.0759,-519.7366;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;239;-404.7228,-125.1053;Inherit;False;_UberGenerated;555;;12146;52defa3f7cca25740a6a77f065edb382;0;4;10;FLOAT;0;False;8;SAMPLER2D;0;False;7;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;239;-404.7228,-125.1053;Inherit;False;_UberGenerated;557;;13100;52defa3f7cca25740a6a77f065edb382;0;4;10;FLOAT;0;False;8;SAMPLER2D;0;False;7;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;242;-432.6598,-617.0601;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;181;-423.344,-436.9742;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;361;-136.8644,-329.1863;Inherit;False;_UberColor;65;;12150;db48f560e502b78409f7fbe481a93597;0;6;39;FLOAT;0;False;40;FLOAT2;0,0;False;1;FLOAT2;0,0;False;24;SAMPLER2D;0;False;3;COLOR;0,0,0,0;False;5;SAMPLER2D;0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;361;-136.8644,-329.1863;Inherit;False;_UberColor;66;;13104;db48f560e502b78409f7fbe481a93597;0;6;39;FLOAT;0;False;40;FLOAT2;0,0;False;1;FLOAT2;0,0;False;24;SAMPLER2D;0;False;3;COLOR;0,0,0,0;False;5;SAMPLER2D;0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;183;-37.83691,-91.99512;Inherit;False;182;hologramFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;51;183.7499,-168.0946;Inherit;False;_Hologram;200;;12192;76082a965d84d0e4da33b2cff51b3691;0;3;42;FLOAT;0;False;40;FLOAT;0;False;1;COLOR;1,1,1,1;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.RangedFloatNode;496;-32,48;Inherit;False;Constant;_Float2;Float 1;102;0;Create;True;0;0;0;False;0;False;0.5;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.ScreenPosInputsNode;495;-112,128;Float;False;0;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.FunctionNode;51;183.7499,-168.0946;Inherit;False;_Hologram;202;;13146;76082a965d84d0e4da33b2cff51b3691;0;5;42;FLOAT;0;False;40;FLOAT;0;False;1;COLOR;1,1,1,1;False;43;FLOAT;0;False;44;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;163;668.7452,-235.3598;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;162;704.0067,-153.0455;Inherit;False;152;glitchFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;56;438.7324,-454.4984;Inherit;False;Property;_EnableHologram;Enable Hologram;198;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;56;438.7324,-454.4984;Inherit;False;Property;_EnableHologram;Enable Hologram;200;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;161;687.0067,-317.0453;Inherit;False;154;glitchPosition;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;104;973.7388,-316.5438;Inherit;False;_Glitch;220;;12195;97a01281f94bcc04fbb9a7c1cd328f08;0;5;34;FLOAT;0;False;31;FLOAT2;0,0;False;33;SAMPLER2D;;False;29;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StaticSwitch;57;1278.486,-397.6114;Inherit;False;Property;_EnableGlitch;Enable Glitch;213;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;104;973.7388,-316.5438;Inherit;False;_Glitch;222;;13149;97a01281f94bcc04fbb9a7c1cd328f08;0;5;34;FLOAT;0;False;31;FLOAT2;0,0;False;33;SAMPLER2D;;False;29;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.StaticSwitch;57;1278.486,-397.6114;Inherit;False;Property;_EnableGlitch;Enable Glitch;215;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;164;250.219,-2894.672;Inherit;False;fullDistortionAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;247;1456.499,-578.4069;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;171;1364.183,-273.4383;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;246;1400.383,-493.8317;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;166;1853.428,-195.4143;Inherit;False;164;fullDistortionAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;473;1656.25,-345.9998;Inherit;False;_UberEffect;231;;12199;93c7a07f758a0814998210619e8ad1cb;0;4;40;FLOAT;0;False;41;FLOAT2;0,0;False;3;COLOR;0,0,0,0;False;37;SAMPLER2D;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;473;1656.25,-345.9998;Inherit;False;_UberEffect;233;;13153;93c7a07f758a0814998210619e8ad1cb;0;4;40;FLOAT;0;False;41;FLOAT2;0,0;False;3;COLOR;0,0,0,0;False;37;SAMPLER2D;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;167;1037.158,-2834.03;Inherit;False;directionalDistortionAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;78;2104.106,-267.8359;Inherit;False;AlphaMultiply;-1;;12255;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StaticSwitch;77;2492.977,-348.4961;Inherit;False;Property;_EnableFullDistortion;Enable Full Distortion;465;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;78;2104.106,-267.8359;Inherit;False;AlphaMultiply;-1;;13209;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.StaticSwitch;77;2492.977,-348.4961;Inherit;False;Property;_EnableFullDistortion;Enable Full Distortion;467;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;168;2616.17,-223.2014;Inherit;False;167;directionalDistortionAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;76;3014.405,-219.2272;Inherit;False;AlphaMultiply;-1;;12256;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.FunctionNode;76;3014.405,-219.2272;Inherit;False;AlphaMultiply;-1;;13210;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;249;3627.646,-39.2937;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;169;3611.012,-138.045;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.StaticSwitch;75;3434.708,-336.5002;Inherit;False;Property;_EnableDirectionalDistortion;Enable Directional Distortion;453;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.FunctionNode;248;3912.165,-179.9706;Inherit;False;_UberFading;394;;12257;f8f5d1f402d6b694f9c47ef65b4ae91d;0;3;18;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;17;SAMPLER2D;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;75;3434.708,-336.5002;Inherit;False;Property;_EnableDirectionalDistortion;Enable Directional Distortion;455;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;248;3912.165,-179.9706;Inherit;False;_UberFading;396;;13211;f8f5d1f402d6b694f9c47ef65b4ae91d;0;3;18;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;17;SAMPLER2D;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;193;-400.3044,37.52343;Inherit;False;customVertexAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;479;3931.587,-267.0083;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;480;3955.587,-349.0083;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;478;4200.417,-206.2577;Inherit;False;_UberColorFinal;38;;12272;6ac57aba23ea6404ba71b6806ea93971;0;3;14;FLOAT2;0,0;False;15;SAMPLER2D;;False;3;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;478;4200.417,-206.2577;Inherit;False;_UberColorFinal;39;;13226;6ac57aba23ea6404ba71b6806ea93971;0;3;14;FLOAT2;0,0;False;15;SAMPLER2D;;False;3;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;196;4178.044,-19.14569;Inherit;False;193;customVertexAlpha;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.Vector2Node;200;3977.696,393.365;Inherit;False;Constant;_ZeroVector;Zero Vector;67;0;Create;True;0;0;0;False;0;False;0,0;0,0;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
-Node;AmplifyShaderEditor.FunctionNode;344;4548.086,-90.46628;Inherit;False;AlphaMultiply;-1;;12283;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.VertexColorNode;348;4610.214,-299.2399;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.FunctionNode;344;4548.086,-90.46628;Inherit;False;AlphaMultiply;-1;;13237;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;476;3958.333,566.3407;Inherit;False;475;fixedUV;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;353;4889.3,-222.093;Inherit;False;ColorMultiply;-1;;12284;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.FunctionNode;199;4171.966,521.7499;Inherit;False;_Squish;550;;12285;6d6a73cc3433bad4186f7028cad3d98c;0;2;82;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.GetLocalVarNode;194;4622.439,201.8054;Inherit;False;191;originalColor;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode;502;4560,-304;Inherit;False;501;UIVertexColor;1;0;OBJECT;;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.FunctionNode;199;4171.966,521.7499;Inherit;False;_Squish;552;;13238;6d6a73cc3433bad4186f7028cad3d98c;0;2;82;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;353;4889.3,-222.093;Inherit;False;ColorMultiply;-1;;13239;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.GetLocalVarNode;503;4704,160;Inherit;False;501;UIVertexColor;1;0;OBJECT;;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.GetLocalVarNode;194;4704,32;Inherit;False;191;originalColor;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;124;4962.062,258.7927;Inherit;False;123;fullFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;195;4877.096,136.7432;Inherit;False;TintVertex;-1;;12286;b0b94dd27c0f3da49a89feecae766dcc;0;1;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.StaticSwitch;198;4453.426,400.9801;Inherit;False;Property;_EnableSquish;Enable Squish;549;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;342;5134.784,-128.8904;Inherit;False;Property;_VertexTintFirst;Vertex Tint First;5;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.StaticSwitch;198;4453.426,400.9801;Inherit;False;Property;_EnableSquish;Enable Squish;551;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;342;5134.784,-128.8904;Inherit;False;Property;_VertexTintFirst;Vertex Tint First;6;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;251;4509.569,562.3449;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;504;4992,80;Inherit;False;ColorMultiply;-1;;13240;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.LerpOp;125;5403.405,74.92608;Inherit;False;3;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.FunctionNode;424;4759.72,401.6135;Inherit;False;_UberTransformOffset;516;;12287;ee5e9e731457b2342bdb306bdb8d2401;0;2;8;FLOAT;0;False;2;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;424;4759.72,401.6135;Inherit;False;_UberTransformOffset;518;;13241;ee5e9e731457b2342bdb306bdb8d2401;0;2;8;FLOAT;0;False;2;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;141;4826.724,532.0556;Inherit;False;123;fullFade;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.LerpOp;121;5091.355,506.223;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;143;5663.995,-69.69315;Inherit;False;Property;_UberFading;Uber Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.StaticSwitch;143;5663.995,-69.69315;Inherit;False;Property;_UberFading;Uber Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;187;489.4036,-2756.916;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;340;6010.595,-19.64009;Inherit;False;BakingHandler;11;;12291;f63dfe0dc7c747c43b593d357b168fa0;0;1;7;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.StaticSwitch;142;5362.269,308.0164;Inherit;False;Property;_UberFading;Uber Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;489;6391.947,126.1744;Float;False;True;-1;2;SpriteShadersUltimate.SSUShaderGUI;0;3;Sprite Shaders Ultimate/Additive GUI SSU;5056123faa0c79b47ab6ad7e8bf059a4;True;Default;0;0;Default;2;True;True;8;5;False;;1;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;True;True;True;True;True;0;True;_ColorMask;False;False;False;False;False;False;False;True;True;0;True;_Stencil;255;True;_StencilReadMask;255;True;_StencilWriteMask;0;True;_StencilComp;0;True;_StencilOp;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;2;False;;True;0;True;unity_GUIZTestMode;False;True;5;Queue=Transparent=Queue=0;IgnoreProjector=True;RenderType=Transparent=RenderType;PreviewType=Plane;CanUseSpriteAtlas=True;False;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;0;;0;0;Standard;0;0;1;True;False;;False;0
+Node;AmplifyShaderEditor.FunctionNode;340;6010.595,-19.64009;Inherit;False;BakingHandler;12;;13245;f63dfe0dc7c747c43b593d357b168fa0;0;1;7;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;142;5362.269,308.0164;Inherit;False;Property;_UberFading;Uber Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;489;6391.947,126.1744;Float;False;True;-1;2;SpriteShadersUltimate.SSUShaderGUI;0;3;Sprite Shaders Ultimate/Additive GUI SSU;5056123faa0c79b47ab6ad7e8bf059a4;True;Default;0;0;Default;2;True;True;8;5;False;;1;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;True;True;True;True;True;0;True;_ColorMask;False;False;False;False;False;False;False;True;True;0;True;_Stencil;255;True;_StencilReadMask;255;True;_StencilWriteMask;0;True;_StencilComp;0;True;_StencilOp;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;2;False;;True;0;True;unity_GUIZTestMode;False;True;5;Queue=Transparent=Queue=0;IgnoreProjector=True;RenderType=Transparent=RenderType;PreviewType=Plane;CanUseSpriteAtlas=True;False;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;False;0;;0;0;Standard;0;0;1;True;False;;False;0
 WireConnection;105;0;30;0
 WireConnection;157;0;105;0
 WireConnection;483;1;363;0
@@ -3600,6 +3631,8 @@ WireConnection;52;55;182;0
 WireConnection;52;76;173;0
 WireConnection;52;37;38;0
 WireConnection;52;39;174;0
+WireConnection;52;81;498;0
+WireConnection;52;79;497;2
 WireConnection;231;27;261;0
 WireConnection;231;22;122;0
 WireConnection;231;18;228;0
@@ -3665,9 +3698,11 @@ WireConnection;427;0;470;0
 WireConnection;146;0;427;0
 WireConnection;471;1;147;0
 WireConnection;471;2;189;0
+WireConnection;500;3;499;0
 WireConnection;494;1;471;0
+WireConnection;501;0;500;0
 WireConnection;356;1;494;0
-WireConnection;356;2;358;0
+WireConnection;356;2;501;0
 WireConnection;354;1;494;0
 WireConnection;354;0;356;0
 WireConnection;191;0;354;0
@@ -3687,6 +3722,8 @@ WireConnection;361;5;181;0
 WireConnection;51;42;240;0
 WireConnection;51;40;183;0
 WireConnection;51;1;361;0
+WireConnection;51;43;495;2
+WireConnection;51;44;496;0
 WireConnection;56;1;361;0
 WireConnection;56;0;51;0
 WireConnection;104;34;244;0
@@ -3719,16 +3756,17 @@ WireConnection;478;15;479;0
 WireConnection;478;3;248;0
 WireConnection;344;1;478;0
 WireConnection;344;2;196;0
-WireConnection;353;1;344;0
-WireConnection;353;2;348;0
 WireConnection;199;82;200;0
 WireConnection;199;1;476;0
-WireConnection;195;1;194;0
+WireConnection;353;1;344;0
+WireConnection;353;2;502;0
 WireConnection;198;1;200;0
 WireConnection;198;0;199;0
 WireConnection;342;1;353;0
 WireConnection;342;0;344;0
-WireConnection;125;0;195;0
+WireConnection;504;1;194;0
+WireConnection;504;2;503;0
+WireConnection;125;0;504;0
 WireConnection;125;1;342;0
 WireConnection;125;2;124;0
 WireConnection;424;8;251;0
@@ -3749,4 +3787,4 @@ WireConnection;142;4;121;0
 WireConnection;489;0;340;0
 WireConnection;489;1;142;0
 ASEEND*/
-//CHKSM=445715A3A7AD36777CE5F64D00CB6C202CAC19E2
+//CHKSM=0DB72BE95841A94D1AE9A30728362A8E4C6AF3F2

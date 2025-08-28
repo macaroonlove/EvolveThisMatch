@@ -12,6 +12,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - SKINNED_SPRITE
   - _SHADERFADING_NONE
   - _SHADERSPACE_UV
   - _TEXTURELAYER1SHEETTOGGLE_ON
@@ -364,6 +365,7 @@ Material:
     - _InnerOutlineWidth: 0.02
     - _IsText: 0
     - _IsTextMeshPro: 0
+    - _MaskBrightness: 1
     - _MetalContrast: 2
     - _MetalFade: 1
     - _MetalHighlightContrast: 2
@@ -384,6 +386,7 @@ Material:
     - _PingPongGlowContrast: 1
     - _PingPongGlowFade: 1
     - _PingPongGlowFrequency: 3
+    - _PixelOutlineAlphaLimit: 0.5
     - _PixelOutlineFade: 1
     - _PixelOutlineOutlineOnlyToggle: 0
     - _PixelOutlineTextureToggle: 0

@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.8
+// Made with Amplify Shader Editor v1.9.8.1
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 {
@@ -8,6 +8,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
 		_MainTex("MainTex", 2D) = "white" {}
 		_MaskMap("Mask Map", 2D) = "white" {}
+		_MaskBrightness("Mask Brightness", Float) = 1
 		_NormalMap("Normal Map", 2D) = "bump" {}
 		_NormalIntensity("Normal Intensity", Float) = 1
 		[Toggle(_VERTEXTINTFIRST_ON)] _VertexTintFirst("Vertex Tint First", Float) = 0
@@ -115,6 +116,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 		_PixelOutlineFade("Pixel Outline: Fade", Range( 0 , 1)) = 1
 		[HDR]_PixelOutlineColor("Pixel Outline: Color", Color) = (0,0,0,1)
 		_PixelOutlineWidth("Pixel Outline: Width", Float) = 1
+		_PixelOutlineAlphaLimit("Pixel Outline: Alpha Limit", Range( 0 , 1)) = 0.5
 		[Toggle(_PIXELOUTLINETEXTURETOGGLE_ON)] _PixelOutlineTextureToggle("Pixel Outline: Texture Toggle", Float) = 0
 		_PixelOutlineTintTexture("Pixel Outline: Tint Texture", 2D) = "white" {}
 		_PixelOutlineTextureSpeed("Pixel Outline: Texture Speed", Vector) = (0.5,0,0,0)
@@ -511,7 +513,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 		[Toggle(_ENABLESCREENTILING_ON)] _EnableScreenTiling("Enable Screen Tiling", Float) = 0
 		_ScreenTilingScale("Screen Tiling: Scale", Vector) = (1,1,0,0)
 		_ScreenTilingOffset("Screen Tiling: Offset", Vector) = (0,0,0,0)
-		[ASEEnd]_ScreenTilingPixelsPerUnit("Screen Tiling: Pixels Per Unit", Float) = 100
+		_ScreenTilingPixelsPerUnit("Screen Tiling: Pixels Per Unit", Float) = 100
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
 		[HideInInspector][NoScaleOffset] unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
@@ -528,6 +530,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent" "UniversalMaterialType"="Lit" "ShaderGraphShader"="true" }
 
 		Cull Off
+
 		HLSLINCLUDE
 		#pragma target 2.0
 		#pragma prefer_hlslcc gles
@@ -535,13 +538,14 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
 		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Filtering.hlsl"
+
 		ENDHLSL
 
 		
 		Pass
 		{
 			Name "Sprite Lit"
-			Tags { "LightMode"="Universal2D" }
+            Tags { "LightMode"="Universal2D" }
 
 			Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
 			ZTest LEqual
@@ -552,27 +556,51 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
 			HLSLPROGRAM
 
-			#define ASE_SRP_VERSION 140007
+			#define ASE_VERSION 19801
+			#define ASE_SRP_VERSION 170003
 
 
 			#pragma vertex vert
 			#pragma fragment frag
+
+			#pragma multi_compile _ DEBUG_DISPLAY SKINNED_SPRITE
 
 			#pragma multi_compile _ USE_SHAPE_LIGHT_TYPE_0
 			#pragma multi_compile _ USE_SHAPE_LIGHT_TYPE_1
 			#pragma multi_compile _ USE_SHAPE_LIGHT_TYPE_2
 			#pragma multi_compile _ USE_SHAPE_LIGHT_TYPE_3
 
-			#define _SURFACE_TYPE_TRANSPARENT 1
+            #define _SURFACE_TYPE_TRANSPARENT 1
+            #define ATTRIBUTES_NEED_NORMAL
+            #define ATTRIBUTES_NEED_TANGENT
+            #define ATTRIBUTES_NEED_TEXCOORD0
+            #define ATTRIBUTES_NEED_COLOR
+            #define FEATURES_GRAPH_VERTEX_NORMAL_OUTPUT
+            #define FEATURES_GRAPH_VERTEX_TANGENT_OUTPUT
+            #define VARYINGS_NEED_POSITION_WS
+            #define VARYINGS_NEED_TEXCOORD0
+            #define VARYINGS_NEED_COLOR
+            #define VARYINGS_NEED_SCREENPOSITION
+            #define FEATURES_GRAPH_VERTEX
 
 			#define SHADERPASS SHADERPASS_SPRITELIT
-			#define SHADERPASS_SPRITELIT
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/Core2D.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRendering.hlsl"
+			#include_with_pragmas "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRenderingKeywords.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/DebugMipmapStreamingMacros.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/LightingUtility.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
+
+			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
 
 			#if USE_SHAPE_LIGHT_TYPE_0
 			SHAPE_LIGHT(0)
@@ -773,7 +801,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			sampler2D _NormalMap;
 			CBUFFER_START( UnityPerMaterial )
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorA;
+			float4 _ShiftingColorB;
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float4 _PoisonColor;
@@ -804,7 +832,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float4 _RecolorRGBRedTint;
 			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorB;
+			float4 _ShiftingColorA;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float4 _TextureLayer1Color;
@@ -835,13 +863,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float4 _CamouflageColorB;
+			float4 _CamouflageColorA;
+			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float4 _BurnInsideNoiseColor;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float4 _CamouflageColorA;
-			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float4 _UVDistortMask_ST;
@@ -881,42 +907,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEFROZEN_ON
 			float4 _FrozenSnowColor;
 			#endif
+			#ifdef _SHADERFADING_MASK
+			float4 _FadingMask_ST;
+			#endif
+			#ifdef _ENABLESTRONGTINT_ON
+			float4 _StrongTintMask_ST;
+			#endif
+			float4 _MainTex_TexelSize;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float4 _DirectionalGlowFadeEdgeColor;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float4 _SourceGlowDissolveEdgeColor;
+			#endif
+			#ifdef _ENABLEALPHATINT_ON
+			float4 _AlphaTintColor;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float4 _ShadowColor;
+			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float4 _StrongTintTint;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float4 _AddColorMask_ST;
-			float4 _AddColorColor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float4 _ShadowColor;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float4 _SourceGlowDissolveEdgeColor;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float4 _DirectionalGlowFadeEdgeColor;
 			#endif
 			#ifdef _SPRITESHEETFIX_ON
 			float4 _SpriteSheetRect;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float4 _AlphaTintColor;
+			#ifdef _ENABLEADDCOLOR_ON
+			float4 _AddColorColor;
 			#endif
-			#ifdef _ENABLESTRONGTINT_ON
-			float4 _StrongTintMask_ST;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Scale;
 			#endif
-			#ifdef _SHADERFADING_MASK
-			float4 _FadingMask_ST;
-			#endif
-			float4 _MainTex_TexelSize;
-			float2 _FadingNoiseScale;
 			#ifdef _SHADERFADING_SPREAD
 			float2 _FadingPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionScale;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnEdgeNoiseScale;
 			float2 _BurnPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionSpeed;
 			#endif
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
 			float2 _DirectionalAlphaFadeNoiseScale;
@@ -924,11 +960,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnSwirlNoiseScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenSnowScale;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1ScrollSpeed;
 			#endif
+			float2 _FadingNoiseScale;
 			#ifdef _ENABLEFLAME_ON
-			float2 _FlameNoiseScale;
 			float2 _FlameSpeed;
 			#endif
 			#ifdef _ENABLEGLITCH_ON
@@ -938,25 +974,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLECUSTOMFADE_ON
 			float2 _CustomFadeNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Offset;
-			float2 _TextureLayer1ScrollSpeed;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionSpeed;
-			float2 _CamouflageDistortionScale;
-			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnInsideNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Scale;
+			#ifdef _ENABLEFLAME_ON
+			float2 _FlameNoiseScale;
 			#endif
-			#ifdef _ENABLESHADOW_ON
-			float2 _ShadowOffset;
+			#ifdef _ENABLERAINBOW_ON
+			float2 _RainbowCenter;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionIntensity;
+			#ifdef _ENABLEPIXELOUTLINE_ON
+			float2 _PixelOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveFrequency;
@@ -969,30 +997,25 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _InkSpreadNoiseScale;
 			float2 _InkSpreadPosition;
 			#endif
+			#ifdef _ENABLEPOISON_ON
+			float2 _PoisonNoiseSpeed;
+			float2 _PoisonNoiseScale;
+			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float2 _InnerOutlineNoiseScale;
 			float2 _InnerOutlineDistortionIntensity;
 			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseSpeed;
-			#endif
 			#ifdef _ENABLEHALFTONE_ON
 			float2 _HalftonePosition;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float2 _DirectionalGlowFadeNoiseScale;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseScale;
-			#endif
-			#ifdef _ENABLEOUTEROUTLINE_ON
-			float2 _OuterOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINESCALE_ON
 			float2 _SineScaleFactor;
 			#endif
+			#ifdef _ENABLEOUTEROUTLINE_ON
+			float2 _OuterOutlineTextureSpeed;
+			#endif
 			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowCenter;
+			float2 _RainbowNoiseScale;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float2 _OuterOutlineNoiseSpeed;
@@ -1003,27 +1026,51 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _EnchantedSpeed;
 			float2 _EnchantedScale;
 			#endif
-			#ifdef _ENABLEPIXELOUTLINE_ON
-			float2 _PixelOutlineTextureSpeed;
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionIntensity;
 			#endif
-			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowNoiseScale;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float2 _DirectionalGlowFadeNoiseScale;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleA;
 			#endif
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Offset;
+			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveOffset;
 			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingOffset;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortion;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float2 _FullAlphaDissolveNoiseScale;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeCenter;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseSpeed;
+			float2 _MetalNoiseScale;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortNoiseScale;
+			float2 _UVDistortSpeed;
+			#endif
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Scale;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenSnowScale;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolveNoiseScale;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortTo;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolvePosition;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortFrom;
 			#endif
 			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
@@ -1037,131 +1084,104 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _GlitchDistortionSpeed;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortion;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeCenter;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
 			float2 _FrozenHighlightDistortionScale;
+			float2 _FrozenHighlightDistortionSpeed;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float2 _ShadowOffset;
 			#endif
 			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
 			float2 _SourceAlphaDissolvePosition;
 			float2 _SourceAlphaDissolveNoiseScale;
 			#endif
-			#ifdef _ENABLESCREENTILING_ON
-			float2 _ScreenTilingOffset;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float2 _FullAlphaDissolveNoiseScale;
 			#endif
 			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 			float2 _DirectionalDistortionNoiseScale;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float2 _SourceGlowDissolvePosition;
-			float2 _SourceGlowDissolveNoiseScale;
-			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortion;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLESCREENTILING_ON
 			float2 _ScreenTilingScale;
 			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortionScale;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Offset;
+			float2 _TextureLayer2ScrollSpeed;
+			#endif
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingOffset;
 			#endif
 			#ifdef _ENABLEFULLDISTORTION_ON
-			float2 _FullDistortionDistortion;
 			float2 _FullDistortionNoiseScale;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortionSpeed;
-			#endif
-			#ifdef _ENABLEMETAL_ON
-			float2 _MetalNoiseScale;
-			#endif
-			#ifdef _ENABLEUVDISTORT_ON
-			float2 _UVDistortSpeed;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLEUVSCALE_ON
 			float2 _UVScaleScale;
-			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingScale;
+			float2 _UVScalePivot;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleB;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightScale;
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingScale;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseDistortion;
 			#endif
 			#ifdef _ENABLEUVSCROLL_ON
 			float2 _UVScrollSpeed;
 			#endif
-			#ifdef _ENABLEUVROTATE_ON
-			float2 _UVRotatePivot;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2ScrollSpeed;
-			#endif
 			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightScale;
 			float2 _FrozenHighlightSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Offset;
 			#endif
 			#ifdef _ENABLESINEROTATE_ON
 			float2 _SineRotatePivot;
 			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightDistortion;
+			#endif
+			#ifdef _ENABLEFULLDISTORTION_ON
+			float2 _FullDistortionDistortion;
+			#endif
 			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Scale;
-			#endif
-			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionScale;
-			float2 _MetalNoiseDistortion;
-			float2 _MetalNoiseSpeed;
 			#endif
-			#ifdef _ENABLEUVSCALE_ON
-			float2 _UVScalePivot;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortionScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightDensity;
+			#ifdef _ENABLEUVROTATE_ON
+			float2 _UVRotatePivot;
+			#endif
+			#ifdef _ENABLESCREENTILING_ON
+			float2 _ScreenTilingOffset;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowSpeed;
 			float _RainbowSaturation;
+			float _RainbowBrightness;
+			float _RainbowContrast;
+			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenFade;
+			#ifdef _ENABLEBURN_ON
+			float _BurnWidth;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowNoiseFactor;
-			float _RainbowContrast;
-			float _RainbowBrightness;
-			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEADDCOLOR_ON
-			float _AddColorFade;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintMinAlpha;
 			#endif
 			#ifdef _ENABLEBURN_ON
-			float _BurnInsideNoiseFactor;
+			float _BurnFade;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightContrast;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintFade;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float _BurnEdgeNoiseFactor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float _ShadowFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnSwirlFactor;
-			float _BurnFade;
 			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintContrast;
@@ -1169,32 +1189,34 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float _BurnRadius;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintMinAlpha;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnInsideContrast;
-			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnWidth;
-			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintFade;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float _PoisonRecolorFactor;
+			#ifdef _ENABLEBURN_ON
+			float _BurnSwirlFactor;
+			float _BurnInsideNoiseFactor;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowFade;
 			#endif
+			#ifdef _ENABLESHADOW_ON
+			float _ShadowFade;
+			#endif
+			#ifdef _ENABLEBURN_ON
+			float _BurnInsideContrast;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenHighlightContrast;
+			float _FrozenHighlightDensity;
+			float _FrozenFade;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveWidth;
+			#endif
+			#ifdef _ENABLESHINE_ON
+			float _ShineSaturation;
+			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingBrightness;
 			float _ShiftingSaturation;
 			float _ShiftingContrast;
 			float _ShiftingFade;
@@ -1209,7 +1231,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			int _TextureLayer1StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeRotation;
+			float _DirectionalAlphaFadeFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float _TextureLayer1Contrast;
@@ -1219,52 +1241,60 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _TextureLayer2EdgeClip;
 			#endif
 			int _TextureLayer2Columns;
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingDensity;
-			#endif
 			int _TextureLayer2Rows;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float _TextureLayer2Speed;
+			#endif
 			int _TextureLayer2StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeInvert;
+			float _DirectionalAlphaFadeRotation;
 			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Contrast;
-			float _TextureLayer2Fade;
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveFade;
+			float _SourceGlowDissolveNoiseFactor;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float _FullAlphaDissolveFade;
-			float _FullAlphaDissolveWidth;
+			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
+			float _SourceAlphaDissolveWidth;
+			float _SourceAlphaDissolveNoiseFactor;
+			float _SourceAlphaDissolveFade;
+			float _SourceAlphaDissolveInvert;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingBrightness;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
 			float _SourceGlowDissolveInvert;
 			#endif
-			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
-			float _FullGlowDissolveFade;
-			float _FullGlowDissolveWidth;
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeInvert;
 			#endif
-			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
-			float _SourceAlphaDissolveInvert;
-			float _SourceAlphaDissolveFade;
-			float _SourceAlphaDissolveNoiseFactor;
-			float _SourceAlphaDissolveWidth;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveNoiseFactor;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float _FullAlphaDissolveWidth;
+			float _FullAlphaDissolveFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Speed;
+			float _TextureLayer2Fade;
+			float _TextureLayer2Contrast;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveFade;
+			#endif
+			#ifdef _ENABLEADDCOLOR_ON
+			float _AddColorFade;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingDensity;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowDensity;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float _AddColorContrast;
 			#endif
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingSpeed;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedFade;
-			#endif
 			#ifdef _ENABLESHINE_ON
-			float _ShineSaturation;
 			float _ShineContrast;
 			float _ShineRotation;
 			float _ShineFrequency;
@@ -1278,53 +1308,48 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float _PoisonShiftSpeed;
-			#endif
-			#ifdef _ENABLEHALFTONE_ON
-			float _HalftoneFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
 			float _PoisonDensity;
 			float _PoisonFade;
 			float _PoisonNoiseBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeFade;
+			float _PoisonRecolorFactor;
 			#endif
 			#ifdef _ENABLEHALFTONE_ON
+			float _HalftoneFade;
 			float _HalftoneTiling;
 			float _HalftoneInvert;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedFade;
+			#endif
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeNoiseFactor;
+			float _DirectionalAlphaFadeWidth;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedReduce;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeInvert;
+			float _DirectionalGlowFadeRotation;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingSpeed;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeFade;
+			float _DirectionalGlowFadeNoiseFactor;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedContrast;
 			#endif
 			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
 			float _DirectionalGlowFadeWidth;
 			#endif
 			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedRainbowDensity;
-			float _EnchantedRainbowSpeed;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
 			float _EnchantedRainbowSaturation;
-			float _EnchantedContrast;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeFade;
-			float _DirectionalGlowFadeRotation;
-			float _DirectionalGlowFadeInvert;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedRainbowSpeed;
+			float _EnchantedRainbowDensity;
 			float _EnchantedBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeWidth;
-			float _DirectionalAlphaFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedReduce;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESQUISH_ON
 			float _SquishStretch;
@@ -1333,7 +1358,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelOutlineWidth;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowContrast;
+			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLESQUEEZE_ON
 			float _SqueezeFade;
@@ -1470,9 +1495,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _SHADERFADING_SPREAD
 			float _FadingNoiseFactor;
 			#endif
-			#ifdef _SHADERSPACE_SCREEN
 			float _ScreenWidthUnits;
-			#endif
 			#ifdef _SHADERSPACE_UI_GRAPHIC
 			float _RectHeight;
 			float _RectWidth;
@@ -1480,28 +1503,24 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelsPerUnit;
 			#ifdef _ENABLESMOKE_ON
 			float _SmokeNoiseFactor;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowDensity;
-			#endif
-			#ifdef _ENABLESMOKE_ON
 			float _SmokeSmoothness;
+			float _SmokeDarkEdge;
 			float _SmokeAlpha;
 			#endif
 			#ifdef _ENABLEPINGPONGGLOW_ON
-			float _PingPongGlowContrast;
-			float _PingPongGlowFade;
 			float _PingPongGlowFrequency;
 			#endif
+			float _MaskBrightness;
 			#ifdef _ENABLEPIXELOUTLINE_ON
+			float _PixelOutlineAlphaLimit;
 			float _PixelOutlineFade;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float _OuterOutlineWidth;
 			float _OuterOutlineFade;
 			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramContrast;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowFade;
 			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineWidth;
@@ -1519,15 +1538,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineFade;
 			#endif
-			#ifdef _ENABLEADDHUE_ON
-			float _AddHueFade;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowContrast;
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
+			float _HologramContrast;
 			float _HologramLineSpeed;
-			float _HologramLineGap;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLEMETAL_ON
 			float _MetalFade;
@@ -1537,12 +1553,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageFade;
-			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramLineFrequency;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageContrast;
+			float _CamouflageSmoothnessB;
 			float _CamouflageDensityB;
 			float _CamouflageSmoothnessA;
 			float _CamouflageDensityA;
@@ -1553,13 +1565,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
 			float _HologramMinAlpha;
+			float _HologramLineGap;
+			float _HologramLineFrequency;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float _CamouflageSmoothnessB;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueFade;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowContrast;
 			#endif
 			#ifdef _ENABLEADDHUE_ON
 			float _AddHueContrast;
-			float _AddHueBrightness;
 			float _AddHueSaturation;
 			#endif
 			#ifdef _ENABLECOLORREPLACE_ON
@@ -1633,8 +1649,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBRIGHTNESS_ON
 			float _Brightness;
 			#endif
-			#ifdef _ENABLESMOKE_ON
-			float _SmokeDarkEdge;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueBrightness;
 			#endif
 			float _NormalIntensity;
 			CBUFFER_END
@@ -1642,18 +1658,19 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
 			struct VertexInput
 			{
-				float4 vertex : POSITION;
+				float3 positionOS : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT;
 				float4 uv0 : TEXCOORD0;
 				float4 color : COLOR;
 				
+				UNITY_SKINNED_VERTEX_INPUTS
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
-				float4 clipPos : SV_POSITION;
+				float4 positionCS : SV_POSITION;
 				float4 texCoord0 : TEXCOORD0;
 				float4 color : TEXCOORD1;
 				float4 screenPosition : TEXCOORD2;
@@ -1694,7 +1711,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1704,12 +1721,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float FastNoise101_g11665( float x )
+			float FastNoise101_g11666( float x )
 			{
 				float i = floor(x);
 				float f = frac(x);
@@ -1747,22 +1764,32 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				return 130.0 * dot( m, g );
 			}
 			
-			float MyCustomExpression16_g11667( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
 			float MyCustomExpression16_g11668( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11669( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11672( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1772,27 +1799,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11670( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11676( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1802,7 +1809,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11678( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1812,17 +1829,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float MyCustomExpression16_g11673( float linValue )
+			float MyCustomExpression16_g11674( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1832,7 +1849,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1857,7 +1874,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1867,7 +1884,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1877,7 +1894,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1909,7 +1926,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1919,7 +1936,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1929,7 +1946,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1939,7 +1956,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1949,7 +1966,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1959,7 +1976,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1969,7 +1986,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1979,7 +1996,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1989,7 +2006,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -1999,7 +2016,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2009,7 +2026,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2019,7 +2036,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2029,7 +2046,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2039,7 +2056,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2049,7 +2066,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2059,7 +2076,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2069,7 +2086,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2079,7 +2096,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2089,7 +2106,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2117,7 +2134,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2127,7 +2144,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2137,7 +2154,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2147,7 +2164,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2157,7 +2174,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -2167,35 +2184,39 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
 
-			VertexOutput vert ( VertexInput v  )
+			VertexOutput vert( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
+
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+				UNITY_SKINNED_VERTEX_COMPUTE(v);
+
+				v.positionOS = UnityFlipSprite( v.positionOS, unity_SpriteProps.xy );
 
 				float2 _ZeroVector = float2(0,0);
 				float2 texCoord363 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionCS = TransformObjectToHClip( ( v.positionOS ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float3 ase_positionWS = TransformObjectToWorld( ( v.positionOS ).xyz );
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -2230,52 +2251,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch198 = _ZeroVector;
 				#endif
-				float2 temp_output_2_0_g11899 = staticSwitch198;
+				float2 temp_output_2_0_g11900 = staticSwitch198;
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
-				float temp_output_8_0_g11899 = shaderTime237;
+				float shaderTime237 = staticSwitch42_g11663;
+				float temp_output_8_0_g11900 = shaderTime237;
 				#ifdef _ENABLESINEMOVE_ON
-				float2 staticSwitch4_g11899 = ( ( sin( ( temp_output_8_0_g11899 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11899 );
+				float2 staticSwitch4_g11900 = ( ( sin( ( temp_output_8_0_g11900 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11900 );
 				#else
-				float2 staticSwitch4_g11899 = temp_output_2_0_g11899;
+				float2 staticSwitch4_g11900 = temp_output_2_0_g11900;
 				#endif
 				#ifdef _ENABLEVIBRATE_ON
-				float temp_output_30_0_g11900 = temp_output_8_0_g11899;
-				float3 rotatedValue21_g11900 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11900 * _VibrateRotation ) );
-				float2 staticSwitch6_g11899 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11900 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11900).xy ) + staticSwitch4_g11899 );
+				float temp_output_30_0_g11901 = temp_output_8_0_g11900;
+				float3 rotatedValue21_g11901 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11901 * _VibrateRotation ) );
+				float2 staticSwitch6_g11900 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11901 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11901).xy ) + staticSwitch4_g11900 );
 				#else
-				float2 staticSwitch6_g11899 = staticSwitch4_g11899;
+				float2 staticSwitch6_g11900 = staticSwitch4_g11900;
 				#endif
 				#ifdef _ENABLESINESCALE_ON
-				float2 staticSwitch10_g11899 = ( staticSwitch6_g11899 + ( (v.vertex.xyz).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11899 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
+				float2 staticSwitch10_g11900 = ( staticSwitch6_g11900 + ( (v.positionOS).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11900 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
 				#else
-				float2 staticSwitch10_g11899 = staticSwitch6_g11899;
+				float2 staticSwitch10_g11900 = staticSwitch6_g11900;
 				#endif
-				float2 temp_output_424_0 = staticSwitch10_g11899;
+				float2 temp_output_424_0 = staticSwitch10_g11900;
 #ifdef _SHADERFADING_MASK
 				float2 uv_FadingMask = v.uv0.xy * _FadingMask_ST.xy + _FadingMask_ST.zw;
 				#endif
@@ -2290,30 +2311,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (v.vertex.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (v.vertex.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (v.positionOS).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (v.positionOS).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				float linValue16_g11716 = tex2Dlod( _UberNoiseTexture, float4( ( shaderPosition235 * _FadingNoiseScale ), 0, 0.0) ).r;
 				float localMyCustomExpression16_g11716 = MyCustomExpression16_g11716( linValue16_g11716 );
 				float clampResult14_g11715 = clamp( ( ( ( _FadingFade * ( 1.0 + temp_output_4_0_g11715 ) ) - localMyCustomExpression16_g11716 ) / temp_output_4_0_g11715 ) , 0.0 , 1.0 );
@@ -2323,30 +2344,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult121 = lerp( float2( 0,0 ) , temp_output_424_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch142 = temp_output_424_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch142 = lerpResult121;
 				#else
 				float2 staticSwitch142 = temp_output_424_0;
@@ -2354,45 +2375,47 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				
 				o.ase_texcoord4 = screenPos;
 				
-				o.ase_texcoord5 = v.vertex;
+				o.ase_texcoord5 = float4(v.positionOS,1);
 				o.ase_color = v.color;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					float3 defaultVertexValue = v.vertex.xyz;
+					float3 defaultVertexValue = v.positionOS;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 				float3 vertexValue = float3( staticSwitch142 ,  0.0 );
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					v.vertex.xyz = vertexValue;
+					v.positionOS = vertexValue;
 				#else
-					v.vertex.xyz += vertexValue;
+					v.positionOS += vertexValue;
 				#endif
 				v.normal = v.normal;
 				v.tangent.xyz = v.tangent.xyz;
 
-				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.positionOS);
 
+				o.positionCS = vertexInput.positionCS;
+				o.positionWS = vertexInput.positionWS;
 				o.texCoord0 = v.uv0;
 				o.color = v.color;
-				o.clipPos = vertexInput.positionCS;
 				o.screenPosition = vertexInput.positionNDC;
-				o.positionWS = vertexInput.positionWS;
 				return o;
 			}
 
-			half4 frag ( VertexOutput IN  ) : SV_Target
+			half4 frag( VertexOutput IN  ) : SV_Target
 			{
-				UNITY_SETUP_INSTANCE_ID( IN );
-				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
-				float3 positionWS = IN.positionWS.xyz;
+				UNITY_SETUP_INSTANCE_ID(IN);
+				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+
+				float4 positionCS = IN.positionCS;
+				float3 positionWS = IN.positionWS;
 
 				float2 texCoord363 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				float4 screenPos = IN.ase_texcoord4;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
@@ -2426,89 +2449,89 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float2 staticSwitch366 = uvAfterPixelArt450;
 				#endif
 				float2 fixedUV475 = staticSwitch366;
-				float2 temp_output_3_0_g11664 = fixedUV475;
+				float2 temp_output_3_0_g11665 = fixedUV475;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch117_g11665 = _WindMinIntensity;
+				float staticSwitch117_g11666 = _WindMinIntensity;
 				#else
-				float staticSwitch117_g11665 = WindMinIntensity;
+				float staticSwitch117_g11666 = WindMinIntensity;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch118_g11665 = _WindMaxIntensity;
+				float staticSwitch118_g11666 = _WindMaxIntensity;
 				#else
-				float staticSwitch118_g11665 = WindMaxIntensity;
+				float staticSwitch118_g11666 = WindMaxIntensity;
 				#endif
 				#endif
-				float4 transform62_g11665 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
+				float4 transform62_g11666 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDISPARALLAX_ON
-				float staticSwitch111_g11665 = _WindXPosition;
+				float staticSwitch111_g11666 = _WindXPosition;
 				#else
-				float staticSwitch111_g11665 = transform62_g11665.x;
+				float staticSwitch111_g11666 = transform62_g11666.x;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch113_g11665 = _WindNoiseScale;
+				float staticSwitch113_g11666 = _WindNoiseScale;
 				#else
-				float staticSwitch113_g11665 = WindNoiseScale;
+				float staticSwitch113_g11666 = WindNoiseScale;
 				#endif
 				#endif
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
+				float shaderTime237 = staticSwitch42_g11663;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch125_g11665 = ( shaderTime237 * _WindNoiseSpeed );
+				float staticSwitch125_g11666 = ( shaderTime237 * _WindNoiseSpeed );
 				#else
-				float staticSwitch125_g11665 = WindTime;
+				float staticSwitch125_g11666 = WindTime;
 				#endif
-				float temp_output_50_0_g11665 = ( ( staticSwitch111_g11665 * staticSwitch113_g11665 ) + staticSwitch125_g11665 );
-				float x101_g11665 = temp_output_50_0_g11665;
-				float localFastNoise101_g11665 = FastNoise101_g11665( x101_g11665 );
-				float2 temp_cast_0 = (temp_output_50_0_g11665).xx;
-				float simplePerlin2D121_g11665 = snoise( temp_cast_0*0.5 );
-				simplePerlin2D121_g11665 = simplePerlin2D121_g11665*0.5 + 0.5;
+				float temp_output_50_0_g11666 = ( ( staticSwitch111_g11666 * staticSwitch113_g11666 ) + staticSwitch125_g11666 );
+				float x101_g11666 = temp_output_50_0_g11666;
+				float localFastNoise101_g11666 = FastNoise101_g11666( x101_g11666 );
+				float2 temp_cast_0 = (temp_output_50_0_g11666).xx;
+				float simplePerlin2D121_g11666 = snoise( temp_cast_0*0.5 );
+				simplePerlin2D121_g11666 = simplePerlin2D121_g11666*0.5 + 0.5;
 				#ifdef _WINDHIGHQUALITYNOISE_ON
-				float staticSwitch123_g11665 = simplePerlin2D121_g11665;
+				float staticSwitch123_g11666 = simplePerlin2D121_g11666;
 				#else
-				float staticSwitch123_g11665 = ( localFastNoise101_g11665 + 0.5 );
+				float staticSwitch123_g11666 = ( localFastNoise101_g11666 + 0.5 );
 				#endif
-				float lerpResult86_g11665 = lerp( staticSwitch117_g11665 , staticSwitch118_g11665 , staticSwitch123_g11665);
-				float clampResult29_g11665 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11665 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
-				float2 temp_output_1_0_g11665 = temp_output_3_0_g11664;
-				float temp_output_39_0_g11665 = ( temp_output_1_0_g11665.y + _WindFlip );
-				float3 appendResult43_g11665 = (float3(0.5 , -_WindFlip , 0.0));
-				float2 appendResult27_g11665 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11665 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11665 )));
-				float3 rotatedValue19_g11665 = RotateAroundAxis( appendResult43_g11665, float3( ( appendResult27_g11665 + temp_output_1_0_g11665 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11665 * temp_output_39_0_g11665 ) );
-				float2 staticSwitch4_g11664 = (rotatedValue19_g11665).xy;
+				float lerpResult86_g11666 = lerp( staticSwitch117_g11666 , staticSwitch118_g11666 , staticSwitch123_g11666);
+				float clampResult29_g11666 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11666 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
+				float2 temp_output_1_0_g11666 = temp_output_3_0_g11665;
+				float temp_output_39_0_g11666 = ( temp_output_1_0_g11666.y + _WindFlip );
+				float3 appendResult43_g11666 = (float3(0.5 , -_WindFlip , 0.0));
+				float2 appendResult27_g11666 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11666 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11666 )));
+				float3 rotatedValue19_g11666 = RotateAroundAxis( appendResult43_g11666, float3( ( appendResult27_g11666 + temp_output_1_0_g11666 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11666 * temp_output_39_0_g11666 ) );
+				float2 staticSwitch4_g11665 = (rotatedValue19_g11666).xy;
 				#else
-				float2 staticSwitch4_g11664 = temp_output_3_0_g11664;
+				float2 staticSwitch4_g11665 = temp_output_3_0_g11665;
 				#endif
 				float2 texCoord435 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				#ifdef _PIXELPERFECTSPACE_ON
@@ -2517,81 +2540,82 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (IN.ase_texcoord5.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (IN.ase_texcoord5.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (positionWS).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (IN.ase_texcoord5.xyz).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (IN.ase_texcoord5.xyz).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				#ifdef _ENABLEFULLDISTORTION_ON
-				float2 temp_output_195_0_g11666 = shaderPosition235;
-				float linValue16_g11667 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11666 * _FullDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11667 = MyCustomExpression16_g11667( linValue16_g11667 );
-				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11666 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float2 temp_output_195_0_g11667 = shaderPosition235;
+				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11667 * _FullDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11668 = MyCustomExpression16_g11668( linValue16_g11668 );
-				float2 appendResult189_g11666 = (float2(( localMyCustomExpression16_g11667 - 0.5 ) , ( localMyCustomExpression16_g11668 - 0.5 )));
-				float2 staticSwitch83 = ( staticSwitch4_g11664 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11666 * _FullDistortionDistortion ) );
+				float linValue16_g11669 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11667 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float localMyCustomExpression16_g11669 = MyCustomExpression16_g11669( linValue16_g11669 );
+				float2 appendResult189_g11667 = (float2(( localMyCustomExpression16_g11668 - 0.5 ) , ( localMyCustomExpression16_g11669 - 0.5 )));
+				float2 staticSwitch83 = ( staticSwitch4_g11665 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11667 * _FullDistortionDistortion ) );
 				#else
-				float2 staticSwitch83 = staticSwitch4_g11664;
+				float2 staticSwitch83 = staticSwitch4_g11665;
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-				float2 temp_output_182_0_g11669 = shaderPosition235;
-				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionDistortionScale ) ).r;
+				float2 temp_output_182_0_g11670 = shaderPosition235;
+				float linValue16_g11672 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionDistortionScale ) ).r;
+				float localMyCustomExpression16_g11672 = MyCustomExpression16_g11672( linValue16_g11672 );
+				float3 rotatedValue168_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11672 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
+				float3 rotatedValue136_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11670 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
+				float3 break130_g11670 = rotatedValue136_g11670;
+				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11671 = MyCustomExpression16_g11671( linValue16_g11671 );
-				float3 rotatedValue168_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11671 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
-				float3 rotatedValue136_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11669 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
-				float3 break130_g11669 = rotatedValue136_g11669;
-				float linValue16_g11670 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11670 = MyCustomExpression16_g11670( linValue16_g11670 );
-				float clampResult154_g11669 = clamp( ( ( break130_g11669.x + break130_g11669.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11670 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11669).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 )) ) ) );
+				float clampResult154_g11670 = clamp( ( ( break130_g11670.x + break130_g11670.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11671 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
+				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11670).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 )) ) ) );
 				#else
 				float2 staticSwitch82 = staticSwitch83;
 				#endif
 				#ifdef _ENABLEHOLOGRAM_ON
-				float temp_output_8_0_g11674 = ( ( ( shaderTime237 * _HologramDistortionSpeed ) + positionWS.y ) / unity_OrthoParams.y );
-				float2 temp_cast_4 = (temp_output_8_0_g11674).xx;
+				float temp_output_81_0_g11675 = unity_OrthoParams.y;
+				float temp_output_8_0_g11675 = ( ( ( shaderTime237 * ( _HologramDistortionSpeed * temp_output_81_0_g11675 * 0.2 ) ) + positionWS.y ) / temp_output_81_0_g11675 );
+				float2 temp_cast_4 = (temp_output_8_0_g11675).xx;
 				float2 temp_cast_5 = (_HologramDistortionDensity).xx;
-				float linValue16_g11676 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
-				float localMyCustomExpression16_g11676 = MyCustomExpression16_g11676( linValue16_g11676 );
-				float clampResult75_g11674 = clamp( localMyCustomExpression16_g11676 , 0.075 , 0.6 );
-				float2 temp_cast_6 = (temp_output_8_0_g11674).xx;
-				float2 temp_cast_7 = (_HologramDistortionScale).xx;
-				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
 				float localMyCustomExpression16_g11677 = MyCustomExpression16_g11677( linValue16_g11677 );
-				float2 appendResult2_g11675 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+				float clampResult75_g11675 = clamp( localMyCustomExpression16_g11677 , 0.075 , 0.6 );
+				float2 temp_cast_6 = (temp_output_8_0_g11675).xx;
+				float2 temp_cast_7 = (_HologramDistortionScale).xx;
+				float linValue16_g11678 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float localMyCustomExpression16_g11678 = MyCustomExpression16_g11678( linValue16_g11678 );
+				float2 appendResult2_g11676 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float hologramFade182 = _HologramFade;
-				float2 appendResult44_g11674 = (float2(( ( ( clampResult75_g11674 * ( localMyCustomExpression16_g11677 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11675 ).x ) * hologramFade182 ) , 0.0));
-				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11674 );
+				float2 appendResult44_g11675 = (float2(( ( ( clampResult75_g11675 * ( localMyCustomExpression16_g11678 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11676 ).x ) * hologramFade182 ) , 0.0));
+				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11675 );
 				#else
 				float2 staticSwitch59 = staticSwitch82;
 				#endif
 				#ifdef _ENABLEGLITCH_ON
-				float2 temp_output_18_0_g11672 = shaderPosition235;
-				float2 glitchPosition154 = temp_output_18_0_g11672;
+				float2 temp_output_18_0_g11673 = shaderPosition235;
+				float2 glitchPosition154 = temp_output_18_0_g11673;
 				float linValue16_g11718 = tex2D( _UberNoiseTexture, ( ( glitchPosition154 + ( _GlitchDistortionSpeed * shaderTime237 ) ) * _GlitchDistortionScale ) ).r;
 				float localMyCustomExpression16_g11718 = MyCustomExpression16_g11718( linValue16_g11718 );
-				float linValue16_g11673 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11672 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
-				float localMyCustomExpression16_g11673 = MyCustomExpression16_g11673( linValue16_g11673 );
-				float glitchFade152 = ( max( localMyCustomExpression16_g11673 , _GlitchMaskMin ) * _GlitchFade );
+				float linValue16_g11674 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11673 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
+				float localMyCustomExpression16_g11674 = MyCustomExpression16_g11674( linValue16_g11674 );
+				float glitchFade152 = ( max( localMyCustomExpression16_g11674 , _GlitchMaskMin ) * _GlitchFade );
 				float2 staticSwitch62 = ( staticSwitch59 + ( ( localMyCustomExpression16_g11718 - 0.5 ) * _GlitchDistortion * glitchFade152 ) );
 				#else
 				float2 staticSwitch62 = staticSwitch59;
@@ -2682,30 +2706,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult130 = lerp( texCoord131 , temp_output_484_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch145 = temp_output_484_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch145 = lerpResult130;
 				#else
 				float2 staticSwitch145 = temp_output_484_0;
@@ -2942,7 +2966,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 In115_g11766 = temp_output_2_0_g11766;
 				float3 From115_g11766 = (_ColorReplaceFromColor).rgb;
 				float4 break2_g11767 = temp_output_1_0_g11766;
-				float3 To115_g11766 = ( pow( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , max( _ColorReplaceContrast , 0.001 ) ) * (_ColorReplaceToColor).rgb );
+				float3 To115_g11766 = ( pow( max( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , 0.0001 ) , max( _ColorReplaceContrast , 0.0001 ) ) * (_ColorReplaceToColor).rgb );
 				float Fuzziness115_g11766 = _ColorReplaceSmoothness;
 				float Range115_g11766 = _ColorReplaceRange;
 				float3 localMyCustomExpression115_g11766 = MyCustomExpression115_g11766( In115_g11766 , From115_g11766 , To115_g11766 , Fuzziness115_g11766 , Range115_g11766 );
@@ -2964,8 +2988,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_57_0_g11762 = staticSwitch4_g11779;
 				#ifdef _ENABLECONTRAST_ON
 				float4 temp_output_1_0_g11802 = temp_output_57_0_g11762;
-				float3 temp_cast_30 = (max( _Contrast , 0.001 )).xxx;
-				float4 appendResult4_g11802 = (float4(pow( (temp_output_1_0_g11802).rgb , temp_cast_30 ) , temp_output_1_0_g11802.a));
+				float3 temp_cast_30 = (max( _Contrast , 0.0001 )).xxx;
+				float4 appendResult4_g11802 = (float4(pow( max( (temp_output_1_0_g11802).rgb , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_30 ) , temp_output_1_0_g11802.a));
 				float4 staticSwitch32_g11762 = appendResult4_g11802;
 				#else
 				float4 staticSwitch32_g11762 = temp_output_57_0_g11762;
@@ -2992,7 +3016,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float temp_output_3_0_g11796 = ( ( break2_g11797.x + break2_g11797.x + break2_g11797.y + break2_g11797.y + break2_g11797.y + break2_g11797.z ) / 6.0 );
 				float clampResult25_g11796 = clamp( ( ( ( ( temp_output_3_0_g11796 + _SplitToningShift ) - 0.5 ) * _SplitToningBalance ) + 0.5 ) , 0.0 , 1.0 );
 				float3 lerpResult6_g11796 = lerp( (_SplitToningShadowsColor).rgb , (_SplitToningHighlightsColor).rgb , clampResult25_g11796);
-				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( temp_output_3_0_g11796 , max( _SplitToningContrast , 0.001 ) ) ) , _SplitToningFade);
+				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( max( temp_output_3_0_g11796 , 0.0001 ) , max( _SplitToningContrast , 0.0001 ) ) ) , _SplitToningFade);
 				float4 appendResult18_g11796 = (float4(lerpResult11_g11796 , temp_output_1_0_g11796.a));
 				float4 staticSwitch30_g11762 = appendResult18_g11796;
 				#else
@@ -3002,7 +3026,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11774 = staticSwitch30_g11762;
 				float3 temp_output_4_0_g11774 = (temp_output_1_0_g11774).rgb;
 				float4 break12_g11774 = temp_output_1_0_g11774;
-				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , max( _BlackTintPower , 0.001 ) ));
+				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( max( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , 0.0001 ) , max( _BlackTintPower , 0.0001 ) ));
 				float3 lerpResult13_g11774 = lerp( temp_output_4_0_g11774 , lerpResult7_g11774 , _BlackTintFade);
 				float4 appendResult11_g11774 = (float4(lerpResult13_g11774 , break12_g11774.a));
 				float4 staticSwitch20_g11762 = appendResult11_g11774;
@@ -3016,7 +3040,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float linValue16_g11789 = tex2D( _UberNoiseTexture, ( temp_output_65_0_g11788 * _InkSpreadNoiseScale ) ).r;
 				float localMyCustomExpression16_g11789 = MyCustomExpression16_g11789( linValue16_g11789 );
 				float clampResult53_g11788 = clamp( ( ( ( _InkSpreadDistance - distance( _InkSpreadPosition , temp_output_65_0_g11788 ) ) + ( localMyCustomExpression16_g11789 * _InkSpreadNoiseFactor ) ) / max( _InkSpreadWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , max( _InkSpreadContrast , 0.001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
+				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( max( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , 0.0001 ) , max( _InkSpreadContrast , 0.0001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
 				float4 appendResult9_g11788 = (float4(lerpResult7_g11788 , (temp_output_1_0_g11788).a));
 				float4 staticSwitch17_g11762 = appendResult9_g11788;
 				#else
@@ -3043,7 +3067,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch33_g11784 = _AddHueFade;
 				#endif
-				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , max( _AddHueContrast , 0.001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
+				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( max( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , 0.0001 ) , max( _AddHueContrast , 0.0001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
 				float4 staticSwitch23_g11762 = appendResult6_g11784;
 				#else
 				float4 staticSwitch23_g11762 = staticSwitch19_g11762;
@@ -3059,7 +3083,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch27_g11781 = temp_output_13_0_g11781;
 				#endif
-				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , max( _SineGlowContrast , 0.001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
+				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( max( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , 0.0001 ) , max( _SineGlowContrast , 0.0001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
 				float4 staticSwitch28_g11762 = appendResult21_g11781;
 				#else
 				float4 staticSwitch28_g11762 = staticSwitch23_g11762;
@@ -3154,7 +3178,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch199_g11776 = temp_output_82_0_g11776;
 				#endif
-				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( _PixelOutlineFade * 3.0 ) , 1.0 ) );
+				float temp_output_213_0_g11776 = ( _PixelOutlineFade * step( temp_output_15_0_g11776.a , _PixelOutlineAlphaLimit ) );
+				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( temp_output_213_0_g11776 * 3.0 ) , 1.0 ) );
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch203_g11776 = 1.0;
 				#else
@@ -3164,7 +3189,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult170_g11776 = lerp( lerpResult178_g11776 , staticSwitch199_g11776 , staticSwitch203_g11776);
 				float2 appendResult206_g11776 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float2 temp_output_209_0_g11776 = ( float2( 1,1 ) / appendResult206_g11776 );
-				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , _PixelOutlineFade);
+				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , temp_output_213_0_g11776);
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch200_g11776 = ( temp_output_182_0_g11776 * lerpResult168_g11776 );
 				#else
@@ -3179,7 +3204,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult15_g11763 = lerp( (_PingPongGlowFrom).rgb , (_PingPongGlowTo).rgb , ( ( sin( ( temp_output_39_0_g11762 * _PingPongGlowFrequency ) ) + 1.0 ) / 2.0 ));
 				float4 temp_output_5_0_g11763 = staticSwitch48_g11762;
 				float4 break2_g11764 = temp_output_5_0_g11763;
-				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , max( _PingPongGlowContrast , 0.001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
+				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( max( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , 0.0001 ) , max( _PingPongGlowContrast , 0.0001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
 				float4 staticSwitch46_g11762 = appendResult12_g11763;
 				#else
 				float4 staticSwitch46_g11762 = staticSwitch48_g11762;
@@ -3188,7 +3213,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef _ENABLEHOLOGRAM_ON
 				float4 temp_output_1_0_g11804 = temp_output_361_0;
 				float4 break2_g11805 = temp_output_1_0_g11804;
-				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , max( _HologramContrast , 0.001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * _HologramLineSpeed ) + positionWS.y ) / unity_OrthoParams.y ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
+				float temp_output_44_0_g11804 = unity_OrthoParams.y;
+				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( max( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , 0.0001 ) , max( _HologramContrast , 0.0001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * ( _HologramLineSpeed * temp_output_44_0_g11804 * 0.2 ) ) + positionWS.y ) / temp_output_44_0_g11804 ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
 				float4 lerpResult37_g11804 = lerp( temp_output_1_0_g11804 , appendResult22_g11804 , hologramFade182);
 				float4 staticSwitch56 = lerpResult37_g11804;
 				#else
@@ -3229,7 +3255,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float clampResult65_g11841 = clamp( ( ( _CamouflageDensityB - localMyCustomExpression16_g11845 ) / max( _CamouflageSmoothnessB , 0.005 ) ) , 0.0 , 1.0 );
 				float4 lerpResult68_g11841 = lerp( lerpResult55_g11841 , ( _CamouflageColorB * clampResult65_g11841 ) , clampResult65_g11841);
 				float4 break2_g11844 = temp_output_1_0_g11841;
-				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , max( _CamouflageContrast , 0.001 ) ) ) , _CamouflageFade);
+				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( max( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , 0.0001 ) , max( _CamouflageContrast , 0.0001 ) ) ) , _CamouflageFade);
 				float4 appendResult7_g11841 = (float4(lerpResult4_g11841 , temp_output_1_0_g11841.a));
 				float4 staticSwitch26_g11811 = appendResult7_g11841;
 				#else
@@ -3252,7 +3278,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch60_g11834 = _MetalFade;
 				#endif
-				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( temp_output_5_0_g11834 , max( _MetalHighlightContrast , 0.001 ) ) ) + ( pow( temp_output_5_0_g11834 , max( _MetalContrast , 0.001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
+				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalHighlightContrast , 0.0001 ) ) ) + ( pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalContrast , 0.0001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
 				float4 appendResult8_g11834 = (float4((lerpResult45_g11834).rgb , (temp_output_1_0_g11834).a));
 				float4 staticSwitch28_g11811 = appendResult8_g11834;
 				#else
@@ -3270,7 +3296,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11830 = MyCustomExpression16_g11830( linValue16_g11830 );
 				float linValue16_g11831 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g11830 - 0.25 ) * _FrozenHighlightDistortion ) + ( ( temp_output_73_0_g11826 * _FrozenHighlightSpeed ) + temp_output_72_0_g11826 ) ) * _FrozenHighlightScale ) ).r;
 				float localMyCustomExpression16_g11831 = MyCustomExpression16_g11831( linValue16_g11831 );
-				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( temp_output_7_0_g11826 , max( _FrozenContrast , 0.001 ) ) * (_FrozenTint).rgb ) + ( pow( temp_output_7_0_g11826 , max( _FrozenSnowContrast , 0.001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( temp_output_7_0_g11826 , max( _FrozenHighlightContrast , 0.001 ) ) )).rgb ) , _FrozenFade);
+				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenContrast , 0.0001 ) ) * (_FrozenTint).rgb ) + ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenSnowContrast , 0.0001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenHighlightContrast , 0.0001 ) ) )).rgb ) , _FrozenFade);
 				float4 appendResult26_g11826 = (float4(lerpResult57_g11826 , temp_output_1_0_g11826.a));
 				float4 staticSwitch29_g11811 = appendResult26_g11826;
 				#else
@@ -3290,7 +3316,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11822 = MyCustomExpression16_g11822( linValue16_g11822 );
 				float temp_output_15_0_g11820 = ( ( ( _BurnRadius - distance( temp_output_72_0_g11820 , _BurnPosition ) ) + ( localMyCustomExpression16_g11822 * _BurnEdgeNoiseFactor ) ) / max( _BurnWidth , 0.01 ) );
 				float clampResult18_g11820 = clamp( temp_output_15_0_g11820 , 0.0 , 1.0 );
-				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , max( _BurnInsideContrast , 0.001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
+				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( max( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , 0.0001 ) , max( _BurnInsideContrast , 0.0001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
 				float3 lerpResult40_g11820 = lerp( temp_output_28_0_g11820 , ( lerpResult29_g11820 + ( ( step( temp_output_15_0_g11820 , 1.0 ) * step( 0.0 , temp_output_15_0_g11820 ) ) * (_BurnEdgeColor).rgb ) ) , _BurnFade);
 				float4 appendResult43_g11820 = (float4(lerpResult40_g11820 , temp_output_1_0_g11820.a));
 				float4 staticSwitch32_g11811 = appendResult43_g11820;
@@ -3318,7 +3344,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 break2_g11814 = temp_output_1_0_g11812;
 				float3 temp_cast_69 = (( ( break2_g11814.x + break2_g11814.x + break2_g11814.y + break2_g11814.y + break2_g11814.y + break2_g11814.z ) / 6.0 )).xxx;
 				float3 lerpResult92_g11812 = lerp( temp_cast_69 , temp_output_57_0_g11812 , _ShineSaturation);
-				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.001 )).xxx;
+				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.0001 )).xxx;
 				float3 rotatedValue69_g11812 = RotateAroundAxis( float3( 0,0,0 ), float3( ( _ShineFrequency * temp_output_41_0_g11811 ) ,  0.0 ), float3( 0,0,1 ), ( ( _ShineRotation / 180.0 ) * PI ) );
 				float temp_output_103_0_g11812 = ( _ShineFrequency * _ShineWidth );
 				float clampResult80_g11812 = clamp( ( ( ( sin( ( rotatedValue69_g11812.x - ( temp_output_40_0_g11811 * _ShineSpeed * _ShineFrequency ) ) ) - ( 1.0 - temp_output_103_0_g11812 ) ) / temp_output_103_0_g11812 ) * _ShineSmooth ) , 0.0 , 1.0 );
@@ -3329,7 +3355,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch98_g11812 = _ShineFade;
 				#endif
-				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( lerpResult92_g11812 , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
+				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( max( lerpResult92_g11812 , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
 				float4 staticSwitch36_g11811 = appendResult8_g11812;
 				#else
 				float4 staticSwitch36_g11811 = staticSwitch34_g11811;
@@ -3343,7 +3369,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_28_0_g11847 = (temp_output_1_0_g11847).rgb;
 				float4 break2_g11848 = float4( temp_output_28_0_g11847 , 0.0 );
 				float3 lerpResult32_g11847 = lerp( temp_output_28_0_g11847 , ( temp_output_24_0_g11847 * ( ( break2_g11848.x + break2_g11848.x + break2_g11848.y + break2_g11848.y + break2_g11848.y + break2_g11848.z ) / 6.0 ) ) , ( _PoisonFade * _PoisonRecolorFactor ));
-				float4 appendResult27_g11847 = (float4(( ( max( pow( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , max( _PoisonDensity , 0.001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
+				float4 appendResult27_g11847 = (float4(( ( max( pow( max( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , 0.0001 ) , max( _PoisonDensity , 0.0001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
 				float4 staticSwitch39_g11811 = appendResult27_g11847;
 				#else
 				float4 staticSwitch39_g11811 = staticSwitch36_g11811;
@@ -3368,7 +3394,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 staticSwitch50_g11851 = lerpResult42_g11851;
 				#endif
 				float4 break2_g11853 = temp_output_10_0_g11851;
-				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , max( _EnchantedContrast , 0.001 ) ) * _EnchantedBrightness );
+				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( max( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , 0.0001 ) , max( _EnchantedContrast , 0.0001 ) ) * _EnchantedBrightness );
 				float temp_output_45_0_g11851 = ( max( ( temp_output_36_0_g11851 - _EnchantedReduce ) , 0.0 ) * _EnchantedFade );
 				float3 lerpResult44_g11851 = lerp( temp_output_12_0_g11851 , temp_output_40_0_g11851 , temp_output_45_0_g11851);
 				#ifdef _ENCHANTEDLERPTOGGLE_ON
@@ -3395,7 +3421,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch26_g11856 = ( lerpResult20_g11856 * _ShiftingBrightness );
 				#endif
-				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( temp_output_4_0_g11856 , max( _ShiftingContrast , 0.001 ) ) ) , _ShiftingFade);
+				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( max( temp_output_4_0_g11856 , 0.0001 ) , max( _ShiftingContrast , 0.0001 ) ) ) , _ShiftingFade);
 				float4 appendResult6_g11856 = (float4(lerpResult31_g11856 , break5_g11856.a));
 				float4 staticSwitch33_g11856 = appendResult6_g11856;
 				#else
@@ -3430,7 +3456,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11863 = ( appendResult13_g11863 * appendResult18_g11863 );
 				float4 break2_g11865 = temp_output_5_0_g11863;
 				#ifdef _TEXTURELAYER1CONTRASTTOGGLE_ON
-				float3 staticSwitch80_g11863 = ( pow( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , max( _TextureLayer1Contrast , 0.001 ) ) * temp_output_16_0_g11863 );
+				float3 staticSwitch80_g11863 = ( pow( max( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer1Contrast , 0.0001 ) ) * temp_output_16_0_g11863 );
 				#else
 				float3 staticSwitch80_g11863 = temp_output_16_0_g11863;
 				#endif
@@ -3469,7 +3495,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11859 = ( appendResult13_g11859 * appendResult18_g11859 );
 				float4 break2_g11861 = temp_output_5_0_g11859;
 				#ifdef _TEXTURELAYER2CONTRASTTOGGLE_ON
-				float3 staticSwitch84_g11859 = ( pow( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , max( _TextureLayer2Contrast , 0.001 ) ) * temp_output_16_0_g11859 );
+				float3 staticSwitch84_g11859 = ( pow( max( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer2Contrast , 0.0001 ) ) * temp_output_16_0_g11859 );
 				#else
 				float3 staticSwitch84_g11859 = temp_output_16_0_g11859;
 				#endif
@@ -3490,7 +3516,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 				float4 break4_g11868 = staticSwitch77;
-				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 ));
+				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 ));
 				float4 appendResult5_g11868 = (float4(break4_g11868.r , break4_g11868.g , break4_g11868.b , ( break4_g11868.a * directionalDistortionAlpha167 )));
 				float4 staticSwitch75 = appendResult5_g11868;
 				#else
@@ -3599,7 +3625,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11885 = staticSwitch13_g11869;
 				float4 break2_g11887 = temp_output_1_0_g11885;
 				#ifdef _ADDCOLORCONTRASTTOGGLE_ON
-				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , max( _AddColorContrast , 0.001 ) ) );
+				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( max( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , 0.0001 ) , max( _AddColorContrast , 0.0001 ) ) );
 				#else
 				float3 staticSwitch17_g11885 = staticSwitch16_g11885;
 				#endif
@@ -3628,7 +3654,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				float4 break2_g11891 = temp_output_1_0_g11889;
 				#ifdef _STRONGTINTCONTRASTTOGGLE_ON
-				float3 staticSwitch22_g11889 = ( pow( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , max( _StrongTintContrast , 0.001 ) ) * staticSwitch21_g11889 );
+				float3 staticSwitch22_g11889 = ( pow( max( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , 0.0001 ) , max( _StrongTintContrast , 0.0001 ) ) * staticSwitch21_g11889 );
 				#else
 				float3 staticSwitch22_g11889 = staticSwitch21_g11889;
 				#endif
@@ -3667,33 +3693,33 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float customVertexAlpha193 = staticSwitch9_g11753;
 				float4 appendResult5_g11895 = (float4(break4_g11895.r , break4_g11895.g , break4_g11895.b , ( break4_g11895.a * customVertexAlpha193 )));
 				float4 temp_output_344_0 = appendResult5_g11895;
-				float4 temp_output_1_0_g11896 = temp_output_344_0;
-				float4 appendResult8_g11896 = (float4(( (temp_output_1_0_g11896).rgb * (IN.ase_color).rgb ) , temp_output_1_0_g11896.a));
+				float4 temp_output_1_0_g11898 = temp_output_344_0;
+				float4 appendResult8_g11898 = (float4(( (temp_output_1_0_g11898).rgb * (IN.ase_color).rgb ) , temp_output_1_0_g11898.a));
 				#ifdef _VERTEXTINTFIRST_ON
 				float4 staticSwitch342 = temp_output_344_0;
 				#else
-				float4 staticSwitch342 = appendResult8_g11896;
+				float4 staticSwitch342 = appendResult8_g11898;
 				#endif
 				float4 lerpResult125 = lerp( ( originalColor191 * IN.ase_color ) , staticSwitch342 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float4 staticSwitch143 = staticSwitch342;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float4 staticSwitch143 = lerpResult125;
 				#else
 				float4 staticSwitch143 = staticSwitch342;
 				#endif
-				float4 temp_output_7_0_g11903 = staticSwitch143;
+				float4 temp_output_7_0_g11905 = staticSwitch143;
 				#ifdef _BAKEDMATERIAL_ON
-				float4 appendResult2_g11903 = (float4(( (temp_output_7_0_g11903).rgb / max( temp_output_7_0_g11903.a , 1E-05 ) ) , temp_output_7_0_g11903.a));
-				float4 staticSwitch6_g11903 = appendResult2_g11903;
+				float4 appendResult2_g11905 = (float4(( (temp_output_7_0_g11905).rgb / max( temp_output_7_0_g11905.a , 1E-05 ) ) , temp_output_7_0_g11905.a));
+				float4 staticSwitch6_g11905 = appendResult2_g11905;
 				#else
-				float4 staticSwitch6_g11903 = temp_output_7_0_g11903;
+				float4 staticSwitch6_g11905 = temp_output_7_0_g11905;
 				#endif
 				
 				float2 temp_output_8_0_g11904 = finalUV146;
@@ -3701,23 +3727,23 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 unpack14_g11904 = UnpackNormalScale( tex2D( _NormalMap, temp_output_8_0_g11904 ), _NormalIntensity );
 				unpack14_g11904.z = lerp( 1, unpack14_g11904.z, saturate(_NormalIntensity) );
 				
-				float4 Color = staticSwitch6_g11903;
-				float4 Mask = tex2D( _MaskMap, temp_output_8_0_g11904 );
+				float4 Color = staticSwitch6_g11905;
+				float4 Mask = ( _MaskBrightness * tex2D( _MaskMap, temp_output_8_0_g11904 ) );
 				float3 Normal = unpack14_g11904;
 
 				#if ETC1_EXTERNAL_ALPHA
 					float4 alpha = SAMPLE_TEXTURE2D(_AlphaTex, sampler_AlphaTex, IN.texCoord0.xy);
-					Color.a = lerp ( Color.a, alpha.r, _EnableAlphaTexture);
+					Color.a = lerp( Color.a, alpha.r, _EnableAlphaTexture);
 				#endif
-
-				Color *= IN.color;
 
 				SurfaceData2D surfaceData;
 				InitializeSurfaceData(Color.rgb, Color.a, Mask, surfaceData);
 				InputData2D inputData;
 				InitializeInputData(IN.texCoord0.xy, half2(IN.screenPosition.xy / IN.screenPosition.w), inputData);
-				SETUP_DEBUG_DATA_2D(inputData, positionWS);
+				SETUP_DEBUG_DATA_2D(inputData, positionWS, positionCS);
 				return CombinedShapeLightShared(surfaceData, inputData);
+
+				Color *= IN.color;
 			}
 
 			ENDHLSL
@@ -3727,8 +3753,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 		Pass
 		{
 			
-			Name "Sprite Normal"
-			Tags { "LightMode"="NormalsRendering" }
+            Name "Sprite Normal"
+            Tags { "LightMode"="NormalsRendering" }
 
 			Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
 			ZTest LEqual
@@ -3739,20 +3765,36 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
 			HLSLPROGRAM
 
-			#define ASE_SRP_VERSION 140007
+			#define ASE_VERSION 19801
+			#define ASE_SRP_VERSION 170003
 
 
 			#pragma vertex vert
 			#pragma fragment frag
 
+			#pragma multi_compile _ SKINNED_SPRITE
+
 			#define _SURFACE_TYPE_TRANSPARENT 1
+            #define ATTRIBUTES_NEED_NORMAL
+            #define ATTRIBUTES_NEED_TANGENT
+            #define FEATURES_GRAPH_VERTEX_NORMAL_OUTPUT
+            #define FEATURES_GRAPH_VERTEX_TANGENT_OUTPUT
+            #define VARYINGS_NEED_NORMAL_WS
+            #define VARYINGS_NEED_TANGENT_WS
+            #define FEATURES_GRAPH_VERTEX
+
 			#define SHADERPASS SHADERPASS_SPRITENORMAL
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/Core2D.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRendering.hlsl"
+			#include_with_pragmas "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRenderingKeywords.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/DebugMipmapStreamingMacros.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/NormalsRenderingShared.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
@@ -3936,7 +3978,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			sampler2D _NormalMap;
 			CBUFFER_START( UnityPerMaterial )
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorA;
+			float4 _ShiftingColorB;
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float4 _PoisonColor;
@@ -3967,7 +4009,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float4 _RecolorRGBRedTint;
 			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorB;
+			float4 _ShiftingColorA;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float4 _TextureLayer1Color;
@@ -3998,13 +4040,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float4 _CamouflageColorB;
+			float4 _CamouflageColorA;
+			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float4 _BurnInsideNoiseColor;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float4 _CamouflageColorA;
-			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float4 _UVDistortMask_ST;
@@ -4044,42 +4084,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEFROZEN_ON
 			float4 _FrozenSnowColor;
 			#endif
+			#ifdef _SHADERFADING_MASK
+			float4 _FadingMask_ST;
+			#endif
+			#ifdef _ENABLESTRONGTINT_ON
+			float4 _StrongTintMask_ST;
+			#endif
+			float4 _MainTex_TexelSize;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float4 _DirectionalGlowFadeEdgeColor;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float4 _SourceGlowDissolveEdgeColor;
+			#endif
+			#ifdef _ENABLEALPHATINT_ON
+			float4 _AlphaTintColor;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float4 _ShadowColor;
+			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float4 _StrongTintTint;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float4 _AddColorMask_ST;
-			float4 _AddColorColor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float4 _ShadowColor;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float4 _SourceGlowDissolveEdgeColor;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float4 _DirectionalGlowFadeEdgeColor;
 			#endif
 			#ifdef _SPRITESHEETFIX_ON
 			float4 _SpriteSheetRect;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float4 _AlphaTintColor;
+			#ifdef _ENABLEADDCOLOR_ON
+			float4 _AddColorColor;
 			#endif
-			#ifdef _ENABLESTRONGTINT_ON
-			float4 _StrongTintMask_ST;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Scale;
 			#endif
-			#ifdef _SHADERFADING_MASK
-			float4 _FadingMask_ST;
-			#endif
-			float4 _MainTex_TexelSize;
-			float2 _FadingNoiseScale;
 			#ifdef _SHADERFADING_SPREAD
 			float2 _FadingPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionScale;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnEdgeNoiseScale;
 			float2 _BurnPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionSpeed;
 			#endif
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
 			float2 _DirectionalAlphaFadeNoiseScale;
@@ -4087,11 +4137,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnSwirlNoiseScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenSnowScale;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1ScrollSpeed;
 			#endif
+			float2 _FadingNoiseScale;
 			#ifdef _ENABLEFLAME_ON
-			float2 _FlameNoiseScale;
 			float2 _FlameSpeed;
 			#endif
 			#ifdef _ENABLEGLITCH_ON
@@ -4101,25 +4151,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLECUSTOMFADE_ON
 			float2 _CustomFadeNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Offset;
-			float2 _TextureLayer1ScrollSpeed;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionSpeed;
-			float2 _CamouflageDistortionScale;
-			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnInsideNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Scale;
+			#ifdef _ENABLEFLAME_ON
+			float2 _FlameNoiseScale;
 			#endif
-			#ifdef _ENABLESHADOW_ON
-			float2 _ShadowOffset;
+			#ifdef _ENABLERAINBOW_ON
+			float2 _RainbowCenter;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionIntensity;
+			#ifdef _ENABLEPIXELOUTLINE_ON
+			float2 _PixelOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveFrequency;
@@ -4132,30 +4174,25 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _InkSpreadNoiseScale;
 			float2 _InkSpreadPosition;
 			#endif
+			#ifdef _ENABLEPOISON_ON
+			float2 _PoisonNoiseSpeed;
+			float2 _PoisonNoiseScale;
+			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float2 _InnerOutlineNoiseScale;
 			float2 _InnerOutlineDistortionIntensity;
 			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseSpeed;
-			#endif
 			#ifdef _ENABLEHALFTONE_ON
 			float2 _HalftonePosition;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float2 _DirectionalGlowFadeNoiseScale;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseScale;
-			#endif
-			#ifdef _ENABLEOUTEROUTLINE_ON
-			float2 _OuterOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINESCALE_ON
 			float2 _SineScaleFactor;
 			#endif
+			#ifdef _ENABLEOUTEROUTLINE_ON
+			float2 _OuterOutlineTextureSpeed;
+			#endif
 			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowCenter;
+			float2 _RainbowNoiseScale;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float2 _OuterOutlineNoiseSpeed;
@@ -4166,27 +4203,51 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _EnchantedSpeed;
 			float2 _EnchantedScale;
 			#endif
-			#ifdef _ENABLEPIXELOUTLINE_ON
-			float2 _PixelOutlineTextureSpeed;
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionIntensity;
 			#endif
-			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowNoiseScale;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float2 _DirectionalGlowFadeNoiseScale;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleA;
 			#endif
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Offset;
+			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveOffset;
 			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingOffset;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortion;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float2 _FullAlphaDissolveNoiseScale;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeCenter;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseSpeed;
+			float2 _MetalNoiseScale;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortNoiseScale;
+			float2 _UVDistortSpeed;
+			#endif
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Scale;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenSnowScale;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolveNoiseScale;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortTo;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolvePosition;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortFrom;
 			#endif
 			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
@@ -4200,131 +4261,104 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _GlitchDistortionSpeed;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortion;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeCenter;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
 			float2 _FrozenHighlightDistortionScale;
+			float2 _FrozenHighlightDistortionSpeed;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float2 _ShadowOffset;
 			#endif
 			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
 			float2 _SourceAlphaDissolvePosition;
 			float2 _SourceAlphaDissolveNoiseScale;
 			#endif
-			#ifdef _ENABLESCREENTILING_ON
-			float2 _ScreenTilingOffset;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float2 _FullAlphaDissolveNoiseScale;
 			#endif
 			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 			float2 _DirectionalDistortionNoiseScale;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float2 _SourceGlowDissolvePosition;
-			float2 _SourceGlowDissolveNoiseScale;
-			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortion;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLESCREENTILING_ON
 			float2 _ScreenTilingScale;
 			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortionScale;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Offset;
+			float2 _TextureLayer2ScrollSpeed;
+			#endif
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingOffset;
 			#endif
 			#ifdef _ENABLEFULLDISTORTION_ON
-			float2 _FullDistortionDistortion;
 			float2 _FullDistortionNoiseScale;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortionSpeed;
-			#endif
-			#ifdef _ENABLEMETAL_ON
-			float2 _MetalNoiseScale;
-			#endif
-			#ifdef _ENABLEUVDISTORT_ON
-			float2 _UVDistortSpeed;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLEUVSCALE_ON
 			float2 _UVScaleScale;
-			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingScale;
+			float2 _UVScalePivot;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleB;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightScale;
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingScale;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseDistortion;
 			#endif
 			#ifdef _ENABLEUVSCROLL_ON
 			float2 _UVScrollSpeed;
 			#endif
-			#ifdef _ENABLEUVROTATE_ON
-			float2 _UVRotatePivot;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2ScrollSpeed;
-			#endif
 			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightScale;
 			float2 _FrozenHighlightSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Offset;
 			#endif
 			#ifdef _ENABLESINEROTATE_ON
 			float2 _SineRotatePivot;
 			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightDistortion;
+			#endif
+			#ifdef _ENABLEFULLDISTORTION_ON
+			float2 _FullDistortionDistortion;
+			#endif
 			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Scale;
-			#endif
-			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionScale;
-			float2 _MetalNoiseDistortion;
-			float2 _MetalNoiseSpeed;
 			#endif
-			#ifdef _ENABLEUVSCALE_ON
-			float2 _UVScalePivot;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortionScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightDensity;
+			#ifdef _ENABLEUVROTATE_ON
+			float2 _UVRotatePivot;
+			#endif
+			#ifdef _ENABLESCREENTILING_ON
+			float2 _ScreenTilingOffset;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowSpeed;
 			float _RainbowSaturation;
+			float _RainbowBrightness;
+			float _RainbowContrast;
+			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenFade;
+			#ifdef _ENABLEBURN_ON
+			float _BurnWidth;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowNoiseFactor;
-			float _RainbowContrast;
-			float _RainbowBrightness;
-			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEADDCOLOR_ON
-			float _AddColorFade;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintMinAlpha;
 			#endif
 			#ifdef _ENABLEBURN_ON
-			float _BurnInsideNoiseFactor;
+			float _BurnFade;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightContrast;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintFade;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float _BurnEdgeNoiseFactor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float _ShadowFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnSwirlFactor;
-			float _BurnFade;
 			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintContrast;
@@ -4332,32 +4366,34 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float _BurnRadius;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintMinAlpha;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnInsideContrast;
-			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnWidth;
-			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintFade;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float _PoisonRecolorFactor;
+			#ifdef _ENABLEBURN_ON
+			float _BurnSwirlFactor;
+			float _BurnInsideNoiseFactor;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowFade;
 			#endif
+			#ifdef _ENABLESHADOW_ON
+			float _ShadowFade;
+			#endif
+			#ifdef _ENABLEBURN_ON
+			float _BurnInsideContrast;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenHighlightContrast;
+			float _FrozenHighlightDensity;
+			float _FrozenFade;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveWidth;
+			#endif
+			#ifdef _ENABLESHINE_ON
+			float _ShineSaturation;
+			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingBrightness;
 			float _ShiftingSaturation;
 			float _ShiftingContrast;
 			float _ShiftingFade;
@@ -4372,7 +4408,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			int _TextureLayer1StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeRotation;
+			float _DirectionalAlphaFadeFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float _TextureLayer1Contrast;
@@ -4382,52 +4418,60 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _TextureLayer2EdgeClip;
 			#endif
 			int _TextureLayer2Columns;
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingDensity;
-			#endif
 			int _TextureLayer2Rows;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float _TextureLayer2Speed;
+			#endif
 			int _TextureLayer2StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeInvert;
+			float _DirectionalAlphaFadeRotation;
 			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Contrast;
-			float _TextureLayer2Fade;
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveFade;
+			float _SourceGlowDissolveNoiseFactor;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float _FullAlphaDissolveFade;
-			float _FullAlphaDissolveWidth;
+			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
+			float _SourceAlphaDissolveWidth;
+			float _SourceAlphaDissolveNoiseFactor;
+			float _SourceAlphaDissolveFade;
+			float _SourceAlphaDissolveInvert;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingBrightness;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
 			float _SourceGlowDissolveInvert;
 			#endif
-			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
-			float _FullGlowDissolveFade;
-			float _FullGlowDissolveWidth;
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeInvert;
 			#endif
-			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
-			float _SourceAlphaDissolveInvert;
-			float _SourceAlphaDissolveFade;
-			float _SourceAlphaDissolveNoiseFactor;
-			float _SourceAlphaDissolveWidth;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveNoiseFactor;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float _FullAlphaDissolveWidth;
+			float _FullAlphaDissolveFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Speed;
+			float _TextureLayer2Fade;
+			float _TextureLayer2Contrast;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveFade;
+			#endif
+			#ifdef _ENABLEADDCOLOR_ON
+			float _AddColorFade;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingDensity;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowDensity;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float _AddColorContrast;
 			#endif
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingSpeed;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedFade;
-			#endif
 			#ifdef _ENABLESHINE_ON
-			float _ShineSaturation;
 			float _ShineContrast;
 			float _ShineRotation;
 			float _ShineFrequency;
@@ -4441,53 +4485,48 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float _PoisonShiftSpeed;
-			#endif
-			#ifdef _ENABLEHALFTONE_ON
-			float _HalftoneFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
 			float _PoisonDensity;
 			float _PoisonFade;
 			float _PoisonNoiseBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeFade;
+			float _PoisonRecolorFactor;
 			#endif
 			#ifdef _ENABLEHALFTONE_ON
+			float _HalftoneFade;
 			float _HalftoneTiling;
 			float _HalftoneInvert;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedFade;
+			#endif
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeNoiseFactor;
+			float _DirectionalAlphaFadeWidth;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedReduce;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeInvert;
+			float _DirectionalGlowFadeRotation;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingSpeed;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeFade;
+			float _DirectionalGlowFadeNoiseFactor;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedContrast;
 			#endif
 			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
 			float _DirectionalGlowFadeWidth;
 			#endif
 			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedRainbowDensity;
-			float _EnchantedRainbowSpeed;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
 			float _EnchantedRainbowSaturation;
-			float _EnchantedContrast;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeFade;
-			float _DirectionalGlowFadeRotation;
-			float _DirectionalGlowFadeInvert;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedRainbowSpeed;
+			float _EnchantedRainbowDensity;
 			float _EnchantedBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeWidth;
-			float _DirectionalAlphaFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedReduce;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESQUISH_ON
 			float _SquishStretch;
@@ -4496,7 +4535,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelOutlineWidth;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowContrast;
+			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLESQUEEZE_ON
 			float _SqueezeFade;
@@ -4633,9 +4672,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _SHADERFADING_SPREAD
 			float _FadingNoiseFactor;
 			#endif
-			#ifdef _SHADERSPACE_SCREEN
 			float _ScreenWidthUnits;
-			#endif
 			#ifdef _SHADERSPACE_UI_GRAPHIC
 			float _RectHeight;
 			float _RectWidth;
@@ -4643,28 +4680,24 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelsPerUnit;
 			#ifdef _ENABLESMOKE_ON
 			float _SmokeNoiseFactor;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowDensity;
-			#endif
-			#ifdef _ENABLESMOKE_ON
 			float _SmokeSmoothness;
+			float _SmokeDarkEdge;
 			float _SmokeAlpha;
 			#endif
 			#ifdef _ENABLEPINGPONGGLOW_ON
-			float _PingPongGlowContrast;
-			float _PingPongGlowFade;
 			float _PingPongGlowFrequency;
 			#endif
+			float _MaskBrightness;
 			#ifdef _ENABLEPIXELOUTLINE_ON
+			float _PixelOutlineAlphaLimit;
 			float _PixelOutlineFade;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float _OuterOutlineWidth;
 			float _OuterOutlineFade;
 			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramContrast;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowFade;
 			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineWidth;
@@ -4682,15 +4715,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineFade;
 			#endif
-			#ifdef _ENABLEADDHUE_ON
-			float _AddHueFade;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowContrast;
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
+			float _HologramContrast;
 			float _HologramLineSpeed;
-			float _HologramLineGap;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLEMETAL_ON
 			float _MetalFade;
@@ -4700,12 +4730,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageFade;
-			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramLineFrequency;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageContrast;
+			float _CamouflageSmoothnessB;
 			float _CamouflageDensityB;
 			float _CamouflageSmoothnessA;
 			float _CamouflageDensityA;
@@ -4716,13 +4742,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
 			float _HologramMinAlpha;
+			float _HologramLineGap;
+			float _HologramLineFrequency;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float _CamouflageSmoothnessB;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueFade;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowContrast;
 			#endif
 			#ifdef _ENABLEADDHUE_ON
 			float _AddHueContrast;
-			float _AddHueBrightness;
 			float _AddHueSaturation;
 			#endif
 			#ifdef _ENABLECOLORREPLACE_ON
@@ -4796,8 +4826,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBRIGHTNESS_ON
 			float _Brightness;
 			#endif
-			#ifdef _ENABLESMOKE_ON
-			float _SmokeDarkEdge;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueBrightness;
 			#endif
 			float _NormalIntensity;
 			CBUFFER_END
@@ -4805,18 +4835,19 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
 			struct VertexInput
 			{
-				float4 vertex : POSITION;
+				float3 positionOS : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT;
 				float4 uv0 : TEXCOORD0;
 				float4 color : COLOR;
 				
+				UNITY_SKINNED_VERTEX_INPUTS
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
-				float4 clipPos : SV_POSITION;
+				float4 positionCS : SV_POSITION;
 				float4 texCoord0 : TEXCOORD0;
 				float4 color : TEXCOORD1;
 				float3 normalWS : TEXCOORD2;
@@ -4853,7 +4884,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -4863,12 +4894,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float FastNoise101_g11665( float x )
+			float FastNoise101_g11666( float x )
 			{
 				float i = floor(x);
 				float f = frac(x);
@@ -4906,22 +4937,32 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				return 130.0 * dot( m, g );
 			}
 			
-			float MyCustomExpression16_g11667( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
 			float MyCustomExpression16_g11668( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11669( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11672( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -4931,27 +4972,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11670( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11676( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -4961,7 +4982,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11678( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -4971,17 +5002,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float MyCustomExpression16_g11673( float linValue )
+			float MyCustomExpression16_g11674( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -4991,7 +5022,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5016,7 +5047,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5026,7 +5057,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5036,7 +5067,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5068,7 +5099,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5078,7 +5109,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5088,7 +5119,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5098,7 +5129,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5108,7 +5139,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5118,7 +5149,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5128,7 +5159,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5138,7 +5169,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5148,7 +5179,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5158,7 +5189,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5168,7 +5199,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5178,7 +5209,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5188,7 +5219,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5198,7 +5229,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5208,7 +5239,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5218,7 +5249,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5228,7 +5259,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5238,7 +5269,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5248,7 +5279,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5276,7 +5307,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5286,7 +5317,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5296,7 +5327,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5306,7 +5337,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5316,7 +5347,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -5326,35 +5357,39 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
 
-			VertexOutput vert ( VertexInput v  )
+			VertexOutput vert( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
+
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+				UNITY_SKINNED_VERTEX_COMPUTE(v);
+
+				v.positionOS = UnityFlipSprite( v.positionOS, unity_SpriteProps.xy );
 
 				float2 _ZeroVector = float2(0,0);
 				float2 texCoord363 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionCS = TransformObjectToHClip( ( v.positionOS ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float3 ase_positionWS = TransformObjectToWorld( ( v.positionOS ).xyz );
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -5389,52 +5424,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch198 = _ZeroVector;
 				#endif
-				float2 temp_output_2_0_g11899 = staticSwitch198;
+				float2 temp_output_2_0_g11900 = staticSwitch198;
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
-				float temp_output_8_0_g11899 = shaderTime237;
+				float shaderTime237 = staticSwitch42_g11663;
+				float temp_output_8_0_g11900 = shaderTime237;
 				#ifdef _ENABLESINEMOVE_ON
-				float2 staticSwitch4_g11899 = ( ( sin( ( temp_output_8_0_g11899 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11899 );
+				float2 staticSwitch4_g11900 = ( ( sin( ( temp_output_8_0_g11900 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11900 );
 				#else
-				float2 staticSwitch4_g11899 = temp_output_2_0_g11899;
+				float2 staticSwitch4_g11900 = temp_output_2_0_g11900;
 				#endif
 				#ifdef _ENABLEVIBRATE_ON
-				float temp_output_30_0_g11900 = temp_output_8_0_g11899;
-				float3 rotatedValue21_g11900 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11900 * _VibrateRotation ) );
-				float2 staticSwitch6_g11899 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11900 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11900).xy ) + staticSwitch4_g11899 );
+				float temp_output_30_0_g11901 = temp_output_8_0_g11900;
+				float3 rotatedValue21_g11901 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11901 * _VibrateRotation ) );
+				float2 staticSwitch6_g11900 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11901 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11901).xy ) + staticSwitch4_g11900 );
 				#else
-				float2 staticSwitch6_g11899 = staticSwitch4_g11899;
+				float2 staticSwitch6_g11900 = staticSwitch4_g11900;
 				#endif
 				#ifdef _ENABLESINESCALE_ON
-				float2 staticSwitch10_g11899 = ( staticSwitch6_g11899 + ( (v.vertex.xyz).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11899 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
+				float2 staticSwitch10_g11900 = ( staticSwitch6_g11900 + ( (v.positionOS).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11900 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
 				#else
-				float2 staticSwitch10_g11899 = staticSwitch6_g11899;
+				float2 staticSwitch10_g11900 = staticSwitch6_g11900;
 				#endif
-				float2 temp_output_424_0 = staticSwitch10_g11899;
+				float2 temp_output_424_0 = staticSwitch10_g11900;
 #ifdef _SHADERFADING_MASK
 				float2 uv_FadingMask = v.uv0.xy * _FadingMask_ST.xy + _FadingMask_ST.zw;
 				#endif
@@ -5449,30 +5484,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (v.vertex.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (v.vertex.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (v.positionOS).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (v.positionOS).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				float linValue16_g11716 = tex2Dlod( _UberNoiseTexture, float4( ( shaderPosition235 * _FadingNoiseScale ), 0, 0.0) ).r;
 				float localMyCustomExpression16_g11716 = MyCustomExpression16_g11716( linValue16_g11716 );
 				float clampResult14_g11715 = clamp( ( ( ( _FadingFade * ( 1.0 + temp_output_4_0_g11715 ) ) - localMyCustomExpression16_g11716 ) / temp_output_4_0_g11715 ) , 0.0 , 1.0 );
@@ -5482,90 +5517,90 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult121 = lerp( float2( 0,0 ) , temp_output_424_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch142 = temp_output_424_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch142 = lerpResult121;
 				#else
 				float2 staticSwitch142 = temp_output_424_0;
 				#endif
 				
 				o.ase_texcoord5 = screenPos;
-				o.ase_texcoord6.xyz = ase_worldPos;
+				o.ase_texcoord6.xyz = ase_positionWS;
 				
-				o.ase_texcoord7 = v.vertex;
+				o.ase_texcoord7 = float4(v.positionOS,1);
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord6.w = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					float3 defaultVertexValue = v.vertex.xyz;
+					float3 defaultVertexValue = v.positionOS;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 				float3 vertexValue = float3( staticSwitch142 ,  0.0 );
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					v.vertex.xyz = vertexValue;
+					v.positionOS = vertexValue;
 				#else
-					v.vertex.xyz += vertexValue;
+					v.positionOS += vertexValue;
 				#endif
 				v.normal = v.normal;
 				v.tangent.xyz = v.tangent.xyz;
 
-				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.positionOS);
 
 				o.texCoord0 = v.uv0;
 				o.color = v.color;
-				o.clipPos = vertexInput.positionCS;
+				o.positionCS = vertexInput.positionCS;
 
-				float3 normalWS = TransformObjectToWorldNormal( v.normal );
+				float3 normalWS = TransformObjectToWorldNormal(v.normal);
 				o.normalWS = -GetViewForwardDir();
-				float4 tangentWS = float4( TransformObjectToWorldDir( v.tangent.xyz ), v.tangent.w );
-				o.tangentWS = normalize( tangentWS );
+				float4 tangentWS = float4( TransformObjectToWorldDir(v.tangent.xyz), v.tangent.w);
+				o.tangentWS = normalize(tangentWS);
 				half crossSign = (tangentWS.w > 0.0 ? 1.0 : -1.0) * GetOddNegativeScale();
-				o.bitangentWS = crossSign * cross( normalWS, tangentWS.xyz ) * tangentWS.w;
+				o.bitangentWS = crossSign * cross(normalWS, tangentWS.xyz) * tangentWS.w;
 				return o;
 			}
 
-			half4 frag ( VertexOutput IN  ) : SV_Target
+			half4 frag( VertexOutput IN  ) : SV_Target
 			{
-				UNITY_SETUP_INSTANCE_ID( IN );
-				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
+				UNITY_SETUP_INSTANCE_ID(IN);
+				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
 
 				float2 texCoord363 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				float4 screenPos = IN.ase_texcoord5;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = IN.ase_texcoord6.xyz;
+				float3 ase_positionWS = IN.ase_texcoord6.xyz;
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -5593,89 +5628,89 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float2 staticSwitch366 = uvAfterPixelArt450;
 				#endif
 				float2 fixedUV475 = staticSwitch366;
-				float2 temp_output_3_0_g11664 = fixedUV475;
+				float2 temp_output_3_0_g11665 = fixedUV475;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch117_g11665 = _WindMinIntensity;
+				float staticSwitch117_g11666 = _WindMinIntensity;
 				#else
-				float staticSwitch117_g11665 = WindMinIntensity;
+				float staticSwitch117_g11666 = WindMinIntensity;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch118_g11665 = _WindMaxIntensity;
+				float staticSwitch118_g11666 = _WindMaxIntensity;
 				#else
-				float staticSwitch118_g11665 = WindMaxIntensity;
+				float staticSwitch118_g11666 = WindMaxIntensity;
 				#endif
 				#endif
-				float4 transform62_g11665 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
+				float4 transform62_g11666 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDISPARALLAX_ON
-				float staticSwitch111_g11665 = _WindXPosition;
+				float staticSwitch111_g11666 = _WindXPosition;
 				#else
-				float staticSwitch111_g11665 = transform62_g11665.x;
+				float staticSwitch111_g11666 = transform62_g11666.x;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch113_g11665 = _WindNoiseScale;
+				float staticSwitch113_g11666 = _WindNoiseScale;
 				#else
-				float staticSwitch113_g11665 = WindNoiseScale;
+				float staticSwitch113_g11666 = WindNoiseScale;
 				#endif
 				#endif
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
+				float shaderTime237 = staticSwitch42_g11663;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch125_g11665 = ( shaderTime237 * _WindNoiseSpeed );
+				float staticSwitch125_g11666 = ( shaderTime237 * _WindNoiseSpeed );
 				#else
-				float staticSwitch125_g11665 = WindTime;
+				float staticSwitch125_g11666 = WindTime;
 				#endif
-				float temp_output_50_0_g11665 = ( ( staticSwitch111_g11665 * staticSwitch113_g11665 ) + staticSwitch125_g11665 );
-				float x101_g11665 = temp_output_50_0_g11665;
-				float localFastNoise101_g11665 = FastNoise101_g11665( x101_g11665 );
-				float2 temp_cast_0 = (temp_output_50_0_g11665).xx;
-				float simplePerlin2D121_g11665 = snoise( temp_cast_0*0.5 );
-				simplePerlin2D121_g11665 = simplePerlin2D121_g11665*0.5 + 0.5;
+				float temp_output_50_0_g11666 = ( ( staticSwitch111_g11666 * staticSwitch113_g11666 ) + staticSwitch125_g11666 );
+				float x101_g11666 = temp_output_50_0_g11666;
+				float localFastNoise101_g11666 = FastNoise101_g11666( x101_g11666 );
+				float2 temp_cast_0 = (temp_output_50_0_g11666).xx;
+				float simplePerlin2D121_g11666 = snoise( temp_cast_0*0.5 );
+				simplePerlin2D121_g11666 = simplePerlin2D121_g11666*0.5 + 0.5;
 				#ifdef _WINDHIGHQUALITYNOISE_ON
-				float staticSwitch123_g11665 = simplePerlin2D121_g11665;
+				float staticSwitch123_g11666 = simplePerlin2D121_g11666;
 				#else
-				float staticSwitch123_g11665 = ( localFastNoise101_g11665 + 0.5 );
+				float staticSwitch123_g11666 = ( localFastNoise101_g11666 + 0.5 );
 				#endif
-				float lerpResult86_g11665 = lerp( staticSwitch117_g11665 , staticSwitch118_g11665 , staticSwitch123_g11665);
-				float clampResult29_g11665 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11665 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
-				float2 temp_output_1_0_g11665 = temp_output_3_0_g11664;
-				float temp_output_39_0_g11665 = ( temp_output_1_0_g11665.y + _WindFlip );
-				float3 appendResult43_g11665 = (float3(0.5 , -_WindFlip , 0.0));
-				float2 appendResult27_g11665 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11665 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11665 )));
-				float3 rotatedValue19_g11665 = RotateAroundAxis( appendResult43_g11665, float3( ( appendResult27_g11665 + temp_output_1_0_g11665 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11665 * temp_output_39_0_g11665 ) );
-				float2 staticSwitch4_g11664 = (rotatedValue19_g11665).xy;
+				float lerpResult86_g11666 = lerp( staticSwitch117_g11666 , staticSwitch118_g11666 , staticSwitch123_g11666);
+				float clampResult29_g11666 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11666 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
+				float2 temp_output_1_0_g11666 = temp_output_3_0_g11665;
+				float temp_output_39_0_g11666 = ( temp_output_1_0_g11666.y + _WindFlip );
+				float3 appendResult43_g11666 = (float3(0.5 , -_WindFlip , 0.0));
+				float2 appendResult27_g11666 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11666 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11666 )));
+				float3 rotatedValue19_g11666 = RotateAroundAxis( appendResult43_g11666, float3( ( appendResult27_g11666 + temp_output_1_0_g11666 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11666 * temp_output_39_0_g11666 ) );
+				float2 staticSwitch4_g11665 = (rotatedValue19_g11666).xy;
 				#else
-				float2 staticSwitch4_g11664 = temp_output_3_0_g11664;
+				float2 staticSwitch4_g11665 = temp_output_3_0_g11665;
 				#endif
 				float2 texCoord435 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				#ifdef _PIXELPERFECTSPACE_ON
@@ -5684,81 +5719,82 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (IN.ase_texcoord7.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (IN.ase_texcoord7.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (IN.ase_texcoord7.xyz).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (IN.ase_texcoord7.xyz).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				#ifdef _ENABLEFULLDISTORTION_ON
-				float2 temp_output_195_0_g11666 = shaderPosition235;
-				float linValue16_g11667 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11666 * _FullDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11667 = MyCustomExpression16_g11667( linValue16_g11667 );
-				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11666 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float2 temp_output_195_0_g11667 = shaderPosition235;
+				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11667 * _FullDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11668 = MyCustomExpression16_g11668( linValue16_g11668 );
-				float2 appendResult189_g11666 = (float2(( localMyCustomExpression16_g11667 - 0.5 ) , ( localMyCustomExpression16_g11668 - 0.5 )));
-				float2 staticSwitch83 = ( staticSwitch4_g11664 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11666 * _FullDistortionDistortion ) );
+				float linValue16_g11669 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11667 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float localMyCustomExpression16_g11669 = MyCustomExpression16_g11669( linValue16_g11669 );
+				float2 appendResult189_g11667 = (float2(( localMyCustomExpression16_g11668 - 0.5 ) , ( localMyCustomExpression16_g11669 - 0.5 )));
+				float2 staticSwitch83 = ( staticSwitch4_g11665 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11667 * _FullDistortionDistortion ) );
 				#else
-				float2 staticSwitch83 = staticSwitch4_g11664;
+				float2 staticSwitch83 = staticSwitch4_g11665;
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-				float2 temp_output_182_0_g11669 = shaderPosition235;
-				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionDistortionScale ) ).r;
+				float2 temp_output_182_0_g11670 = shaderPosition235;
+				float linValue16_g11672 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionDistortionScale ) ).r;
+				float localMyCustomExpression16_g11672 = MyCustomExpression16_g11672( linValue16_g11672 );
+				float3 rotatedValue168_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11672 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
+				float3 rotatedValue136_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11670 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
+				float3 break130_g11670 = rotatedValue136_g11670;
+				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11671 = MyCustomExpression16_g11671( linValue16_g11671 );
-				float3 rotatedValue168_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11671 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
-				float3 rotatedValue136_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11669 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
-				float3 break130_g11669 = rotatedValue136_g11669;
-				float linValue16_g11670 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11670 = MyCustomExpression16_g11670( linValue16_g11670 );
-				float clampResult154_g11669 = clamp( ( ( break130_g11669.x + break130_g11669.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11670 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11669).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 )) ) ) );
+				float clampResult154_g11670 = clamp( ( ( break130_g11670.x + break130_g11670.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11671 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
+				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11670).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 )) ) ) );
 				#else
 				float2 staticSwitch82 = staticSwitch83;
 				#endif
 				#ifdef _ENABLEHOLOGRAM_ON
-				float temp_output_8_0_g11674 = ( ( ( shaderTime237 * _HologramDistortionSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y );
-				float2 temp_cast_4 = (temp_output_8_0_g11674).xx;
+				float temp_output_81_0_g11675 = unity_OrthoParams.y;
+				float temp_output_8_0_g11675 = ( ( ( shaderTime237 * ( _HologramDistortionSpeed * temp_output_81_0_g11675 * 0.2 ) ) + ase_positionWS.y ) / temp_output_81_0_g11675 );
+				float2 temp_cast_4 = (temp_output_8_0_g11675).xx;
 				float2 temp_cast_5 = (_HologramDistortionDensity).xx;
-				float linValue16_g11676 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
-				float localMyCustomExpression16_g11676 = MyCustomExpression16_g11676( linValue16_g11676 );
-				float clampResult75_g11674 = clamp( localMyCustomExpression16_g11676 , 0.075 , 0.6 );
-				float2 temp_cast_6 = (temp_output_8_0_g11674).xx;
-				float2 temp_cast_7 = (_HologramDistortionScale).xx;
-				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
 				float localMyCustomExpression16_g11677 = MyCustomExpression16_g11677( linValue16_g11677 );
-				float2 appendResult2_g11675 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+				float clampResult75_g11675 = clamp( localMyCustomExpression16_g11677 , 0.075 , 0.6 );
+				float2 temp_cast_6 = (temp_output_8_0_g11675).xx;
+				float2 temp_cast_7 = (_HologramDistortionScale).xx;
+				float linValue16_g11678 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float localMyCustomExpression16_g11678 = MyCustomExpression16_g11678( linValue16_g11678 );
+				float2 appendResult2_g11676 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float hologramFade182 = _HologramFade;
-				float2 appendResult44_g11674 = (float2(( ( ( clampResult75_g11674 * ( localMyCustomExpression16_g11677 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11675 ).x ) * hologramFade182 ) , 0.0));
-				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11674 );
+				float2 appendResult44_g11675 = (float2(( ( ( clampResult75_g11675 * ( localMyCustomExpression16_g11678 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11676 ).x ) * hologramFade182 ) , 0.0));
+				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11675 );
 				#else
 				float2 staticSwitch59 = staticSwitch82;
 				#endif
 				#ifdef _ENABLEGLITCH_ON
-				float2 temp_output_18_0_g11672 = shaderPosition235;
-				float2 glitchPosition154 = temp_output_18_0_g11672;
+				float2 temp_output_18_0_g11673 = shaderPosition235;
+				float2 glitchPosition154 = temp_output_18_0_g11673;
 				float linValue16_g11718 = tex2D( _UberNoiseTexture, ( ( glitchPosition154 + ( _GlitchDistortionSpeed * shaderTime237 ) ) * _GlitchDistortionScale ) ).r;
 				float localMyCustomExpression16_g11718 = MyCustomExpression16_g11718( linValue16_g11718 );
-				float linValue16_g11673 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11672 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
-				float localMyCustomExpression16_g11673 = MyCustomExpression16_g11673( linValue16_g11673 );
-				float glitchFade152 = ( max( localMyCustomExpression16_g11673 , _GlitchMaskMin ) * _GlitchFade );
+				float linValue16_g11674 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11673 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
+				float localMyCustomExpression16_g11674 = MyCustomExpression16_g11674( linValue16_g11674 );
+				float glitchFade152 = ( max( localMyCustomExpression16_g11674 , _GlitchMaskMin ) * _GlitchFade );
 				float2 staticSwitch62 = ( staticSwitch59 + ( ( localMyCustomExpression16_g11718 - 0.5 ) * _GlitchDistortion * glitchFade152 ) );
 				#else
 				float2 staticSwitch62 = staticSwitch59;
@@ -5849,30 +5885,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult130 = lerp( texCoord131 , temp_output_484_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch145 = temp_output_484_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch145 = lerpResult130;
 				#else
 				float2 staticSwitch145 = temp_output_484_0;
@@ -6016,7 +6052,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11758 = staticSwitch3_g11753;
 				#ifdef _ENABLECHECKERBOARD_ON
 				float4 temp_output_1_0_g11759 = temp_output_1_0_g11758;
-				float2 appendResult4_g11759 = (float2(ase_worldPos.x , ase_worldPos.y));
+				float2 appendResult4_g11759 = (float2(ase_positionWS.x , ase_positionWS.y));
 				float2 temp_output_44_0_g11759 = ( appendResult4_g11759 * _CheckerboardTiling * 0.5 );
 				float2 break12_g11759 = step( ( ceil( temp_output_44_0_g11759 ) - temp_output_44_0_g11759 ) , float2( 0.5,0.5 ) );
 				float4 appendResult42_g11759 = (float4(( (temp_output_1_0_g11759).rgb * min( ( _CheckerboardDarken + abs( ( -break12_g11759.x + break12_g11759.y ) ) ) , 1.0 ) ) , temp_output_1_0_g11759.a));
@@ -6109,7 +6145,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 In115_g11766 = temp_output_2_0_g11766;
 				float3 From115_g11766 = (_ColorReplaceFromColor).rgb;
 				float4 break2_g11767 = temp_output_1_0_g11766;
-				float3 To115_g11766 = ( pow( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , max( _ColorReplaceContrast , 0.001 ) ) * (_ColorReplaceToColor).rgb );
+				float3 To115_g11766 = ( pow( max( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , 0.0001 ) , max( _ColorReplaceContrast , 0.0001 ) ) * (_ColorReplaceToColor).rgb );
 				float Fuzziness115_g11766 = _ColorReplaceSmoothness;
 				float Range115_g11766 = _ColorReplaceRange;
 				float3 localMyCustomExpression115_g11766 = MyCustomExpression115_g11766( In115_g11766 , From115_g11766 , To115_g11766 , Fuzziness115_g11766 , Range115_g11766 );
@@ -6131,8 +6167,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_57_0_g11762 = staticSwitch4_g11779;
 				#ifdef _ENABLECONTRAST_ON
 				float4 temp_output_1_0_g11802 = temp_output_57_0_g11762;
-				float3 temp_cast_30 = (max( _Contrast , 0.001 )).xxx;
-				float4 appendResult4_g11802 = (float4(pow( (temp_output_1_0_g11802).rgb , temp_cast_30 ) , temp_output_1_0_g11802.a));
+				float3 temp_cast_30 = (max( _Contrast , 0.0001 )).xxx;
+				float4 appendResult4_g11802 = (float4(pow( max( (temp_output_1_0_g11802).rgb , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_30 ) , temp_output_1_0_g11802.a));
 				float4 staticSwitch32_g11762 = appendResult4_g11802;
 				#else
 				float4 staticSwitch32_g11762 = temp_output_57_0_g11762;
@@ -6159,7 +6195,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float temp_output_3_0_g11796 = ( ( break2_g11797.x + break2_g11797.x + break2_g11797.y + break2_g11797.y + break2_g11797.y + break2_g11797.z ) / 6.0 );
 				float clampResult25_g11796 = clamp( ( ( ( ( temp_output_3_0_g11796 + _SplitToningShift ) - 0.5 ) * _SplitToningBalance ) + 0.5 ) , 0.0 , 1.0 );
 				float3 lerpResult6_g11796 = lerp( (_SplitToningShadowsColor).rgb , (_SplitToningHighlightsColor).rgb , clampResult25_g11796);
-				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( temp_output_3_0_g11796 , max( _SplitToningContrast , 0.001 ) ) ) , _SplitToningFade);
+				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( max( temp_output_3_0_g11796 , 0.0001 ) , max( _SplitToningContrast , 0.0001 ) ) ) , _SplitToningFade);
 				float4 appendResult18_g11796 = (float4(lerpResult11_g11796 , temp_output_1_0_g11796.a));
 				float4 staticSwitch30_g11762 = appendResult18_g11796;
 				#else
@@ -6169,7 +6205,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11774 = staticSwitch30_g11762;
 				float3 temp_output_4_0_g11774 = (temp_output_1_0_g11774).rgb;
 				float4 break12_g11774 = temp_output_1_0_g11774;
-				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , max( _BlackTintPower , 0.001 ) ));
+				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( max( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , 0.0001 ) , max( _BlackTintPower , 0.0001 ) ));
 				float3 lerpResult13_g11774 = lerp( temp_output_4_0_g11774 , lerpResult7_g11774 , _BlackTintFade);
 				float4 appendResult11_g11774 = (float4(lerpResult13_g11774 , break12_g11774.a));
 				float4 staticSwitch20_g11762 = appendResult11_g11774;
@@ -6183,7 +6219,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float linValue16_g11789 = tex2D( _UberNoiseTexture, ( temp_output_65_0_g11788 * _InkSpreadNoiseScale ) ).r;
 				float localMyCustomExpression16_g11789 = MyCustomExpression16_g11789( linValue16_g11789 );
 				float clampResult53_g11788 = clamp( ( ( ( _InkSpreadDistance - distance( _InkSpreadPosition , temp_output_65_0_g11788 ) ) + ( localMyCustomExpression16_g11789 * _InkSpreadNoiseFactor ) ) / max( _InkSpreadWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , max( _InkSpreadContrast , 0.001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
+				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( max( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , 0.0001 ) , max( _InkSpreadContrast , 0.0001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
 				float4 appendResult9_g11788 = (float4(lerpResult7_g11788 , (temp_output_1_0_g11788).a));
 				float4 staticSwitch17_g11762 = appendResult9_g11788;
 				#else
@@ -6210,7 +6246,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch33_g11784 = _AddHueFade;
 				#endif
-				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , max( _AddHueContrast , 0.001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
+				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( max( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , 0.0001 ) , max( _AddHueContrast , 0.0001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
 				float4 staticSwitch23_g11762 = appendResult6_g11784;
 				#else
 				float4 staticSwitch23_g11762 = staticSwitch19_g11762;
@@ -6226,7 +6262,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch27_g11781 = temp_output_13_0_g11781;
 				#endif
-				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , max( _SineGlowContrast , 0.001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
+				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( max( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , 0.0001 ) , max( _SineGlowContrast , 0.0001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
 				float4 staticSwitch28_g11762 = appendResult21_g11781;
 				#else
 				float4 staticSwitch28_g11762 = staticSwitch23_g11762;
@@ -6321,7 +6357,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch199_g11776 = temp_output_82_0_g11776;
 				#endif
-				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( _PixelOutlineFade * 3.0 ) , 1.0 ) );
+				float temp_output_213_0_g11776 = ( _PixelOutlineFade * step( temp_output_15_0_g11776.a , _PixelOutlineAlphaLimit ) );
+				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( temp_output_213_0_g11776 * 3.0 ) , 1.0 ) );
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch203_g11776 = 1.0;
 				#else
@@ -6331,7 +6368,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult170_g11776 = lerp( lerpResult178_g11776 , staticSwitch199_g11776 , staticSwitch203_g11776);
 				float2 appendResult206_g11776 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float2 temp_output_209_0_g11776 = ( float2( 1,1 ) / appendResult206_g11776 );
-				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , _PixelOutlineFade);
+				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , temp_output_213_0_g11776);
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch200_g11776 = ( temp_output_182_0_g11776 * lerpResult168_g11776 );
 				#else
@@ -6346,7 +6383,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult15_g11763 = lerp( (_PingPongGlowFrom).rgb , (_PingPongGlowTo).rgb , ( ( sin( ( temp_output_39_0_g11762 * _PingPongGlowFrequency ) ) + 1.0 ) / 2.0 ));
 				float4 temp_output_5_0_g11763 = staticSwitch48_g11762;
 				float4 break2_g11764 = temp_output_5_0_g11763;
-				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , max( _PingPongGlowContrast , 0.001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
+				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( max( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , 0.0001 ) , max( _PingPongGlowContrast , 0.0001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
 				float4 staticSwitch46_g11762 = appendResult12_g11763;
 				#else
 				float4 staticSwitch46_g11762 = staticSwitch48_g11762;
@@ -6355,7 +6392,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef _ENABLEHOLOGRAM_ON
 				float4 temp_output_1_0_g11804 = temp_output_361_0;
 				float4 break2_g11805 = temp_output_1_0_g11804;
-				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , max( _HologramContrast , 0.001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * _HologramLineSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
+				float temp_output_44_0_g11804 = unity_OrthoParams.y;
+				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( max( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , 0.0001 ) , max( _HologramContrast , 0.0001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * ( _HologramLineSpeed * temp_output_44_0_g11804 * 0.2 ) ) + ase_positionWS.y ) / temp_output_44_0_g11804 ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
 				float4 lerpResult37_g11804 = lerp( temp_output_1_0_g11804 , appendResult22_g11804 , hologramFade182);
 				float4 staticSwitch56 = lerpResult37_g11804;
 				#else
@@ -6396,7 +6434,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float clampResult65_g11841 = clamp( ( ( _CamouflageDensityB - localMyCustomExpression16_g11845 ) / max( _CamouflageSmoothnessB , 0.005 ) ) , 0.0 , 1.0 );
 				float4 lerpResult68_g11841 = lerp( lerpResult55_g11841 , ( _CamouflageColorB * clampResult65_g11841 ) , clampResult65_g11841);
 				float4 break2_g11844 = temp_output_1_0_g11841;
-				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , max( _CamouflageContrast , 0.001 ) ) ) , _CamouflageFade);
+				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( max( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , 0.0001 ) , max( _CamouflageContrast , 0.0001 ) ) ) , _CamouflageFade);
 				float4 appendResult7_g11841 = (float4(lerpResult4_g11841 , temp_output_1_0_g11841.a));
 				float4 staticSwitch26_g11811 = appendResult7_g11841;
 				#else
@@ -6419,7 +6457,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch60_g11834 = _MetalFade;
 				#endif
-				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( temp_output_5_0_g11834 , max( _MetalHighlightContrast , 0.001 ) ) ) + ( pow( temp_output_5_0_g11834 , max( _MetalContrast , 0.001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
+				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalHighlightContrast , 0.0001 ) ) ) + ( pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalContrast , 0.0001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
 				float4 appendResult8_g11834 = (float4((lerpResult45_g11834).rgb , (temp_output_1_0_g11834).a));
 				float4 staticSwitch28_g11811 = appendResult8_g11834;
 				#else
@@ -6437,7 +6475,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11830 = MyCustomExpression16_g11830( linValue16_g11830 );
 				float linValue16_g11831 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g11830 - 0.25 ) * _FrozenHighlightDistortion ) + ( ( temp_output_73_0_g11826 * _FrozenHighlightSpeed ) + temp_output_72_0_g11826 ) ) * _FrozenHighlightScale ) ).r;
 				float localMyCustomExpression16_g11831 = MyCustomExpression16_g11831( linValue16_g11831 );
-				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( temp_output_7_0_g11826 , max( _FrozenContrast , 0.001 ) ) * (_FrozenTint).rgb ) + ( pow( temp_output_7_0_g11826 , max( _FrozenSnowContrast , 0.001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( temp_output_7_0_g11826 , max( _FrozenHighlightContrast , 0.001 ) ) )).rgb ) , _FrozenFade);
+				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenContrast , 0.0001 ) ) * (_FrozenTint).rgb ) + ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenSnowContrast , 0.0001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenHighlightContrast , 0.0001 ) ) )).rgb ) , _FrozenFade);
 				float4 appendResult26_g11826 = (float4(lerpResult57_g11826 , temp_output_1_0_g11826.a));
 				float4 staticSwitch29_g11811 = appendResult26_g11826;
 				#else
@@ -6457,7 +6495,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11822 = MyCustomExpression16_g11822( linValue16_g11822 );
 				float temp_output_15_0_g11820 = ( ( ( _BurnRadius - distance( temp_output_72_0_g11820 , _BurnPosition ) ) + ( localMyCustomExpression16_g11822 * _BurnEdgeNoiseFactor ) ) / max( _BurnWidth , 0.01 ) );
 				float clampResult18_g11820 = clamp( temp_output_15_0_g11820 , 0.0 , 1.0 );
-				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , max( _BurnInsideContrast , 0.001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
+				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( max( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , 0.0001 ) , max( _BurnInsideContrast , 0.0001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
 				float3 lerpResult40_g11820 = lerp( temp_output_28_0_g11820 , ( lerpResult29_g11820 + ( ( step( temp_output_15_0_g11820 , 1.0 ) * step( 0.0 , temp_output_15_0_g11820 ) ) * (_BurnEdgeColor).rgb ) ) , _BurnFade);
 				float4 appendResult43_g11820 = (float4(lerpResult40_g11820 , temp_output_1_0_g11820.a));
 				float4 staticSwitch32_g11811 = appendResult43_g11820;
@@ -6485,7 +6523,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 break2_g11814 = temp_output_1_0_g11812;
 				float3 temp_cast_69 = (( ( break2_g11814.x + break2_g11814.x + break2_g11814.y + break2_g11814.y + break2_g11814.y + break2_g11814.z ) / 6.0 )).xxx;
 				float3 lerpResult92_g11812 = lerp( temp_cast_69 , temp_output_57_0_g11812 , _ShineSaturation);
-				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.001 )).xxx;
+				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.0001 )).xxx;
 				float3 rotatedValue69_g11812 = RotateAroundAxis( float3( 0,0,0 ), float3( ( _ShineFrequency * temp_output_41_0_g11811 ) ,  0.0 ), float3( 0,0,1 ), ( ( _ShineRotation / 180.0 ) * PI ) );
 				float temp_output_103_0_g11812 = ( _ShineFrequency * _ShineWidth );
 				float clampResult80_g11812 = clamp( ( ( ( sin( ( rotatedValue69_g11812.x - ( temp_output_40_0_g11811 * _ShineSpeed * _ShineFrequency ) ) ) - ( 1.0 - temp_output_103_0_g11812 ) ) / temp_output_103_0_g11812 ) * _ShineSmooth ) , 0.0 , 1.0 );
@@ -6496,7 +6534,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch98_g11812 = _ShineFade;
 				#endif
-				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( lerpResult92_g11812 , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
+				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( max( lerpResult92_g11812 , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
 				float4 staticSwitch36_g11811 = appendResult8_g11812;
 				#else
 				float4 staticSwitch36_g11811 = staticSwitch34_g11811;
@@ -6510,7 +6548,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_28_0_g11847 = (temp_output_1_0_g11847).rgb;
 				float4 break2_g11848 = float4( temp_output_28_0_g11847 , 0.0 );
 				float3 lerpResult32_g11847 = lerp( temp_output_28_0_g11847 , ( temp_output_24_0_g11847 * ( ( break2_g11848.x + break2_g11848.x + break2_g11848.y + break2_g11848.y + break2_g11848.y + break2_g11848.z ) / 6.0 ) ) , ( _PoisonFade * _PoisonRecolorFactor ));
-				float4 appendResult27_g11847 = (float4(( ( max( pow( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , max( _PoisonDensity , 0.001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
+				float4 appendResult27_g11847 = (float4(( ( max( pow( max( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , 0.0001 ) , max( _PoisonDensity , 0.0001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
 				float4 staticSwitch39_g11811 = appendResult27_g11847;
 				#else
 				float4 staticSwitch39_g11811 = staticSwitch36_g11811;
@@ -6535,7 +6573,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 staticSwitch50_g11851 = lerpResult42_g11851;
 				#endif
 				float4 break2_g11853 = temp_output_10_0_g11851;
-				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , max( _EnchantedContrast , 0.001 ) ) * _EnchantedBrightness );
+				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( max( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , 0.0001 ) , max( _EnchantedContrast , 0.0001 ) ) * _EnchantedBrightness );
 				float temp_output_45_0_g11851 = ( max( ( temp_output_36_0_g11851 - _EnchantedReduce ) , 0.0 ) * _EnchantedFade );
 				float3 lerpResult44_g11851 = lerp( temp_output_12_0_g11851 , temp_output_40_0_g11851 , temp_output_45_0_g11851);
 				#ifdef _ENCHANTEDLERPTOGGLE_ON
@@ -6562,7 +6600,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch26_g11856 = ( lerpResult20_g11856 * _ShiftingBrightness );
 				#endif
-				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( temp_output_4_0_g11856 , max( _ShiftingContrast , 0.001 ) ) ) , _ShiftingFade);
+				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( max( temp_output_4_0_g11856 , 0.0001 ) , max( _ShiftingContrast , 0.0001 ) ) ) , _ShiftingFade);
 				float4 appendResult6_g11856 = (float4(lerpResult31_g11856 , break5_g11856.a));
 				float4 staticSwitch33_g11856 = appendResult6_g11856;
 				#else
@@ -6597,7 +6635,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11863 = ( appendResult13_g11863 * appendResult18_g11863 );
 				float4 break2_g11865 = temp_output_5_0_g11863;
 				#ifdef _TEXTURELAYER1CONTRASTTOGGLE_ON
-				float3 staticSwitch80_g11863 = ( pow( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , max( _TextureLayer1Contrast , 0.001 ) ) * temp_output_16_0_g11863 );
+				float3 staticSwitch80_g11863 = ( pow( max( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer1Contrast , 0.0001 ) ) * temp_output_16_0_g11863 );
 				#else
 				float3 staticSwitch80_g11863 = temp_output_16_0_g11863;
 				#endif
@@ -6636,7 +6674,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11859 = ( appendResult13_g11859 * appendResult18_g11859 );
 				float4 break2_g11861 = temp_output_5_0_g11859;
 				#ifdef _TEXTURELAYER2CONTRASTTOGGLE_ON
-				float3 staticSwitch84_g11859 = ( pow( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , max( _TextureLayer2Contrast , 0.001 ) ) * temp_output_16_0_g11859 );
+				float3 staticSwitch84_g11859 = ( pow( max( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer2Contrast , 0.0001 ) ) * temp_output_16_0_g11859 );
 				#else
 				float3 staticSwitch84_g11859 = temp_output_16_0_g11859;
 				#endif
@@ -6657,7 +6695,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 				float4 break4_g11868 = staticSwitch77;
-				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 ));
+				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 ));
 				float4 appendResult5_g11868 = (float4(break4_g11868.r , break4_g11868.g , break4_g11868.b , ( break4_g11868.a * directionalDistortionAlpha167 )));
 				float4 staticSwitch75 = appendResult5_g11868;
 				#else
@@ -6766,7 +6804,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11885 = staticSwitch13_g11869;
 				float4 break2_g11887 = temp_output_1_0_g11885;
 				#ifdef _ADDCOLORCONTRASTTOGGLE_ON
-				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , max( _AddColorContrast , 0.001 ) ) );
+				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( max( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , 0.0001 ) , max( _AddColorContrast , 0.0001 ) ) );
 				#else
 				float3 staticSwitch17_g11885 = staticSwitch16_g11885;
 				#endif
@@ -6795,7 +6833,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				float4 break2_g11891 = temp_output_1_0_g11889;
 				#ifdef _STRONGTINTCONTRASTTOGGLE_ON
-				float3 staticSwitch22_g11889 = ( pow( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , max( _StrongTintContrast , 0.001 ) ) * staticSwitch21_g11889 );
+				float3 staticSwitch22_g11889 = ( pow( max( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , 0.0001 ) , max( _StrongTintContrast , 0.0001 ) ) * staticSwitch21_g11889 );
 				#else
 				float3 staticSwitch22_g11889 = staticSwitch21_g11889;
 				#endif
@@ -6834,45 +6872,45 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float customVertexAlpha193 = staticSwitch9_g11753;
 				float4 appendResult5_g11895 = (float4(break4_g11895.r , break4_g11895.g , break4_g11895.b , ( break4_g11895.a * customVertexAlpha193 )));
 				float4 temp_output_344_0 = appendResult5_g11895;
-				float4 temp_output_1_0_g11896 = temp_output_344_0;
-				float4 appendResult8_g11896 = (float4(( (temp_output_1_0_g11896).rgb * (IN.color).rgb ) , temp_output_1_0_g11896.a));
+				float4 temp_output_1_0_g11898 = temp_output_344_0;
+				float4 appendResult8_g11898 = (float4(( (temp_output_1_0_g11898).rgb * (IN.color).rgb ) , temp_output_1_0_g11898.a));
 				#ifdef _VERTEXTINTFIRST_ON
 				float4 staticSwitch342 = temp_output_344_0;
 				#else
-				float4 staticSwitch342 = appendResult8_g11896;
+				float4 staticSwitch342 = appendResult8_g11898;
 				#endif
 				float4 lerpResult125 = lerp( ( originalColor191 * IN.color ) , staticSwitch342 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float4 staticSwitch143 = staticSwitch342;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float4 staticSwitch143 = lerpResult125;
 				#else
 				float4 staticSwitch143 = staticSwitch342;
 				#endif
-				float4 temp_output_7_0_g11903 = staticSwitch143;
+				float4 temp_output_7_0_g11905 = staticSwitch143;
 				#ifdef _BAKEDMATERIAL_ON
-				float4 appendResult2_g11903 = (float4(( (temp_output_7_0_g11903).rgb / max( temp_output_7_0_g11903.a , 1E-05 ) ) , temp_output_7_0_g11903.a));
-				float4 staticSwitch6_g11903 = appendResult2_g11903;
+				float4 appendResult2_g11905 = (float4(( (temp_output_7_0_g11905).rgb / max( temp_output_7_0_g11905.a , 1E-05 ) ) , temp_output_7_0_g11905.a));
+				float4 staticSwitch6_g11905 = appendResult2_g11905;
 				#else
-				float4 staticSwitch6_g11903 = temp_output_7_0_g11903;
+				float4 staticSwitch6_g11905 = temp_output_7_0_g11905;
 				#endif
 				
 				float2 temp_output_8_0_g11904 = finalUV146;
 				float3 unpack14_g11904 = UnpackNormalScale( tex2D( _NormalMap, temp_output_8_0_g11904 ), _NormalIntensity );
 				unpack14_g11904.z = lerp( 1, unpack14_g11904.z, saturate(_NormalIntensity) );
 				
-				float4 Color = staticSwitch6_g11903;
+				float4 Color = staticSwitch6_g11905;
 				float3 Normal = unpack14_g11904;
 
 				Color *= IN.color;
 
-				return NormalsRenderingShared( Color, Normal, IN.tangentWS.xyz, IN.bitangentWS, IN.normalWS);
+				return NormalsRenderingShared(Color, Normal, IN.tangentWS.xyz, IN.bitangentWS, IN.normalWS);
 			}
 
 			ENDHLSL
@@ -6882,8 +6920,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 		Pass
 		{
 			
-			Name "Sprite Forward"
-			Tags { "LightMode"="UniversalForward" }
+            Name "Sprite Forward"
+            Tags { "LightMode"="UniversalForward" }
 
 			Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
 			ZTest LEqual
@@ -6894,23 +6932,42 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
 			HLSLPROGRAM
 
-			#define ASE_SRP_VERSION 140007
+			#define ASE_VERSION 19801
+			#define ASE_SRP_VERSION 170003
 
 
 			#pragma vertex vert
 			#pragma fragment frag
 
+			#pragma multi_compile _ SKINNED_SPRITE
 
-			#define _SURFACE_TYPE_TRANSPARENT 1
+            #define _SURFACE_TYPE_TRANSPARENT 1
+            #define ATTRIBUTES_NEED_NORMAL
+            #define ATTRIBUTES_NEED_TANGENT
+            #define ATTRIBUTES_NEED_TEXCOORD0
+            #define ATTRIBUTES_NEED_COLOR
+            #define FEATURES_GRAPH_VERTEX_NORMAL_OUTPUT
+            #define FEATURES_GRAPH_VERTEX_TANGENT_OUTPUT
+            #define VARYINGS_NEED_POSITION_WS
+            #define VARYINGS_NEED_TEXCOORD0
+            #define VARYINGS_NEED_COLOR
+            #define FEATURES_GRAPH_VERTEX
+
 			#define SHADERPASS SHADERPASS_SPRITEFORWARD
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/Core2D.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRendering.hlsl"
+			#include_with_pragmas "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRenderingKeywords.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/DebugMipmapStreamingMacros.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
+
 			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
 
@@ -7093,7 +7150,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			CBUFFER_START( UnityPerMaterial )
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorA;
+			float4 _ShiftingColorB;
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float4 _PoisonColor;
@@ -7124,7 +7181,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float4 _RecolorRGBRedTint;
 			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorB;
+			float4 _ShiftingColorA;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float4 _TextureLayer1Color;
@@ -7155,13 +7212,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float4 _CamouflageColorB;
+			float4 _CamouflageColorA;
+			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float4 _BurnInsideNoiseColor;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float4 _CamouflageColorA;
-			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float4 _UVDistortMask_ST;
@@ -7201,42 +7256,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEFROZEN_ON
 			float4 _FrozenSnowColor;
 			#endif
+			#ifdef _SHADERFADING_MASK
+			float4 _FadingMask_ST;
+			#endif
+			#ifdef _ENABLESTRONGTINT_ON
+			float4 _StrongTintMask_ST;
+			#endif
+			float4 _MainTex_TexelSize;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float4 _DirectionalGlowFadeEdgeColor;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float4 _SourceGlowDissolveEdgeColor;
+			#endif
+			#ifdef _ENABLEALPHATINT_ON
+			float4 _AlphaTintColor;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float4 _ShadowColor;
+			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float4 _StrongTintTint;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float4 _AddColorMask_ST;
-			float4 _AddColorColor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float4 _ShadowColor;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float4 _SourceGlowDissolveEdgeColor;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float4 _DirectionalGlowFadeEdgeColor;
 			#endif
 			#ifdef _SPRITESHEETFIX_ON
 			float4 _SpriteSheetRect;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float4 _AlphaTintColor;
+			#ifdef _ENABLEADDCOLOR_ON
+			float4 _AddColorColor;
 			#endif
-			#ifdef _ENABLESTRONGTINT_ON
-			float4 _StrongTintMask_ST;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Scale;
 			#endif
-			#ifdef _SHADERFADING_MASK
-			float4 _FadingMask_ST;
-			#endif
-			float4 _MainTex_TexelSize;
-			float2 _FadingNoiseScale;
 			#ifdef _SHADERFADING_SPREAD
 			float2 _FadingPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionScale;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnEdgeNoiseScale;
 			float2 _BurnPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionSpeed;
 			#endif
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
 			float2 _DirectionalAlphaFadeNoiseScale;
@@ -7244,11 +7309,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnSwirlNoiseScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenSnowScale;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1ScrollSpeed;
 			#endif
+			float2 _FadingNoiseScale;
 			#ifdef _ENABLEFLAME_ON
-			float2 _FlameNoiseScale;
 			float2 _FlameSpeed;
 			#endif
 			#ifdef _ENABLEGLITCH_ON
@@ -7258,25 +7323,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLECUSTOMFADE_ON
 			float2 _CustomFadeNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Offset;
-			float2 _TextureLayer1ScrollSpeed;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionSpeed;
-			float2 _CamouflageDistortionScale;
-			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnInsideNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Scale;
+			#ifdef _ENABLEFLAME_ON
+			float2 _FlameNoiseScale;
 			#endif
-			#ifdef _ENABLESHADOW_ON
-			float2 _ShadowOffset;
+			#ifdef _ENABLERAINBOW_ON
+			float2 _RainbowCenter;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionIntensity;
+			#ifdef _ENABLEPIXELOUTLINE_ON
+			float2 _PixelOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveFrequency;
@@ -7289,30 +7346,25 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _InkSpreadNoiseScale;
 			float2 _InkSpreadPosition;
 			#endif
+			#ifdef _ENABLEPOISON_ON
+			float2 _PoisonNoiseSpeed;
+			float2 _PoisonNoiseScale;
+			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float2 _InnerOutlineNoiseScale;
 			float2 _InnerOutlineDistortionIntensity;
 			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseSpeed;
-			#endif
 			#ifdef _ENABLEHALFTONE_ON
 			float2 _HalftonePosition;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float2 _DirectionalGlowFadeNoiseScale;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseScale;
-			#endif
-			#ifdef _ENABLEOUTEROUTLINE_ON
-			float2 _OuterOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINESCALE_ON
 			float2 _SineScaleFactor;
 			#endif
+			#ifdef _ENABLEOUTEROUTLINE_ON
+			float2 _OuterOutlineTextureSpeed;
+			#endif
 			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowCenter;
+			float2 _RainbowNoiseScale;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float2 _OuterOutlineNoiseSpeed;
@@ -7323,27 +7375,51 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _EnchantedSpeed;
 			float2 _EnchantedScale;
 			#endif
-			#ifdef _ENABLEPIXELOUTLINE_ON
-			float2 _PixelOutlineTextureSpeed;
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionIntensity;
 			#endif
-			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowNoiseScale;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float2 _DirectionalGlowFadeNoiseScale;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleA;
 			#endif
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Offset;
+			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveOffset;
 			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingOffset;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortion;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float2 _FullAlphaDissolveNoiseScale;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeCenter;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseSpeed;
+			float2 _MetalNoiseScale;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortNoiseScale;
+			float2 _UVDistortSpeed;
+			#endif
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Scale;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenSnowScale;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolveNoiseScale;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortTo;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolvePosition;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortFrom;
 			#endif
 			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
@@ -7357,131 +7433,104 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _GlitchDistortionSpeed;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortion;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeCenter;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
 			float2 _FrozenHighlightDistortionScale;
+			float2 _FrozenHighlightDistortionSpeed;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float2 _ShadowOffset;
 			#endif
 			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
 			float2 _SourceAlphaDissolvePosition;
 			float2 _SourceAlphaDissolveNoiseScale;
 			#endif
-			#ifdef _ENABLESCREENTILING_ON
-			float2 _ScreenTilingOffset;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float2 _FullAlphaDissolveNoiseScale;
 			#endif
 			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 			float2 _DirectionalDistortionNoiseScale;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float2 _SourceGlowDissolvePosition;
-			float2 _SourceGlowDissolveNoiseScale;
-			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortion;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLESCREENTILING_ON
 			float2 _ScreenTilingScale;
 			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortionScale;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Offset;
+			float2 _TextureLayer2ScrollSpeed;
+			#endif
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingOffset;
 			#endif
 			#ifdef _ENABLEFULLDISTORTION_ON
-			float2 _FullDistortionDistortion;
 			float2 _FullDistortionNoiseScale;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortionSpeed;
-			#endif
-			#ifdef _ENABLEMETAL_ON
-			float2 _MetalNoiseScale;
-			#endif
-			#ifdef _ENABLEUVDISTORT_ON
-			float2 _UVDistortSpeed;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLEUVSCALE_ON
 			float2 _UVScaleScale;
-			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingScale;
+			float2 _UVScalePivot;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleB;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightScale;
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingScale;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseDistortion;
 			#endif
 			#ifdef _ENABLEUVSCROLL_ON
 			float2 _UVScrollSpeed;
 			#endif
-			#ifdef _ENABLEUVROTATE_ON
-			float2 _UVRotatePivot;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2ScrollSpeed;
-			#endif
 			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightScale;
 			float2 _FrozenHighlightSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Offset;
 			#endif
 			#ifdef _ENABLESINEROTATE_ON
 			float2 _SineRotatePivot;
 			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightDistortion;
+			#endif
+			#ifdef _ENABLEFULLDISTORTION_ON
+			float2 _FullDistortionDistortion;
+			#endif
 			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Scale;
-			#endif
-			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionScale;
-			float2 _MetalNoiseDistortion;
-			float2 _MetalNoiseSpeed;
 			#endif
-			#ifdef _ENABLEUVSCALE_ON
-			float2 _UVScalePivot;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortionScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightDensity;
+			#ifdef _ENABLEUVROTATE_ON
+			float2 _UVRotatePivot;
+			#endif
+			#ifdef _ENABLESCREENTILING_ON
+			float2 _ScreenTilingOffset;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowSpeed;
 			float _RainbowSaturation;
+			float _RainbowBrightness;
+			float _RainbowContrast;
+			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenFade;
+			#ifdef _ENABLEBURN_ON
+			float _BurnWidth;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowNoiseFactor;
-			float _RainbowContrast;
-			float _RainbowBrightness;
-			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEADDCOLOR_ON
-			float _AddColorFade;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintMinAlpha;
 			#endif
 			#ifdef _ENABLEBURN_ON
-			float _BurnInsideNoiseFactor;
+			float _BurnFade;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightContrast;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintFade;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float _BurnEdgeNoiseFactor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float _ShadowFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnSwirlFactor;
-			float _BurnFade;
 			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintContrast;
@@ -7489,32 +7538,34 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float _BurnRadius;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintMinAlpha;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnInsideContrast;
-			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnWidth;
-			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintFade;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float _PoisonRecolorFactor;
+			#ifdef _ENABLEBURN_ON
+			float _BurnSwirlFactor;
+			float _BurnInsideNoiseFactor;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowFade;
 			#endif
+			#ifdef _ENABLESHADOW_ON
+			float _ShadowFade;
+			#endif
+			#ifdef _ENABLEBURN_ON
+			float _BurnInsideContrast;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenHighlightContrast;
+			float _FrozenHighlightDensity;
+			float _FrozenFade;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveWidth;
+			#endif
+			#ifdef _ENABLESHINE_ON
+			float _ShineSaturation;
+			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingBrightness;
 			float _ShiftingSaturation;
 			float _ShiftingContrast;
 			float _ShiftingFade;
@@ -7529,7 +7580,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			int _TextureLayer1StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeRotation;
+			float _DirectionalAlphaFadeFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float _TextureLayer1Contrast;
@@ -7539,52 +7590,60 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _TextureLayer2EdgeClip;
 			#endif
 			int _TextureLayer2Columns;
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingDensity;
-			#endif
 			int _TextureLayer2Rows;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float _TextureLayer2Speed;
+			#endif
 			int _TextureLayer2StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeInvert;
+			float _DirectionalAlphaFadeRotation;
 			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Contrast;
-			float _TextureLayer2Fade;
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveFade;
+			float _SourceGlowDissolveNoiseFactor;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float _FullAlphaDissolveFade;
-			float _FullAlphaDissolveWidth;
+			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
+			float _SourceAlphaDissolveWidth;
+			float _SourceAlphaDissolveNoiseFactor;
+			float _SourceAlphaDissolveFade;
+			float _SourceAlphaDissolveInvert;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingBrightness;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
 			float _SourceGlowDissolveInvert;
 			#endif
-			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
-			float _FullGlowDissolveFade;
-			float _FullGlowDissolveWidth;
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeInvert;
 			#endif
-			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
-			float _SourceAlphaDissolveInvert;
-			float _SourceAlphaDissolveFade;
-			float _SourceAlphaDissolveNoiseFactor;
-			float _SourceAlphaDissolveWidth;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveNoiseFactor;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float _FullAlphaDissolveWidth;
+			float _FullAlphaDissolveFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Speed;
+			float _TextureLayer2Fade;
+			float _TextureLayer2Contrast;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveFade;
+			#endif
+			#ifdef _ENABLEADDCOLOR_ON
+			float _AddColorFade;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingDensity;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowDensity;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float _AddColorContrast;
 			#endif
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingSpeed;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedFade;
-			#endif
 			#ifdef _ENABLESHINE_ON
-			float _ShineSaturation;
 			float _ShineContrast;
 			float _ShineRotation;
 			float _ShineFrequency;
@@ -7598,53 +7657,48 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float _PoisonShiftSpeed;
-			#endif
-			#ifdef _ENABLEHALFTONE_ON
-			float _HalftoneFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
 			float _PoisonDensity;
 			float _PoisonFade;
 			float _PoisonNoiseBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeFade;
+			float _PoisonRecolorFactor;
 			#endif
 			#ifdef _ENABLEHALFTONE_ON
+			float _HalftoneFade;
 			float _HalftoneTiling;
 			float _HalftoneInvert;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedFade;
+			#endif
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeNoiseFactor;
+			float _DirectionalAlphaFadeWidth;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedReduce;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeInvert;
+			float _DirectionalGlowFadeRotation;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingSpeed;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeFade;
+			float _DirectionalGlowFadeNoiseFactor;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedContrast;
 			#endif
 			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
 			float _DirectionalGlowFadeWidth;
 			#endif
 			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedRainbowDensity;
-			float _EnchantedRainbowSpeed;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
 			float _EnchantedRainbowSaturation;
-			float _EnchantedContrast;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeFade;
-			float _DirectionalGlowFadeRotation;
-			float _DirectionalGlowFadeInvert;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedRainbowSpeed;
+			float _EnchantedRainbowDensity;
 			float _EnchantedBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeWidth;
-			float _DirectionalAlphaFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedReduce;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESQUISH_ON
 			float _SquishStretch;
@@ -7653,7 +7707,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelOutlineWidth;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowContrast;
+			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLESQUEEZE_ON
 			float _SqueezeFade;
@@ -7790,9 +7844,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _SHADERFADING_SPREAD
 			float _FadingNoiseFactor;
 			#endif
-			#ifdef _SHADERSPACE_SCREEN
 			float _ScreenWidthUnits;
-			#endif
 			#ifdef _SHADERSPACE_UI_GRAPHIC
 			float _RectHeight;
 			float _RectWidth;
@@ -7800,28 +7852,24 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelsPerUnit;
 			#ifdef _ENABLESMOKE_ON
 			float _SmokeNoiseFactor;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowDensity;
-			#endif
-			#ifdef _ENABLESMOKE_ON
 			float _SmokeSmoothness;
+			float _SmokeDarkEdge;
 			float _SmokeAlpha;
 			#endif
 			#ifdef _ENABLEPINGPONGGLOW_ON
-			float _PingPongGlowContrast;
-			float _PingPongGlowFade;
 			float _PingPongGlowFrequency;
 			#endif
+			float _MaskBrightness;
 			#ifdef _ENABLEPIXELOUTLINE_ON
+			float _PixelOutlineAlphaLimit;
 			float _PixelOutlineFade;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float _OuterOutlineWidth;
 			float _OuterOutlineFade;
 			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramContrast;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowFade;
 			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineWidth;
@@ -7839,15 +7887,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineFade;
 			#endif
-			#ifdef _ENABLEADDHUE_ON
-			float _AddHueFade;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowContrast;
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
+			float _HologramContrast;
 			float _HologramLineSpeed;
-			float _HologramLineGap;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLEMETAL_ON
 			float _MetalFade;
@@ -7857,12 +7902,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageFade;
-			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramLineFrequency;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageContrast;
+			float _CamouflageSmoothnessB;
 			float _CamouflageDensityB;
 			float _CamouflageSmoothnessA;
 			float _CamouflageDensityA;
@@ -7873,13 +7914,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
 			float _HologramMinAlpha;
+			float _HologramLineGap;
+			float _HologramLineFrequency;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float _CamouflageSmoothnessB;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueFade;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowContrast;
 			#endif
 			#ifdef _ENABLEADDHUE_ON
 			float _AddHueContrast;
-			float _AddHueBrightness;
 			float _AddHueSaturation;
 			#endif
 			#ifdef _ENABLECOLORREPLACE_ON
@@ -7953,8 +7998,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBRIGHTNESS_ON
 			float _Brightness;
 			#endif
-			#ifdef _ENABLESMOKE_ON
-			float _SmokeDarkEdge;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueBrightness;
 			#endif
 			float _NormalIntensity;
 			CBUFFER_END
@@ -7962,18 +8007,19 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
 			struct VertexInput
 			{
-				float4 vertex : POSITION;
+				float3 positionOS : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT;
 				float4 uv0 : TEXCOORD0;
 				float4 color : COLOR;
 				
+				UNITY_SKINNED_VERTEX_INPUTS
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
-				float4 clipPos : SV_POSITION;
+				float4 positionCS : SV_POSITION;
 				float4 texCoord0 : TEXCOORD0;
 				float4 color : TEXCOORD1;
 				float3 positionWS : TEXCOORD2;
@@ -8012,7 +8058,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8022,12 +8068,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float FastNoise101_g11665( float x )
+			float FastNoise101_g11666( float x )
 			{
 				float i = floor(x);
 				float f = frac(x);
@@ -8065,22 +8111,32 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				return 130.0 * dot( m, g );
 			}
 			
-			float MyCustomExpression16_g11667( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
 			float MyCustomExpression16_g11668( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11669( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11672( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8090,27 +8146,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11670( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11676( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8120,7 +8156,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11678( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8130,17 +8176,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float MyCustomExpression16_g11673( float linValue )
+			float MyCustomExpression16_g11674( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8150,7 +8196,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8175,7 +8221,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8185,7 +8231,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8195,7 +8241,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8227,7 +8273,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8237,7 +8283,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8247,7 +8293,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8257,7 +8303,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8267,7 +8313,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8277,7 +8323,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8287,7 +8333,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8297,7 +8343,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8307,7 +8353,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8317,7 +8363,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8327,7 +8373,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8337,7 +8383,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8347,7 +8393,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8357,7 +8403,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8367,7 +8413,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8377,7 +8423,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8387,7 +8433,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8397,7 +8443,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8407,7 +8453,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8435,7 +8481,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8445,7 +8491,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8455,7 +8501,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8465,7 +8511,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8475,7 +8521,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8485,7 +8531,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -8494,26 +8540,29 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			VertexOutput vert( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
-				UNITY_SETUP_INSTANCE_ID( v );
-				UNITY_TRANSFER_INSTANCE_ID( v, o );
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+				UNITY_SKINNED_VERTEX_COMPUTE( v );
+
+				v.positionOS = UnityFlipSprite( v.positionOS, unity_SpriteProps.xy );
 
 				float2 _ZeroVector = float2(0,0);
 				float2 texCoord363 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionCS = TransformObjectToHClip( ( v.positionOS ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float3 ase_positionWS = TransformObjectToWorld( ( v.positionOS ).xyz );
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -8548,52 +8597,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch198 = _ZeroVector;
 				#endif
-				float2 temp_output_2_0_g11899 = staticSwitch198;
+				float2 temp_output_2_0_g11900 = staticSwitch198;
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
-				float temp_output_8_0_g11899 = shaderTime237;
+				float shaderTime237 = staticSwitch42_g11663;
+				float temp_output_8_0_g11900 = shaderTime237;
 				#ifdef _ENABLESINEMOVE_ON
-				float2 staticSwitch4_g11899 = ( ( sin( ( temp_output_8_0_g11899 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11899 );
+				float2 staticSwitch4_g11900 = ( ( sin( ( temp_output_8_0_g11900 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11900 );
 				#else
-				float2 staticSwitch4_g11899 = temp_output_2_0_g11899;
+				float2 staticSwitch4_g11900 = temp_output_2_0_g11900;
 				#endif
 				#ifdef _ENABLEVIBRATE_ON
-				float temp_output_30_0_g11900 = temp_output_8_0_g11899;
-				float3 rotatedValue21_g11900 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11900 * _VibrateRotation ) );
-				float2 staticSwitch6_g11899 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11900 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11900).xy ) + staticSwitch4_g11899 );
+				float temp_output_30_0_g11901 = temp_output_8_0_g11900;
+				float3 rotatedValue21_g11901 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11901 * _VibrateRotation ) );
+				float2 staticSwitch6_g11900 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11901 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11901).xy ) + staticSwitch4_g11900 );
 				#else
-				float2 staticSwitch6_g11899 = staticSwitch4_g11899;
+				float2 staticSwitch6_g11900 = staticSwitch4_g11900;
 				#endif
 				#ifdef _ENABLESINESCALE_ON
-				float2 staticSwitch10_g11899 = ( staticSwitch6_g11899 + ( (v.vertex.xyz).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11899 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
+				float2 staticSwitch10_g11900 = ( staticSwitch6_g11900 + ( (v.positionOS).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11900 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
 				#else
-				float2 staticSwitch10_g11899 = staticSwitch6_g11899;
+				float2 staticSwitch10_g11900 = staticSwitch6_g11900;
 				#endif
-				float2 temp_output_424_0 = staticSwitch10_g11899;
+				float2 temp_output_424_0 = staticSwitch10_g11900;
 #ifdef _SHADERFADING_MASK
 				float2 uv_FadingMask = v.uv0.xy * _FadingMask_ST.xy + _FadingMask_ST.zw;
 				#endif
@@ -8608,30 +8657,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = v.uv0.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (v.vertex.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (v.vertex.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (v.positionOS).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (v.positionOS).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				float linValue16_g11716 = tex2Dlod( _UberNoiseTexture, float4( ( shaderPosition235 * _FadingNoiseScale ), 0, 0.0) ).r;
 				float localMyCustomExpression16_g11716 = MyCustomExpression16_g11716( linValue16_g11716 );
 				float clampResult14_g11715 = clamp( ( ( ( _FadingFade * ( 1.0 + temp_output_4_0_g11715 ) ) - localMyCustomExpression16_g11716 ) / temp_output_4_0_g11715 ) , 0.0 , 1.0 );
@@ -8641,30 +8690,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult121 = lerp( float2( 0,0 ) , temp_output_424_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch142 = temp_output_424_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch142 = lerpResult121;
 				#else
 				float2 staticSwitch142 = temp_output_424_0;
@@ -8672,45 +8721,46 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				
 				o.ase_texcoord3 = screenPos;
 				
-				o.ase_texcoord4 = v.vertex;
+				o.ase_texcoord4 = float4(v.positionOS,1);
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					float3 defaultVertexValue = v.vertex.xyz;
+					float3 defaultVertexValue = v.positionOS;
 				#else
 					float3 defaultVertexValue = float3( 0, 0, 0 );
 				#endif
 				float3 vertexValue = float3( staticSwitch142 ,  0.0 );
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					v.vertex.xyz = vertexValue;
+					v.positionOS = vertexValue;
 				#else
-					v.vertex.xyz += vertexValue;
+					v.positionOS += vertexValue;
 				#endif
 				v.normal = v.normal;
 				v.tangent.xyz = v.tangent.xyz;
 
-				VertexPositionInputs vertexInput = GetVertexPositionInputs( v.vertex.xyz );
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.positionOS);
 
+				o.positionCS = vertexInput.positionCS;
+				o.positionWS = vertexInput.positionWS;
 				o.texCoord0 = v.uv0;
 				o.color = v.color;
-				o.clipPos = vertexInput.positionCS;
-				o.positionWS = vertexInput.positionWS;
 
 				return o;
 			}
 
 			half4 frag( VertexOutput IN  ) : SV_Target
 			{
-				UNITY_SETUP_INSTANCE_ID( IN );
-				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
+				UNITY_SETUP_INSTANCE_ID(IN);
+				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
 
-				float3 positionWS = IN.positionWS.xyz;
+				float4 positionCS = IN.positionCS;
+				float3 positionWS = IN.positionWS;
 
 				float2 texCoord363 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				float4 screenPos = IN.ase_texcoord3;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
@@ -8744,89 +8794,89 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float2 staticSwitch366 = uvAfterPixelArt450;
 				#endif
 				float2 fixedUV475 = staticSwitch366;
-				float2 temp_output_3_0_g11664 = fixedUV475;
+				float2 temp_output_3_0_g11665 = fixedUV475;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch117_g11665 = _WindMinIntensity;
+				float staticSwitch117_g11666 = _WindMinIntensity;
 				#else
-				float staticSwitch117_g11665 = WindMinIntensity;
+				float staticSwitch117_g11666 = WindMinIntensity;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch118_g11665 = _WindMaxIntensity;
+				float staticSwitch118_g11666 = _WindMaxIntensity;
 				#else
-				float staticSwitch118_g11665 = WindMaxIntensity;
+				float staticSwitch118_g11666 = WindMaxIntensity;
 				#endif
 				#endif
-				float4 transform62_g11665 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
+				float4 transform62_g11666 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDISPARALLAX_ON
-				float staticSwitch111_g11665 = _WindXPosition;
+				float staticSwitch111_g11666 = _WindXPosition;
 				#else
-				float staticSwitch111_g11665 = transform62_g11665.x;
+				float staticSwitch111_g11666 = transform62_g11666.x;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch113_g11665 = _WindNoiseScale;
+				float staticSwitch113_g11666 = _WindNoiseScale;
 				#else
-				float staticSwitch113_g11665 = WindNoiseScale;
+				float staticSwitch113_g11666 = WindNoiseScale;
 				#endif
 				#endif
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
+				float shaderTime237 = staticSwitch42_g11663;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch125_g11665 = ( shaderTime237 * _WindNoiseSpeed );
+				float staticSwitch125_g11666 = ( shaderTime237 * _WindNoiseSpeed );
 				#else
-				float staticSwitch125_g11665 = WindTime;
+				float staticSwitch125_g11666 = WindTime;
 				#endif
-				float temp_output_50_0_g11665 = ( ( staticSwitch111_g11665 * staticSwitch113_g11665 ) + staticSwitch125_g11665 );
-				float x101_g11665 = temp_output_50_0_g11665;
-				float localFastNoise101_g11665 = FastNoise101_g11665( x101_g11665 );
-				float2 temp_cast_0 = (temp_output_50_0_g11665).xx;
-				float simplePerlin2D121_g11665 = snoise( temp_cast_0*0.5 );
-				simplePerlin2D121_g11665 = simplePerlin2D121_g11665*0.5 + 0.5;
+				float temp_output_50_0_g11666 = ( ( staticSwitch111_g11666 * staticSwitch113_g11666 ) + staticSwitch125_g11666 );
+				float x101_g11666 = temp_output_50_0_g11666;
+				float localFastNoise101_g11666 = FastNoise101_g11666( x101_g11666 );
+				float2 temp_cast_0 = (temp_output_50_0_g11666).xx;
+				float simplePerlin2D121_g11666 = snoise( temp_cast_0*0.5 );
+				simplePerlin2D121_g11666 = simplePerlin2D121_g11666*0.5 + 0.5;
 				#ifdef _WINDHIGHQUALITYNOISE_ON
-				float staticSwitch123_g11665 = simplePerlin2D121_g11665;
+				float staticSwitch123_g11666 = simplePerlin2D121_g11666;
 				#else
-				float staticSwitch123_g11665 = ( localFastNoise101_g11665 + 0.5 );
+				float staticSwitch123_g11666 = ( localFastNoise101_g11666 + 0.5 );
 				#endif
-				float lerpResult86_g11665 = lerp( staticSwitch117_g11665 , staticSwitch118_g11665 , staticSwitch123_g11665);
-				float clampResult29_g11665 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11665 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
-				float2 temp_output_1_0_g11665 = temp_output_3_0_g11664;
-				float temp_output_39_0_g11665 = ( temp_output_1_0_g11665.y + _WindFlip );
-				float3 appendResult43_g11665 = (float3(0.5 , -_WindFlip , 0.0));
-				float2 appendResult27_g11665 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11665 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11665 )));
-				float3 rotatedValue19_g11665 = RotateAroundAxis( appendResult43_g11665, float3( ( appendResult27_g11665 + temp_output_1_0_g11665 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11665 * temp_output_39_0_g11665 ) );
-				float2 staticSwitch4_g11664 = (rotatedValue19_g11665).xy;
+				float lerpResult86_g11666 = lerp( staticSwitch117_g11666 , staticSwitch118_g11666 , staticSwitch123_g11666);
+				float clampResult29_g11666 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11666 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
+				float2 temp_output_1_0_g11666 = temp_output_3_0_g11665;
+				float temp_output_39_0_g11666 = ( temp_output_1_0_g11666.y + _WindFlip );
+				float3 appendResult43_g11666 = (float3(0.5 , -_WindFlip , 0.0));
+				float2 appendResult27_g11666 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11666 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11666 )));
+				float3 rotatedValue19_g11666 = RotateAroundAxis( appendResult43_g11666, float3( ( appendResult27_g11666 + temp_output_1_0_g11666 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11666 * temp_output_39_0_g11666 ) );
+				float2 staticSwitch4_g11665 = (rotatedValue19_g11666).xy;
 				#else
-				float2 staticSwitch4_g11664 = temp_output_3_0_g11664;
+				float2 staticSwitch4_g11665 = temp_output_3_0_g11665;
 				#endif
 				float2 texCoord435 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				#ifdef _PIXELPERFECTSPACE_ON
@@ -8835,81 +8885,82 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = IN.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (IN.ase_texcoord4.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (IN.ase_texcoord4.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (positionWS).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (IN.ase_texcoord4.xyz).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (IN.ase_texcoord4.xyz).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				#ifdef _ENABLEFULLDISTORTION_ON
-				float2 temp_output_195_0_g11666 = shaderPosition235;
-				float linValue16_g11667 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11666 * _FullDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11667 = MyCustomExpression16_g11667( linValue16_g11667 );
-				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11666 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float2 temp_output_195_0_g11667 = shaderPosition235;
+				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11667 * _FullDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11668 = MyCustomExpression16_g11668( linValue16_g11668 );
-				float2 appendResult189_g11666 = (float2(( localMyCustomExpression16_g11667 - 0.5 ) , ( localMyCustomExpression16_g11668 - 0.5 )));
-				float2 staticSwitch83 = ( staticSwitch4_g11664 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11666 * _FullDistortionDistortion ) );
+				float linValue16_g11669 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11667 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float localMyCustomExpression16_g11669 = MyCustomExpression16_g11669( linValue16_g11669 );
+				float2 appendResult189_g11667 = (float2(( localMyCustomExpression16_g11668 - 0.5 ) , ( localMyCustomExpression16_g11669 - 0.5 )));
+				float2 staticSwitch83 = ( staticSwitch4_g11665 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11667 * _FullDistortionDistortion ) );
 				#else
-				float2 staticSwitch83 = staticSwitch4_g11664;
+				float2 staticSwitch83 = staticSwitch4_g11665;
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-				float2 temp_output_182_0_g11669 = shaderPosition235;
-				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionDistortionScale ) ).r;
+				float2 temp_output_182_0_g11670 = shaderPosition235;
+				float linValue16_g11672 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionDistortionScale ) ).r;
+				float localMyCustomExpression16_g11672 = MyCustomExpression16_g11672( linValue16_g11672 );
+				float3 rotatedValue168_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11672 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
+				float3 rotatedValue136_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11670 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
+				float3 break130_g11670 = rotatedValue136_g11670;
+				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11671 = MyCustomExpression16_g11671( linValue16_g11671 );
-				float3 rotatedValue168_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11671 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
-				float3 rotatedValue136_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11669 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
-				float3 break130_g11669 = rotatedValue136_g11669;
-				float linValue16_g11670 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11670 = MyCustomExpression16_g11670( linValue16_g11670 );
-				float clampResult154_g11669 = clamp( ( ( break130_g11669.x + break130_g11669.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11670 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11669).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 )) ) ) );
+				float clampResult154_g11670 = clamp( ( ( break130_g11670.x + break130_g11670.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11671 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
+				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11670).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 )) ) ) );
 				#else
 				float2 staticSwitch82 = staticSwitch83;
 				#endif
 				#ifdef _ENABLEHOLOGRAM_ON
-				float temp_output_8_0_g11674 = ( ( ( shaderTime237 * _HologramDistortionSpeed ) + positionWS.y ) / unity_OrthoParams.y );
-				float2 temp_cast_4 = (temp_output_8_0_g11674).xx;
+				float temp_output_81_0_g11675 = unity_OrthoParams.y;
+				float temp_output_8_0_g11675 = ( ( ( shaderTime237 * ( _HologramDistortionSpeed * temp_output_81_0_g11675 * 0.2 ) ) + positionWS.y ) / temp_output_81_0_g11675 );
+				float2 temp_cast_4 = (temp_output_8_0_g11675).xx;
 				float2 temp_cast_5 = (_HologramDistortionDensity).xx;
-				float linValue16_g11676 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
-				float localMyCustomExpression16_g11676 = MyCustomExpression16_g11676( linValue16_g11676 );
-				float clampResult75_g11674 = clamp( localMyCustomExpression16_g11676 , 0.075 , 0.6 );
-				float2 temp_cast_6 = (temp_output_8_0_g11674).xx;
-				float2 temp_cast_7 = (_HologramDistortionScale).xx;
-				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
 				float localMyCustomExpression16_g11677 = MyCustomExpression16_g11677( linValue16_g11677 );
-				float2 appendResult2_g11675 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+				float clampResult75_g11675 = clamp( localMyCustomExpression16_g11677 , 0.075 , 0.6 );
+				float2 temp_cast_6 = (temp_output_8_0_g11675).xx;
+				float2 temp_cast_7 = (_HologramDistortionScale).xx;
+				float linValue16_g11678 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float localMyCustomExpression16_g11678 = MyCustomExpression16_g11678( linValue16_g11678 );
+				float2 appendResult2_g11676 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float hologramFade182 = _HologramFade;
-				float2 appendResult44_g11674 = (float2(( ( ( clampResult75_g11674 * ( localMyCustomExpression16_g11677 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11675 ).x ) * hologramFade182 ) , 0.0));
-				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11674 );
+				float2 appendResult44_g11675 = (float2(( ( ( clampResult75_g11675 * ( localMyCustomExpression16_g11678 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11676 ).x ) * hologramFade182 ) , 0.0));
+				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11675 );
 				#else
 				float2 staticSwitch59 = staticSwitch82;
 				#endif
 				#ifdef _ENABLEGLITCH_ON
-				float2 temp_output_18_0_g11672 = shaderPosition235;
-				float2 glitchPosition154 = temp_output_18_0_g11672;
+				float2 temp_output_18_0_g11673 = shaderPosition235;
+				float2 glitchPosition154 = temp_output_18_0_g11673;
 				float linValue16_g11718 = tex2D( _UberNoiseTexture, ( ( glitchPosition154 + ( _GlitchDistortionSpeed * shaderTime237 ) ) * _GlitchDistortionScale ) ).r;
 				float localMyCustomExpression16_g11718 = MyCustomExpression16_g11718( linValue16_g11718 );
-				float linValue16_g11673 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11672 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
-				float localMyCustomExpression16_g11673 = MyCustomExpression16_g11673( linValue16_g11673 );
-				float glitchFade152 = ( max( localMyCustomExpression16_g11673 , _GlitchMaskMin ) * _GlitchFade );
+				float linValue16_g11674 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11673 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
+				float localMyCustomExpression16_g11674 = MyCustomExpression16_g11674( linValue16_g11674 );
+				float glitchFade152 = ( max( localMyCustomExpression16_g11674 , _GlitchMaskMin ) * _GlitchFade );
 				float2 staticSwitch62 = ( staticSwitch59 + ( ( localMyCustomExpression16_g11718 - 0.5 ) * _GlitchDistortion * glitchFade152 ) );
 				#else
 				float2 staticSwitch62 = staticSwitch59;
@@ -9000,30 +9051,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult130 = lerp( texCoord131 , temp_output_484_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch145 = temp_output_484_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch145 = lerpResult130;
 				#else
 				float2 staticSwitch145 = temp_output_484_0;
@@ -9260,7 +9311,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 In115_g11766 = temp_output_2_0_g11766;
 				float3 From115_g11766 = (_ColorReplaceFromColor).rgb;
 				float4 break2_g11767 = temp_output_1_0_g11766;
-				float3 To115_g11766 = ( pow( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , max( _ColorReplaceContrast , 0.001 ) ) * (_ColorReplaceToColor).rgb );
+				float3 To115_g11766 = ( pow( max( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , 0.0001 ) , max( _ColorReplaceContrast , 0.0001 ) ) * (_ColorReplaceToColor).rgb );
 				float Fuzziness115_g11766 = _ColorReplaceSmoothness;
 				float Range115_g11766 = _ColorReplaceRange;
 				float3 localMyCustomExpression115_g11766 = MyCustomExpression115_g11766( In115_g11766 , From115_g11766 , To115_g11766 , Fuzziness115_g11766 , Range115_g11766 );
@@ -9282,8 +9333,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_57_0_g11762 = staticSwitch4_g11779;
 				#ifdef _ENABLECONTRAST_ON
 				float4 temp_output_1_0_g11802 = temp_output_57_0_g11762;
-				float3 temp_cast_30 = (max( _Contrast , 0.001 )).xxx;
-				float4 appendResult4_g11802 = (float4(pow( (temp_output_1_0_g11802).rgb , temp_cast_30 ) , temp_output_1_0_g11802.a));
+				float3 temp_cast_30 = (max( _Contrast , 0.0001 )).xxx;
+				float4 appendResult4_g11802 = (float4(pow( max( (temp_output_1_0_g11802).rgb , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_30 ) , temp_output_1_0_g11802.a));
 				float4 staticSwitch32_g11762 = appendResult4_g11802;
 				#else
 				float4 staticSwitch32_g11762 = temp_output_57_0_g11762;
@@ -9310,7 +9361,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float temp_output_3_0_g11796 = ( ( break2_g11797.x + break2_g11797.x + break2_g11797.y + break2_g11797.y + break2_g11797.y + break2_g11797.z ) / 6.0 );
 				float clampResult25_g11796 = clamp( ( ( ( ( temp_output_3_0_g11796 + _SplitToningShift ) - 0.5 ) * _SplitToningBalance ) + 0.5 ) , 0.0 , 1.0 );
 				float3 lerpResult6_g11796 = lerp( (_SplitToningShadowsColor).rgb , (_SplitToningHighlightsColor).rgb , clampResult25_g11796);
-				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( temp_output_3_0_g11796 , max( _SplitToningContrast , 0.001 ) ) ) , _SplitToningFade);
+				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( max( temp_output_3_0_g11796 , 0.0001 ) , max( _SplitToningContrast , 0.0001 ) ) ) , _SplitToningFade);
 				float4 appendResult18_g11796 = (float4(lerpResult11_g11796 , temp_output_1_0_g11796.a));
 				float4 staticSwitch30_g11762 = appendResult18_g11796;
 				#else
@@ -9320,7 +9371,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11774 = staticSwitch30_g11762;
 				float3 temp_output_4_0_g11774 = (temp_output_1_0_g11774).rgb;
 				float4 break12_g11774 = temp_output_1_0_g11774;
-				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , max( _BlackTintPower , 0.001 ) ));
+				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( max( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , 0.0001 ) , max( _BlackTintPower , 0.0001 ) ));
 				float3 lerpResult13_g11774 = lerp( temp_output_4_0_g11774 , lerpResult7_g11774 , _BlackTintFade);
 				float4 appendResult11_g11774 = (float4(lerpResult13_g11774 , break12_g11774.a));
 				float4 staticSwitch20_g11762 = appendResult11_g11774;
@@ -9334,7 +9385,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float linValue16_g11789 = tex2D( _UberNoiseTexture, ( temp_output_65_0_g11788 * _InkSpreadNoiseScale ) ).r;
 				float localMyCustomExpression16_g11789 = MyCustomExpression16_g11789( linValue16_g11789 );
 				float clampResult53_g11788 = clamp( ( ( ( _InkSpreadDistance - distance( _InkSpreadPosition , temp_output_65_0_g11788 ) ) + ( localMyCustomExpression16_g11789 * _InkSpreadNoiseFactor ) ) / max( _InkSpreadWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , max( _InkSpreadContrast , 0.001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
+				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( max( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , 0.0001 ) , max( _InkSpreadContrast , 0.0001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
 				float4 appendResult9_g11788 = (float4(lerpResult7_g11788 , (temp_output_1_0_g11788).a));
 				float4 staticSwitch17_g11762 = appendResult9_g11788;
 				#else
@@ -9361,7 +9412,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch33_g11784 = _AddHueFade;
 				#endif
-				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , max( _AddHueContrast , 0.001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
+				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( max( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , 0.0001 ) , max( _AddHueContrast , 0.0001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
 				float4 staticSwitch23_g11762 = appendResult6_g11784;
 				#else
 				float4 staticSwitch23_g11762 = staticSwitch19_g11762;
@@ -9377,7 +9428,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch27_g11781 = temp_output_13_0_g11781;
 				#endif
-				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , max( _SineGlowContrast , 0.001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
+				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( max( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , 0.0001 ) , max( _SineGlowContrast , 0.0001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
 				float4 staticSwitch28_g11762 = appendResult21_g11781;
 				#else
 				float4 staticSwitch28_g11762 = staticSwitch23_g11762;
@@ -9472,7 +9523,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch199_g11776 = temp_output_82_0_g11776;
 				#endif
-				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( _PixelOutlineFade * 3.0 ) , 1.0 ) );
+				float temp_output_213_0_g11776 = ( _PixelOutlineFade * step( temp_output_15_0_g11776.a , _PixelOutlineAlphaLimit ) );
+				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( temp_output_213_0_g11776 * 3.0 ) , 1.0 ) );
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch203_g11776 = 1.0;
 				#else
@@ -9482,7 +9534,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult170_g11776 = lerp( lerpResult178_g11776 , staticSwitch199_g11776 , staticSwitch203_g11776);
 				float2 appendResult206_g11776 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float2 temp_output_209_0_g11776 = ( float2( 1,1 ) / appendResult206_g11776 );
-				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , _PixelOutlineFade);
+				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , temp_output_213_0_g11776);
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch200_g11776 = ( temp_output_182_0_g11776 * lerpResult168_g11776 );
 				#else
@@ -9497,7 +9549,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult15_g11763 = lerp( (_PingPongGlowFrom).rgb , (_PingPongGlowTo).rgb , ( ( sin( ( temp_output_39_0_g11762 * _PingPongGlowFrequency ) ) + 1.0 ) / 2.0 ));
 				float4 temp_output_5_0_g11763 = staticSwitch48_g11762;
 				float4 break2_g11764 = temp_output_5_0_g11763;
-				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , max( _PingPongGlowContrast , 0.001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
+				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( max( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , 0.0001 ) , max( _PingPongGlowContrast , 0.0001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
 				float4 staticSwitch46_g11762 = appendResult12_g11763;
 				#else
 				float4 staticSwitch46_g11762 = staticSwitch48_g11762;
@@ -9506,7 +9558,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef _ENABLEHOLOGRAM_ON
 				float4 temp_output_1_0_g11804 = temp_output_361_0;
 				float4 break2_g11805 = temp_output_1_0_g11804;
-				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , max( _HologramContrast , 0.001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * _HologramLineSpeed ) + positionWS.y ) / unity_OrthoParams.y ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
+				float temp_output_44_0_g11804 = unity_OrthoParams.y;
+				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( max( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , 0.0001 ) , max( _HologramContrast , 0.0001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * ( _HologramLineSpeed * temp_output_44_0_g11804 * 0.2 ) ) + positionWS.y ) / temp_output_44_0_g11804 ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
 				float4 lerpResult37_g11804 = lerp( temp_output_1_0_g11804 , appendResult22_g11804 , hologramFade182);
 				float4 staticSwitch56 = lerpResult37_g11804;
 				#else
@@ -9547,7 +9600,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float clampResult65_g11841 = clamp( ( ( _CamouflageDensityB - localMyCustomExpression16_g11845 ) / max( _CamouflageSmoothnessB , 0.005 ) ) , 0.0 , 1.0 );
 				float4 lerpResult68_g11841 = lerp( lerpResult55_g11841 , ( _CamouflageColorB * clampResult65_g11841 ) , clampResult65_g11841);
 				float4 break2_g11844 = temp_output_1_0_g11841;
-				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , max( _CamouflageContrast , 0.001 ) ) ) , _CamouflageFade);
+				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( max( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , 0.0001 ) , max( _CamouflageContrast , 0.0001 ) ) ) , _CamouflageFade);
 				float4 appendResult7_g11841 = (float4(lerpResult4_g11841 , temp_output_1_0_g11841.a));
 				float4 staticSwitch26_g11811 = appendResult7_g11841;
 				#else
@@ -9570,7 +9623,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch60_g11834 = _MetalFade;
 				#endif
-				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( temp_output_5_0_g11834 , max( _MetalHighlightContrast , 0.001 ) ) ) + ( pow( temp_output_5_0_g11834 , max( _MetalContrast , 0.001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
+				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalHighlightContrast , 0.0001 ) ) ) + ( pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalContrast , 0.0001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
 				float4 appendResult8_g11834 = (float4((lerpResult45_g11834).rgb , (temp_output_1_0_g11834).a));
 				float4 staticSwitch28_g11811 = appendResult8_g11834;
 				#else
@@ -9588,7 +9641,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11830 = MyCustomExpression16_g11830( linValue16_g11830 );
 				float linValue16_g11831 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g11830 - 0.25 ) * _FrozenHighlightDistortion ) + ( ( temp_output_73_0_g11826 * _FrozenHighlightSpeed ) + temp_output_72_0_g11826 ) ) * _FrozenHighlightScale ) ).r;
 				float localMyCustomExpression16_g11831 = MyCustomExpression16_g11831( linValue16_g11831 );
-				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( temp_output_7_0_g11826 , max( _FrozenContrast , 0.001 ) ) * (_FrozenTint).rgb ) + ( pow( temp_output_7_0_g11826 , max( _FrozenSnowContrast , 0.001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( temp_output_7_0_g11826 , max( _FrozenHighlightContrast , 0.001 ) ) )).rgb ) , _FrozenFade);
+				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenContrast , 0.0001 ) ) * (_FrozenTint).rgb ) + ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenSnowContrast , 0.0001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenHighlightContrast , 0.0001 ) ) )).rgb ) , _FrozenFade);
 				float4 appendResult26_g11826 = (float4(lerpResult57_g11826 , temp_output_1_0_g11826.a));
 				float4 staticSwitch29_g11811 = appendResult26_g11826;
 				#else
@@ -9608,7 +9661,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11822 = MyCustomExpression16_g11822( linValue16_g11822 );
 				float temp_output_15_0_g11820 = ( ( ( _BurnRadius - distance( temp_output_72_0_g11820 , _BurnPosition ) ) + ( localMyCustomExpression16_g11822 * _BurnEdgeNoiseFactor ) ) / max( _BurnWidth , 0.01 ) );
 				float clampResult18_g11820 = clamp( temp_output_15_0_g11820 , 0.0 , 1.0 );
-				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , max( _BurnInsideContrast , 0.001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
+				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( max( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , 0.0001 ) , max( _BurnInsideContrast , 0.0001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
 				float3 lerpResult40_g11820 = lerp( temp_output_28_0_g11820 , ( lerpResult29_g11820 + ( ( step( temp_output_15_0_g11820 , 1.0 ) * step( 0.0 , temp_output_15_0_g11820 ) ) * (_BurnEdgeColor).rgb ) ) , _BurnFade);
 				float4 appendResult43_g11820 = (float4(lerpResult40_g11820 , temp_output_1_0_g11820.a));
 				float4 staticSwitch32_g11811 = appendResult43_g11820;
@@ -9636,7 +9689,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 break2_g11814 = temp_output_1_0_g11812;
 				float3 temp_cast_69 = (( ( break2_g11814.x + break2_g11814.x + break2_g11814.y + break2_g11814.y + break2_g11814.y + break2_g11814.z ) / 6.0 )).xxx;
 				float3 lerpResult92_g11812 = lerp( temp_cast_69 , temp_output_57_0_g11812 , _ShineSaturation);
-				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.001 )).xxx;
+				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.0001 )).xxx;
 				float3 rotatedValue69_g11812 = RotateAroundAxis( float3( 0,0,0 ), float3( ( _ShineFrequency * temp_output_41_0_g11811 ) ,  0.0 ), float3( 0,0,1 ), ( ( _ShineRotation / 180.0 ) * PI ) );
 				float temp_output_103_0_g11812 = ( _ShineFrequency * _ShineWidth );
 				float clampResult80_g11812 = clamp( ( ( ( sin( ( rotatedValue69_g11812.x - ( temp_output_40_0_g11811 * _ShineSpeed * _ShineFrequency ) ) ) - ( 1.0 - temp_output_103_0_g11812 ) ) / temp_output_103_0_g11812 ) * _ShineSmooth ) , 0.0 , 1.0 );
@@ -9647,7 +9700,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch98_g11812 = _ShineFade;
 				#endif
-				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( lerpResult92_g11812 , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
+				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( max( lerpResult92_g11812 , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
 				float4 staticSwitch36_g11811 = appendResult8_g11812;
 				#else
 				float4 staticSwitch36_g11811 = staticSwitch34_g11811;
@@ -9661,7 +9714,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_28_0_g11847 = (temp_output_1_0_g11847).rgb;
 				float4 break2_g11848 = float4( temp_output_28_0_g11847 , 0.0 );
 				float3 lerpResult32_g11847 = lerp( temp_output_28_0_g11847 , ( temp_output_24_0_g11847 * ( ( break2_g11848.x + break2_g11848.x + break2_g11848.y + break2_g11848.y + break2_g11848.y + break2_g11848.z ) / 6.0 ) ) , ( _PoisonFade * _PoisonRecolorFactor ));
-				float4 appendResult27_g11847 = (float4(( ( max( pow( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , max( _PoisonDensity , 0.001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
+				float4 appendResult27_g11847 = (float4(( ( max( pow( max( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , 0.0001 ) , max( _PoisonDensity , 0.0001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
 				float4 staticSwitch39_g11811 = appendResult27_g11847;
 				#else
 				float4 staticSwitch39_g11811 = staticSwitch36_g11811;
@@ -9686,7 +9739,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 staticSwitch50_g11851 = lerpResult42_g11851;
 				#endif
 				float4 break2_g11853 = temp_output_10_0_g11851;
-				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , max( _EnchantedContrast , 0.001 ) ) * _EnchantedBrightness );
+				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( max( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , 0.0001 ) , max( _EnchantedContrast , 0.0001 ) ) * _EnchantedBrightness );
 				float temp_output_45_0_g11851 = ( max( ( temp_output_36_0_g11851 - _EnchantedReduce ) , 0.0 ) * _EnchantedFade );
 				float3 lerpResult44_g11851 = lerp( temp_output_12_0_g11851 , temp_output_40_0_g11851 , temp_output_45_0_g11851);
 				#ifdef _ENCHANTEDLERPTOGGLE_ON
@@ -9713,7 +9766,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch26_g11856 = ( lerpResult20_g11856 * _ShiftingBrightness );
 				#endif
-				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( temp_output_4_0_g11856 , max( _ShiftingContrast , 0.001 ) ) ) , _ShiftingFade);
+				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( max( temp_output_4_0_g11856 , 0.0001 ) , max( _ShiftingContrast , 0.0001 ) ) ) , _ShiftingFade);
 				float4 appendResult6_g11856 = (float4(lerpResult31_g11856 , break5_g11856.a));
 				float4 staticSwitch33_g11856 = appendResult6_g11856;
 				#else
@@ -9748,7 +9801,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11863 = ( appendResult13_g11863 * appendResult18_g11863 );
 				float4 break2_g11865 = temp_output_5_0_g11863;
 				#ifdef _TEXTURELAYER1CONTRASTTOGGLE_ON
-				float3 staticSwitch80_g11863 = ( pow( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , max( _TextureLayer1Contrast , 0.001 ) ) * temp_output_16_0_g11863 );
+				float3 staticSwitch80_g11863 = ( pow( max( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer1Contrast , 0.0001 ) ) * temp_output_16_0_g11863 );
 				#else
 				float3 staticSwitch80_g11863 = temp_output_16_0_g11863;
 				#endif
@@ -9787,7 +9840,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11859 = ( appendResult13_g11859 * appendResult18_g11859 );
 				float4 break2_g11861 = temp_output_5_0_g11859;
 				#ifdef _TEXTURELAYER2CONTRASTTOGGLE_ON
-				float3 staticSwitch84_g11859 = ( pow( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , max( _TextureLayer2Contrast , 0.001 ) ) * temp_output_16_0_g11859 );
+				float3 staticSwitch84_g11859 = ( pow( max( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer2Contrast , 0.0001 ) ) * temp_output_16_0_g11859 );
 				#else
 				float3 staticSwitch84_g11859 = temp_output_16_0_g11859;
 				#endif
@@ -9808,7 +9861,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 				float4 break4_g11868 = staticSwitch77;
-				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 ));
+				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 ));
 				float4 appendResult5_g11868 = (float4(break4_g11868.r , break4_g11868.g , break4_g11868.b , ( break4_g11868.a * directionalDistortionAlpha167 )));
 				float4 staticSwitch75 = appendResult5_g11868;
 				#else
@@ -9917,7 +9970,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11885 = staticSwitch13_g11869;
 				float4 break2_g11887 = temp_output_1_0_g11885;
 				#ifdef _ADDCOLORCONTRASTTOGGLE_ON
-				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , max( _AddColorContrast , 0.001 ) ) );
+				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( max( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , 0.0001 ) , max( _AddColorContrast , 0.0001 ) ) );
 				#else
 				float3 staticSwitch17_g11885 = staticSwitch16_g11885;
 				#endif
@@ -9946,7 +9999,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				float4 break2_g11891 = temp_output_1_0_g11889;
 				#ifdef _STRONGTINTCONTRASTTOGGLE_ON
-				float3 staticSwitch22_g11889 = ( pow( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , max( _StrongTintContrast , 0.001 ) ) * staticSwitch21_g11889 );
+				float3 staticSwitch22_g11889 = ( pow( max( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , 0.0001 ) , max( _StrongTintContrast , 0.0001 ) ) * staticSwitch21_g11889 );
 				#else
 				float3 staticSwitch22_g11889 = staticSwitch21_g11889;
 				#endif
@@ -9985,36 +10038,36 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float customVertexAlpha193 = staticSwitch9_g11753;
 				float4 appendResult5_g11895 = (float4(break4_g11895.r , break4_g11895.g , break4_g11895.b , ( break4_g11895.a * customVertexAlpha193 )));
 				float4 temp_output_344_0 = appendResult5_g11895;
-				float4 temp_output_1_0_g11896 = temp_output_344_0;
-				float4 appendResult8_g11896 = (float4(( (temp_output_1_0_g11896).rgb * (IN.color).rgb ) , temp_output_1_0_g11896.a));
+				float4 temp_output_1_0_g11898 = temp_output_344_0;
+				float4 appendResult8_g11898 = (float4(( (temp_output_1_0_g11898).rgb * (IN.color).rgb ) , temp_output_1_0_g11898.a));
 				#ifdef _VERTEXTINTFIRST_ON
 				float4 staticSwitch342 = temp_output_344_0;
 				#else
-				float4 staticSwitch342 = appendResult8_g11896;
+				float4 staticSwitch342 = appendResult8_g11898;
 				#endif
 				float4 lerpResult125 = lerp( ( originalColor191 * IN.color ) , staticSwitch342 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float4 staticSwitch143 = staticSwitch342;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float4 staticSwitch143 = lerpResult125;
 				#else
 				float4 staticSwitch143 = staticSwitch342;
 				#endif
-				float4 temp_output_7_0_g11903 = staticSwitch143;
+				float4 temp_output_7_0_g11905 = staticSwitch143;
 				#ifdef _BAKEDMATERIAL_ON
-				float4 appendResult2_g11903 = (float4(( (temp_output_7_0_g11903).rgb / max( temp_output_7_0_g11903.a , 1E-05 ) ) , temp_output_7_0_g11903.a));
-				float4 staticSwitch6_g11903 = appendResult2_g11903;
+				float4 appendResult2_g11905 = (float4(( (temp_output_7_0_g11905).rgb / max( temp_output_7_0_g11905.a , 1E-05 ) ) , temp_output_7_0_g11905.a));
+				float4 staticSwitch6_g11905 = appendResult2_g11905;
 				#else
-				float4 staticSwitch6_g11903 = temp_output_7_0_g11903;
+				float4 staticSwitch6_g11905 = temp_output_7_0_g11905;
 				#endif
 				
-				float4 Color = staticSwitch6_g11903;
+				float4 Color = staticSwitch6_g11905;
 
 				#if defined(DEBUG_DISPLAY)
 					SurfaceData2D surfaceData;
@@ -10023,7 +10076,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 					InitializeInputData(positionWS.xy, half2(IN.texCoord0.xy), inputData);
 					half4 debugColor = 0;
 
-					SETUP_DEBUG_DATA_2D(inputData, positionWS);
+					SETUP_DEBUG_DATA_2D(inputData, positionWS, positionCS);
 
 					if (CanDebugOverrideOutputColor(surfaceData, inputData, debugColor))
 					{
@@ -10037,7 +10090,6 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 
 				Color *= IN.color;
-
 				return Color;
 			}
 
@@ -10054,26 +10106,37 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
             HLSLPROGRAM
 
-			#define ASE_SRP_VERSION 140007
+			#define ASE_VERSION 19801
+			#define ASE_SRP_VERSION 170003
 
 
 			#pragma vertex vert
 			#pragma fragment frag
 
+			#pragma multi_compile _ DEBUG_DISPLAY SKINNED_SPRITE
+
             #define _SURFACE_TYPE_TRANSPARENT 1
             #define ATTRIBUTES_NEED_NORMAL
             #define ATTRIBUTES_NEED_TANGENT
+            #define FEATURES_GRAPH_VERTEX_NORMAL_OUTPUT
+            #define FEATURES_GRAPH_VERTEX_TANGENT_OUTPUT
             #define FEATURES_GRAPH_VERTEX
+
             #define SHADERPASS SHADERPASS_DEPTHONLY
 			#define SCENESELECTIONPASS 1
 
-
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/Core2D.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRendering.hlsl"
+			#include_with_pragmas "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRenderingKeywords.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/DebugMipmapStreamingMacros.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#define ASE_NEEDS_VERT_POSITION
@@ -10254,7 +10317,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			CBUFFER_START( UnityPerMaterial )
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorA;
+			float4 _ShiftingColorB;
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float4 _PoisonColor;
@@ -10285,7 +10348,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float4 _RecolorRGBRedTint;
 			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorB;
+			float4 _ShiftingColorA;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float4 _TextureLayer1Color;
@@ -10316,13 +10379,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float4 _CamouflageColorB;
+			float4 _CamouflageColorA;
+			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float4 _BurnInsideNoiseColor;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float4 _CamouflageColorA;
-			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float4 _UVDistortMask_ST;
@@ -10362,42 +10423,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEFROZEN_ON
 			float4 _FrozenSnowColor;
 			#endif
+			#ifdef _SHADERFADING_MASK
+			float4 _FadingMask_ST;
+			#endif
+			#ifdef _ENABLESTRONGTINT_ON
+			float4 _StrongTintMask_ST;
+			#endif
+			float4 _MainTex_TexelSize;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float4 _DirectionalGlowFadeEdgeColor;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float4 _SourceGlowDissolveEdgeColor;
+			#endif
+			#ifdef _ENABLEALPHATINT_ON
+			float4 _AlphaTintColor;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float4 _ShadowColor;
+			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float4 _StrongTintTint;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float4 _AddColorMask_ST;
-			float4 _AddColorColor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float4 _ShadowColor;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float4 _SourceGlowDissolveEdgeColor;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float4 _DirectionalGlowFadeEdgeColor;
 			#endif
 			#ifdef _SPRITESHEETFIX_ON
 			float4 _SpriteSheetRect;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float4 _AlphaTintColor;
+			#ifdef _ENABLEADDCOLOR_ON
+			float4 _AddColorColor;
 			#endif
-			#ifdef _ENABLESTRONGTINT_ON
-			float4 _StrongTintMask_ST;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Scale;
 			#endif
-			#ifdef _SHADERFADING_MASK
-			float4 _FadingMask_ST;
-			#endif
-			float4 _MainTex_TexelSize;
-			float2 _FadingNoiseScale;
 			#ifdef _SHADERFADING_SPREAD
 			float2 _FadingPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionScale;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnEdgeNoiseScale;
 			float2 _BurnPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionSpeed;
 			#endif
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
 			float2 _DirectionalAlphaFadeNoiseScale;
@@ -10405,11 +10476,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnSwirlNoiseScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenSnowScale;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1ScrollSpeed;
 			#endif
+			float2 _FadingNoiseScale;
 			#ifdef _ENABLEFLAME_ON
-			float2 _FlameNoiseScale;
 			float2 _FlameSpeed;
 			#endif
 			#ifdef _ENABLEGLITCH_ON
@@ -10419,25 +10490,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLECUSTOMFADE_ON
 			float2 _CustomFadeNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Offset;
-			float2 _TextureLayer1ScrollSpeed;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionSpeed;
-			float2 _CamouflageDistortionScale;
-			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnInsideNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Scale;
+			#ifdef _ENABLEFLAME_ON
+			float2 _FlameNoiseScale;
 			#endif
-			#ifdef _ENABLESHADOW_ON
-			float2 _ShadowOffset;
+			#ifdef _ENABLERAINBOW_ON
+			float2 _RainbowCenter;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionIntensity;
+			#ifdef _ENABLEPIXELOUTLINE_ON
+			float2 _PixelOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveFrequency;
@@ -10450,30 +10513,25 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _InkSpreadNoiseScale;
 			float2 _InkSpreadPosition;
 			#endif
+			#ifdef _ENABLEPOISON_ON
+			float2 _PoisonNoiseSpeed;
+			float2 _PoisonNoiseScale;
+			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float2 _InnerOutlineNoiseScale;
 			float2 _InnerOutlineDistortionIntensity;
 			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseSpeed;
-			#endif
 			#ifdef _ENABLEHALFTONE_ON
 			float2 _HalftonePosition;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float2 _DirectionalGlowFadeNoiseScale;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseScale;
-			#endif
-			#ifdef _ENABLEOUTEROUTLINE_ON
-			float2 _OuterOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINESCALE_ON
 			float2 _SineScaleFactor;
 			#endif
+			#ifdef _ENABLEOUTEROUTLINE_ON
+			float2 _OuterOutlineTextureSpeed;
+			#endif
 			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowCenter;
+			float2 _RainbowNoiseScale;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float2 _OuterOutlineNoiseSpeed;
@@ -10484,27 +10542,51 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _EnchantedSpeed;
 			float2 _EnchantedScale;
 			#endif
-			#ifdef _ENABLEPIXELOUTLINE_ON
-			float2 _PixelOutlineTextureSpeed;
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionIntensity;
 			#endif
-			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowNoiseScale;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float2 _DirectionalGlowFadeNoiseScale;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleA;
 			#endif
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Offset;
+			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveOffset;
 			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingOffset;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortion;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float2 _FullAlphaDissolveNoiseScale;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeCenter;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseSpeed;
+			float2 _MetalNoiseScale;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortNoiseScale;
+			float2 _UVDistortSpeed;
+			#endif
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Scale;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenSnowScale;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolveNoiseScale;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortTo;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolvePosition;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortFrom;
 			#endif
 			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
@@ -10518,131 +10600,104 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _GlitchDistortionSpeed;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortion;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeCenter;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
 			float2 _FrozenHighlightDistortionScale;
+			float2 _FrozenHighlightDistortionSpeed;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float2 _ShadowOffset;
 			#endif
 			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
 			float2 _SourceAlphaDissolvePosition;
 			float2 _SourceAlphaDissolveNoiseScale;
 			#endif
-			#ifdef _ENABLESCREENTILING_ON
-			float2 _ScreenTilingOffset;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float2 _FullAlphaDissolveNoiseScale;
 			#endif
 			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 			float2 _DirectionalDistortionNoiseScale;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float2 _SourceGlowDissolvePosition;
-			float2 _SourceGlowDissolveNoiseScale;
-			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortion;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLESCREENTILING_ON
 			float2 _ScreenTilingScale;
 			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortionScale;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Offset;
+			float2 _TextureLayer2ScrollSpeed;
+			#endif
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingOffset;
 			#endif
 			#ifdef _ENABLEFULLDISTORTION_ON
-			float2 _FullDistortionDistortion;
 			float2 _FullDistortionNoiseScale;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortionSpeed;
-			#endif
-			#ifdef _ENABLEMETAL_ON
-			float2 _MetalNoiseScale;
-			#endif
-			#ifdef _ENABLEUVDISTORT_ON
-			float2 _UVDistortSpeed;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLEUVSCALE_ON
 			float2 _UVScaleScale;
-			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingScale;
+			float2 _UVScalePivot;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleB;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightScale;
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingScale;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseDistortion;
 			#endif
 			#ifdef _ENABLEUVSCROLL_ON
 			float2 _UVScrollSpeed;
 			#endif
-			#ifdef _ENABLEUVROTATE_ON
-			float2 _UVRotatePivot;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2ScrollSpeed;
-			#endif
 			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightScale;
 			float2 _FrozenHighlightSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Offset;
 			#endif
 			#ifdef _ENABLESINEROTATE_ON
 			float2 _SineRotatePivot;
 			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightDistortion;
+			#endif
+			#ifdef _ENABLEFULLDISTORTION_ON
+			float2 _FullDistortionDistortion;
+			#endif
 			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Scale;
-			#endif
-			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionScale;
-			float2 _MetalNoiseDistortion;
-			float2 _MetalNoiseSpeed;
 			#endif
-			#ifdef _ENABLEUVSCALE_ON
-			float2 _UVScalePivot;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortionScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightDensity;
+			#ifdef _ENABLEUVROTATE_ON
+			float2 _UVRotatePivot;
+			#endif
+			#ifdef _ENABLESCREENTILING_ON
+			float2 _ScreenTilingOffset;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowSpeed;
 			float _RainbowSaturation;
+			float _RainbowBrightness;
+			float _RainbowContrast;
+			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenFade;
+			#ifdef _ENABLEBURN_ON
+			float _BurnWidth;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowNoiseFactor;
-			float _RainbowContrast;
-			float _RainbowBrightness;
-			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEADDCOLOR_ON
-			float _AddColorFade;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintMinAlpha;
 			#endif
 			#ifdef _ENABLEBURN_ON
-			float _BurnInsideNoiseFactor;
+			float _BurnFade;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightContrast;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintFade;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float _BurnEdgeNoiseFactor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float _ShadowFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnSwirlFactor;
-			float _BurnFade;
 			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintContrast;
@@ -10650,32 +10705,34 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float _BurnRadius;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintMinAlpha;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnInsideContrast;
-			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnWidth;
-			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintFade;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float _PoisonRecolorFactor;
+			#ifdef _ENABLEBURN_ON
+			float _BurnSwirlFactor;
+			float _BurnInsideNoiseFactor;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowFade;
 			#endif
+			#ifdef _ENABLESHADOW_ON
+			float _ShadowFade;
+			#endif
+			#ifdef _ENABLEBURN_ON
+			float _BurnInsideContrast;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenHighlightContrast;
+			float _FrozenHighlightDensity;
+			float _FrozenFade;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveWidth;
+			#endif
+			#ifdef _ENABLESHINE_ON
+			float _ShineSaturation;
+			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingBrightness;
 			float _ShiftingSaturation;
 			float _ShiftingContrast;
 			float _ShiftingFade;
@@ -10690,7 +10747,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			int _TextureLayer1StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeRotation;
+			float _DirectionalAlphaFadeFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float _TextureLayer1Contrast;
@@ -10700,52 +10757,60 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _TextureLayer2EdgeClip;
 			#endif
 			int _TextureLayer2Columns;
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingDensity;
-			#endif
 			int _TextureLayer2Rows;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float _TextureLayer2Speed;
+			#endif
 			int _TextureLayer2StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeInvert;
+			float _DirectionalAlphaFadeRotation;
 			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Contrast;
-			float _TextureLayer2Fade;
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveFade;
+			float _SourceGlowDissolveNoiseFactor;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float _FullAlphaDissolveFade;
-			float _FullAlphaDissolveWidth;
+			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
+			float _SourceAlphaDissolveWidth;
+			float _SourceAlphaDissolveNoiseFactor;
+			float _SourceAlphaDissolveFade;
+			float _SourceAlphaDissolveInvert;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingBrightness;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
 			float _SourceGlowDissolveInvert;
 			#endif
-			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
-			float _FullGlowDissolveFade;
-			float _FullGlowDissolveWidth;
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeInvert;
 			#endif
-			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
-			float _SourceAlphaDissolveInvert;
-			float _SourceAlphaDissolveFade;
-			float _SourceAlphaDissolveNoiseFactor;
-			float _SourceAlphaDissolveWidth;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveNoiseFactor;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float _FullAlphaDissolveWidth;
+			float _FullAlphaDissolveFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Speed;
+			float _TextureLayer2Fade;
+			float _TextureLayer2Contrast;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveFade;
+			#endif
+			#ifdef _ENABLEADDCOLOR_ON
+			float _AddColorFade;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingDensity;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowDensity;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float _AddColorContrast;
 			#endif
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingSpeed;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedFade;
-			#endif
 			#ifdef _ENABLESHINE_ON
-			float _ShineSaturation;
 			float _ShineContrast;
 			float _ShineRotation;
 			float _ShineFrequency;
@@ -10759,53 +10824,48 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float _PoisonShiftSpeed;
-			#endif
-			#ifdef _ENABLEHALFTONE_ON
-			float _HalftoneFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
 			float _PoisonDensity;
 			float _PoisonFade;
 			float _PoisonNoiseBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeFade;
+			float _PoisonRecolorFactor;
 			#endif
 			#ifdef _ENABLEHALFTONE_ON
+			float _HalftoneFade;
 			float _HalftoneTiling;
 			float _HalftoneInvert;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedFade;
+			#endif
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeNoiseFactor;
+			float _DirectionalAlphaFadeWidth;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedReduce;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeInvert;
+			float _DirectionalGlowFadeRotation;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingSpeed;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeFade;
+			float _DirectionalGlowFadeNoiseFactor;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedContrast;
 			#endif
 			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
 			float _DirectionalGlowFadeWidth;
 			#endif
 			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedRainbowDensity;
-			float _EnchantedRainbowSpeed;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
 			float _EnchantedRainbowSaturation;
-			float _EnchantedContrast;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeFade;
-			float _DirectionalGlowFadeRotation;
-			float _DirectionalGlowFadeInvert;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedRainbowSpeed;
+			float _EnchantedRainbowDensity;
 			float _EnchantedBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeWidth;
-			float _DirectionalAlphaFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedReduce;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESQUISH_ON
 			float _SquishStretch;
@@ -10814,7 +10874,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelOutlineWidth;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowContrast;
+			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLESQUEEZE_ON
 			float _SqueezeFade;
@@ -10951,9 +11011,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _SHADERFADING_SPREAD
 			float _FadingNoiseFactor;
 			#endif
-			#ifdef _SHADERSPACE_SCREEN
 			float _ScreenWidthUnits;
-			#endif
 			#ifdef _SHADERSPACE_UI_GRAPHIC
 			float _RectHeight;
 			float _RectWidth;
@@ -10961,28 +11019,24 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelsPerUnit;
 			#ifdef _ENABLESMOKE_ON
 			float _SmokeNoiseFactor;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowDensity;
-			#endif
-			#ifdef _ENABLESMOKE_ON
 			float _SmokeSmoothness;
+			float _SmokeDarkEdge;
 			float _SmokeAlpha;
 			#endif
 			#ifdef _ENABLEPINGPONGGLOW_ON
-			float _PingPongGlowContrast;
-			float _PingPongGlowFade;
 			float _PingPongGlowFrequency;
 			#endif
+			float _MaskBrightness;
 			#ifdef _ENABLEPIXELOUTLINE_ON
+			float _PixelOutlineAlphaLimit;
 			float _PixelOutlineFade;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float _OuterOutlineWidth;
 			float _OuterOutlineFade;
 			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramContrast;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowFade;
 			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineWidth;
@@ -11000,15 +11054,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineFade;
 			#endif
-			#ifdef _ENABLEADDHUE_ON
-			float _AddHueFade;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowContrast;
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
+			float _HologramContrast;
 			float _HologramLineSpeed;
-			float _HologramLineGap;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLEMETAL_ON
 			float _MetalFade;
@@ -11018,12 +11069,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageFade;
-			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramLineFrequency;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageContrast;
+			float _CamouflageSmoothnessB;
 			float _CamouflageDensityB;
 			float _CamouflageSmoothnessA;
 			float _CamouflageDensityA;
@@ -11034,13 +11081,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
 			float _HologramMinAlpha;
+			float _HologramLineGap;
+			float _HologramLineFrequency;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float _CamouflageSmoothnessB;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueFade;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowContrast;
 			#endif
 			#ifdef _ENABLEADDHUE_ON
 			float _AddHueContrast;
-			float _AddHueBrightness;
 			float _AddHueSaturation;
 			#endif
 			#ifdef _ENABLECOLORREPLACE_ON
@@ -11114,8 +11165,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBRIGHTNESS_ON
 			float _Brightness;
 			#endif
-			#ifdef _ENABLESMOKE_ON
-			float _SmokeDarkEdge;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueBrightness;
 			#endif
 			float _NormalIntensity;
 			CBUFFER_END
@@ -11123,17 +11174,18 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
             struct VertexInput
 			{
-				float3 vertex : POSITION;
+				float3 positionOS : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT;
 				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				UNITY_SKINNED_VERTEX_INPUTS
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
-				float4 clipPos : SV_POSITION;
+				float4 positionCS : SV_POSITION;
 				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_texcoord1 : TEXCOORD1;
 				float4 ase_texcoord2 : TEXCOORD2;
@@ -11141,7 +11193,6 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
-
 
             int _ObjectId;
             int _PassValue;
@@ -11170,7 +11221,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11180,12 +11231,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float FastNoise101_g11665( float x )
+			float FastNoise101_g11666( float x )
 			{
 				float i = floor(x);
 				float f = frac(x);
@@ -11223,22 +11274,32 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				return 130.0 * dot( m, g );
 			}
 			
-			float MyCustomExpression16_g11667( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
 			float MyCustomExpression16_g11668( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11669( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11672( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11248,27 +11309,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11670( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11676( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11278,7 +11319,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11678( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11288,17 +11339,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float MyCustomExpression16_g11673( float linValue )
+			float MyCustomExpression16_g11674( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11308,7 +11359,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11333,7 +11384,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11343,7 +11394,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11353,7 +11404,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11385,7 +11436,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11395,7 +11446,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11405,7 +11456,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11415,7 +11466,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11425,7 +11476,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11435,7 +11486,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11445,7 +11496,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11455,7 +11506,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11465,7 +11516,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11475,7 +11526,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11485,7 +11536,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11495,7 +11546,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11505,7 +11556,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11515,7 +11566,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11525,7 +11576,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11535,7 +11586,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11545,7 +11596,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11555,7 +11606,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11565,7 +11616,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11593,7 +11644,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11603,7 +11654,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11613,7 +11664,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11623,7 +11674,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11633,7 +11684,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11643,7 +11694,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -11652,26 +11703,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			VertexOutput vert(VertexInput v )
 			{
 				VertexOutput o = (VertexOutput)0;
+
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+				UNITY_SKINNED_VERTEX_COMPUTE(v);
+
+				v.positionOS = UnityFlipSprite( v.positionOS, unity_SpriteProps.xy );
 
 				float2 _ZeroVector = float2(0,0);
 				float2 texCoord363 = v.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionCS = TransformObjectToHClip( ( v.positionOS ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float3 ase_positionWS = TransformObjectToWorld( ( v.positionOS ).xyz );
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -11706,52 +11761,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch198 = _ZeroVector;
 				#endif
-				float2 temp_output_2_0_g11899 = staticSwitch198;
+				float2 temp_output_2_0_g11900 = staticSwitch198;
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
-				float temp_output_8_0_g11899 = shaderTime237;
+				float shaderTime237 = staticSwitch42_g11663;
+				float temp_output_8_0_g11900 = shaderTime237;
 				#ifdef _ENABLESINEMOVE_ON
-				float2 staticSwitch4_g11899 = ( ( sin( ( temp_output_8_0_g11899 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11899 );
+				float2 staticSwitch4_g11900 = ( ( sin( ( temp_output_8_0_g11900 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11900 );
 				#else
-				float2 staticSwitch4_g11899 = temp_output_2_0_g11899;
+				float2 staticSwitch4_g11900 = temp_output_2_0_g11900;
 				#endif
 				#ifdef _ENABLEVIBRATE_ON
-				float temp_output_30_0_g11900 = temp_output_8_0_g11899;
-				float3 rotatedValue21_g11900 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11900 * _VibrateRotation ) );
-				float2 staticSwitch6_g11899 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11900 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11900).xy ) + staticSwitch4_g11899 );
+				float temp_output_30_0_g11901 = temp_output_8_0_g11900;
+				float3 rotatedValue21_g11901 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11901 * _VibrateRotation ) );
+				float2 staticSwitch6_g11900 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11901 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11901).xy ) + staticSwitch4_g11900 );
 				#else
-				float2 staticSwitch6_g11899 = staticSwitch4_g11899;
+				float2 staticSwitch6_g11900 = staticSwitch4_g11900;
 				#endif
 				#ifdef _ENABLESINESCALE_ON
-				float2 staticSwitch10_g11899 = ( staticSwitch6_g11899 + ( (v.vertex).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11899 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
+				float2 staticSwitch10_g11900 = ( staticSwitch6_g11900 + ( (v.positionOS).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11900 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
 				#else
-				float2 staticSwitch10_g11899 = staticSwitch6_g11899;
+				float2 staticSwitch10_g11900 = staticSwitch6_g11900;
 				#endif
-				float2 temp_output_424_0 = staticSwitch10_g11899;
+				float2 temp_output_424_0 = staticSwitch10_g11900;
 #ifdef _SHADERFADING_MASK
 				float2 uv_FadingMask = v.ase_texcoord.xy * _FadingMask_ST.xy + _FadingMask_ST.zw;
 				#endif
@@ -11766,30 +11821,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = v.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = v.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (v.vertex).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (v.vertex).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (v.positionOS).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (v.positionOS).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				float linValue16_g11716 = tex2Dlod( _UberNoiseTexture, float4( ( shaderPosition235 * _FadingNoiseScale ), 0, 0.0) ).r;
 				float localMyCustomExpression16_g11716 = MyCustomExpression16_g11716( linValue16_g11716 );
 				float clampResult14_g11715 = clamp( ( ( ( _FadingFade * ( 1.0 + temp_output_4_0_g11715 ) ) - localMyCustomExpression16_g11716 ) / temp_output_4_0_g11715 ) , 0.0 , 1.0 );
@@ -11799,80 +11854,80 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult121 = lerp( float2( 0,0 ) , temp_output_424_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch142 = temp_output_424_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch142 = lerpResult121;
 				#else
 				float2 staticSwitch142 = temp_output_424_0;
 				#endif
 				
 				o.ase_texcoord1 = screenPos;
-				o.ase_texcoord2.xyz = ase_worldPos;
+				o.ase_texcoord2.xyz = ase_positionWS;
 				
 				o.ase_texcoord.xy = v.ase_texcoord.xy;
-				o.ase_texcoord3 = float4(v.vertex,1);
+				o.ase_texcoord3 = float4(v.positionOS,1);
 				o.ase_color = v.ase_color;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.zw = 0;
 				o.ase_texcoord2.w = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					float3 defaultVertexValue = v.vertex.xyz;
+					float3 defaultVertexValue = v.positionOS;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 				float3 vertexValue = float3( staticSwitch142 ,  0.0 );
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					v.vertex.xyz = vertexValue;
+					v.positionOS = vertexValue;
 				#else
-					v.vertex.xyz += vertexValue;
+					v.positionOS += vertexValue;
 				#endif
 
-				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
-				float3 positionWS = TransformObjectToWorld(v.vertex);
-				o.clipPos = TransformWorldToHClip(positionWS);
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.positionOS);
+				float3 positionWS = TransformObjectToWorld(v.positionOS);
+				o.positionCS = TransformWorldToHClip(positionWS);
 
 				return o;
 			}
 
-			half4 frag(VertexOutput IN ) : SV_TARGET
+			half4 frag(VertexOutput IN) : SV_TARGET
 			{
 				float2 texCoord363 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 				float4 screenPos = IN.ase_texcoord1;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = IN.ase_texcoord2.xyz;
+				float3 ase_positionWS = IN.ase_texcoord2.xyz;
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -11900,89 +11955,89 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float2 staticSwitch366 = uvAfterPixelArt450;
 				#endif
 				float2 fixedUV475 = staticSwitch366;
-				float2 temp_output_3_0_g11664 = fixedUV475;
+				float2 temp_output_3_0_g11665 = fixedUV475;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch117_g11665 = _WindMinIntensity;
+				float staticSwitch117_g11666 = _WindMinIntensity;
 				#else
-				float staticSwitch117_g11665 = WindMinIntensity;
+				float staticSwitch117_g11666 = WindMinIntensity;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch118_g11665 = _WindMaxIntensity;
+				float staticSwitch118_g11666 = _WindMaxIntensity;
 				#else
-				float staticSwitch118_g11665 = WindMaxIntensity;
+				float staticSwitch118_g11666 = WindMaxIntensity;
 				#endif
 				#endif
-				float4 transform62_g11665 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
+				float4 transform62_g11666 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDISPARALLAX_ON
-				float staticSwitch111_g11665 = _WindXPosition;
+				float staticSwitch111_g11666 = _WindXPosition;
 				#else
-				float staticSwitch111_g11665 = transform62_g11665.x;
+				float staticSwitch111_g11666 = transform62_g11666.x;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch113_g11665 = _WindNoiseScale;
+				float staticSwitch113_g11666 = _WindNoiseScale;
 				#else
-				float staticSwitch113_g11665 = WindNoiseScale;
+				float staticSwitch113_g11666 = WindNoiseScale;
 				#endif
 				#endif
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
+				float shaderTime237 = staticSwitch42_g11663;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch125_g11665 = ( shaderTime237 * _WindNoiseSpeed );
+				float staticSwitch125_g11666 = ( shaderTime237 * _WindNoiseSpeed );
 				#else
-				float staticSwitch125_g11665 = WindTime;
+				float staticSwitch125_g11666 = WindTime;
 				#endif
-				float temp_output_50_0_g11665 = ( ( staticSwitch111_g11665 * staticSwitch113_g11665 ) + staticSwitch125_g11665 );
-				float x101_g11665 = temp_output_50_0_g11665;
-				float localFastNoise101_g11665 = FastNoise101_g11665( x101_g11665 );
-				float2 temp_cast_0 = (temp_output_50_0_g11665).xx;
-				float simplePerlin2D121_g11665 = snoise( temp_cast_0*0.5 );
-				simplePerlin2D121_g11665 = simplePerlin2D121_g11665*0.5 + 0.5;
+				float temp_output_50_0_g11666 = ( ( staticSwitch111_g11666 * staticSwitch113_g11666 ) + staticSwitch125_g11666 );
+				float x101_g11666 = temp_output_50_0_g11666;
+				float localFastNoise101_g11666 = FastNoise101_g11666( x101_g11666 );
+				float2 temp_cast_0 = (temp_output_50_0_g11666).xx;
+				float simplePerlin2D121_g11666 = snoise( temp_cast_0*0.5 );
+				simplePerlin2D121_g11666 = simplePerlin2D121_g11666*0.5 + 0.5;
 				#ifdef _WINDHIGHQUALITYNOISE_ON
-				float staticSwitch123_g11665 = simplePerlin2D121_g11665;
+				float staticSwitch123_g11666 = simplePerlin2D121_g11666;
 				#else
-				float staticSwitch123_g11665 = ( localFastNoise101_g11665 + 0.5 );
+				float staticSwitch123_g11666 = ( localFastNoise101_g11666 + 0.5 );
 				#endif
-				float lerpResult86_g11665 = lerp( staticSwitch117_g11665 , staticSwitch118_g11665 , staticSwitch123_g11665);
-				float clampResult29_g11665 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11665 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
-				float2 temp_output_1_0_g11665 = temp_output_3_0_g11664;
-				float temp_output_39_0_g11665 = ( temp_output_1_0_g11665.y + _WindFlip );
-				float3 appendResult43_g11665 = (float3(0.5 , -_WindFlip , 0.0));
-				float2 appendResult27_g11665 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11665 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11665 )));
-				float3 rotatedValue19_g11665 = RotateAroundAxis( appendResult43_g11665, float3( ( appendResult27_g11665 + temp_output_1_0_g11665 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11665 * temp_output_39_0_g11665 ) );
-				float2 staticSwitch4_g11664 = (rotatedValue19_g11665).xy;
+				float lerpResult86_g11666 = lerp( staticSwitch117_g11666 , staticSwitch118_g11666 , staticSwitch123_g11666);
+				float clampResult29_g11666 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11666 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
+				float2 temp_output_1_0_g11666 = temp_output_3_0_g11665;
+				float temp_output_39_0_g11666 = ( temp_output_1_0_g11666.y + _WindFlip );
+				float3 appendResult43_g11666 = (float3(0.5 , -_WindFlip , 0.0));
+				float2 appendResult27_g11666 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11666 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11666 )));
+				float3 rotatedValue19_g11666 = RotateAroundAxis( appendResult43_g11666, float3( ( appendResult27_g11666 + temp_output_1_0_g11666 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11666 * temp_output_39_0_g11666 ) );
+				float2 staticSwitch4_g11665 = (rotatedValue19_g11666).xy;
 				#else
-				float2 staticSwitch4_g11664 = temp_output_3_0_g11664;
+				float2 staticSwitch4_g11665 = temp_output_3_0_g11665;
 				#endif
 				float2 texCoord435 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 				#ifdef _PIXELPERFECTSPACE_ON
@@ -11991,81 +12046,82 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (IN.ase_texcoord3.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (IN.ase_texcoord3.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (IN.ase_texcoord3.xyz).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (IN.ase_texcoord3.xyz).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				#ifdef _ENABLEFULLDISTORTION_ON
-				float2 temp_output_195_0_g11666 = shaderPosition235;
-				float linValue16_g11667 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11666 * _FullDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11667 = MyCustomExpression16_g11667( linValue16_g11667 );
-				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11666 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float2 temp_output_195_0_g11667 = shaderPosition235;
+				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11667 * _FullDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11668 = MyCustomExpression16_g11668( linValue16_g11668 );
-				float2 appendResult189_g11666 = (float2(( localMyCustomExpression16_g11667 - 0.5 ) , ( localMyCustomExpression16_g11668 - 0.5 )));
-				float2 staticSwitch83 = ( staticSwitch4_g11664 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11666 * _FullDistortionDistortion ) );
+				float linValue16_g11669 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11667 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float localMyCustomExpression16_g11669 = MyCustomExpression16_g11669( linValue16_g11669 );
+				float2 appendResult189_g11667 = (float2(( localMyCustomExpression16_g11668 - 0.5 ) , ( localMyCustomExpression16_g11669 - 0.5 )));
+				float2 staticSwitch83 = ( staticSwitch4_g11665 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11667 * _FullDistortionDistortion ) );
 				#else
-				float2 staticSwitch83 = staticSwitch4_g11664;
+				float2 staticSwitch83 = staticSwitch4_g11665;
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-				float2 temp_output_182_0_g11669 = shaderPosition235;
-				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionDistortionScale ) ).r;
+				float2 temp_output_182_0_g11670 = shaderPosition235;
+				float linValue16_g11672 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionDistortionScale ) ).r;
+				float localMyCustomExpression16_g11672 = MyCustomExpression16_g11672( linValue16_g11672 );
+				float3 rotatedValue168_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11672 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
+				float3 rotatedValue136_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11670 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
+				float3 break130_g11670 = rotatedValue136_g11670;
+				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11671 = MyCustomExpression16_g11671( linValue16_g11671 );
-				float3 rotatedValue168_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11671 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
-				float3 rotatedValue136_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11669 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
-				float3 break130_g11669 = rotatedValue136_g11669;
-				float linValue16_g11670 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11670 = MyCustomExpression16_g11670( linValue16_g11670 );
-				float clampResult154_g11669 = clamp( ( ( break130_g11669.x + break130_g11669.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11670 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11669).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 )) ) ) );
+				float clampResult154_g11670 = clamp( ( ( break130_g11670.x + break130_g11670.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11671 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
+				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11670).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 )) ) ) );
 				#else
 				float2 staticSwitch82 = staticSwitch83;
 				#endif
 				#ifdef _ENABLEHOLOGRAM_ON
-				float temp_output_8_0_g11674 = ( ( ( shaderTime237 * _HologramDistortionSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y );
-				float2 temp_cast_4 = (temp_output_8_0_g11674).xx;
+				float temp_output_81_0_g11675 = unity_OrthoParams.y;
+				float temp_output_8_0_g11675 = ( ( ( shaderTime237 * ( _HologramDistortionSpeed * temp_output_81_0_g11675 * 0.2 ) ) + ase_positionWS.y ) / temp_output_81_0_g11675 );
+				float2 temp_cast_4 = (temp_output_8_0_g11675).xx;
 				float2 temp_cast_5 = (_HologramDistortionDensity).xx;
-				float linValue16_g11676 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
-				float localMyCustomExpression16_g11676 = MyCustomExpression16_g11676( linValue16_g11676 );
-				float clampResult75_g11674 = clamp( localMyCustomExpression16_g11676 , 0.075 , 0.6 );
-				float2 temp_cast_6 = (temp_output_8_0_g11674).xx;
-				float2 temp_cast_7 = (_HologramDistortionScale).xx;
-				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
 				float localMyCustomExpression16_g11677 = MyCustomExpression16_g11677( linValue16_g11677 );
-				float2 appendResult2_g11675 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+				float clampResult75_g11675 = clamp( localMyCustomExpression16_g11677 , 0.075 , 0.6 );
+				float2 temp_cast_6 = (temp_output_8_0_g11675).xx;
+				float2 temp_cast_7 = (_HologramDistortionScale).xx;
+				float linValue16_g11678 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float localMyCustomExpression16_g11678 = MyCustomExpression16_g11678( linValue16_g11678 );
+				float2 appendResult2_g11676 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float hologramFade182 = _HologramFade;
-				float2 appendResult44_g11674 = (float2(( ( ( clampResult75_g11674 * ( localMyCustomExpression16_g11677 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11675 ).x ) * hologramFade182 ) , 0.0));
-				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11674 );
+				float2 appendResult44_g11675 = (float2(( ( ( clampResult75_g11675 * ( localMyCustomExpression16_g11678 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11676 ).x ) * hologramFade182 ) , 0.0));
+				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11675 );
 				#else
 				float2 staticSwitch59 = staticSwitch82;
 				#endif
 				#ifdef _ENABLEGLITCH_ON
-				float2 temp_output_18_0_g11672 = shaderPosition235;
-				float2 glitchPosition154 = temp_output_18_0_g11672;
+				float2 temp_output_18_0_g11673 = shaderPosition235;
+				float2 glitchPosition154 = temp_output_18_0_g11673;
 				float linValue16_g11718 = tex2D( _UberNoiseTexture, ( ( glitchPosition154 + ( _GlitchDistortionSpeed * shaderTime237 ) ) * _GlitchDistortionScale ) ).r;
 				float localMyCustomExpression16_g11718 = MyCustomExpression16_g11718( linValue16_g11718 );
-				float linValue16_g11673 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11672 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
-				float localMyCustomExpression16_g11673 = MyCustomExpression16_g11673( linValue16_g11673 );
-				float glitchFade152 = ( max( localMyCustomExpression16_g11673 , _GlitchMaskMin ) * _GlitchFade );
+				float linValue16_g11674 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11673 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
+				float localMyCustomExpression16_g11674 = MyCustomExpression16_g11674( linValue16_g11674 );
+				float glitchFade152 = ( max( localMyCustomExpression16_g11674 , _GlitchMaskMin ) * _GlitchFade );
 				float2 staticSwitch62 = ( staticSwitch59 + ( ( localMyCustomExpression16_g11718 - 0.5 ) * _GlitchDistortion * glitchFade152 ) );
 				#else
 				float2 staticSwitch62 = staticSwitch59;
@@ -12156,30 +12212,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult130 = lerp( texCoord131 , temp_output_484_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch145 = temp_output_484_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch145 = lerpResult130;
 				#else
 				float2 staticSwitch145 = temp_output_484_0;
@@ -12323,7 +12379,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11758 = staticSwitch3_g11753;
 				#ifdef _ENABLECHECKERBOARD_ON
 				float4 temp_output_1_0_g11759 = temp_output_1_0_g11758;
-				float2 appendResult4_g11759 = (float2(ase_worldPos.x , ase_worldPos.y));
+				float2 appendResult4_g11759 = (float2(ase_positionWS.x , ase_positionWS.y));
 				float2 temp_output_44_0_g11759 = ( appendResult4_g11759 * _CheckerboardTiling * 0.5 );
 				float2 break12_g11759 = step( ( ceil( temp_output_44_0_g11759 ) - temp_output_44_0_g11759 ) , float2( 0.5,0.5 ) );
 				float4 appendResult42_g11759 = (float4(( (temp_output_1_0_g11759).rgb * min( ( _CheckerboardDarken + abs( ( -break12_g11759.x + break12_g11759.y ) ) ) , 1.0 ) ) , temp_output_1_0_g11759.a));
@@ -12416,7 +12472,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 In115_g11766 = temp_output_2_0_g11766;
 				float3 From115_g11766 = (_ColorReplaceFromColor).rgb;
 				float4 break2_g11767 = temp_output_1_0_g11766;
-				float3 To115_g11766 = ( pow( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , max( _ColorReplaceContrast , 0.001 ) ) * (_ColorReplaceToColor).rgb );
+				float3 To115_g11766 = ( pow( max( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , 0.0001 ) , max( _ColorReplaceContrast , 0.0001 ) ) * (_ColorReplaceToColor).rgb );
 				float Fuzziness115_g11766 = _ColorReplaceSmoothness;
 				float Range115_g11766 = _ColorReplaceRange;
 				float3 localMyCustomExpression115_g11766 = MyCustomExpression115_g11766( In115_g11766 , From115_g11766 , To115_g11766 , Fuzziness115_g11766 , Range115_g11766 );
@@ -12438,8 +12494,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_57_0_g11762 = staticSwitch4_g11779;
 				#ifdef _ENABLECONTRAST_ON
 				float4 temp_output_1_0_g11802 = temp_output_57_0_g11762;
-				float3 temp_cast_30 = (max( _Contrast , 0.001 )).xxx;
-				float4 appendResult4_g11802 = (float4(pow( (temp_output_1_0_g11802).rgb , temp_cast_30 ) , temp_output_1_0_g11802.a));
+				float3 temp_cast_30 = (max( _Contrast , 0.0001 )).xxx;
+				float4 appendResult4_g11802 = (float4(pow( max( (temp_output_1_0_g11802).rgb , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_30 ) , temp_output_1_0_g11802.a));
 				float4 staticSwitch32_g11762 = appendResult4_g11802;
 				#else
 				float4 staticSwitch32_g11762 = temp_output_57_0_g11762;
@@ -12466,7 +12522,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float temp_output_3_0_g11796 = ( ( break2_g11797.x + break2_g11797.x + break2_g11797.y + break2_g11797.y + break2_g11797.y + break2_g11797.z ) / 6.0 );
 				float clampResult25_g11796 = clamp( ( ( ( ( temp_output_3_0_g11796 + _SplitToningShift ) - 0.5 ) * _SplitToningBalance ) + 0.5 ) , 0.0 , 1.0 );
 				float3 lerpResult6_g11796 = lerp( (_SplitToningShadowsColor).rgb , (_SplitToningHighlightsColor).rgb , clampResult25_g11796);
-				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( temp_output_3_0_g11796 , max( _SplitToningContrast , 0.001 ) ) ) , _SplitToningFade);
+				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( max( temp_output_3_0_g11796 , 0.0001 ) , max( _SplitToningContrast , 0.0001 ) ) ) , _SplitToningFade);
 				float4 appendResult18_g11796 = (float4(lerpResult11_g11796 , temp_output_1_0_g11796.a));
 				float4 staticSwitch30_g11762 = appendResult18_g11796;
 				#else
@@ -12476,7 +12532,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11774 = staticSwitch30_g11762;
 				float3 temp_output_4_0_g11774 = (temp_output_1_0_g11774).rgb;
 				float4 break12_g11774 = temp_output_1_0_g11774;
-				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , max( _BlackTintPower , 0.001 ) ));
+				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( max( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , 0.0001 ) , max( _BlackTintPower , 0.0001 ) ));
 				float3 lerpResult13_g11774 = lerp( temp_output_4_0_g11774 , lerpResult7_g11774 , _BlackTintFade);
 				float4 appendResult11_g11774 = (float4(lerpResult13_g11774 , break12_g11774.a));
 				float4 staticSwitch20_g11762 = appendResult11_g11774;
@@ -12490,7 +12546,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float linValue16_g11789 = tex2D( _UberNoiseTexture, ( temp_output_65_0_g11788 * _InkSpreadNoiseScale ) ).r;
 				float localMyCustomExpression16_g11789 = MyCustomExpression16_g11789( linValue16_g11789 );
 				float clampResult53_g11788 = clamp( ( ( ( _InkSpreadDistance - distance( _InkSpreadPosition , temp_output_65_0_g11788 ) ) + ( localMyCustomExpression16_g11789 * _InkSpreadNoiseFactor ) ) / max( _InkSpreadWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , max( _InkSpreadContrast , 0.001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
+				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( max( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , 0.0001 ) , max( _InkSpreadContrast , 0.0001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
 				float4 appendResult9_g11788 = (float4(lerpResult7_g11788 , (temp_output_1_0_g11788).a));
 				float4 staticSwitch17_g11762 = appendResult9_g11788;
 				#else
@@ -12517,7 +12573,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch33_g11784 = _AddHueFade;
 				#endif
-				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , max( _AddHueContrast , 0.001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
+				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( max( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , 0.0001 ) , max( _AddHueContrast , 0.0001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
 				float4 staticSwitch23_g11762 = appendResult6_g11784;
 				#else
 				float4 staticSwitch23_g11762 = staticSwitch19_g11762;
@@ -12533,7 +12589,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch27_g11781 = temp_output_13_0_g11781;
 				#endif
-				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , max( _SineGlowContrast , 0.001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
+				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( max( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , 0.0001 ) , max( _SineGlowContrast , 0.0001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
 				float4 staticSwitch28_g11762 = appendResult21_g11781;
 				#else
 				float4 staticSwitch28_g11762 = staticSwitch23_g11762;
@@ -12628,7 +12684,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch199_g11776 = temp_output_82_0_g11776;
 				#endif
-				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( _PixelOutlineFade * 3.0 ) , 1.0 ) );
+				float temp_output_213_0_g11776 = ( _PixelOutlineFade * step( temp_output_15_0_g11776.a , _PixelOutlineAlphaLimit ) );
+				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( temp_output_213_0_g11776 * 3.0 ) , 1.0 ) );
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch203_g11776 = 1.0;
 				#else
@@ -12638,7 +12695,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult170_g11776 = lerp( lerpResult178_g11776 , staticSwitch199_g11776 , staticSwitch203_g11776);
 				float2 appendResult206_g11776 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float2 temp_output_209_0_g11776 = ( float2( 1,1 ) / appendResult206_g11776 );
-				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , _PixelOutlineFade);
+				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , temp_output_213_0_g11776);
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch200_g11776 = ( temp_output_182_0_g11776 * lerpResult168_g11776 );
 				#else
@@ -12653,7 +12710,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult15_g11763 = lerp( (_PingPongGlowFrom).rgb , (_PingPongGlowTo).rgb , ( ( sin( ( temp_output_39_0_g11762 * _PingPongGlowFrequency ) ) + 1.0 ) / 2.0 ));
 				float4 temp_output_5_0_g11763 = staticSwitch48_g11762;
 				float4 break2_g11764 = temp_output_5_0_g11763;
-				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , max( _PingPongGlowContrast , 0.001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
+				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( max( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , 0.0001 ) , max( _PingPongGlowContrast , 0.0001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
 				float4 staticSwitch46_g11762 = appendResult12_g11763;
 				#else
 				float4 staticSwitch46_g11762 = staticSwitch48_g11762;
@@ -12662,7 +12719,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef _ENABLEHOLOGRAM_ON
 				float4 temp_output_1_0_g11804 = temp_output_361_0;
 				float4 break2_g11805 = temp_output_1_0_g11804;
-				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , max( _HologramContrast , 0.001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * _HologramLineSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
+				float temp_output_44_0_g11804 = unity_OrthoParams.y;
+				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( max( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , 0.0001 ) , max( _HologramContrast , 0.0001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * ( _HologramLineSpeed * temp_output_44_0_g11804 * 0.2 ) ) + ase_positionWS.y ) / temp_output_44_0_g11804 ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
 				float4 lerpResult37_g11804 = lerp( temp_output_1_0_g11804 , appendResult22_g11804 , hologramFade182);
 				float4 staticSwitch56 = lerpResult37_g11804;
 				#else
@@ -12703,7 +12761,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float clampResult65_g11841 = clamp( ( ( _CamouflageDensityB - localMyCustomExpression16_g11845 ) / max( _CamouflageSmoothnessB , 0.005 ) ) , 0.0 , 1.0 );
 				float4 lerpResult68_g11841 = lerp( lerpResult55_g11841 , ( _CamouflageColorB * clampResult65_g11841 ) , clampResult65_g11841);
 				float4 break2_g11844 = temp_output_1_0_g11841;
-				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , max( _CamouflageContrast , 0.001 ) ) ) , _CamouflageFade);
+				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( max( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , 0.0001 ) , max( _CamouflageContrast , 0.0001 ) ) ) , _CamouflageFade);
 				float4 appendResult7_g11841 = (float4(lerpResult4_g11841 , temp_output_1_0_g11841.a));
 				float4 staticSwitch26_g11811 = appendResult7_g11841;
 				#else
@@ -12726,7 +12784,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch60_g11834 = _MetalFade;
 				#endif
-				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( temp_output_5_0_g11834 , max( _MetalHighlightContrast , 0.001 ) ) ) + ( pow( temp_output_5_0_g11834 , max( _MetalContrast , 0.001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
+				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalHighlightContrast , 0.0001 ) ) ) + ( pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalContrast , 0.0001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
 				float4 appendResult8_g11834 = (float4((lerpResult45_g11834).rgb , (temp_output_1_0_g11834).a));
 				float4 staticSwitch28_g11811 = appendResult8_g11834;
 				#else
@@ -12744,7 +12802,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11830 = MyCustomExpression16_g11830( linValue16_g11830 );
 				float linValue16_g11831 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g11830 - 0.25 ) * _FrozenHighlightDistortion ) + ( ( temp_output_73_0_g11826 * _FrozenHighlightSpeed ) + temp_output_72_0_g11826 ) ) * _FrozenHighlightScale ) ).r;
 				float localMyCustomExpression16_g11831 = MyCustomExpression16_g11831( linValue16_g11831 );
-				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( temp_output_7_0_g11826 , max( _FrozenContrast , 0.001 ) ) * (_FrozenTint).rgb ) + ( pow( temp_output_7_0_g11826 , max( _FrozenSnowContrast , 0.001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( temp_output_7_0_g11826 , max( _FrozenHighlightContrast , 0.001 ) ) )).rgb ) , _FrozenFade);
+				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenContrast , 0.0001 ) ) * (_FrozenTint).rgb ) + ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenSnowContrast , 0.0001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenHighlightContrast , 0.0001 ) ) )).rgb ) , _FrozenFade);
 				float4 appendResult26_g11826 = (float4(lerpResult57_g11826 , temp_output_1_0_g11826.a));
 				float4 staticSwitch29_g11811 = appendResult26_g11826;
 				#else
@@ -12764,7 +12822,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11822 = MyCustomExpression16_g11822( linValue16_g11822 );
 				float temp_output_15_0_g11820 = ( ( ( _BurnRadius - distance( temp_output_72_0_g11820 , _BurnPosition ) ) + ( localMyCustomExpression16_g11822 * _BurnEdgeNoiseFactor ) ) / max( _BurnWidth , 0.01 ) );
 				float clampResult18_g11820 = clamp( temp_output_15_0_g11820 , 0.0 , 1.0 );
-				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , max( _BurnInsideContrast , 0.001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
+				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( max( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , 0.0001 ) , max( _BurnInsideContrast , 0.0001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
 				float3 lerpResult40_g11820 = lerp( temp_output_28_0_g11820 , ( lerpResult29_g11820 + ( ( step( temp_output_15_0_g11820 , 1.0 ) * step( 0.0 , temp_output_15_0_g11820 ) ) * (_BurnEdgeColor).rgb ) ) , _BurnFade);
 				float4 appendResult43_g11820 = (float4(lerpResult40_g11820 , temp_output_1_0_g11820.a));
 				float4 staticSwitch32_g11811 = appendResult43_g11820;
@@ -12792,7 +12850,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 break2_g11814 = temp_output_1_0_g11812;
 				float3 temp_cast_69 = (( ( break2_g11814.x + break2_g11814.x + break2_g11814.y + break2_g11814.y + break2_g11814.y + break2_g11814.z ) / 6.0 )).xxx;
 				float3 lerpResult92_g11812 = lerp( temp_cast_69 , temp_output_57_0_g11812 , _ShineSaturation);
-				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.001 )).xxx;
+				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.0001 )).xxx;
 				float3 rotatedValue69_g11812 = RotateAroundAxis( float3( 0,0,0 ), float3( ( _ShineFrequency * temp_output_41_0_g11811 ) ,  0.0 ), float3( 0,0,1 ), ( ( _ShineRotation / 180.0 ) * PI ) );
 				float temp_output_103_0_g11812 = ( _ShineFrequency * _ShineWidth );
 				float clampResult80_g11812 = clamp( ( ( ( sin( ( rotatedValue69_g11812.x - ( temp_output_40_0_g11811 * _ShineSpeed * _ShineFrequency ) ) ) - ( 1.0 - temp_output_103_0_g11812 ) ) / temp_output_103_0_g11812 ) * _ShineSmooth ) , 0.0 , 1.0 );
@@ -12803,7 +12861,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch98_g11812 = _ShineFade;
 				#endif
-				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( lerpResult92_g11812 , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
+				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( max( lerpResult92_g11812 , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
 				float4 staticSwitch36_g11811 = appendResult8_g11812;
 				#else
 				float4 staticSwitch36_g11811 = staticSwitch34_g11811;
@@ -12817,7 +12875,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_28_0_g11847 = (temp_output_1_0_g11847).rgb;
 				float4 break2_g11848 = float4( temp_output_28_0_g11847 , 0.0 );
 				float3 lerpResult32_g11847 = lerp( temp_output_28_0_g11847 , ( temp_output_24_0_g11847 * ( ( break2_g11848.x + break2_g11848.x + break2_g11848.y + break2_g11848.y + break2_g11848.y + break2_g11848.z ) / 6.0 ) ) , ( _PoisonFade * _PoisonRecolorFactor ));
-				float4 appendResult27_g11847 = (float4(( ( max( pow( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , max( _PoisonDensity , 0.001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
+				float4 appendResult27_g11847 = (float4(( ( max( pow( max( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , 0.0001 ) , max( _PoisonDensity , 0.0001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
 				float4 staticSwitch39_g11811 = appendResult27_g11847;
 				#else
 				float4 staticSwitch39_g11811 = staticSwitch36_g11811;
@@ -12842,7 +12900,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 staticSwitch50_g11851 = lerpResult42_g11851;
 				#endif
 				float4 break2_g11853 = temp_output_10_0_g11851;
-				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , max( _EnchantedContrast , 0.001 ) ) * _EnchantedBrightness );
+				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( max( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , 0.0001 ) , max( _EnchantedContrast , 0.0001 ) ) * _EnchantedBrightness );
 				float temp_output_45_0_g11851 = ( max( ( temp_output_36_0_g11851 - _EnchantedReduce ) , 0.0 ) * _EnchantedFade );
 				float3 lerpResult44_g11851 = lerp( temp_output_12_0_g11851 , temp_output_40_0_g11851 , temp_output_45_0_g11851);
 				#ifdef _ENCHANTEDLERPTOGGLE_ON
@@ -12869,7 +12927,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch26_g11856 = ( lerpResult20_g11856 * _ShiftingBrightness );
 				#endif
-				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( temp_output_4_0_g11856 , max( _ShiftingContrast , 0.001 ) ) ) , _ShiftingFade);
+				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( max( temp_output_4_0_g11856 , 0.0001 ) , max( _ShiftingContrast , 0.0001 ) ) ) , _ShiftingFade);
 				float4 appendResult6_g11856 = (float4(lerpResult31_g11856 , break5_g11856.a));
 				float4 staticSwitch33_g11856 = appendResult6_g11856;
 				#else
@@ -12904,7 +12962,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11863 = ( appendResult13_g11863 * appendResult18_g11863 );
 				float4 break2_g11865 = temp_output_5_0_g11863;
 				#ifdef _TEXTURELAYER1CONTRASTTOGGLE_ON
-				float3 staticSwitch80_g11863 = ( pow( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , max( _TextureLayer1Contrast , 0.001 ) ) * temp_output_16_0_g11863 );
+				float3 staticSwitch80_g11863 = ( pow( max( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer1Contrast , 0.0001 ) ) * temp_output_16_0_g11863 );
 				#else
 				float3 staticSwitch80_g11863 = temp_output_16_0_g11863;
 				#endif
@@ -12943,7 +13001,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11859 = ( appendResult13_g11859 * appendResult18_g11859 );
 				float4 break2_g11861 = temp_output_5_0_g11859;
 				#ifdef _TEXTURELAYER2CONTRASTTOGGLE_ON
-				float3 staticSwitch84_g11859 = ( pow( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , max( _TextureLayer2Contrast , 0.001 ) ) * temp_output_16_0_g11859 );
+				float3 staticSwitch84_g11859 = ( pow( max( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer2Contrast , 0.0001 ) ) * temp_output_16_0_g11859 );
 				#else
 				float3 staticSwitch84_g11859 = temp_output_16_0_g11859;
 				#endif
@@ -12964,7 +13022,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 				float4 break4_g11868 = staticSwitch77;
-				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 ));
+				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 ));
 				float4 appendResult5_g11868 = (float4(break4_g11868.r , break4_g11868.g , break4_g11868.b , ( break4_g11868.a * directionalDistortionAlpha167 )));
 				float4 staticSwitch75 = appendResult5_g11868;
 				#else
@@ -13073,7 +13131,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11885 = staticSwitch13_g11869;
 				float4 break2_g11887 = temp_output_1_0_g11885;
 				#ifdef _ADDCOLORCONTRASTTOGGLE_ON
-				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , max( _AddColorContrast , 0.001 ) ) );
+				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( max( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , 0.0001 ) , max( _AddColorContrast , 0.0001 ) ) );
 				#else
 				float3 staticSwitch17_g11885 = staticSwitch16_g11885;
 				#endif
@@ -13102,7 +13160,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				float4 break2_g11891 = temp_output_1_0_g11889;
 				#ifdef _STRONGTINTCONTRASTTOGGLE_ON
-				float3 staticSwitch22_g11889 = ( pow( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , max( _StrongTintContrast , 0.001 ) ) * staticSwitch21_g11889 );
+				float3 staticSwitch22_g11889 = ( pow( max( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , 0.0001 ) , max( _StrongTintContrast , 0.0001 ) ) * staticSwitch21_g11889 );
 				#else
 				float3 staticSwitch22_g11889 = staticSwitch21_g11889;
 				#endif
@@ -13141,36 +13199,36 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float customVertexAlpha193 = staticSwitch9_g11753;
 				float4 appendResult5_g11895 = (float4(break4_g11895.r , break4_g11895.g , break4_g11895.b , ( break4_g11895.a * customVertexAlpha193 )));
 				float4 temp_output_344_0 = appendResult5_g11895;
-				float4 temp_output_1_0_g11896 = temp_output_344_0;
-				float4 appendResult8_g11896 = (float4(( (temp_output_1_0_g11896).rgb * (IN.ase_color).rgb ) , temp_output_1_0_g11896.a));
+				float4 temp_output_1_0_g11898 = temp_output_344_0;
+				float4 appendResult8_g11898 = (float4(( (temp_output_1_0_g11898).rgb * (IN.ase_color).rgb ) , temp_output_1_0_g11898.a));
 				#ifdef _VERTEXTINTFIRST_ON
 				float4 staticSwitch342 = temp_output_344_0;
 				#else
-				float4 staticSwitch342 = appendResult8_g11896;
+				float4 staticSwitch342 = appendResult8_g11898;
 				#endif
 				float4 lerpResult125 = lerp( ( originalColor191 * IN.ase_color ) , staticSwitch342 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float4 staticSwitch143 = staticSwitch342;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float4 staticSwitch143 = lerpResult125;
 				#else
 				float4 staticSwitch143 = staticSwitch342;
 				#endif
-				float4 temp_output_7_0_g11903 = staticSwitch143;
+				float4 temp_output_7_0_g11905 = staticSwitch143;
 				#ifdef _BAKEDMATERIAL_ON
-				float4 appendResult2_g11903 = (float4(( (temp_output_7_0_g11903).rgb / max( temp_output_7_0_g11903.a , 1E-05 ) ) , temp_output_7_0_g11903.a));
-				float4 staticSwitch6_g11903 = appendResult2_g11903;
+				float4 appendResult2_g11905 = (float4(( (temp_output_7_0_g11905).rgb / max( temp_output_7_0_g11905.a , 1E-05 ) ) , temp_output_7_0_g11905.a));
+				float4 staticSwitch6_g11905 = appendResult2_g11905;
 				#else
-				float4 staticSwitch6_g11903 = temp_output_7_0_g11903;
+				float4 staticSwitch6_g11905 = temp_output_7_0_g11905;
 				#endif
 				
-				float4 Color = staticSwitch6_g11903;
+				float4 Color = staticSwitch6_g11905;
 
 				half4 outColor = half4(_ObjectId, _PassValue, 1.0, 1.0);
 				return outColor;
@@ -13190,26 +13248,37 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
             HLSLPROGRAM
 
-			#define ASE_SRP_VERSION 140007
+			#define ASE_VERSION 19801
+			#define ASE_SRP_VERSION 170003
 
 
 			#pragma vertex vert
 			#pragma fragment frag
 
+			#pragma multi_compile _ DEBUG_DISPLAY SKINNED_SPRITE
+
             #define _SURFACE_TYPE_TRANSPARENT 1
             #define ATTRIBUTES_NEED_NORMAL
             #define ATTRIBUTES_NEED_TANGENT
+            #define FEATURES_GRAPH_VERTEX_NORMAL_OUTPUT
+            #define FEATURES_GRAPH_VERTEX_TANGENT_OUTPUT
             #define FEATURES_GRAPH_VERTEX
+
             #define SHADERPASS SHADERPASS_DEPTHONLY
 			#define SCENEPICKINGPASS 1
 
-
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/Core2D.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRendering.hlsl"
+			#include_with_pragmas "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRenderingKeywords.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/DebugMipmapStreamingMacros.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
         	#define ASE_NEEDS_VERT_POSITION
@@ -13390,7 +13459,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			CBUFFER_START( UnityPerMaterial )
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorA;
+			float4 _ShiftingColorB;
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float4 _PoisonColor;
@@ -13421,7 +13490,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float4 _RecolorRGBRedTint;
 			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float4 _ShiftingColorB;
+			float4 _ShiftingColorA;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float4 _TextureLayer1Color;
@@ -13452,13 +13521,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float4 _CamouflageColorB;
+			float4 _CamouflageColorA;
+			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float4 _BurnInsideNoiseColor;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float4 _CamouflageColorA;
-			float4 _CamouflageBaseColor;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float4 _UVDistortMask_ST;
@@ -13498,42 +13565,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEFROZEN_ON
 			float4 _FrozenSnowColor;
 			#endif
+			#ifdef _SHADERFADING_MASK
+			float4 _FadingMask_ST;
+			#endif
+			#ifdef _ENABLESTRONGTINT_ON
+			float4 _StrongTintMask_ST;
+			#endif
+			float4 _MainTex_TexelSize;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float4 _DirectionalGlowFadeEdgeColor;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float4 _SourceGlowDissolveEdgeColor;
+			#endif
+			#ifdef _ENABLEALPHATINT_ON
+			float4 _AlphaTintColor;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float4 _ShadowColor;
+			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float4 _StrongTintTint;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float4 _AddColorMask_ST;
-			float4 _AddColorColor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float4 _ShadowColor;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float4 _SourceGlowDissolveEdgeColor;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float4 _DirectionalGlowFadeEdgeColor;
 			#endif
 			#ifdef _SPRITESHEETFIX_ON
 			float4 _SpriteSheetRect;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float4 _AlphaTintColor;
+			#ifdef _ENABLEADDCOLOR_ON
+			float4 _AddColorColor;
 			#endif
-			#ifdef _ENABLESTRONGTINT_ON
-			float4 _StrongTintMask_ST;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Scale;
 			#endif
-			#ifdef _SHADERFADING_MASK
-			float4 _FadingMask_ST;
-			#endif
-			float4 _MainTex_TexelSize;
-			float2 _FadingNoiseScale;
 			#ifdef _SHADERFADING_SPREAD
 			float2 _FadingPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionScale;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnEdgeNoiseScale;
 			float2 _BurnPosition;
+			#endif
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionSpeed;
 			#endif
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
 			float2 _DirectionalAlphaFadeNoiseScale;
@@ -13541,11 +13618,11 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnSwirlNoiseScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenSnowScale;
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1ScrollSpeed;
 			#endif
+			float2 _FadingNoiseScale;
 			#ifdef _ENABLEFLAME_ON
-			float2 _FlameNoiseScale;
 			float2 _FlameSpeed;
 			#endif
 			#ifdef _ENABLEGLITCH_ON
@@ -13555,25 +13632,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLECUSTOMFADE_ON
 			float2 _CustomFadeNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Offset;
-			float2 _TextureLayer1ScrollSpeed;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionSpeed;
-			float2 _CamouflageDistortionScale;
-			#endif
 			#ifdef _ENABLEBURN_ON
 			float2 _BurnInsideNoiseScale;
 			#endif
-			#ifdef _ENABLETEXTURELAYER1_ON
-			float2 _TextureLayer1Scale;
+			#ifdef _ENABLEFLAME_ON
+			float2 _FlameNoiseScale;
 			#endif
-			#ifdef _ENABLESHADOW_ON
-			float2 _ShadowOffset;
+			#ifdef _ENABLERAINBOW_ON
+			float2 _RainbowCenter;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float2 _CamouflageDistortionIntensity;
+			#ifdef _ENABLEPIXELOUTLINE_ON
+			float2 _PixelOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveFrequency;
@@ -13586,30 +13655,25 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _InkSpreadNoiseScale;
 			float2 _InkSpreadPosition;
 			#endif
+			#ifdef _ENABLEPOISON_ON
+			float2 _PoisonNoiseSpeed;
+			float2 _PoisonNoiseScale;
+			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float2 _InnerOutlineNoiseScale;
 			float2 _InnerOutlineDistortionIntensity;
 			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseSpeed;
-			#endif
 			#ifdef _ENABLEHALFTONE_ON
 			float2 _HalftonePosition;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float2 _DirectionalGlowFadeNoiseScale;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float2 _PoisonNoiseScale;
-			#endif
-			#ifdef _ENABLEOUTEROUTLINE_ON
-			float2 _OuterOutlineTextureSpeed;
 			#endif
 			#ifdef _ENABLESINESCALE_ON
 			float2 _SineScaleFactor;
 			#endif
+			#ifdef _ENABLEOUTEROUTLINE_ON
+			float2 _OuterOutlineTextureSpeed;
+			#endif
 			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowCenter;
+			float2 _RainbowNoiseScale;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float2 _OuterOutlineNoiseSpeed;
@@ -13620,27 +13684,51 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _EnchantedSpeed;
 			float2 _EnchantedScale;
 			#endif
-			#ifdef _ENABLEPIXELOUTLINE_ON
-			float2 _PixelOutlineTextureSpeed;
+			#ifdef _ENABLECAMOUFLAGE_ON
+			float2 _CamouflageDistortionIntensity;
 			#endif
-			#ifdef _ENABLERAINBOW_ON
-			float2 _RainbowNoiseScale;
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float2 _DirectionalGlowFadeNoiseScale;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleA;
 			#endif
+			#ifdef _ENABLETEXTURELAYER1_ON
+			float2 _TextureLayer1Offset;
+			#endif
 			#ifdef _ENABLESINEMOVE_ON
 			float2 _SineMoveOffset;
 			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingOffset;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortion;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float2 _FullAlphaDissolveNoiseScale;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeCenter;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseSpeed;
+			float2 _MetalNoiseScale;
 			#endif
 			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortNoiseScale;
+			float2 _UVDistortSpeed;
+			#endif
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Scale;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenSnowScale;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolveNoiseScale;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortTo;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float2 _SourceGlowDissolvePosition;
+			#endif
+			#ifdef _ENABLEUVDISTORT_ON
 			float2 _UVDistortFrom;
 			#endif
 			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
@@ -13654,131 +13742,104 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float2 _GlitchDistortionSpeed;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortion;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeCenter;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
 			float2 _FrozenHighlightDistortionScale;
+			float2 _FrozenHighlightDistortionSpeed;
+			#endif
+			#ifdef _ENABLESHADOW_ON
+			float2 _ShadowOffset;
 			#endif
 			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
 			float2 _SourceAlphaDissolvePosition;
 			float2 _SourceAlphaDissolveNoiseScale;
 			#endif
-			#ifdef _ENABLESCREENTILING_ON
-			float2 _ScreenTilingOffset;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float2 _FullAlphaDissolveNoiseScale;
 			#endif
 			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 			float2 _DirectionalDistortionNoiseScale;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float2 _SourceGlowDissolvePosition;
-			float2 _SourceGlowDissolveNoiseScale;
-			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortion;
+			#ifdef _ENABLESQUEEZE_ON
+			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLESCREENTILING_ON
 			float2 _ScreenTilingScale;
 			#endif
-			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-			float2 _DirectionalDistortionDistortionScale;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float2 _TextureLayer2Offset;
+			float2 _TextureLayer2ScrollSpeed;
+			#endif
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingOffset;
 			#endif
 			#ifdef _ENABLEFULLDISTORTION_ON
-			float2 _FullDistortionDistortion;
 			float2 _FullDistortionNoiseScale;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightDistortionSpeed;
-			#endif
-			#ifdef _ENABLEMETAL_ON
-			float2 _MetalNoiseScale;
-			#endif
-			#ifdef _ENABLEUVDISTORT_ON
-			float2 _UVDistortSpeed;
-			#endif
-			#ifdef _ENABLESQUEEZE_ON
-			float2 _SqueezeScale;
 			#endif
 			#ifdef _ENABLEUVSCALE_ON
 			float2 _UVScaleScale;
-			#endif
-			#ifdef _ENABLEWORLDTILING_ON
-			float2 _WorldTilingScale;
+			float2 _UVScalePivot;
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float2 _CamouflageNoiseScaleB;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float2 _FrozenHighlightScale;
+			#ifdef _ENABLEWORLDTILING_ON
+			float2 _WorldTilingScale;
+			#endif
+			#ifdef _ENABLEMETAL_ON
+			float2 _MetalNoiseDistortion;
 			#endif
 			#ifdef _ENABLEUVSCROLL_ON
 			float2 _UVScrollSpeed;
 			#endif
-			#ifdef _ENABLEUVROTATE_ON
-			float2 _UVRotatePivot;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2ScrollSpeed;
-			#endif
 			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightScale;
 			float2 _FrozenHighlightSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Offset;
 			#endif
 			#ifdef _ENABLESINEROTATE_ON
 			float2 _SineRotatePivot;
 			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float2 _FrozenHighlightDistortion;
+			#endif
+			#ifdef _ENABLEFULLDISTORTION_ON
+			float2 _FullDistortionDistortion;
+			#endif
 			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionSpeed;
-			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float2 _TextureLayer2Scale;
-			#endif
-			#ifdef _ENABLEMETAL_ON
 			float2 _MetalNoiseDistortionScale;
-			float2 _MetalNoiseDistortion;
-			float2 _MetalNoiseSpeed;
 			#endif
-			#ifdef _ENABLEUVSCALE_ON
-			float2 _UVScalePivot;
+			#ifdef _ENABLEDIRECTIONALDISTORTION_ON
+			float2 _DirectionalDistortionDistortionScale;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightDensity;
+			#ifdef _ENABLEUVROTATE_ON
+			float2 _UVRotatePivot;
+			#endif
+			#ifdef _ENABLESCREENTILING_ON
+			float2 _ScreenTilingOffset;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowSpeed;
 			float _RainbowSaturation;
+			float _RainbowBrightness;
+			float _RainbowContrast;
+			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenFade;
+			#ifdef _ENABLEBURN_ON
+			float _BurnWidth;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowNoiseFactor;
-			float _RainbowContrast;
-			float _RainbowBrightness;
-			float _RainbowDensity;
 			#endif
-			#ifdef _ENABLEADDCOLOR_ON
-			float _AddColorFade;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintMinAlpha;
 			#endif
 			#ifdef _ENABLEBURN_ON
-			float _BurnInsideNoiseFactor;
+			float _BurnFade;
 			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenHighlightContrast;
+			#ifdef _ENABLEALPHATINT_ON
+			float _AlphaTintFade;
 			#endif
 			#ifdef _ENABLEBURN_ON
 			float _BurnEdgeNoiseFactor;
-			#endif
-			#ifdef _ENABLESHADOW_ON
-			float _ShadowFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnSwirlFactor;
-			float _BurnFade;
 			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintContrast;
@@ -13786,32 +13847,34 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBURN_ON
 			float _BurnRadius;
 			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintMinAlpha;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnInsideContrast;
-			#endif
-			#ifdef _ENABLEALPHATINT_ON
-			float _AlphaTintFade;
-			#endif
-			#ifdef _ENABLEBURN_ON
-			float _BurnWidth;
-			#endif
 			#ifdef _ENABLESTRONGTINT_ON
 			float _StrongTintFade;
 			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
-			float _PoisonRecolorFactor;
+			#ifdef _ENABLEBURN_ON
+			float _BurnSwirlFactor;
+			float _BurnInsideNoiseFactor;
 			#endif
 			#ifdef _ENABLERAINBOW_ON
 			float _RainbowFade;
 			#endif
+			#ifdef _ENABLESHADOW_ON
+			float _ShadowFade;
+			#endif
+			#ifdef _ENABLEBURN_ON
+			float _BurnInsideContrast;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenHighlightContrast;
+			float _FrozenHighlightDensity;
+			float _FrozenFade;
+			#endif
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveWidth;
+			#endif
+			#ifdef _ENABLESHINE_ON
+			float _ShineSaturation;
+			#endif
 			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingBrightness;
 			float _ShiftingSaturation;
 			float _ShiftingContrast;
 			float _ShiftingFade;
@@ -13826,7 +13889,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			int _TextureLayer1StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeRotation;
+			float _DirectionalAlphaFadeFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER1_ON
 			float _TextureLayer1Contrast;
@@ -13836,52 +13899,60 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _TextureLayer2EdgeClip;
 			#endif
 			int _TextureLayer2Columns;
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingDensity;
-			#endif
 			int _TextureLayer2Rows;
+			#ifdef _ENABLETEXTURELAYER2_ON
+			float _TextureLayer2Speed;
+			#endif
 			int _TextureLayer2StartFrame;
 			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeInvert;
+			float _DirectionalAlphaFadeRotation;
 			#endif
-			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Contrast;
-			float _TextureLayer2Fade;
+			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
+			float _SourceGlowDissolveFade;
+			float _SourceGlowDissolveNoiseFactor;
 			#endif
-			#ifdef _ENABLEFULLALPHADISSOLVE_ON
-			float _FullAlphaDissolveFade;
-			float _FullAlphaDissolveWidth;
+			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
+			float _SourceAlphaDissolveWidth;
+			float _SourceAlphaDissolveNoiseFactor;
+			float _SourceAlphaDissolveFade;
+			float _SourceAlphaDissolveInvert;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingBrightness;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
 			float _SourceGlowDissolveInvert;
 			#endif
-			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
-			float _FullGlowDissolveFade;
-			float _FullGlowDissolveWidth;
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeInvert;
 			#endif
-			#ifdef _ENABLESOURCEALPHADISSOLVE_ON
-			float _SourceAlphaDissolveInvert;
-			float _SourceAlphaDissolveFade;
-			float _SourceAlphaDissolveNoiseFactor;
-			float _SourceAlphaDissolveWidth;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveNoiseFactor;
+			#ifdef _ENABLEFULLALPHADISSOLVE_ON
+			float _FullAlphaDissolveWidth;
+			float _FullAlphaDissolveFade;
 			#endif
 			#ifdef _ENABLETEXTURELAYER2_ON
-			float _TextureLayer2Speed;
+			float _TextureLayer2Fade;
+			float _TextureLayer2Contrast;
+			#endif
+			#ifdef _ENABLEFULLGLOWDISSOLVE_ON
+			float _FullGlowDissolveFade;
+			#endif
+			#ifdef _ENABLEADDCOLOR_ON
+			float _AddColorFade;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingDensity;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowDensity;
 			#endif
 			#ifdef _ENABLEADDCOLOR_ON
 			float _AddColorContrast;
 			#endif
-			#ifdef _ENABLESHIFTING_ON
-			float _ShiftingSpeed;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedFade;
-			#endif
 			#ifdef _ENABLESHINE_ON
-			float _ShineSaturation;
 			float _ShineContrast;
 			float _ShineRotation;
 			float _ShineFrequency;
@@ -13895,53 +13966,48 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEPOISON_ON
 			float _PoisonShiftSpeed;
-			#endif
-			#ifdef _ENABLEHALFTONE_ON
-			float _HalftoneFade;
-			#endif
-			#ifdef _ENABLEPOISON_ON
 			float _PoisonDensity;
 			float _PoisonFade;
 			float _PoisonNoiseBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeFade;
+			float _PoisonRecolorFactor;
 			#endif
 			#ifdef _ENABLEHALFTONE_ON
+			float _HalftoneFade;
 			float _HalftoneTiling;
 			float _HalftoneInvert;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedFade;
+			#endif
+			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
+			float _DirectionalAlphaFadeNoiseFactor;
+			float _DirectionalAlphaFadeWidth;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedReduce;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeInvert;
+			float _DirectionalGlowFadeRotation;
+			#endif
+			#ifdef _ENABLESHIFTING_ON
+			float _ShiftingSpeed;
+			#endif
+			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
+			float _DirectionalGlowFadeFade;
+			float _DirectionalGlowFadeNoiseFactor;
+			#endif
+			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedContrast;
 			#endif
 			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
 			float _DirectionalGlowFadeWidth;
 			#endif
 			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedRainbowDensity;
-			float _EnchantedRainbowSpeed;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
 			float _EnchantedRainbowSaturation;
-			float _EnchantedContrast;
-			#endif
-			#ifdef _ENABLEDIRECTIONALGLOWFADE_ON
-			float _DirectionalGlowFadeFade;
-			float _DirectionalGlowFadeRotation;
-			float _DirectionalGlowFadeInvert;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
+			float _EnchantedRainbowSpeed;
+			float _EnchantedRainbowDensity;
 			float _EnchantedBrightness;
-			#endif
-			#ifdef _ENABLEDIRECTIONALALPHAFADE_ON
-			float _DirectionalAlphaFadeWidth;
-			float _DirectionalAlphaFadeNoiseFactor;
-			#endif
-			#ifdef _ENABLEENCHANTED_ON
-			float _EnchantedReduce;
-			#endif
-			#ifdef _ENABLESOURCEGLOWDISSOLVE_ON
-			float _SourceGlowDissolveWidth;
 			#endif
 			#ifdef _ENABLESQUISH_ON
 			float _SquishStretch;
@@ -13950,7 +14016,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelOutlineWidth;
 			#endif
 			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowContrast;
+			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLESQUEEZE_ON
 			float _SqueezeFade;
@@ -14087,9 +14153,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _SHADERFADING_SPREAD
 			float _FadingNoiseFactor;
 			#endif
-			#ifdef _SHADERSPACE_SCREEN
 			float _ScreenWidthUnits;
-			#endif
 			#ifdef _SHADERSPACE_UI_GRAPHIC
 			float _RectHeight;
 			float _RectWidth;
@@ -14097,28 +14161,24 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			float _PixelsPerUnit;
 			#ifdef _ENABLESMOKE_ON
 			float _SmokeNoiseFactor;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenSnowDensity;
-			#endif
-			#ifdef _ENABLESMOKE_ON
 			float _SmokeSmoothness;
+			float _SmokeDarkEdge;
 			float _SmokeAlpha;
 			#endif
 			#ifdef _ENABLEPINGPONGGLOW_ON
-			float _PingPongGlowContrast;
-			float _PingPongGlowFade;
 			float _PingPongGlowFrequency;
 			#endif
+			float _MaskBrightness;
 			#ifdef _ENABLEPIXELOUTLINE_ON
+			float _PixelOutlineAlphaLimit;
 			float _PixelOutlineFade;
 			#endif
 			#ifdef _ENABLEOUTEROUTLINE_ON
 			float _OuterOutlineWidth;
 			float _OuterOutlineFade;
 			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramContrast;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowFade;
 			#endif
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineWidth;
@@ -14136,15 +14196,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEINNEROUTLINE_ON
 			float _InnerOutlineFade;
 			#endif
-			#ifdef _ENABLEADDHUE_ON
-			float _AddHueFade;
+			#ifdef _ENABLEPINGPONGGLOW_ON
+			float _PingPongGlowContrast;
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
+			float _HologramContrast;
 			float _HologramLineSpeed;
-			float _HologramLineGap;
-			#endif
-			#ifdef _ENABLEFROZEN_ON
-			float _FrozenContrast;
 			#endif
 			#ifdef _ENABLEMETAL_ON
 			float _MetalFade;
@@ -14154,12 +14211,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageFade;
-			#endif
-			#ifdef _ENABLEHOLOGRAM_ON
-			float _HologramLineFrequency;
-			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
 			float _CamouflageContrast;
+			float _CamouflageSmoothnessB;
 			float _CamouflageDensityB;
 			float _CamouflageSmoothnessA;
 			float _CamouflageDensityA;
@@ -14170,13 +14223,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#endif
 			#ifdef _ENABLEHOLOGRAM_ON
 			float _HologramMinAlpha;
+			float _HologramLineGap;
+			float _HologramLineFrequency;
 			#endif
-			#ifdef _ENABLECAMOUFLAGE_ON
-			float _CamouflageSmoothnessB;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueFade;
+			#endif
+			#ifdef _ENABLEFROZEN_ON
+			float _FrozenSnowContrast;
 			#endif
 			#ifdef _ENABLEADDHUE_ON
 			float _AddHueContrast;
-			float _AddHueBrightness;
 			float _AddHueSaturation;
 			#endif
 			#ifdef _ENABLECOLORREPLACE_ON
@@ -14250,8 +14307,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			#ifdef _ENABLEBRIGHTNESS_ON
 			float _Brightness;
 			#endif
-			#ifdef _ENABLESMOKE_ON
-			float _SmokeDarkEdge;
+			#ifdef _ENABLEADDHUE_ON
+			float _AddHueBrightness;
 			#endif
 			float _NormalIntensity;
 			CBUFFER_END
@@ -14259,17 +14316,18 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 
             struct VertexInput
 			{
-				float3 vertex : POSITION;
+				float3 positionOS : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT;
 				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				UNITY_SKINNED_VERTEX_INPUTS
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
-				float4 clipPos : SV_POSITION;
+				float4 positionCS : SV_POSITION;
 				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_texcoord1 : TEXCOORD1;
 				float4 ase_texcoord2 : TEXCOORD2;
@@ -14304,7 +14362,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14314,12 +14372,12 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float FastNoise101_g11665( float x )
+			float FastNoise101_g11666( float x )
 			{
 				float i = floor(x);
 				float f = frac(x);
@@ -14357,22 +14415,32 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				return 130.0 * dot( m, g );
 			}
 			
-			float MyCustomExpression16_g11667( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
 			float MyCustomExpression16_g11668( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11669( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11672( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14382,27 +14450,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11670( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
-				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
-				#endif
-			}
-			
-			float MyCustomExpression16_g11676( float linValue )
-			{
-				#ifdef UNITY_COLORSPACE_GAMMA
-				return linValue;
-				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14412,7 +14460,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
+				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
+				#endif
+			}
+			
+			float MyCustomExpression16_g11678( float linValue )
+			{
+				#ifdef UNITY_COLORSPACE_GAMMA
+				return linValue;
+				#else
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14422,17 +14480,17 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
 			
-			float MyCustomExpression16_g11673( float linValue )
+			float MyCustomExpression16_g11674( float linValue )
 			{
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14442,7 +14500,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14467,7 +14525,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14477,7 +14535,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14487,7 +14545,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14519,7 +14577,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14529,7 +14587,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14539,7 +14597,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14549,7 +14607,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14559,7 +14617,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14569,7 +14627,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14579,7 +14637,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14589,7 +14647,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14599,7 +14657,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14609,7 +14667,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14619,7 +14677,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14629,7 +14687,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14639,7 +14697,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14649,7 +14707,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14659,7 +14717,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14669,7 +14727,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14679,7 +14737,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14689,7 +14747,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14699,7 +14757,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14727,7 +14785,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14737,7 +14795,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14747,7 +14805,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14757,7 +14815,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14767,7 +14825,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14777,7 +14835,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef UNITY_COLORSPACE_GAMMA
 				return linValue;
 				#else
-				linValue = max(linValue, half3(0.h, 0.h, 0.h));
+				linValue = max(linValue, 0.h);
 				return max(1.055h * pow(linValue, 0.416666667h) - 0.055h, 0.h);
 				#endif
 			}
@@ -14786,26 +14844,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			VertexOutput vert(VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
+
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+				UNITY_SKINNED_VERTEX_COMPUTE(v);
+
+				v.positionOS = UnityFlipSprite( v.positionOS, unity_SpriteProps.xy );
 
 				float2 _ZeroVector = float2(0,0);
 				float2 texCoord363 = v.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionCS = TransformObjectToHClip( ( v.positionOS ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float3 ase_positionWS = TransformObjectToWorld( ( v.positionOS ).xyz );
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -14840,52 +14902,52 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch198 = _ZeroVector;
 				#endif
-				float2 temp_output_2_0_g11899 = staticSwitch198;
+				float2 temp_output_2_0_g11900 = staticSwitch198;
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
-				float temp_output_8_0_g11899 = shaderTime237;
+				float shaderTime237 = staticSwitch42_g11663;
+				float temp_output_8_0_g11900 = shaderTime237;
 				#ifdef _ENABLESINEMOVE_ON
-				float2 staticSwitch4_g11899 = ( ( sin( ( temp_output_8_0_g11899 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11899 );
+				float2 staticSwitch4_g11900 = ( ( sin( ( temp_output_8_0_g11900 * _SineMoveFrequency ) ) * _SineMoveOffset * _SineMoveFade ) + temp_output_2_0_g11900 );
 				#else
-				float2 staticSwitch4_g11899 = temp_output_2_0_g11899;
+				float2 staticSwitch4_g11900 = temp_output_2_0_g11900;
 				#endif
 				#ifdef _ENABLEVIBRATE_ON
-				float temp_output_30_0_g11900 = temp_output_8_0_g11899;
-				float3 rotatedValue21_g11900 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11900 * _VibrateRotation ) );
-				float2 staticSwitch6_g11899 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11900 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11900).xy ) + staticSwitch4_g11899 );
+				float temp_output_30_0_g11901 = temp_output_8_0_g11900;
+				float3 rotatedValue21_g11901 = RotateAroundAxis( float3( 0,0,0 ), float3( 0,1,0 ), float3( 0,0,1 ), ( temp_output_30_0_g11901 * _VibrateRotation ) );
+				float2 staticSwitch6_g11900 = ( ( sin( ( _VibrateFrequency * temp_output_30_0_g11901 ) ) * _VibrateOffset * _VibrateFade * (rotatedValue21_g11901).xy ) + staticSwitch4_g11900 );
 				#else
-				float2 staticSwitch6_g11899 = staticSwitch4_g11899;
+				float2 staticSwitch6_g11900 = staticSwitch4_g11900;
 				#endif
 				#ifdef _ENABLESINESCALE_ON
-				float2 staticSwitch10_g11899 = ( staticSwitch6_g11899 + ( (v.vertex).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11899 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
+				float2 staticSwitch10_g11900 = ( staticSwitch6_g11900 + ( (v.positionOS).xy * ( ( ( sin( ( _SineScaleFrequency * temp_output_8_0_g11900 ) ) + 1.0 ) * 0.5 ) * _SineScaleFactor ) ) );
 				#else
-				float2 staticSwitch10_g11899 = staticSwitch6_g11899;
+				float2 staticSwitch10_g11900 = staticSwitch6_g11900;
 				#endif
-				float2 temp_output_424_0 = staticSwitch10_g11899;
+				float2 temp_output_424_0 = staticSwitch10_g11900;
 #ifdef _SHADERFADING_MASK
 				float2 uv_FadingMask = v.ase_texcoord.xy * _FadingMask_ST.xy + _FadingMask_ST.zw;
 				#endif
@@ -14900,30 +14962,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = v.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = v.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (v.vertex).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (v.vertex).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (v.positionOS).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (v.positionOS).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				float linValue16_g11716 = tex2Dlod( _UberNoiseTexture, float4( ( shaderPosition235 * _FadingNoiseScale ), 0, 0.0) ).r;
 				float localMyCustomExpression16_g11716 = MyCustomExpression16_g11716( linValue16_g11716 );
 				float clampResult14_g11715 = clamp( ( ( ( _FadingFade * ( 1.0 + temp_output_4_0_g11715 ) ) - localMyCustomExpression16_g11716 ) / temp_output_4_0_g11715 ) , 0.0 , 1.0 );
@@ -14933,60 +14995,60 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult121 = lerp( float2( 0,0 ) , temp_output_424_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch142 = temp_output_424_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch142 = lerpResult121;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch142 = lerpResult121;
 				#else
 				float2 staticSwitch142 = temp_output_424_0;
 				#endif
 				
 				o.ase_texcoord1 = screenPos;
-				o.ase_texcoord2.xyz = ase_worldPos;
+				o.ase_texcoord2.xyz = ase_positionWS;
 				
 				o.ase_texcoord.xy = v.ase_texcoord.xy;
-				o.ase_texcoord3 = float4(v.vertex,1);
+				o.ase_texcoord3 = float4(v.positionOS,1);
 				o.ase_color = v.ase_color;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.zw = 0;
 				o.ase_texcoord2.w = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					float3 defaultVertexValue = v.vertex.xyz;
+					float3 defaultVertexValue = v.positionOS;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 				float3 vertexValue = float3( staticSwitch142 ,  0.0 );
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					v.vertex.xyz = vertexValue;
+					v.positionOS = vertexValue;
 				#else
-					v.vertex.xyz += vertexValue;
+					v.positionOS += vertexValue;
 				#endif
 
-				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
-				float3 positionWS = TransformObjectToWorld(v.vertex);
-				o.clipPos = TransformWorldToHClip(positionWS);
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.positionOS);
+				float3 positionWS = TransformObjectToWorld(v.positionOS);
+				o.positionCS = TransformWorldToHClip(positionWS);
 
 				return o;
 			}
@@ -14995,18 +15057,18 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 			{
 				float2 texCoord363 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 				float4 screenPos = IN.ase_texcoord1;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				#ifdef _ENABLESCREENTILING_ON
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
 				float2 appendResult16_g11656 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
+				float2 staticSwitch2_g11656 = ( ( ( (( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / 10.0 ) )).xy * _ScreenTilingScale ) + _ScreenTilingOffset ) * ( _ScreenTilingPixelsPerUnit * appendResult16_g11656 ) );
 				#else
 				float2 staticSwitch2_g11656 = texCoord363;
 				#endif
-				float3 ase_worldPos = IN.ase_texcoord2.xyz;
+				float3 ase_positionWS = IN.ase_texcoord2.xyz;
 				#ifdef _ENABLEWORLDTILING_ON
 				float2 appendResult16_g11657 = (float2(_MainTex_TexelSize.x , _MainTex_TexelSize.y));
-				float2 staticSwitch2_g11657 = ( ( ( (ase_worldPos).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
+				float2 staticSwitch2_g11657 = ( ( ( (ase_positionWS).xy * _WorldTilingScale ) + _WorldTilingOffset ) * ( _WorldTilingPixelsPerUnit * appendResult16_g11657 ) );
 				#else
 				float2 staticSwitch2_g11657 = staticSwitch2_g11656;
 				#endif
@@ -15034,89 +15096,89 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float2 staticSwitch366 = uvAfterPixelArt450;
 				#endif
 				float2 fixedUV475 = staticSwitch366;
-				float2 temp_output_3_0_g11664 = fixedUV475;
+				float2 temp_output_3_0_g11665 = fixedUV475;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch117_g11665 = _WindMinIntensity;
+				float staticSwitch117_g11666 = _WindMinIntensity;
 				#else
-				float staticSwitch117_g11665 = WindMinIntensity;
+				float staticSwitch117_g11666 = WindMinIntensity;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch118_g11665 = _WindMaxIntensity;
+				float staticSwitch118_g11666 = _WindMaxIntensity;
 				#else
-				float staticSwitch118_g11665 = WindMaxIntensity;
+				float staticSwitch118_g11666 = WindMaxIntensity;
 				#endif
 				#endif
-				float4 transform62_g11665 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
+				float4 transform62_g11666 = mul(GetWorldToObjectMatrix(),float4( 0,0,0,1 ));
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDISPARALLAX_ON
-				float staticSwitch111_g11665 = _WindXPosition;
+				float staticSwitch111_g11666 = _WindXPosition;
 				#else
-				float staticSwitch111_g11665 = transform62_g11665.x;
+				float staticSwitch111_g11666 = transform62_g11666.x;
 				#endif
 				#endif
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch113_g11665 = _WindNoiseScale;
+				float staticSwitch113_g11666 = _WindNoiseScale;
 				#else
-				float staticSwitch113_g11665 = WindNoiseScale;
+				float staticSwitch113_g11666 = WindNoiseScale;
 				#endif
 				#endif
 				#ifdef _TOGGLECUSTOMTIME_ON
-				float staticSwitch44_g11661 = _TimeValue;
+				float staticSwitch44_g11663 = _TimeValue;
 				#else
-				float staticSwitch44_g11661 = _TimeParameters.x;
+				float staticSwitch44_g11663 = _TimeParameters.x;
 				#endif
 				#ifdef _TOGGLEUNSCALEDTIME_ON
-				float staticSwitch34_g11661 = UnscaledTime;
+				float staticSwitch34_g11663 = UnscaledTime;
 				#else
-				float staticSwitch34_g11661 = staticSwitch44_g11661;
+				float staticSwitch34_g11663 = staticSwitch44_g11663;
 				#endif
 				#ifdef _TOGGLETIMESPEED_ON
-				float staticSwitch37_g11661 = ( staticSwitch34_g11661 * _TimeSpeed );
+				float staticSwitch37_g11663 = ( staticSwitch34_g11663 * _TimeSpeed );
 				#else
-				float staticSwitch37_g11661 = staticSwitch34_g11661;
+				float staticSwitch37_g11663 = staticSwitch34_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFPS_ON
-				float staticSwitch38_g11661 = ( floor( ( staticSwitch37_g11661 * _TimeFPS ) ) / _TimeFPS );
+				float staticSwitch38_g11663 = ( floor( ( staticSwitch37_g11663 * _TimeFPS ) ) / _TimeFPS );
 				#else
-				float staticSwitch38_g11661 = staticSwitch37_g11661;
+				float staticSwitch38_g11663 = staticSwitch37_g11663;
 				#endif
 				#ifdef _TOGGLETIMEFREQUENCY_ON
-				float staticSwitch42_g11661 = ( ( sin( ( staticSwitch38_g11661 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
+				float staticSwitch42_g11663 = ( ( sin( ( staticSwitch38_g11663 * _TimeFrequency ) ) * _TimeRange ) + 100.0 );
 				#else
-				float staticSwitch42_g11661 = staticSwitch38_g11661;
+				float staticSwitch42_g11663 = staticSwitch38_g11663;
 				#endif
-				float shaderTime237 = staticSwitch42_g11661;
+				float shaderTime237 = staticSwitch42_g11663;
 				#ifdef _ENABLEWIND_ON
 				#ifdef _WINDLOCALWIND_ON
-				float staticSwitch125_g11665 = ( shaderTime237 * _WindNoiseSpeed );
+				float staticSwitch125_g11666 = ( shaderTime237 * _WindNoiseSpeed );
 				#else
-				float staticSwitch125_g11665 = WindTime;
+				float staticSwitch125_g11666 = WindTime;
 				#endif
-				float temp_output_50_0_g11665 = ( ( staticSwitch111_g11665 * staticSwitch113_g11665 ) + staticSwitch125_g11665 );
-				float x101_g11665 = temp_output_50_0_g11665;
-				float localFastNoise101_g11665 = FastNoise101_g11665( x101_g11665 );
-				float2 temp_cast_0 = (temp_output_50_0_g11665).xx;
-				float simplePerlin2D121_g11665 = snoise( temp_cast_0*0.5 );
-				simplePerlin2D121_g11665 = simplePerlin2D121_g11665*0.5 + 0.5;
+				float temp_output_50_0_g11666 = ( ( staticSwitch111_g11666 * staticSwitch113_g11666 ) + staticSwitch125_g11666 );
+				float x101_g11666 = temp_output_50_0_g11666;
+				float localFastNoise101_g11666 = FastNoise101_g11666( x101_g11666 );
+				float2 temp_cast_0 = (temp_output_50_0_g11666).xx;
+				float simplePerlin2D121_g11666 = snoise( temp_cast_0*0.5 );
+				simplePerlin2D121_g11666 = simplePerlin2D121_g11666*0.5 + 0.5;
 				#ifdef _WINDHIGHQUALITYNOISE_ON
-				float staticSwitch123_g11665 = simplePerlin2D121_g11665;
+				float staticSwitch123_g11666 = simplePerlin2D121_g11666;
 				#else
-				float staticSwitch123_g11665 = ( localFastNoise101_g11665 + 0.5 );
+				float staticSwitch123_g11666 = ( localFastNoise101_g11666 + 0.5 );
 				#endif
-				float lerpResult86_g11665 = lerp( staticSwitch117_g11665 , staticSwitch118_g11665 , staticSwitch123_g11665);
-				float clampResult29_g11665 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11665 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
-				float2 temp_output_1_0_g11665 = temp_output_3_0_g11664;
-				float temp_output_39_0_g11665 = ( temp_output_1_0_g11665.y + _WindFlip );
-				float3 appendResult43_g11665 = (float3(0.5 , -_WindFlip , 0.0));
-				float2 appendResult27_g11665 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11665 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11665 )));
-				float3 rotatedValue19_g11665 = RotateAroundAxis( appendResult43_g11665, float3( ( appendResult27_g11665 + temp_output_1_0_g11665 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11665 * temp_output_39_0_g11665 ) );
-				float2 staticSwitch4_g11664 = (rotatedValue19_g11665).xy;
+				float lerpResult86_g11666 = lerp( staticSwitch117_g11666 , staticSwitch118_g11666 , staticSwitch123_g11666);
+				float clampResult29_g11666 = clamp( ( ( _WindRotationWindFactor * lerpResult86_g11666 ) + _WindRotation ) , -_WindMaxRotation , _WindMaxRotation );
+				float2 temp_output_1_0_g11666 = temp_output_3_0_g11665;
+				float temp_output_39_0_g11666 = ( temp_output_1_0_g11666.y + _WindFlip );
+				float3 appendResult43_g11666 = (float3(0.5 , -_WindFlip , 0.0));
+				float2 appendResult27_g11666 = (float2(0.0 , ( _WindSquishFactor * min( ( ( _WindSquishWindFactor * abs( lerpResult86_g11666 ) ) + abs( _WindRotation ) ) , _WindMaxRotation ) * temp_output_39_0_g11666 )));
+				float3 rotatedValue19_g11666 = RotateAroundAxis( appendResult43_g11666, float3( ( appendResult27_g11666 + temp_output_1_0_g11666 ) ,  0.0 ), float3( 0,0,1 ), ( clampResult29_g11666 * temp_output_39_0_g11666 ) );
+				float2 staticSwitch4_g11665 = (rotatedValue19_g11666).xy;
 				#else
-				float2 staticSwitch4_g11664 = temp_output_3_0_g11664;
+				float2 staticSwitch4_g11665 = temp_output_3_0_g11665;
 				#endif
 				float2 texCoord435 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 				#ifdef _PIXELPERFECTSPACE_ON
@@ -15125,81 +15187,82 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float2 staticSwitch437 = texCoord435;
 				#endif
-				float2 temp_output_61_0_g11663 = staticSwitch437;
+				float2 temp_output_61_0_g11664 = staticSwitch437;
 				float3 ase_objectScale = float3( length( GetObjectToWorldMatrix()[ 0 ].xyz ), length( GetObjectToWorldMatrix()[ 1 ].xyz ), length( GetObjectToWorldMatrix()[ 2 ].xyz ) );
-				float2 texCoord23_g11663 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord23_g11664 = IN.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 #ifdef _SHADERSPACE_UI_GRAPHIC
-				float2 appendResult28_g11663 = (float2(_RectWidth , _RectHeight));
+				float2 appendResult28_g11664 = (float2(_RectWidth , _RectHeight));
 				#endif
-				#if defined(_SHADERSPACE_UV)
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
-				#elif defined(_SHADERSPACE_UV_RAW)
-				float2 staticSwitch1_g11663 = temp_output_61_0_g11663;
-				#elif defined(_SHADERSPACE_OBJECT)
-				float2 staticSwitch1_g11663 = (IN.ase_texcoord3.xyz).xy;
-				#elif defined(_SHADERSPACE_OBJECT_SCALED)
-				float2 staticSwitch1_g11663 = ( (IN.ase_texcoord3.xyz).xy * (ase_objectScale).xy );
-				#elif defined(_SHADERSPACE_WORLD)
-				float2 staticSwitch1_g11663 = (ase_worldPos).xy;
-				#elif defined(_SHADERSPACE_UI_GRAPHIC)
-				float2 staticSwitch1_g11663 = ( texCoord23_g11663 * ( appendResult28_g11663 / _PixelsPerUnit ) );
-				#elif defined(_SHADERSPACE_SCREEN)
-				float2 staticSwitch1_g11663 = ( ( (ase_screenPosNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
+				#if defined( _SHADERSPACE_UV )
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				#elif defined( _SHADERSPACE_UV_RAW )
+				float2 staticSwitch1_g11664 = temp_output_61_0_g11664;
+				#elif defined( _SHADERSPACE_OBJECT )
+				float2 staticSwitch1_g11664 = (IN.ase_texcoord3.xyz).xy;
+				#elif defined( _SHADERSPACE_OBJECT_SCALED )
+				float2 staticSwitch1_g11664 = ( (IN.ase_texcoord3.xyz).xy * (ase_objectScale).xy );
+				#elif defined( _SHADERSPACE_WORLD )
+				float2 staticSwitch1_g11664 = (ase_positionWS).xy;
+				#elif defined( _SHADERSPACE_UI_GRAPHIC )
+				float2 staticSwitch1_g11664 = ( texCoord23_g11664 * ( appendResult28_g11664 / _PixelsPerUnit ) );
+				#elif defined( _SHADERSPACE_SCREEN )
+				float2 staticSwitch1_g11664 = ( ( (ase_positionSSNorm).xy * (_ScreenParams).xy ) / ( _ScreenParams.x / _ScreenWidthUnits ) );
 				#else
-				float2 staticSwitch1_g11663 = ( temp_output_61_0_g11663 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
+				float2 staticSwitch1_g11664 = ( temp_output_61_0_g11664 / ( _PixelsPerUnit * (_MainTex_TexelSize).xy ) );
 				#endif
-				float2 shaderPosition235 = staticSwitch1_g11663;
+				float2 shaderPosition235 = staticSwitch1_g11664;
 				#ifdef _ENABLEFULLDISTORTION_ON
-				float2 temp_output_195_0_g11666 = shaderPosition235;
-				float linValue16_g11667 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11666 * _FullDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11667 = MyCustomExpression16_g11667( linValue16_g11667 );
-				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11666 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float2 temp_output_195_0_g11667 = shaderPosition235;
+				float linValue16_g11668 = tex2D( _UberNoiseTexture, ( temp_output_195_0_g11667 * _FullDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11668 = MyCustomExpression16_g11668( linValue16_g11668 );
-				float2 appendResult189_g11666 = (float2(( localMyCustomExpression16_g11667 - 0.5 ) , ( localMyCustomExpression16_g11668 - 0.5 )));
-				float2 staticSwitch83 = ( staticSwitch4_g11664 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11666 * _FullDistortionDistortion ) );
+				float linValue16_g11669 = tex2D( _UberNoiseTexture, ( ( temp_output_195_0_g11667 + float2( 0.321,0.321 ) ) * _FullDistortionNoiseScale ) ).r;
+				float localMyCustomExpression16_g11669 = MyCustomExpression16_g11669( linValue16_g11669 );
+				float2 appendResult189_g11667 = (float2(( localMyCustomExpression16_g11668 - 0.5 ) , ( localMyCustomExpression16_g11669 - 0.5 )));
+				float2 staticSwitch83 = ( staticSwitch4_g11665 + ( ( 1.0 - _FullDistortionFade ) * appendResult189_g11667 * _FullDistortionDistortion ) );
 				#else
-				float2 staticSwitch83 = staticSwitch4_g11664;
+				float2 staticSwitch83 = staticSwitch4_g11665;
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
-				float2 temp_output_182_0_g11669 = shaderPosition235;
-				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionDistortionScale ) ).r;
+				float2 temp_output_182_0_g11670 = shaderPosition235;
+				float linValue16_g11672 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionDistortionScale ) ).r;
+				float localMyCustomExpression16_g11672 = MyCustomExpression16_g11672( linValue16_g11672 );
+				float3 rotatedValue168_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11672 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
+				float3 rotatedValue136_g11670 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11670 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
+				float3 break130_g11670 = rotatedValue136_g11670;
+				float linValue16_g11671 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11670 * _DirectionalDistortionNoiseScale ) ).r;
 				float localMyCustomExpression16_g11671 = MyCustomExpression16_g11671( linValue16_g11671 );
-				float3 rotatedValue168_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( _DirectionalDistortionDistortion ,  0.0 ), float3( 0,0,1 ), ( ( ( localMyCustomExpression16_g11671 - 0.5 ) * 2.0 * _DirectionalDistortionRandomDirection ) * PI ) );
-				float3 rotatedValue136_g11669 = RotateAroundAxis( float3( 0,0,0 ), float3( temp_output_182_0_g11669 ,  0.0 ), float3( 0,0,1 ), ( ( ( _DirectionalDistortionRotation / 180.0 ) + -0.25 ) * PI ) );
-				float3 break130_g11669 = rotatedValue136_g11669;
-				float linValue16_g11670 = tex2D( _UberNoiseTexture, ( temp_output_182_0_g11669 * _DirectionalDistortionNoiseScale ) ).r;
-				float localMyCustomExpression16_g11670 = MyCustomExpression16_g11670( linValue16_g11670 );
-				float clampResult154_g11669 = clamp( ( ( break130_g11669.x + break130_g11669.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11670 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11669).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 )) ) ) );
+				float clampResult154_g11670 = clamp( ( ( break130_g11670.x + break130_g11670.y + _DirectionalDistortionFade + ( localMyCustomExpression16_g11671 * _DirectionalDistortionNoiseFactor ) ) / max( _DirectionalDistortionWidth , 0.001 ) ) , 0.0 , 1.0 );
+				float2 staticSwitch82 = ( staticSwitch83 + ( (rotatedValue168_g11670).xy * ( 1.0 - (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 )) ) ) );
 				#else
 				float2 staticSwitch82 = staticSwitch83;
 				#endif
 				#ifdef _ENABLEHOLOGRAM_ON
-				float temp_output_8_0_g11674 = ( ( ( shaderTime237 * _HologramDistortionSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y );
-				float2 temp_cast_4 = (temp_output_8_0_g11674).xx;
+				float temp_output_81_0_g11675 = unity_OrthoParams.y;
+				float temp_output_8_0_g11675 = ( ( ( shaderTime237 * ( _HologramDistortionSpeed * temp_output_81_0_g11675 * 0.2 ) ) + ase_positionWS.y ) / temp_output_81_0_g11675 );
+				float2 temp_cast_4 = (temp_output_8_0_g11675).xx;
 				float2 temp_cast_5 = (_HologramDistortionDensity).xx;
-				float linValue16_g11676 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
-				float localMyCustomExpression16_g11676 = MyCustomExpression16_g11676( linValue16_g11676 );
-				float clampResult75_g11674 = clamp( localMyCustomExpression16_g11676 , 0.075 , 0.6 );
-				float2 temp_cast_6 = (temp_output_8_0_g11674).xx;
-				float2 temp_cast_7 = (_HologramDistortionScale).xx;
-				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float linValue16_g11677 = tex2D( _UberNoiseTexture, ( temp_cast_4 * temp_cast_5 ) ).r;
 				float localMyCustomExpression16_g11677 = MyCustomExpression16_g11677( linValue16_g11677 );
-				float2 appendResult2_g11675 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
+				float clampResult75_g11675 = clamp( localMyCustomExpression16_g11677 , 0.075 , 0.6 );
+				float2 temp_cast_6 = (temp_output_8_0_g11675).xx;
+				float2 temp_cast_7 = (_HologramDistortionScale).xx;
+				float linValue16_g11678 = tex2D( _UberNoiseTexture, ( temp_cast_6 * temp_cast_7 ) ).r;
+				float localMyCustomExpression16_g11678 = MyCustomExpression16_g11678( linValue16_g11678 );
+				float2 appendResult2_g11676 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float hologramFade182 = _HologramFade;
-				float2 appendResult44_g11674 = (float2(( ( ( clampResult75_g11674 * ( localMyCustomExpression16_g11677 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11675 ).x ) * hologramFade182 ) , 0.0));
-				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11674 );
+				float2 appendResult44_g11675 = (float2(( ( ( clampResult75_g11675 * ( localMyCustomExpression16_g11678 - 0.5 ) ) * _HologramDistortionOffset * ( 100.0 / appendResult2_g11676 ).x ) * hologramFade182 ) , 0.0));
+				float2 staticSwitch59 = ( staticSwitch82 + appendResult44_g11675 );
 				#else
 				float2 staticSwitch59 = staticSwitch82;
 				#endif
 				#ifdef _ENABLEGLITCH_ON
-				float2 temp_output_18_0_g11672 = shaderPosition235;
-				float2 glitchPosition154 = temp_output_18_0_g11672;
+				float2 temp_output_18_0_g11673 = shaderPosition235;
+				float2 glitchPosition154 = temp_output_18_0_g11673;
 				float linValue16_g11718 = tex2D( _UberNoiseTexture, ( ( glitchPosition154 + ( _GlitchDistortionSpeed * shaderTime237 ) ) * _GlitchDistortionScale ) ).r;
 				float localMyCustomExpression16_g11718 = MyCustomExpression16_g11718( linValue16_g11718 );
-				float linValue16_g11673 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11672 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
-				float localMyCustomExpression16_g11673 = MyCustomExpression16_g11673( linValue16_g11673 );
-				float glitchFade152 = ( max( localMyCustomExpression16_g11673 , _GlitchMaskMin ) * _GlitchFade );
+				float linValue16_g11674 = tex2D( _UberNoiseTexture, ( ( temp_output_18_0_g11673 + ( _GlitchMaskSpeed * shaderTime237 ) ) * _GlitchMaskScale ) ).r;
+				float localMyCustomExpression16_g11674 = MyCustomExpression16_g11674( linValue16_g11674 );
+				float glitchFade152 = ( max( localMyCustomExpression16_g11674 , _GlitchMaskMin ) * _GlitchFade );
 				float2 staticSwitch62 = ( staticSwitch59 + ( ( localMyCustomExpression16_g11718 - 0.5 ) * _GlitchDistortion * glitchFade152 ) );
 				#else
 				float2 staticSwitch62 = staticSwitch59;
@@ -15290,30 +15353,30 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 #ifdef _SHADERFADING_SPREAD
 				float clampResult3_g11713 = clamp( ( ( _FadingFade - ( distance( _FadingPosition , temp_output_27_0_g11713 ) + ( localMyCustomExpression16_g11714 * _FadingNoiseFactor ) ) ) / max( _FadingWidth , 0.001 ) ) , 0.0 , 1.0 );
 				#endif
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float staticSwitch139 = _FadingFade;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float staticSwitch139 = ( _FadingFade * ( tex2DNode3_g11712.r * tex2DNode3_g11712.a ) );
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float staticSwitch139 = clampResult14_g11715;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float staticSwitch139 = clampResult3_g11713;
 				#else
 				float staticSwitch139 = _FadingFade;
 				#endif
 				float fullFade123 = staticSwitch139;
 				float2 lerpResult130 = lerp( texCoord131 , temp_output_484_0 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float2 staticSwitch145 = temp_output_484_0;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float2 staticSwitch145 = lerpResult130;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float2 staticSwitch145 = lerpResult130;
 				#else
 				float2 staticSwitch145 = temp_output_484_0;
@@ -15457,7 +15520,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11758 = staticSwitch3_g11753;
 				#ifdef _ENABLECHECKERBOARD_ON
 				float4 temp_output_1_0_g11759 = temp_output_1_0_g11758;
-				float2 appendResult4_g11759 = (float2(ase_worldPos.x , ase_worldPos.y));
+				float2 appendResult4_g11759 = (float2(ase_positionWS.x , ase_positionWS.y));
 				float2 temp_output_44_0_g11759 = ( appendResult4_g11759 * _CheckerboardTiling * 0.5 );
 				float2 break12_g11759 = step( ( ceil( temp_output_44_0_g11759 ) - temp_output_44_0_g11759 ) , float2( 0.5,0.5 ) );
 				float4 appendResult42_g11759 = (float4(( (temp_output_1_0_g11759).rgb * min( ( _CheckerboardDarken + abs( ( -break12_g11759.x + break12_g11759.y ) ) ) , 1.0 ) ) , temp_output_1_0_g11759.a));
@@ -15550,7 +15613,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 In115_g11766 = temp_output_2_0_g11766;
 				float3 From115_g11766 = (_ColorReplaceFromColor).rgb;
 				float4 break2_g11767 = temp_output_1_0_g11766;
-				float3 To115_g11766 = ( pow( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , max( _ColorReplaceContrast , 0.001 ) ) * (_ColorReplaceToColor).rgb );
+				float3 To115_g11766 = ( pow( max( ( ( break2_g11767.x + break2_g11767.x + break2_g11767.y + break2_g11767.y + break2_g11767.y + break2_g11767.z ) / 6.0 ) , 0.0001 ) , max( _ColorReplaceContrast , 0.0001 ) ) * (_ColorReplaceToColor).rgb );
 				float Fuzziness115_g11766 = _ColorReplaceSmoothness;
 				float Range115_g11766 = _ColorReplaceRange;
 				float3 localMyCustomExpression115_g11766 = MyCustomExpression115_g11766( In115_g11766 , From115_g11766 , To115_g11766 , Fuzziness115_g11766 , Range115_g11766 );
@@ -15572,8 +15635,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_57_0_g11762 = staticSwitch4_g11779;
 				#ifdef _ENABLECONTRAST_ON
 				float4 temp_output_1_0_g11802 = temp_output_57_0_g11762;
-				float3 temp_cast_30 = (max( _Contrast , 0.001 )).xxx;
-				float4 appendResult4_g11802 = (float4(pow( (temp_output_1_0_g11802).rgb , temp_cast_30 ) , temp_output_1_0_g11802.a));
+				float3 temp_cast_30 = (max( _Contrast , 0.0001 )).xxx;
+				float4 appendResult4_g11802 = (float4(pow( max( (temp_output_1_0_g11802).rgb , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_30 ) , temp_output_1_0_g11802.a));
 				float4 staticSwitch32_g11762 = appendResult4_g11802;
 				#else
 				float4 staticSwitch32_g11762 = temp_output_57_0_g11762;
@@ -15600,7 +15663,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float temp_output_3_0_g11796 = ( ( break2_g11797.x + break2_g11797.x + break2_g11797.y + break2_g11797.y + break2_g11797.y + break2_g11797.z ) / 6.0 );
 				float clampResult25_g11796 = clamp( ( ( ( ( temp_output_3_0_g11796 + _SplitToningShift ) - 0.5 ) * _SplitToningBalance ) + 0.5 ) , 0.0 , 1.0 );
 				float3 lerpResult6_g11796 = lerp( (_SplitToningShadowsColor).rgb , (_SplitToningHighlightsColor).rgb , clampResult25_g11796);
-				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( temp_output_3_0_g11796 , max( _SplitToningContrast , 0.001 ) ) ) , _SplitToningFade);
+				float3 lerpResult11_g11796 = lerp( (temp_output_1_0_g11796).rgb , ( lerpResult6_g11796 * pow( max( temp_output_3_0_g11796 , 0.0001 ) , max( _SplitToningContrast , 0.0001 ) ) ) , _SplitToningFade);
 				float4 appendResult18_g11796 = (float4(lerpResult11_g11796 , temp_output_1_0_g11796.a));
 				float4 staticSwitch30_g11762 = appendResult18_g11796;
 				#else
@@ -15610,7 +15673,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11774 = staticSwitch30_g11762;
 				float3 temp_output_4_0_g11774 = (temp_output_1_0_g11774).rgb;
 				float4 break12_g11774 = temp_output_1_0_g11774;
-				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , max( _BlackTintPower , 0.001 ) ));
+				float3 lerpResult7_g11774 = lerp( temp_output_4_0_g11774 , ( temp_output_4_0_g11774 + (_BlackTintColor).rgb ) , pow( max( ( 1.0 - min( max( max( break12_g11774.r , break12_g11774.g ) , break12_g11774.b ) , 1.0 ) ) , 0.0001 ) , max( _BlackTintPower , 0.0001 ) ));
 				float3 lerpResult13_g11774 = lerp( temp_output_4_0_g11774 , lerpResult7_g11774 , _BlackTintFade);
 				float4 appendResult11_g11774 = (float4(lerpResult13_g11774 , break12_g11774.a));
 				float4 staticSwitch20_g11762 = appendResult11_g11774;
@@ -15624,7 +15687,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float linValue16_g11789 = tex2D( _UberNoiseTexture, ( temp_output_65_0_g11788 * _InkSpreadNoiseScale ) ).r;
 				float localMyCustomExpression16_g11789 = MyCustomExpression16_g11789( linValue16_g11789 );
 				float clampResult53_g11788 = clamp( ( ( ( _InkSpreadDistance - distance( _InkSpreadPosition , temp_output_65_0_g11788 ) ) + ( localMyCustomExpression16_g11789 * _InkSpreadNoiseFactor ) ) / max( _InkSpreadWidth , 0.001 ) ) , 0.0 , 1.0 );
-				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , max( _InkSpreadContrast , 0.001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
+				float3 lerpResult7_g11788 = lerp( (temp_output_1_0_g11788).rgb , ( (_InkSpreadColor).rgb * pow( max( ( ( break2_g11790.x + break2_g11790.x + break2_g11790.y + break2_g11790.y + break2_g11790.y + break2_g11790.z ) / 6.0 ) , 0.0001 ) , max( _InkSpreadContrast , 0.0001 ) ) ) , ( _InkSpreadFade * clampResult53_g11788 ));
 				float4 appendResult9_g11788 = (float4(lerpResult7_g11788 , (temp_output_1_0_g11788).a));
 				float4 staticSwitch17_g11762 = appendResult9_g11788;
 				#else
@@ -15651,7 +15714,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch33_g11784 = _AddHueFade;
 				#endif
-				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , max( _AddHueContrast , 0.001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
+				float4 appendResult6_g11784 = (float4(( ( hsvTorgb19_g11784 * pow( max( ( ( break2_g11786.x + break2_g11786.x + break2_g11786.y + break2_g11786.y + break2_g11786.y + break2_g11786.z ) / 6.0 ) , 0.0001 ) , max( _AddHueContrast , 0.0001 ) ) * staticSwitch33_g11784 ) + (temp_output_1_0_g11784).rgb ) , temp_output_1_0_g11784.a));
 				float4 staticSwitch23_g11762 = appendResult6_g11784;
 				#else
 				float4 staticSwitch23_g11762 = staticSwitch19_g11762;
@@ -15667,7 +15730,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch27_g11781 = temp_output_13_0_g11781;
 				#endif
-				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , max( _SineGlowContrast , 0.001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
+				float4 appendResult21_g11781 = (float4(( (temp_output_1_0_g11781).rgb + ( pow( max( ( ( break2_g11782.x + break2_g11782.x + break2_g11782.y + break2_g11782.y + break2_g11782.y + break2_g11782.z ) / 6.0 ) , 0.0001 ) , max( _SineGlowContrast , 0.0001 ) ) * staticSwitch27_g11781 * _SineGlowFade * ( ( ( sin( ( temp_output_39_0_g11762 * _SineGlowFrequency ) ) + 1.0 ) * ( _SineGlowMax - _SineGlowMin ) ) + _SineGlowMin ) ) ) , temp_output_1_0_g11781.a));
 				float4 staticSwitch28_g11762 = appendResult21_g11781;
 				#else
 				float4 staticSwitch28_g11762 = staticSwitch23_g11762;
@@ -15762,7 +15825,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch199_g11776 = temp_output_82_0_g11776;
 				#endif
-				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( _PixelOutlineFade * 3.0 ) , 1.0 ) );
+				float temp_output_213_0_g11776 = ( _PixelOutlineFade * step( temp_output_15_0_g11776.a , _PixelOutlineAlphaLimit ) );
+				float temp_output_182_0_g11776 = ( ( 1.0 - temp_output_15_0_g11776.a ) * min( ( temp_output_213_0_g11776 * 3.0 ) , 1.0 ) );
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch203_g11776 = 1.0;
 				#else
@@ -15772,7 +15836,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult170_g11776 = lerp( lerpResult178_g11776 , staticSwitch199_g11776 , staticSwitch203_g11776);
 				float2 appendResult206_g11776 = (float2(_MainTex_TexelSize.z , _MainTex_TexelSize.w));
 				float2 temp_output_209_0_g11776 = ( float2( 1,1 ) / appendResult206_g11776 );
-				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , _PixelOutlineFade);
+				float lerpResult168_g11776 = lerp( temp_output_15_0_g11776.a , min( ( max( max( max( tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,-1 ) ) * temp_output_209_0_g11776 ) ) ).a , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 0,1 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( -1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) , tex2D( _MainTex, ( temp_output_7_0_g11776 + ( ( _PixelOutlineWidth * float2( 1,0 ) ) * temp_output_209_0_g11776 ) ) ).a ) * 3.0 ) , 1.0 ) , temp_output_213_0_g11776);
 				#ifdef _PIXELOUTLINEOUTLINEONLYTOGGLE_ON
 				float staticSwitch200_g11776 = ( temp_output_182_0_g11776 * lerpResult168_g11776 );
 				#else
@@ -15787,7 +15851,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 lerpResult15_g11763 = lerp( (_PingPongGlowFrom).rgb , (_PingPongGlowTo).rgb , ( ( sin( ( temp_output_39_0_g11762 * _PingPongGlowFrequency ) ) + 1.0 ) / 2.0 ));
 				float4 temp_output_5_0_g11763 = staticSwitch48_g11762;
 				float4 break2_g11764 = temp_output_5_0_g11763;
-				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , max( _PingPongGlowContrast , 0.001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
+				float4 appendResult12_g11763 = (float4(( ( lerpResult15_g11763 * _PingPongGlowFade * pow( max( ( ( break2_g11764.x + break2_g11764.x + break2_g11764.y + break2_g11764.y + break2_g11764.y + break2_g11764.z ) / 6.0 ) , 0.0001 ) , max( _PingPongGlowContrast , 0.0001 ) ) ) + (temp_output_5_0_g11763).rgb ) , temp_output_5_0_g11763.a));
 				float4 staticSwitch46_g11762 = appendResult12_g11763;
 				#else
 				float4 staticSwitch46_g11762 = staticSwitch48_g11762;
@@ -15796,7 +15860,8 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#ifdef _ENABLEHOLOGRAM_ON
 				float4 temp_output_1_0_g11804 = temp_output_361_0;
 				float4 break2_g11805 = temp_output_1_0_g11804;
-				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , max( _HologramContrast , 0.001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * _HologramLineSpeed ) + ase_worldPos.y ) / unity_OrthoParams.y ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
+				float temp_output_44_0_g11804 = unity_OrthoParams.y;
+				float4 appendResult22_g11804 = (float4(( (_HologramTint).rgb * pow( max( ( ( break2_g11805.x + break2_g11805.x + break2_g11805.y + break2_g11805.y + break2_g11805.y + break2_g11805.z ) / 6.0 ) , 0.0001 ) , max( _HologramContrast , 0.0001 ) ) ) , ( max( pow( abs( sin( ( ( ( ( shaderTime237 * ( _HologramLineSpeed * temp_output_44_0_g11804 * 0.2 ) ) + ase_positionWS.y ) / temp_output_44_0_g11804 ) * _HologramLineFrequency ) ) ) , _HologramLineGap ) , _HologramMinAlpha ) * temp_output_1_0_g11804.a )));
 				float4 lerpResult37_g11804 = lerp( temp_output_1_0_g11804 , appendResult22_g11804 , hologramFade182);
 				float4 staticSwitch56 = lerpResult37_g11804;
 				#else
@@ -15837,7 +15902,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float clampResult65_g11841 = clamp( ( ( _CamouflageDensityB - localMyCustomExpression16_g11845 ) / max( _CamouflageSmoothnessB , 0.005 ) ) , 0.0 , 1.0 );
 				float4 lerpResult68_g11841 = lerp( lerpResult55_g11841 , ( _CamouflageColorB * clampResult65_g11841 ) , clampResult65_g11841);
 				float4 break2_g11844 = temp_output_1_0_g11841;
-				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , max( _CamouflageContrast , 0.001 ) ) ) , _CamouflageFade);
+				float3 lerpResult4_g11841 = lerp( (temp_output_1_0_g11841).rgb , ( (lerpResult68_g11841).rgb * pow( max( ( ( break2_g11844.x + break2_g11844.x + break2_g11844.y + break2_g11844.y + break2_g11844.y + break2_g11844.z ) / 6.0 ) , 0.0001 ) , max( _CamouflageContrast , 0.0001 ) ) ) , _CamouflageFade);
 				float4 appendResult7_g11841 = (float4(lerpResult4_g11841 , temp_output_1_0_g11841.a));
 				float4 staticSwitch26_g11811 = appendResult7_g11841;
 				#else
@@ -15860,7 +15925,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch60_g11834 = _MetalFade;
 				#endif
-				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( temp_output_5_0_g11834 , max( _MetalHighlightContrast , 0.001 ) ) ) + ( pow( temp_output_5_0_g11834 , max( _MetalContrast , 0.001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
+				float4 lerpResult45_g11834 = lerp( temp_output_1_0_g11834 , ( ( max( ( ( _MetalHighlightDensity - localMyCustomExpression16_g11837 ) / max( _MetalHighlightDensity , 0.01 ) ) , 0.0 ) * _MetalHighlightColor * pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalHighlightContrast , 0.0001 ) ) ) + ( pow( max( temp_output_5_0_g11834 , 0.0001 ) , max( _MetalContrast , 0.0001 ) ) * _MetalColor ) ) , staticSwitch60_g11834);
 				float4 appendResult8_g11834 = (float4((lerpResult45_g11834).rgb , (temp_output_1_0_g11834).a));
 				float4 staticSwitch28_g11811 = appendResult8_g11834;
 				#else
@@ -15878,7 +15943,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11830 = MyCustomExpression16_g11830( linValue16_g11830 );
 				float linValue16_g11831 = tex2D( _UberNoiseTexture, ( ( ( ( localMyCustomExpression16_g11830 - 0.25 ) * _FrozenHighlightDistortion ) + ( ( temp_output_73_0_g11826 * _FrozenHighlightSpeed ) + temp_output_72_0_g11826 ) ) * _FrozenHighlightScale ) ).r;
 				float localMyCustomExpression16_g11831 = MyCustomExpression16_g11831( linValue16_g11831 );
-				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( temp_output_7_0_g11826 , max( _FrozenContrast , 0.001 ) ) * (_FrozenTint).rgb ) + ( pow( temp_output_7_0_g11826 , max( _FrozenSnowContrast , 0.001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( temp_output_7_0_g11826 , max( _FrozenHighlightContrast , 0.001 ) ) )).rgb ) , _FrozenFade);
+				float3 lerpResult57_g11826 = lerp( (temp_output_1_0_g11826).rgb , ( ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenContrast , 0.0001 ) ) * (_FrozenTint).rgb ) + ( pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenSnowContrast , 0.0001 ) ) * ( (_FrozenSnowColor).rgb * max( ( _FrozenSnowDensity - localMyCustomExpression16_g11828 ) , 0.0 ) ) ) + (( max( ( ( _FrozenHighlightDensity - localMyCustomExpression16_g11831 ) / max( _FrozenHighlightDensity , 0.01 ) ) , 0.0 ) * _FrozenHighlightColor * pow( max( temp_output_7_0_g11826 , 0.0001 ) , max( _FrozenHighlightContrast , 0.0001 ) ) )).rgb ) , _FrozenFade);
 				float4 appendResult26_g11826 = (float4(lerpResult57_g11826 , temp_output_1_0_g11826.a));
 				float4 staticSwitch29_g11811 = appendResult26_g11826;
 				#else
@@ -15898,7 +15963,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float localMyCustomExpression16_g11822 = MyCustomExpression16_g11822( linValue16_g11822 );
 				float temp_output_15_0_g11820 = ( ( ( _BurnRadius - distance( temp_output_72_0_g11820 , _BurnPosition ) ) + ( localMyCustomExpression16_g11822 * _BurnEdgeNoiseFactor ) ) / max( _BurnWidth , 0.01 ) );
 				float clampResult18_g11820 = clamp( temp_output_15_0_g11820 , 0.0 , 1.0 );
-				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , max( _BurnInsideContrast , 0.001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
+				float3 lerpResult29_g11820 = lerp( temp_output_28_0_g11820 , ( pow( max( ( ( break2_g11824.x + break2_g11824.x + break2_g11824.y + break2_g11824.y + break2_g11824.y + break2_g11824.z ) / 6.0 ) , 0.0001 ) , max( _BurnInsideContrast , 0.0001 ) ) * ( ( (_BurnInsideNoiseColor).rgb * clampResult68_g11820 ) + (_BurnInsideColor).rgb ) ) , clampResult18_g11820);
 				float3 lerpResult40_g11820 = lerp( temp_output_28_0_g11820 , ( lerpResult29_g11820 + ( ( step( temp_output_15_0_g11820 , 1.0 ) * step( 0.0 , temp_output_15_0_g11820 ) ) * (_BurnEdgeColor).rgb ) ) , _BurnFade);
 				float4 appendResult43_g11820 = (float4(lerpResult40_g11820 , temp_output_1_0_g11820.a));
 				float4 staticSwitch32_g11811 = appendResult43_g11820;
@@ -15926,7 +15991,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 break2_g11814 = temp_output_1_0_g11812;
 				float3 temp_cast_69 = (( ( break2_g11814.x + break2_g11814.x + break2_g11814.y + break2_g11814.y + break2_g11814.y + break2_g11814.z ) / 6.0 )).xxx;
 				float3 lerpResult92_g11812 = lerp( temp_cast_69 , temp_output_57_0_g11812 , _ShineSaturation);
-				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.001 )).xxx;
+				float3 temp_cast_70 = (max( max( _ShineContrast , 0.001 ) , 0.0001 )).xxx;
 				float3 rotatedValue69_g11812 = RotateAroundAxis( float3( 0,0,0 ), float3( ( _ShineFrequency * temp_output_41_0_g11811 ) ,  0.0 ), float3( 0,0,1 ), ( ( _ShineRotation / 180.0 ) * PI ) );
 				float temp_output_103_0_g11812 = ( _ShineFrequency * _ShineWidth );
 				float clampResult80_g11812 = clamp( ( ( ( sin( ( rotatedValue69_g11812.x - ( temp_output_40_0_g11811 * _ShineSpeed * _ShineFrequency ) ) ) - ( 1.0 - temp_output_103_0_g11812 ) ) / temp_output_103_0_g11812 ) * _ShineSmooth ) , 0.0 , 1.0 );
@@ -15937,7 +16002,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float staticSwitch98_g11812 = _ShineFade;
 				#endif
-				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( lerpResult92_g11812 , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
+				float4 appendResult8_g11812 = (float4(( temp_output_57_0_g11812 + ( ( pow( max( lerpResult92_g11812 , float3( 0.0001,0.0001,0.0001 ) ) , temp_cast_70 ) * (_ShineColor).rgb ) * clampResult80_g11812 * staticSwitch98_g11812 ) ) , (temp_output_1_0_g11812).a));
 				float4 staticSwitch36_g11811 = appendResult8_g11812;
 				#else
 				float4 staticSwitch36_g11811 = staticSwitch34_g11811;
@@ -15951,7 +16016,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_28_0_g11847 = (temp_output_1_0_g11847).rgb;
 				float4 break2_g11848 = float4( temp_output_28_0_g11847 , 0.0 );
 				float3 lerpResult32_g11847 = lerp( temp_output_28_0_g11847 , ( temp_output_24_0_g11847 * ( ( break2_g11848.x + break2_g11848.x + break2_g11848.y + break2_g11848.y + break2_g11848.y + break2_g11848.z ) / 6.0 ) ) , ( _PoisonFade * _PoisonRecolorFactor ));
-				float4 appendResult27_g11847 = (float4(( ( max( pow( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , max( _PoisonDensity , 0.001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
+				float4 appendResult27_g11847 = (float4(( ( max( pow( max( abs( ( ( ( localMyCustomExpression16_g11849 + ( temp_output_41_0_g11847 * _PoisonShiftSpeed ) ) % 1.0 ) + -0.5 ) ) , 0.0001 ) , max( _PoisonDensity , 0.0001 ) ) , 0.0 ) * temp_output_24_0_g11847 * _PoisonFade * _PoisonNoiseBrightness ) + lerpResult32_g11847 ) , temp_output_1_0_g11847.a));
 				float4 staticSwitch39_g11811 = appendResult27_g11847;
 				#else
 				float4 staticSwitch39_g11811 = staticSwitch36_g11811;
@@ -15976,7 +16041,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 staticSwitch50_g11851 = lerpResult42_g11851;
 				#endif
 				float4 break2_g11853 = temp_output_10_0_g11851;
-				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , max( _EnchantedContrast , 0.001 ) ) * _EnchantedBrightness );
+				float3 temp_output_40_0_g11851 = ( staticSwitch50_g11851 * pow( max( ( ( break2_g11853.x + break2_g11853.x + break2_g11853.y + break2_g11853.y + break2_g11853.y + break2_g11853.z ) / 6.0 ) , 0.0001 ) , max( _EnchantedContrast , 0.0001 ) ) * _EnchantedBrightness );
 				float temp_output_45_0_g11851 = ( max( ( temp_output_36_0_g11851 - _EnchantedReduce ) , 0.0 ) * _EnchantedFade );
 				float3 lerpResult44_g11851 = lerp( temp_output_12_0_g11851 , temp_output_40_0_g11851 , temp_output_45_0_g11851);
 				#ifdef _ENCHANTEDLERPTOGGLE_ON
@@ -16003,7 +16068,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#else
 				float3 staticSwitch26_g11856 = ( lerpResult20_g11856 * _ShiftingBrightness );
 				#endif
-				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( temp_output_4_0_g11856 , max( _ShiftingContrast , 0.001 ) ) ) , _ShiftingFade);
+				float3 lerpResult31_g11856 = lerp( appendResult32_g11856 , ( staticSwitch26_g11856 * pow( max( temp_output_4_0_g11856 , 0.0001 ) , max( _ShiftingContrast , 0.0001 ) ) ) , _ShiftingFade);
 				float4 appendResult6_g11856 = (float4(lerpResult31_g11856 , break5_g11856.a));
 				float4 staticSwitch33_g11856 = appendResult6_g11856;
 				#else
@@ -16038,7 +16103,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11863 = ( appendResult13_g11863 * appendResult18_g11863 );
 				float4 break2_g11865 = temp_output_5_0_g11863;
 				#ifdef _TEXTURELAYER1CONTRASTTOGGLE_ON
-				float3 staticSwitch80_g11863 = ( pow( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , max( _TextureLayer1Contrast , 0.001 ) ) * temp_output_16_0_g11863 );
+				float3 staticSwitch80_g11863 = ( pow( max( ( ( break2_g11865.x + break2_g11865.x + break2_g11865.y + break2_g11865.y + break2_g11865.y + break2_g11865.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer1Contrast , 0.0001 ) ) * temp_output_16_0_g11863 );
 				#else
 				float3 staticSwitch80_g11863 = temp_output_16_0_g11863;
 				#endif
@@ -16077,7 +16142,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float3 temp_output_16_0_g11859 = ( appendResult13_g11859 * appendResult18_g11859 );
 				float4 break2_g11861 = temp_output_5_0_g11859;
 				#ifdef _TEXTURELAYER2CONTRASTTOGGLE_ON
-				float3 staticSwitch84_g11859 = ( pow( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , max( _TextureLayer2Contrast , 0.001 ) ) * temp_output_16_0_g11859 );
+				float3 staticSwitch84_g11859 = ( pow( max( ( ( break2_g11861.x + break2_g11861.x + break2_g11861.y + break2_g11861.y + break2_g11861.y + break2_g11861.z ) / 6.0 ) , 0.0001 ) , max( _TextureLayer2Contrast , 0.0001 ) ) * temp_output_16_0_g11859 );
 				#else
 				float3 staticSwitch84_g11859 = temp_output_16_0_g11859;
 				#endif
@@ -16098,7 +16163,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				#ifdef _ENABLEDIRECTIONALDISTORTION_ON
 				float4 break4_g11868 = staticSwitch77;
-				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11669 ) ):( clampResult154_g11669 ));
+				float directionalDistortionAlpha167 = (( _DirectionalDistortionInvert )?( ( 1.0 - clampResult154_g11670 ) ):( clampResult154_g11670 ));
 				float4 appendResult5_g11868 = (float4(break4_g11868.r , break4_g11868.g , break4_g11868.b , ( break4_g11868.a * directionalDistortionAlpha167 )));
 				float4 staticSwitch75 = appendResult5_g11868;
 				#else
@@ -16207,7 +16272,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float4 temp_output_1_0_g11885 = staticSwitch13_g11869;
 				float4 break2_g11887 = temp_output_1_0_g11885;
 				#ifdef _ADDCOLORCONTRASTTOGGLE_ON
-				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , max( _AddColorContrast , 0.001 ) ) );
+				float3 staticSwitch17_g11885 = ( staticSwitch16_g11885 * pow( max( ( ( break2_g11887.x + break2_g11887.x + break2_g11887.y + break2_g11887.y + break2_g11887.y + break2_g11887.z ) / 6.0 ) , 0.0001 ) , max( _AddColorContrast , 0.0001 ) ) );
 				#else
 				float3 staticSwitch17_g11885 = staticSwitch16_g11885;
 				#endif
@@ -16236,7 +16301,7 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				#endif
 				float4 break2_g11891 = temp_output_1_0_g11889;
 				#ifdef _STRONGTINTCONTRASTTOGGLE_ON
-				float3 staticSwitch22_g11889 = ( pow( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , max( _StrongTintContrast , 0.001 ) ) * staticSwitch21_g11889 );
+				float3 staticSwitch22_g11889 = ( pow( max( ( ( break2_g11891.x + break2_g11891.x + break2_g11891.y + break2_g11891.y + break2_g11891.y + break2_g11891.z ) / 6.0 ) , 0.0001 ) , max( _StrongTintContrast , 0.0001 ) ) * staticSwitch21_g11889 );
 				#else
 				float3 staticSwitch22_g11889 = staticSwitch21_g11889;
 				#endif
@@ -16275,36 +16340,36 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 				float customVertexAlpha193 = staticSwitch9_g11753;
 				float4 appendResult5_g11895 = (float4(break4_g11895.r , break4_g11895.g , break4_g11895.b , ( break4_g11895.a * customVertexAlpha193 )));
 				float4 temp_output_344_0 = appendResult5_g11895;
-				float4 temp_output_1_0_g11896 = temp_output_344_0;
-				float4 appendResult8_g11896 = (float4(( (temp_output_1_0_g11896).rgb * (IN.ase_color).rgb ) , temp_output_1_0_g11896.a));
+				float4 temp_output_1_0_g11898 = temp_output_344_0;
+				float4 appendResult8_g11898 = (float4(( (temp_output_1_0_g11898).rgb * (IN.ase_color).rgb ) , temp_output_1_0_g11898.a));
 				#ifdef _VERTEXTINTFIRST_ON
 				float4 staticSwitch342 = temp_output_344_0;
 				#else
-				float4 staticSwitch342 = appendResult8_g11896;
+				float4 staticSwitch342 = appendResult8_g11898;
 				#endif
 				float4 lerpResult125 = lerp( ( originalColor191 * IN.ase_color ) , staticSwitch342 , fullFade123);
-				#if defined(_SHADERFADING_NONE)
+				#if defined( _SHADERFADING_NONE )
 				float4 staticSwitch143 = staticSwitch342;
-				#elif defined(_SHADERFADING_FULL)
+				#elif defined( _SHADERFADING_FULL )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_MASK)
+				#elif defined( _SHADERFADING_MASK )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_DISSOLVE)
+				#elif defined( _SHADERFADING_DISSOLVE )
 				float4 staticSwitch143 = lerpResult125;
-				#elif defined(_SHADERFADING_SPREAD)
+				#elif defined( _SHADERFADING_SPREAD )
 				float4 staticSwitch143 = lerpResult125;
 				#else
 				float4 staticSwitch143 = staticSwitch342;
 				#endif
-				float4 temp_output_7_0_g11903 = staticSwitch143;
+				float4 temp_output_7_0_g11905 = staticSwitch143;
 				#ifdef _BAKEDMATERIAL_ON
-				float4 appendResult2_g11903 = (float4(( (temp_output_7_0_g11903).rgb / max( temp_output_7_0_g11903.a , 1E-05 ) ) , temp_output_7_0_g11903.a));
-				float4 staticSwitch6_g11903 = appendResult2_g11903;
+				float4 appendResult2_g11905 = (float4(( (temp_output_7_0_g11905).rgb / max( temp_output_7_0_g11905.a , 1E-05 ) ) , temp_output_7_0_g11905.a));
+				float4 staticSwitch6_g11905 = appendResult2_g11905;
 				#else
-				float4 staticSwitch6_g11903 = temp_output_7_0_g11903;
+				float4 staticSwitch6_g11905 = temp_output_7_0_g11905;
 				#endif
 				
-				float4 Color = staticSwitch6_g11903;
+				float4 Color = staticSwitch6_g11905;
 				half4 outColor = _SelectionID;
 				return outColor;
 			}
@@ -16314,103 +16379,104 @@ Shader "Sprite Shaders Ultimate/2D Lit URP SSU"
 		
 	}
 	CustomEditor "SpriteShadersUltimate.SSUShaderGUI"
-	Fallback "Hidden/InternalErrorShader"
+	FallBack "Hidden/Shader Graph/FallbackError"
 	
+	Fallback "Hidden/InternalErrorShader"
 }
 /*ASEBEGIN
-Version=19108
+Version=19801
 Node;AmplifyShaderEditor.TexturePropertyNode;496;1090.845,979.2128;Inherit;True;Property;_MainTex;MainTex;0;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RelayNode;105;1425.709,1004.581;Inherit;False;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;157;1638.393,1000.485;Inherit;False;spriteTexture;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;411;-3081.191,-3627.324;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;363;-3105.9,-3835.053;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.FunctionNode;483;-2758.191,-3709.324;Inherit;False;_ScreenTiling;604;;11656;f5939d1b891718b468aa402ddf2c75e0;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;482;-2458.77,-3622.03;Inherit;False;_WorldTiling;599;;11657;5075a3cd4854af640aa8d277732c8893;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;483;-2758.191,-3709.324;Inherit;False;_ScreenTiling;606;;11656;f5939d1b891718b468aa402ddf2c75e0;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;482;-2458.77,-3622.03;Inherit;False;_WorldTiling;601;;11657;5075a3cd4854af640aa8d277732c8893;0;2;1;FLOAT2;0,0;False;12;SAMPLER2D;;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.TexelSizeNode;438;1931.978,1144.547;Inherit;False;-1;Create;1;0;SAMPLER2D;;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;460;-2186.147,-3620.607;Inherit;False;originalUV;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TexelSizeNode;438;1931.978,1144.547;Inherit;False;-1;1;0;SAMPLER2D;;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.ComponentMaskNode;432;2227.661,1200.654;Inherit;False;False;False;True;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;435;2252.064,903.7132;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.Vector4Node;373;-2003.491,-3335.527;Inherit;False;Property;_SpriteSheetRect;Sprite Sheet Rect;9;0;Create;True;0;0;0;False;0;False;0,0,1,1;0,0,1,1;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.Vector4Node;373;-2003.491,-3335.527;Inherit;False;Property;_SpriteSheetRect;Sprite Sheet Rect;10;0;Create;True;0;0;0;False;0;False;0,0,1,1;0,0,1,1;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.FunctionNode;469;-1956.314,-3488.134;Inherit;False;_PixelArtUV_1;-1;;11658;0e4f4d9760e013e4ea49a4cc7c42c155;0;2;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;434;2534.932,1066.922;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.DynamicAppendNode;374;-1729.456,-3326.936;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;449;-1697.482,-3566.466;Inherit;False;Property;_Keyword1;Keyword 1;7;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;427;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;449;-1697.482,-3566.466;Inherit;False;Property;_Keyword1;Keyword 1;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;427;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.DynamicAppendNode;375;-1731.491,-3207.527;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FloorOpNode;433;2745.127,1095.848;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;376;-1493.884,-3326.405;Inherit;False;spriteRectMin;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;377;-1494.584,-3224.105;Inherit;False;spriteRectMax;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;450;-1448.75,-3526.053;Inherit;False;uvAfterPixelArt;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FloorOpNode;433;2745.127,1095.848;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;341;2716.61,1541.034;Inherit;False;ShaderTime;26;;11661;06a15e67904f217499045f361bad56e7;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleDivideOpNode;436;2945.127,1149.848;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;370;-1198.361,-3311.903;Inherit;False;Remap2D;-1;;11662;f79f855c0a5c94649b58f3d8127375ae;0;5;13;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;1,1;False;5;FLOAT2;0,0;False;6;FLOAT2;1,1;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TexturePropertyNode;101;2238.417,1562.63;Inherit;True;Property;_UberNoiseTexture;Uber Noise Texture;37;0;Create;True;0;0;0;False;0;False;b8d18cd117976254d94a812a0bfc336e;b8d18cd117976254d94a812a0bfc336e;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.StaticSwitch;366;-905.3608,-3353.903;Inherit;False;Property;_SpriteSheetFix;Sprite Sheet Fix;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;341;2716.61,1541.034;Inherit;False;ShaderTime;27;;11663;06a15e67904f217499045f361bad56e7;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;101;2238.417,1562.63;Inherit;True;Property;_UberNoiseTexture;Uber Noise Texture;38;0;Create;True;0;0;0;False;0;False;b8d18cd117976254d94a812a0bfc336e;b8d18cd117976254d94a812a0bfc336e;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.GetLocalVarNode;441;3148.675,1260.326;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.StaticSwitch;437;3093.581,1032.267;Inherit;False;Property;_PixelPerfectSpace;Pixel Perfect Space;6;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;437;3093.581,1032.267;Inherit;False;Property;_PixelPerfectSpace;Pixel Perfect Space;7;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;366;-905.3608,-3353.903;Inherit;False;Property;_SpriteSheetFix;Sprite Sheet Fix;9;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;237;2948.598,1594.428;Inherit;False;shaderTime;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;439;3389.449,1182.896;Inherit;False;ShaderSpace;13;;11663;be729ef05db9c224caec82a3516038dc;0;2;61;FLOAT2;0,0;False;3;SAMPLER2D;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.GetLocalVarNode;477;-582.6621,-3244.321;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;475;-584.1226,-3343.809;Inherit;False;fixedUV;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;439;3389.449,1182.896;Inherit;False;ShaderSpace;14;;11664;be729ef05db9c224caec82a3516038dc;0;2;61;FLOAT2;0,0;False;3;SAMPLER2D;0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RelayNode;99;2506.903,1635.005;Inherit;False;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;475;-584.1226,-3343.809;Inherit;False;fixedUV;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.GetLocalVarNode;477;-582.6621,-3244.321;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;159;2660.32,1715.519;Inherit;False;uberNoiseTexture;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;365;-372.9774,-3275.82;Inherit;False;_UberInteractive;532;;11664;f8a4d7008519ad249b29e4a9381f963f;0;2;9;FLOAT;0;False;3;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;235;3662.626,1220.644;Inherit;False;shaderPosition;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;365;-372.9774,-3275.82;Inherit;False;_UberInteractive;534;;11665;f8a4d7008519ad249b29e4a9381f963f;0;2;9;FLOAT;0;False;3;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;253;-334.9839,-3014.146;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RelayNode;84;-178.5299,-3184.649;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;184;-340.3444,-2931.6;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;79;-47.4363,-2946.944;Inherit;False;_FullDistortion;466;;11666;62960fe27c1c398408207bb462ffd10e;0;3;195;FLOAT2;0,0;False;160;FLOAT2;0,0;False;194;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;79;-47.4363,-2946.944;Inherit;False;_FullDistortion;468;;11667;62960fe27c1c398408207bb462ffd10e;0;3;195;FLOAT2;0,0;False;160;FLOAT2;0,0;False;194;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;254;496.0161,-2937.146;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;188;476.926,-2831.78;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.StaticSwitch;83;355.5295,-3077.305;Inherit;False;Property;_EnableShine;Enable Shine;465;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;77;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;81;747.3577,-2918.135;Inherit;False;_DirectionalDistortion;454;;11669;30e6ac39427ee11419083602d572972f;0;3;182;FLOAT2;0,0;False;160;FLOAT2;0,0;False;181;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;83;355.5295,-3077.305;Inherit;False;Property;_EnableShine;Enable Shine;467;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;77;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;81;747.3577,-2918.135;Inherit;False;_DirectionalDistortion;456;;11670;30e6ac39427ee11419083602d572972f;0;3;182;FLOAT2;0,0;False;160;FLOAT2;0,0;False;181;SAMPLER2D;;False;2;FLOAT2;174;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;243;665.8691,-664.6964;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;244;685.5539,-740.5018;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;53;1165.579,-2580.498;Inherit;False;Property;_HologramFade;Hologram: Fade;199;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;82;1064.56,-3052.917;Inherit;False;Property;_EnableShine;Enable Shine;453;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;75;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.RangedFloatNode;53;1165.579,-2580.498;Inherit;False;Property;_HologramFade;Hologram: Fade;201;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;82;1064.56,-3052.917;Inherit;False;Property;_EnableShine;Enable Shine;455;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;75;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;160;658.3505,-580.0461;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;255;1530.016,-2640.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;173;1547.656,-2458.612;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.RelayNode;38;1602.103,-2721.81;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;174;1562.277,-2362.367;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;102;919.0109,-667.4209;Inherit;False;_GlitchPre;214;;11672;b8ad29d751d87bd4d9cbf14898be6163;0;3;19;FLOAT;0;False;18;FLOAT2;0,0;False;16;SAMPLER2D;;False;2;FLOAT;15;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;102;919.0109,-667.4209;Inherit;False;_GlitchPre;216;;11673;b8ad29d751d87bd4d9cbf14898be6163;0;3;19;FLOAT;0;False;18;FLOAT2;0,0;False;16;SAMPLER2D;;False;2;FLOAT;15;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;182;1537.252,-2554.561;Inherit;False;hologramFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.Vector2Node;208;4401.642,1937.264;Inherit;False;Property;_FadingNoiseScale;Fading: Noise Scale;24;0;Create;True;0;0;0;False;0;False;0.2,0.2;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.Vector2Node;208;4401.642,1937.264;Inherit;False;Property;_FadingNoiseScale;Fading: Noise Scale;25;0;Create;True;0;0;0;False;0;False;0.2,0.2;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
 Node;AmplifyShaderEditor.GetLocalVarNode;228;4626.359,2471.966;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;219;4515.66,1836.189;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;52;1839.482,-2552.931;Inherit;False;_HologramUV;207;;11674;7c71b1b031ffcbe48805e17b94671163;0;5;77;FLOAT;0;False;55;FLOAT;0;False;76;SAMPLER2D;;False;37;FLOAT2;0,0;False;39;SAMPLER2D;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;261;4535.53,1746.504;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode;122;3995.099,1279.389;Inherit;False;Property;_FadingFade;Fading: Fade;20;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;122;3995.099,1279.389;Inherit;False;Property;_FadingFade;Fading: Fade;21;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;204;4801.255,1506.884;Inherit;True;Property;_FadingMask;Fading: Mask;26;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;230;4630.415,2681.855;Inherit;False;Property;_FadingNoiseFactor;Fading: Noise Factor;24;0;Create;True;0;0;0;False;0;False;0.2;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;210;4416.092,2114.768;Inherit;False;Property;_FadingWidth;Fading: Width;23;0;Create;True;0;0;0;False;0;False;0.3;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.Vector2Node;229;4660.594,2553.942;Inherit;False;Property;_FadingPosition;Fading: Position;22;0;Create;True;0;0;0;False;0;False;0,0;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.FunctionNode;52;1839.482,-2552.931;Inherit;False;_HologramUV;209;;11675;7c71b1b031ffcbe48805e17b94671163;0;7;77;FLOAT;0;False;55;FLOAT;0;False;76;SAMPLER2D;;False;37;FLOAT2;0,0;False;39;SAMPLER2D;;False;81;FLOAT;0;False;79;FLOAT;0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;152;1246.533,-755.1426;Inherit;False;glitchFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;154;1243.538,-600.6849;Inherit;False;glitchPosition;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TexturePropertyNode;204;4801.255,1506.884;Inherit;True;Property;_FadingMask;Fading: Mask;25;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;230;4630.415,2681.855;Inherit;False;Property;_FadingNoiseFactor;Fading: Noise Factor;23;0;Create;True;0;0;0;False;0;False;0.2;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;210;4416.092,2114.768;Inherit;False;Property;_FadingWidth;Fading: Width;22;0;Create;True;0;0;0;False;0;False;0.3;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.Vector2Node;229;4660.594,2553.942;Inherit;False;Property;_FadingPosition;Fading: Position;21;0;Create;True;0;0;0;False;0;False;0,0;0.2,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
-Node;AmplifyShaderEditor.StaticSwitch;59;2242.011,-2636.393;Inherit;False;Property;_EnableShine;Enable Shine;198;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;56;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;292;5091.561,1459.408;Inherit;False;ShaderMasker;-1;;11712;3d25b55dbfdd24f48b9bd371bdde0e97;0;2;1;FLOAT;0;False;2;SAMPLER2D;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;256;2394.016,-2741.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;231;4899.456,2440.854;Inherit;False;_UberSpreadFade;-1;;11713;777ca8ab10170fb48b24b7cd1c44f075;0;7;27;FLOAT2;0,0;False;22;FLOAT;0;False;18;SAMPLER2D;0;False;25;FLOAT2;0,0;False;23;FLOAT2;0,0;False;21;FLOAT;0;False;26;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;223;4905.316,1828.167;Inherit;False;_UberDissolveFade;-1;;11715;cb957eb9b67f4f243aa8ba0547208263;0;5;21;FLOAT2;0,0;False;1;FLOAT;0;False;16;SAMPLER2D;0;False;18;FLOAT2;0,0;False;20;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;59;2242.011,-2636.393;Inherit;False;Property;_EnableShine;Enable Shine;200;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;56;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.GetLocalVarNode;256;2394.016,-2741.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;155;2400.558,-2511.178;Inherit;False;154;glitchPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;175;2375.652,-2434.015;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;153;2413.1,-2367.982;Inherit;False;152;glitchFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;223;4905.316,1828.167;Inherit;False;_UberDissolveFade;-1;;11715;cb957eb9b67f4f243aa8ba0547208263;0;5;21;FLOAT2;0,0;False;1;FLOAT;0;False;16;SAMPLER2D;0;False;18;FLOAT2;0,0;False;20;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;139;5964.391,1365.661;Inherit;False;Property;_ShaderFading;Shader Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;5;None;Full;Mask;Dissolve;Spread;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;103;2715.721,-2556.586;Inherit;False;_GlitchUV;226;;11717;2addb21417fb5d745a5abfe02cbcd453;0;5;23;FLOAT;0;False;13;FLOAT2;0,0;False;22;SAMPLER2D;;False;3;FLOAT;0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.GetLocalVarNode;259;2999.016,-2403.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;139;5964.391,1365.661;Inherit;False;Property;_ShaderFading;Shader Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;5;None;Full;Mask;Dissolve;Spread;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;103;2715.721,-2556.586;Inherit;False;_GlitchUV;228;;11717;2addb21417fb5d745a5abfe02cbcd453;0;5;23;FLOAT;0;False;13;FLOAT2;0,0;False;22;SAMPLER2D;;False;3;FLOAT;0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;123;6281.453,1414.289;Inherit;False;fullFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;259;2999.016,-2403.146;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;176;2993.115,-2238.526;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.StaticSwitch;62;3040.934,-2600.272;Inherit;False;Property;_EnableShine;Enable Shine;213;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;57;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;62;3040.934,-2600.272;Inherit;False;Property;_EnableShine;Enable Shine;215;0;Create;True;0;0;0;False;0;False;1;0;0;True;;Toggle;2;Key0;Key1;Reference;57;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;258;2972.016,-2323.146;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;177;3015.115,-2149.526;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;484;3382.41,-2373.518;Inherit;False;_UberTransformUV;471;;11719;894b1de51a5f4c74cbe7828262f1344b;0;5;25;FLOAT;0;False;26;FLOAT2;0,0;False;1;FLOAT2;0,0;False;18;SAMPLER2D;0;False;3;SAMPLER2D;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;484;3382.41,-2373.518;Inherit;False;_UberTransformUV;473;;11719;894b1de51a5f4c74cbe7828262f1344b;0;5;25;FLOAT;0;False;26;FLOAT2;0,0;False;1;FLOAT2;0,0;False;18;SAMPLER2D;0;False;3;SAMPLER2D;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;131;3266.866,-2134.612;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.GetLocalVarNode;129;3305.944,-1988.403;Inherit;False;123;fullFade;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.LerpOp;130;3651.881,-2106.533;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;145;3940.446,-2146.193;Inherit;False;Property;_UberFading;Uber Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;145;3940.446,-2146.193;Inherit;False;Property;_UberFading;Uber Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleRemainderNode;486;4222.693,-2046.305;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;1,1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;487;4449.801,-1972.639;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;1,1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleRemainderNode;488;4664.06,-2056.074;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;1,1;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;485;4859.071,-2156.215;Inherit;False;Property;_TilingFix;Tiling Fix;10;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;485;4859.071,-2156.215;Inherit;False;Property;_TilingFix;Tiling Fix;11;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;381;5159.958,-1852.951;Inherit;False;377;spriteRectMax;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;380;5166.152,-1941.533;Inherit;False;376;spriteRectMin;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;378;5475.994,-2043.135;Inherit;False;Remap2D;-1;;11731;f79f855c0a5c94649b58f3d8127375ae;0;5;13;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;1,1;False;5;FLOAT2;0,0;False;6;FLOAT2;1,1;False;1;FLOAT2;0
@@ -16418,92 +16484,92 @@ Node;AmplifyShaderEditor.SimpleMaxOpNode;382;5739.72,-1830.532;Inherit;False;2;0
 Node;AmplifyShaderEditor.SimpleMinOpNode;383;5870.72,-1934.532;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;463;6361.842,-2067.504;Inherit;False;460;originalUV;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;442;6299.205,-1884.911;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.StaticSwitch;371;6107.095,-2156.984;Inherit;False;Property;_SpriteSheetFix1;Sprite Sheet Fix;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;366;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;371;6107.095,-2156.984;Inherit;False;Property;_SpriteSheetFix1;Sprite Sheet Fix;9;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;366;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;452;6307.805,-1976.09;Inherit;False;450;uvAfterPixelArt;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.FunctionNode;470;6618.802,-2035.91;Inherit;False;_PixelArtUV_2;-1;;11732;4b65626ba2313ca40a96813b19044794;0;4;21;FLOAT2;0,0;False;17;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;427;7006.263,-2158.381;Inherit;False;Property;_PixelPerfectUV;Pixel Perfect UV;7;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.StaticSwitch;427;7006.263,-2158.381;Inherit;False;Property;_PixelPerfectUV;Pixel Perfect UV;8;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;146;7280.32,-2157.36;Inherit;False;finalUV;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;189;-2234.721,-201.4758;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;147;-2226.428,-390.3136;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;471;-1990.589,-315.832;Inherit;False;_UberSample;570;;11733;1028d755b36e2b04da25c3b882a2e2ec;0;2;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;471;-1990.589,-315.832;Inherit;False;_UberSample;572;;11733;1028d755b36e2b04da25c3b882a2e2ec;0;2;1;FLOAT2;0,0;False;2;SAMPLER2D;;False;1;COLOR;0
 Node;AmplifyShaderEditor.VertexColorNode;358;-1921.027,-115.7738;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.FunctionNode;356;-1686.027,-106.7738;Inherit;False;ColorMultiply;-1;;11752;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StaticSwitch;354;-1350.718,-125.6577;Inherit;False;Property;_Keyword0;Keyword 0;5;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;342;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;354;-1350.718,-125.6577;Inherit;False;Property;_Keyword0;Keyword 0;6;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;342;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;179;-1036.103,27.02582;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;149;-977.8615,164.14;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;191;-1018.041,-121.917;Inherit;False;originalColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;180;-687.1025,-126.9742;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;240;-683.451,-246.0232;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;148;-614.0953,-401.0159;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;343;-737.796,35.8288;Inherit;False;_UberCustomAlpha;581;;11753;d68af6e3188f53845b23cf6e39df15fe;0;3;1;COLOR;0,0,0,0;False;6;SAMPLER2D;0;False;7;FLOAT2;0,0;False;2;FLOAT;12;COLOR;0
-Node;AmplifyShaderEditor.FunctionNode;239;-404.7228,-125.1053;Inherit;False;_UberGenerated;555;;11758;52defa3f7cca25740a6a77f065edb382;0;4;10;FLOAT;0;False;8;SAMPLER2D;0;False;7;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;343;-737.796,35.8288;Inherit;False;_UberCustomAlpha;583;;11753;d68af6e3188f53845b23cf6e39df15fe;0;3;1;COLOR;0,0,0,0;False;6;SAMPLER2D;0;False;7;FLOAT2;0,0;False;2;FLOAT;12;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;239;-404.7228,-125.1053;Inherit;False;_UberGenerated;557;;11758;52defa3f7cca25740a6a77f065edb382;0;4;10;FLOAT;0;False;8;SAMPLER2D;0;False;7;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;242;-432.6598,-617.0601;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;181;-423.344,-436.9742;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;178;-455.0759,-519.7366;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;183;-37.83691,-91.99512;Inherit;False;182;hologramFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;361;-136.8644,-329.1863;Inherit;False;_UberColor;65;;11762;db48f560e502b78409f7fbe481a93597;0;6;39;FLOAT;0;False;40;FLOAT2;0,0;False;1;FLOAT2;0,0;False;24;SAMPLER2D;0;False;3;COLOR;0,0,0,0;False;5;SAMPLER2D;0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.FunctionNode;51;183.7499,-168.0946;Inherit;False;_Hologram;200;;11804;76082a965d84d0e4da33b2cff51b3691;0;3;42;FLOAT;0;False;40;FLOAT;0;False;1;COLOR;1,1,1,1;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.FunctionNode;361;-136.8644,-329.1863;Inherit;False;_UberColor;66;;11762;db48f560e502b78409f7fbe481a93597;0;6;39;FLOAT;0;False;40;FLOAT2;0,0;False;1;FLOAT2;0,0;False;24;SAMPLER2D;0;False;3;COLOR;0,0,0,0;False;5;SAMPLER2D;0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;51;183.7499,-168.0946;Inherit;False;_Hologram;202;;11804;76082a965d84d0e4da33b2cff51b3691;0;5;42;FLOAT;0;False;40;FLOAT;0;False;1;COLOR;1,1,1,1;False;43;FLOAT;0;False;44;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;162;704.0067,-153.0455;Inherit;False;152;glitchFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;56;438.7324,-454.4984;Inherit;False;Property;_EnableHologram;Enable Hologram;198;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;56;438.7324,-454.4984;Inherit;False;Property;_EnableHologram;Enable Hologram;200;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;163;668.7452,-235.3598;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;161;687.0067,-317.0453;Inherit;False;154;glitchPosition;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;104;973.7388,-316.5438;Inherit;False;_Glitch;220;;11807;97a01281f94bcc04fbb9a7c1cd328f08;0;5;34;FLOAT;0;False;31;FLOAT2;0,0;False;33;SAMPLER2D;;False;29;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.FunctionNode;104;973.7388,-316.5438;Inherit;False;_Glitch;222;;11807;97a01281f94bcc04fbb9a7c1cd328f08;0;5;34;FLOAT;0;False;31;FLOAT2;0,0;False;33;SAMPLER2D;;False;29;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;164;250.219,-2894.672;Inherit;False;fullDistortionAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;246;1400.383,-493.8317;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;57;1278.486,-397.6114;Inherit;False;Property;_EnableGlitch;Enable Glitch;213;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;57;1278.486,-397.6114;Inherit;False;Property;_EnableGlitch;Enable Glitch;215;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;247;1456.499,-578.4069;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;171;1364.183,-273.4383;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;473;1656.25,-345.9998;Inherit;False;_UberEffect;231;;11811;93c7a07f758a0814998210619e8ad1cb;0;4;40;FLOAT;0;False;41;FLOAT2;0,0;False;3;COLOR;0,0,0,0;False;37;SAMPLER2D;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;473;1656.25,-345.9998;Inherit;False;_UberEffect;233;;11811;93c7a07f758a0814998210619e8ad1cb;0;4;40;FLOAT;0;False;41;FLOAT2;0,0;False;3;COLOR;0,0,0,0;False;37;SAMPLER2D;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;166;1853.428,-195.4143;Inherit;False;164;fullDistortionAlpha;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;167;1037.158,-2834.03;Inherit;False;directionalDistortionAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;78;2104.106,-267.8359;Inherit;False;AlphaMultiply;-1;;11867;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StaticSwitch;77;2492.977,-348.4961;Inherit;False;Property;_EnableFullDistortion;Enable Full Distortion;465;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;77;2492.977,-348.4961;Inherit;False;Property;_EnableFullDistortion;Enable Full Distortion;467;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;168;2616.17,-223.2014;Inherit;False;167;directionalDistortionAlpha;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;76;3014.405,-219.2272;Inherit;False;AlphaMultiply;-1;;11868;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;249;3627.646,-39.2937;Inherit;False;235;shaderPosition;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;75;3434.708,-336.5002;Inherit;False;Property;_EnableDirectionalDistortion;Enable Directional Distortion;453;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;75;3434.708,-336.5002;Inherit;False;Property;_EnableDirectionalDistortion;Enable Directional Distortion;455;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;169;3611.012,-138.045;Inherit;False;159;uberNoiseTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;480;3955.587,-349.0083;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;479;3931.587,-267.0083;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.FunctionNode;248;3912.165,-179.9706;Inherit;False;_UberFading;394;;11869;f8f5d1f402d6b694f9c47ef65b4ae91d;0;3;18;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;17;SAMPLER2D;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode;248;3912.165,-179.9706;Inherit;False;_UberFading;396;;11869;f8f5d1f402d6b694f9c47ef65b4ae91d;0;3;18;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;17;SAMPLER2D;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;193;-400.3044,37.52343;Inherit;False;customVertexAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;196;4178.044,-19.14569;Inherit;False;193;customVertexAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;478;4200.417,-206.2577;Inherit;False;_UberColorFinal;38;;11884;6ac57aba23ea6404ba71b6806ea93971;0;3;14;FLOAT2;0,0;False;15;SAMPLER2D;;False;3;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.VertexColorNode;348;4610.214,-299.2399;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.FunctionNode;478;4200.417,-206.2577;Inherit;False;_UberColorFinal;39;;11884;6ac57aba23ea6404ba71b6806ea93971;0;3;14;FLOAT2;0,0;False;15;SAMPLER2D;;False;3;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;476;3958.333,566.3407;Inherit;False;475;fixedUV;1;0;OBJECT;;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.Vector2Node;200;3977.696,393.365;Inherit;False;Constant;_ZeroVector;Zero Vector;67;0;Create;True;0;0;0;False;0;False;0,0;0,0;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.VertexColorNode;348;4610.214,-299.2399;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.FunctionNode;344;4548.086,-90.46628;Inherit;False;AlphaMultiply;-1;;11895;d24974f7959982d48aab81e9e7692f35;0;2;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.FunctionNode;353;4889.3,-222.093;Inherit;False;ColorMultiply;-1;;11896;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.FunctionNode;199;4171.966,521.7499;Inherit;False;_Squish;550;;11897;6d6a73cc3433bad4186f7028cad3d98c;0;2;82;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;199;4171.966,521.7499;Inherit;False;_Squish;552;;11897;6d6a73cc3433bad4186f7028cad3d98c;0;2;82;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;353;4889.3,-222.093;Inherit;False;ColorMultiply;-1;;11898;1f51da7edd80c06488c56d28bc096dec;0;2;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;194;4622.439,201.8054;Inherit;False;191;originalColor;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;251;4509.569,562.3449;Inherit;False;237;shaderTime;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;195;4877.096,136.7432;Inherit;False;TintVertex;-1;;11898;b0b94dd27c0f3da49a89feecae766dcc;0;1;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.StaticSwitch;342;5134.784,-128.8904;Inherit;False;Property;_VertexTintFirst;Vertex Tint First;5;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.StaticSwitch;198;4453.426,400.9801;Inherit;False;Property;_EnableSquish;Enable Squish;551;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;195;4877.096,136.7432;Inherit;False;TintVertex;-1;;11899;b0b94dd27c0f3da49a89feecae766dcc;0;1;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;342;5134.784,-128.8904;Inherit;False;Property;_VertexTintFirst;Vertex Tint First;6;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;124;4962.062,258.7927;Inherit;False;123;fullFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;198;4453.426,400.9801;Inherit;False;Property;_EnableSquish;Enable Squish;549;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;False;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.FunctionNode;424;4759.72,401.6135;Inherit;False;_UberTransformOffset;516;;11899;ee5e9e731457b2342bdb306bdb8d2401;0;2;8;FLOAT;0;False;2;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.LerpOp;125;5403.405,74.92608;Inherit;False;3;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.FunctionNode;424;4759.72,401.6135;Inherit;False;_UberTransformOffset;518;;11900;ee5e9e731457b2342bdb306bdb8d2401;0;2;8;FLOAT;0;False;2;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;141;4826.724,532.0556;Inherit;False;123;fullFade;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;125;5403.405,74.92608;Inherit;False;3;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.LerpOp;121;5091.355,506.223;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;143;5663.995,-69.69315;Inherit;False;Property;_UberFading;Uber Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.FunctionNode;340;6010.595,-19.64009;Inherit;False;BakingHandler;11;;11903;f63dfe0dc7c747c43b593d357b168fa0;0;1;7;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;143;5663.995,-69.69315;Inherit;False;Property;_UberFading;Uber Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.FunctionNode;494;6161.298,123.2754;Inherit;False;_2DLitStuff;1;;11904;851662d67a92ce04d84817ff63c501f2;0;1;8;FLOAT2;0,0;False;2;COLOR;0;FLOAT3;5
 Node;AmplifyShaderEditor.GetLocalVarNode;187;489.4036,-2756.916;Inherit;False;157;spriteTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;495;5957.067,137.7232;Inherit;False;146;finalUV;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;142;6116.678,268.3106;Inherit;False;Property;_UberFading;Uber Fading;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;503;6391.947,101.1744;Float;False;True;-1;2;SpriteShadersUltimate.SSUShaderGUI;0;17;Sprite Shaders Ultimate/2D Lit URP SSU;199187dac283dbe4a8cb1ea611d70c58;True;Sprite Lit;0;0;Sprite Lit;6;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;True;2;5;False;;10;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;3;Vertex Position;1;0;Debug Display;0;0;External Alpha;0;0;0;5;True;True;True;True;True;False;;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;504;6391.947,101.1744;Float;False;False;-1;2;ASEMaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;Sprite Normal;0;1;Sprite Normal;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;True;2;5;False;;10;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=NormalsRendering;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;505;6391.947,101.1744;Float;False;False;-1;2;ASEMaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;Sprite Forward;0;2;Sprite Forward;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;True;2;5;False;;10;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;506;6391.947,101.1744;Float;False;False;-1;2;ASEMaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;SceneSelectionPass;0;3;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;507;6391.947,101.1744;Float;False;False;-1;2;ASEMaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;ScenePickingPass;0;4;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.StaticSwitch;142;6116.678,268.3106;Inherit;False;Property;_UberFading;Uber Fading;20;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;4;NONE;Key1;Key2;Key3;Reference;139;True;True;All;9;1;FLOAT2;0,0;False;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT2;0,0;False;6;FLOAT2;0,0;False;7;FLOAT2;0,0;False;8;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;340;6010.595,-19.64009;Inherit;False;BakingHandler;12;;11905;f63dfe0dc7c747c43b593d357b168fa0;0;1;7;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;503;6391.947,101.1744;Float;False;True;-1;2;SpriteShadersUltimate.SSUShaderGUI;0;16;Sprite Shaders Ultimate/2D Lit URP SSU;199187dac283dbe4a8cb1ea611d70c58;True;Sprite Lit;0;0;Sprite Lit;6;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;True;2;5;False;;10;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;3;Vertex Position;1;0;Debug Display;0;0;External Alpha;0;0;0;5;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;504;6391.947,101.1744;Float;False;False;-1;2;AmplifyShaderEditor.MaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;Sprite Normal;0;1;Sprite Normal;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;True;2;5;False;;10;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=NormalsRendering;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;505;6391.947,101.1744;Float;False;False;-1;2;AmplifyShaderEditor.MaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;Sprite Forward;0;2;Sprite Forward;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;True;2;5;False;;10;False;;3;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;506;6391.947,101.1744;Float;False;False;-1;2;AmplifyShaderEditor.MaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;SceneSelectionPass;0;3;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;507;6391.947,101.1744;Float;False;False;-1;2;AmplifyShaderEditor.MaterialInspector;0;1;New Amplify Shader;199187dac283dbe4a8cb1ea611d70c58;True;ScenePickingPass;0;4;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;ShaderGraphShader=true;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 WireConnection;105;0;496;0
 WireConnection;157;0;105;0
 WireConnection;483;1;363;0
 WireConnection;483;12;411;0
 WireConnection;482;1;483;0
 WireConnection;482;12;411;0
-WireConnection;460;0;482;0
 WireConnection;438;0;157;0
+WireConnection;460;0;482;0
 WireConnection;432;0;438;0
 WireConnection;469;1;460;0
 WireConnection;469;2;411;0
@@ -16515,28 +16581,28 @@ WireConnection;449;1;460;0
 WireConnection;449;0;469;0
 WireConnection;375;0;373;3
 WireConnection;375;1;373;4
+WireConnection;433;0;434;0
 WireConnection;376;0;374;0
 WireConnection;377;0;375;0
 WireConnection;450;0;449;0
-WireConnection;433;0;434;0
 WireConnection;436;0;433;0
 WireConnection;436;1;432;0
 WireConnection;370;13;450;0
 WireConnection;370;5;376;0
 WireConnection;370;6;377;0
-WireConnection;366;1;450;0
-WireConnection;366;0;370;0
 WireConnection;437;1;435;0
 WireConnection;437;0;436;0
+WireConnection;366;1;450;0
+WireConnection;366;0;370;0
 WireConnection;237;0;341;0
 WireConnection;439;61;437;0
 WireConnection;439;3;441;0
-WireConnection;475;0;366;0
 WireConnection;99;0;101;0
+WireConnection;475;0;366;0
 WireConnection;159;0;99;0
+WireConnection;235;0;439;0
 WireConnection;365;9;477;0
 WireConnection;365;3;475;0
-WireConnection;235;0;439;0
 WireConnection;84;0;365;0
 WireConnection;79;195;253;0
 WireConnection;79;160;84;0
@@ -16560,8 +16626,6 @@ WireConnection;52;37;38;0
 WireConnection;52;39;174;0
 WireConnection;152;0;102;15
 WireConnection;154;0;102;0
-WireConnection;59;1;38;0
-WireConnection;59;0;52;0
 WireConnection;292;1;122;0
 WireConnection;292;2;204;0
 WireConnection;231;27;261;0
@@ -16576,6 +16640,8 @@ WireConnection;223;1;122;0
 WireConnection;223;16;219;0
 WireConnection;223;18;208;0
 WireConnection;223;20;210;0
+WireConnection;59;1;38;0
+WireConnection;59;0;52;0
 WireConnection;139;1;122;0
 WireConnection;139;0;122;0
 WireConnection;139;2;292;0
@@ -16678,15 +16744,15 @@ WireConnection;478;15;479;0
 WireConnection;478;3;248;0
 WireConnection;344;1;478;0
 WireConnection;344;2;196;0
-WireConnection;353;1;344;0
-WireConnection;353;2;348;0
 WireConnection;199;82;200;0
 WireConnection;199;1;476;0
+WireConnection;353;1;344;0
+WireConnection;353;2;348;0
+WireConnection;198;1;200;0
+WireConnection;198;0;199;0
 WireConnection;195;1;194;0
 WireConnection;342;1;353;0
 WireConnection;342;0;344;0
-WireConnection;198;1;200;0
-WireConnection;198;0;199;0
 WireConnection;424;8;251;0
 WireConnection;424;2;198;0
 WireConnection;125;0;195;0
@@ -16699,16 +16765,16 @@ WireConnection;143;0;125;0
 WireConnection;143;2;125;0
 WireConnection;143;3;125;0
 WireConnection;143;4;125;0
-WireConnection;340;7;143;0
 WireConnection;494;8;495;0
 WireConnection;142;1;424;0
 WireConnection;142;0;121;0
 WireConnection;142;2;121;0
 WireConnection;142;3;121;0
 WireConnection;142;4;121;0
+WireConnection;340;7;143;0
 WireConnection;503;1;340;0
 WireConnection;503;2;494;0
 WireConnection;503;3;494;5
 WireConnection;503;4;142;0
 ASEEND*/
-//CHKSM=F9A16A2ADDFC6F3B6CB9B69C5DE10E4C5B7338C8
+//CHKSM=63222DCB9F74CA9E7B52B8654372608DD189B391

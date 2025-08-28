@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 
 namespace EvolveThisMatch.Editor
 {
+#if UNITY_EDITOR
     public abstract class LoadTemplateEditorWindow : EditorWindow
     {
         protected string _sheetID;
@@ -77,7 +78,7 @@ namespace EvolveThisMatch.Editor
 
             var headers = lines[0].Trim().Split(',');
             var csvDict = new Dictionary<string, List<string>>();
-            
+
             foreach (var header in headers)
             {
                 csvDict[header] = new List<string>();
@@ -86,7 +87,7 @@ namespace EvolveThisMatch.Editor
             for (int i = 1; i < lines.Count; i++)
             {
                 var values = SplitLine(lines[i].Trim());
-                
+
                 if (values.Count != headers.Length) continue;
 
                 for (int j = 0; j < headers.Length; j++)
@@ -191,4 +192,5 @@ namespace EvolveThisMatch.Editor
         protected abstract void ConvertCSVToTemplate(Dictionary<string, List<string>> csvDic);
         #endregion
     }
+#endif
 }

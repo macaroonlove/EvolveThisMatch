@@ -11,6 +11,7 @@ namespace EvolveThisMatch.Core
     {
         public List<AgentTemplate> templates = new List<AgentTemplate>();
 
+#if UNITY_EDITOR
         [Header("필터")]
         [Label("모든 유닛"), SerializeField] private bool _isAll;
         //[HideIf("_isAll")]
@@ -43,5 +44,6 @@ namespace EvolveThisMatch.Core
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
+#endif
     }
 }

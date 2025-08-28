@@ -26,21 +26,26 @@ namespace FrameWork.Tooltip
             tooltipData.InitializeData();
         }
 
-#if UNITY_EDITOR || UNITY_STANDALONE
+
         public void OnPointerEnter(PointerEventData eventData)
         {
+#if UNITY_EDITOR || UNITY_STANDALONE
             if (isHover == false) return;
             StartHover();
+#endif
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+#if UNITY_EDITOR || UNITY_STANDALONE
             if (isHover == false) return;
             StopHover();
+#endif
         }
-#else
+
         public void OnPointerClick(PointerEventData eventData)
         {
+#if !UNITY_EDITOR && !UNITY_STANDALONE
             if (isHover)
             {
                 StopHover();
@@ -51,8 +56,8 @@ namespace FrameWork.Tooltip
                 StartHover();
                 isHover = true;
             }
-        }
 #endif
+        }
 
         internal void StartHover()
         {

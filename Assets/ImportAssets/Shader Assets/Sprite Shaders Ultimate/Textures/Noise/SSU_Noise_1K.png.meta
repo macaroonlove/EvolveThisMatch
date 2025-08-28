@@ -130,3 +130,10 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158988
+  packageName: Sprite Shaders Ultimate
+  packageVersion: 
+  assetPath: Assets/ImportAssets/Shader Assets/Sprite Shaders Ultimate/Textures/Noise/SSU_Noise_1K.png
+  uploadId: 0

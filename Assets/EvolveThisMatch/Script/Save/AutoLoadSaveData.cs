@@ -7,6 +7,7 @@ namespace EvolveThisMatch.Save
 {
     public class AutoLoadSaveData
     {
+#if UNITY_EDITOR
         #region 로드 시, 세이브 데이터를 받아올지 여부
         private const string AutoLoadSaveDataKey = "Tools.AutoLoadSaveData";
 
@@ -30,6 +31,7 @@ namespace EvolveThisMatch.Save
         }
         #endregion
 
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private async static void Login()
         {
@@ -44,5 +46,6 @@ namespace EvolveThisMatch.Save
                 SaveManager.Instance.Load_FormationData();
             }
         }
+#endif
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace FrameWork.Editor
 {
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
     public class MinMaxSliderAttributeDrawer : PropertyDrawer
     {
@@ -106,4 +107,5 @@ namespace FrameWork.Editor
             return EditorGUIUtility.singleLineHeight * 2;
         }
     }
+#endif
 }

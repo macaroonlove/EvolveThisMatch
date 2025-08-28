@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditorInternal;
+#endif
 
 namespace FrameWork.VisualNovel
 {

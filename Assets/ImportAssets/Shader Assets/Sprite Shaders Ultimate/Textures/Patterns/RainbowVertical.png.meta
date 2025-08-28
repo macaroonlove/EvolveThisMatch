@@ -130,3 +130,10 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158988
+  packageName: Sprite Shaders Ultimate
+  packageVersion: 6.16
+  assetPath: Assets/ImportAssets/Shader Assets/Sprite Shaders Ultimate/Textures/Patterns/RainbowVertical.png
+  uploadId: 764641

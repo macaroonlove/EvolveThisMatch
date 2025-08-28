@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using EvolveThisMatch.Core;
+using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
 namespace EvolveThisMatch.Editor
 {
+#if UNITY_EDITOR
     public class LoadPassiveSkillTemplateEditorWindow : LoadTemplateEditorWindow
     {
         protected override void ConvertCSVToTemplate(Dictionary<string, List<string>> csvDic)
@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Editor
             }
 
             var idList = csvDic["No."];
-            
+
             for (int i = 0; i < idList.Count; i++)
             {
                 if (int.TryParse(idList[i], out int id) == false) continue;
@@ -67,4 +67,5 @@ namespace EvolveThisMatch.Editor
             AssetDatabase.Refresh();
         }
     }
+#endif
 }
