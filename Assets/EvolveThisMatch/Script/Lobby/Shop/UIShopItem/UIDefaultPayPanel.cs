@@ -43,8 +43,6 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _counterText;
         private Slider _counterSlider;
 
-        private CurrencySystem _currencySystem;
-
         private UnityAction<int> _onPay;
 
         protected override void Initialize()
@@ -91,9 +89,9 @@ namespace EvolveThisMatch.Lobby
                 if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
                 {
                     var value = _currencySystem.GetAmount(currency);
-
                     int maxValue = value / itemData.price;
-                    maxValue = Mathf.Min(maxValue, itemData.buyAbleCount);
+                    if (itemData.buyAbleCount != 0)
+                        maxValue = Mathf.Min(maxValue, itemData.buyAbleCount);
                     _counterSlider.maxValue = maxValue;
                 }
                 

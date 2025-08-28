@@ -14,40 +14,40 @@ namespace EvolveThisMatch.Save
         public bool isClearTutorial;
 
         [Tooltip("골드")]
-        public int gold;
+        public int Gold;
 
         [Tooltip("세계석")]
-        public int essence;
+        public int Essence;
 
         [Tooltip("전리품")]
-        public int loot;
+        public int Loot;
 
         [Tooltip("행동력")]
-        public int action;
+        public int Action;
 
         [Tooltip("일반 유닛 책갈피")]
-        public int defaultUnitBookmark;
+        public int DefaultUnitBookmark;
 
         [Tooltip("픽업 유닛 책갈피")]
-        public int pickUpUnitBookmark;
+        public int PickUpUnitBookmark;
 
         [Tooltip("찢어진 책 조각")]
-        public int bookFragment;
+        public int BookFragments;
 
         [Tooltip("픽업 유닛 책갈피")]
-        public int unitLimit;
+        public int UnitLimit;
 
         [Tooltip("말캉 버터")]
-        public int butter;
+        public int SmoothButter;
         [Tooltip("갈빗살 꼬치")]
-        public int skewers;
+        public int RibSkewers;
         [Tooltip("골수 스튜")]
-        public int stew;
+        public int BoneStew;
         [Tooltip("하트빔 스테이크")]
-        public int steak;
+        public int HeartSteak;
 
         [Tooltip("세계의 흔적")]
-        public int powder;
+        public int Powder;
     }
 
     [CreateAssetMenu(menuName = "Templates/SaveData/ProfileSaveData", fileName = "ProfileSaveData", order = 0)]
@@ -95,25 +95,25 @@ namespace EvolveThisMatch.Save
                 isLoaded = true;
 
                 // 기본
-                _goldVariable.Value = _data.gold;
-                _essenceVariable.Value = _data.essence;
-                _lootVariable.Value = _data.loot;
-                _actionVariable.Value = _data.action;
+                _goldVariable.Value = _data.Gold;
+                _essenceVariable.Value = _data.Essence;
+                _lootVariable.Value = _data.Loot;
+                _actionVariable.Value = _data.Action;
 
                 // 뽑기
-                _defaultUnitBookmarkVariable.Value = _data.defaultUnitBookmark;
-                _pickUpUnitBookmarkVariable.Value = _data.pickUpUnitBookmark;
-                _bookFragmentVariable.Value = _data.bookFragment;
-                _unitLimitVariable.Value = _data.unitLimit;
+                _defaultUnitBookmarkVariable.Value = _data.DefaultUnitBookmark;
+                _pickUpUnitBookmarkVariable.Value = _data.PickUpUnitBookmark;
+                _bookFragmentVariable.Value = _data.BookFragments;
+                _unitLimitVariable.Value = _data.UnitLimit;
 
                 // 식품부
-                _butterVariable.Value = _data.butter;
-                _skewersVariable.Value = _data.skewers;
-                _stewVariable.Value = _data.stew;
-                _steakVariable.Value = _data.steak;
+                _butterVariable.Value = _data.SmoothButter;
+                _skewersVariable.Value = _data.RibSkewers;
+                _stewVariable.Value = _data.BoneStew;
+                _steakVariable.Value = _data.HeartSteak;
 
                 // 가공부
-                _powderVariable.Value = _data.powder;
+                _powderVariable.Value = _data.Powder;
             }
 
             return isLoaded;
@@ -124,26 +124,26 @@ namespace EvolveThisMatch.Save
             if (_data == null) return null;
 
             // 기본
-            _data.gold = _goldVariable.Value;
-            _data.essence = _essenceVariable.Value;
-            _data.loot = _lootVariable.Value;
+            _data.Gold = _goldVariable.Value;
+            _data.Essence = _essenceVariable.Value;
+            _data.Loot = _lootVariable.Value;
 
-            _data.action = _actionVariable.Value;
+            _data.Action = _actionVariable.Value;
 
             // 뽑기
-            _data.defaultUnitBookmark = _defaultUnitBookmarkVariable.Value;
-            _data.pickUpUnitBookmark = _pickUpUnitBookmarkVariable.Value;
-            _data.bookFragment = _bookFragmentVariable.Value;
-            _data.unitLimit = _unitLimitVariable.Value;
+            _data.DefaultUnitBookmark = _defaultUnitBookmarkVariable.Value;
+            _data.PickUpUnitBookmark = _pickUpUnitBookmarkVariable.Value;
+            _data.BookFragments = _bookFragmentVariable.Value;
+            _data.UnitLimit = _unitLimitVariable.Value;
 
             // 식품부
-            _data.butter = _butterVariable.Value;
-            _data.skewers = _skewersVariable.Value;
-            _data.stew = _stewVariable.Value;
-            _data.steak = _steakVariable.Value;
+            _data.SmoothButter = _butterVariable.Value;
+            _data.RibSkewers = _skewersVariable.Value;
+            _data.BoneStew = _stewVariable.Value;
+            _data.HeartSteak = _steakVariable.Value;
 
             // 가공부
-            _data.powder = _powderVariable.Value;
+            _data.Powder = _powderVariable.Value;
 
             return JsonUtility.ToJson(_data);
         }

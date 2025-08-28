@@ -7,6 +7,7 @@ using FrameWork.PlayFabExtensions;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using FrameWork.UIPopup;
+using ScriptableObjectArchitecture;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -372,11 +373,11 @@ namespace EvolveThisMatch.Lobby
 
             if (itemData.isOpenPanel)
             {
-                _packagePayPanel.Show(shopCatalog, itemData, () => Pay(tab, shopCatalog, shopItem, itemData));
+                _packagePayPanel.Show(shopCatalog, itemData, () => Pay(tab, itemData));
             }
             else
             {
-                Pay(tab, shopCatalog, shopItem, itemData);
+                Pay(tab, itemData);
             }
         }
 
@@ -386,11 +387,11 @@ namespace EvolveThisMatch.Lobby
 
             if (itemData.isOpenPanel)
             {
-                _defaultPayPanel.Show(shopCatalog, itemData, (buyCount) => Pay(tab, shopCatalog, shopItem, itemData, buyCount));
+                _defaultPayPanel.Show(shopCatalog, itemData, (buyCount) => Pay(tab, itemData, buyCount));
             }
             else
             {
-                Pay(tab, shopCatalog, shopItem, itemData);
+                Pay(tab, itemData);
             }
         }
 
@@ -427,89 +428,30 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         #region 결제
-        private void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopSaveData.ShopItem shopItem, ShopItem itemData, int buyCount = 1)
+        private void Pay(UIShopSubTab tab, ShopItem itemData, int buyCount = 1)
         {
-            //// 구매 횟수 제한이 있다면
-            //if (itemData.buyAbleCount > 0)
-            //{
-            //    // 더 이상 아이템을 구매할 수 없다면
-            //    int boughtCount = shopItem == null ? 0 : shopItem.boughtCount;
-            //    if (boughtCount + buyCount > itemData.buyAbleCount)
-            //    {
-            //        return;
-            //    }
-            //}
+            SaveManager.Instance.shopData.PurchaseItem(itemData.id, buyCount, () =>
+            {
+                // 로컬에서 재화 감소
+                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
+                {
+                    _currencySystem.PayCurrency(currency, buyCount * itemData.price);
+                }
 
-            //if (!CanGainShopItem(itemData, buyCount))
-            //{
-            //    // TODO: 오류: 획득할 아이템 품목에 버그가 있습니다.
-            //    return;
-            //}
+                foreach (var reward in itemData.rewards)
+                {
+                    if (reward.type == "Profile")
+                    {
+                        AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key, (variable) =>
+                        {
+                            variable.AddValue(buyCount * reward.amount);
+                        });
+                    }
+                }
 
-            //bool isSuccess = false;
-
-            //if (itemData.isCash)
-            //{
-            //    isSuccess = CashPay(itemData);
-            //}
-            //else
-            //{
-            //    isSuccess = VariablePay(itemData, buyCount);
-            //}
-
-            //if (isSuccess)
-            //{
-            //    // 아이템 획득
-            //    foreach (var gainItem in itemData.gainShopItemDatas)
-            //    {
-            //        gainItem.GainShopItem(buyCount);
-            //    }
-
-            //    // 구매 횟수 제한이 있다면
-            //    if (itemData.buyAbleCount > 0)
-            //    {
-            //        shopCatalog.AddItem(itemData.itemName, buyCount);
-            //    }
-
-            //    tab.Select();
-
-            //    _ = SaveManager.Instance.SaveData(SaveKey.Profile, SaveKey.Shop);
-            //}
+                tab.Select();
+            });
         }
-
-        //private bool CanGainShopItem(ShopItem itemData, int buyCount)
-        //{
-        //    foreach (var gainItem in itemData.gainShopItemDatas)
-        //    {
-        //        if (!gainItem.CanGainShopItem(buyCount))
-        //            return false;
-        //    }
-        //    return true;
-        //}
-
-        ///// <summary>
-        ///// 현금 결제
-        ///// </summary>
-        //private bool CashPay(ShopItem itemData)
-        //{
-        //    // TODO: 구글 플레이스토어 결제는 추후 구현
-
-        //    return true;
-        //}
-
-        ///// <summary>
-        ///// 인게임 재화 결제
-        ///// </summary>
-        //private bool VariablePay(ShopItem itemData, int buyCount)
-        //{
-        //    int payValue = itemData.price * buyCount;
-
-        //    if (payValue > itemData.variable.Value) return false;
-
-        //    itemData.variable.AddValue(-payValue);
-
-        //    return true;
-        //}
         #endregion
 
         public void Hide()

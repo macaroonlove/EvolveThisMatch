@@ -37,13 +37,14 @@ namespace EvolveThisMatch.Lobby
         protected CanvasGroupController _purchaseLimit;
         protected CanvasGroupController _buyComplete;
 
-        private CurrencySystem _currencySystem;
+        protected CurrencySystem _currencySystem;
         protected ShopSaveData.ShopItem _shopItem;
         protected bool _isBuyAble;
 
         protected override void Initialize()
         {
             _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
+
             BindImage(typeof(Images));
             BindText(typeof(Texts));
             BindCanvasGroupController(typeof(CanvasGroups));

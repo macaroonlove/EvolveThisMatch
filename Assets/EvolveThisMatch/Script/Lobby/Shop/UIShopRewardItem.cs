@@ -40,10 +40,8 @@ namespace EvolveThisMatch.Lobby
             _itemInfo = GetText((int)Texts.ItemInfo);
         }
 
-        internal virtual void Show(Reward reward)
+        internal void Show(Reward reward)
         {
-            _itemInfo.text = $"x{reward.amount}";
-
             switch (reward.type)
             {
                 case "Profile":
@@ -52,27 +50,34 @@ namespace EvolveThisMatch.Lobby
                 case "Agent":
                     ShowUnitItemData(reward);
                     break;
-            }
+            };
 
             base.Show(true);
         }
 
-        protected void ShowVariableItemData(Reward reward)
+        private void ShowVariableItemData(Reward reward)
         {
             AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key, (variable) =>
             {
                 _itemBG.sprite = variable.IconBG;
                 _itemIcon.sprite = variable.Icon;
+                _itemInfo.text = GetItemInfoText(variable.DisplayName, reward.amount);
             });
         }
 
-        protected void ShowUnitItemData(Reward reward)
+        private void ShowUnitItemData(Reward reward)
         {
             AddressableAssetManager.Instance.GetScriptableObject<AgentTemplate>(reward.key, (agent) =>
             {
                 _itemBG.sprite = agent.rarity.agentInfoSprite;
                 _itemIcon.sprite = agent.sprite;
+                _itemInfo.text = GetItemInfoText(agent.displayName, reward.amount);
             });
+        }
+
+        protected virtual string GetItemInfoText(string displayName, int amount)
+        {
+            return $"x{amount}";
         }
     }
 }

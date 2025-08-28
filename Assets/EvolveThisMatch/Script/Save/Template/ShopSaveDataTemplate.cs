@@ -1,8 +1,14 @@
 using FrameWork.Editor;
 using FrameWork.PlayFabExtensions;
+using FrameWork.UIPopup;
+using PlayFab;
+using PlayFab.ClientModels;
+using PlayFab.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace EvolveThisMatch.Save
 {
@@ -134,6 +140,60 @@ namespace EvolveThisMatch.Save
             }
 
             return catalog;
+        }
+
+        public void PurchaseItem(string itemId, int buyCount, UnityAction onComplete)
+        {
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "PurchaseItem",
+                FunctionParameter = new { itemId = itemId, buyCount = buyCount },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) => {
+
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if ((bool)jsonResult["success"])
+                    {
+                        onComplete?.Invoke();
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                    }
+                }, DebugPlayFabError);
+        }
+
+        private void DebugPlayFabError(PlayFabError error)
+        {
+            switch (error.Error)
+            {
+                case PlayFabErrorCode.ConnectionError:
+                case PlayFabErrorCode.ExperimentationClientTimeout:
+                    UIPopupManager.Instance.ShowConfirmPopup("네트워크 연결을 확인해주세요.", () =>
+                    {
+                        SceneManager.LoadScene("Login");
+                    });
+                    break;
+                case PlayFabErrorCode.ServiceUnavailable:
+                    UIPopupManager.Instance.ShowConfirmPopup("게임 서버가 불안정합니다.\n나중에 다시 접속해주세요.\n죄송합니다.", () =>
+                    {
+#if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                    Application.Quit();
+#endif
+                    });
+                    break;
+                default:
+#if UNITY_EDITOR
+                    Debug.LogError($"PlayFab Error: {error.ErrorMessage}");
+#endif
+                    break;
+            }
         }
     }
 }
