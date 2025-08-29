@@ -107,6 +107,21 @@ namespace FrameWork.PlayFabExtensions
     public class ShopTitleData
     {
         public Dictionary<string, ShopMainTab> shopCatalog;
+
+        public int subTabCount
+        {
+            get 
+            {
+                int count = 0;
+
+                foreach (var mainTab in shopCatalog)
+                {
+                    count += mainTab.Value.subTabGroup.Count;
+                }
+
+                return count;
+            }
+        }
     }
 
     [Serializable]

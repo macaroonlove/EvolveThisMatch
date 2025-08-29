@@ -16,47 +16,42 @@ namespace EvolveThisMatch.Save
     public class ShopSaveData
     {
         [Tooltip("각 상점 카테고리 정보")]
-        public List<ShopCatalog> shopCatalogs = new List<ShopCatalog>();
+        public List<ShopCatalog> ShopCatalogs = new List<ShopCatalog>();
 
         #region 데이터 모델
         [Serializable]
         public class ShopItem
         {
-            [SerializeField] private string _itemId;
-            [SerializeField] private int _boughtCount;
-
-            public string itemId => _itemId;
-            public int boughtCount => _boughtCount;
+            public string ItemId;
+            public int BoughtCount;
 
             public ShopItem(string id)
             {
-                _itemId = id;
+                ItemId = id;
             }
 
             public void IncreaseCount(int amount = 1)
             {
-                _boughtCount += amount;
+                BoughtCount += amount;
             }
         }
 
         [Serializable]
         public class ShopCatalog
         {
-            [SerializeField] private string _catalogId;
-            [SerializeField] private long _lastBuyTicks;
-            [SerializeField] private List<ShopItem> _items = new List<ShopItem>();
+            public string CatalogId;
+            public long RefreshTick;
+            public List<ShopItem> Items = new List<ShopItem>();
 
-            public string catalogId => _catalogId;
-            public IReadOnlyList<ShopItem> items => _items;
-            public DateTime lastBuyTime
+            public DateTime LastRefresh
             {
-                get => new DateTime(_lastBuyTicks);
-                set => _lastBuyTicks = value.Ticks;
+                get => new DateTime(RefreshTick);
+                set => RefreshTick = value.Ticks;
             }
 
-            public ShopCatalog(string id)
+            public ShopItem GetItem(string itemId)
             {
-                _catalogId = id;
+                return Items.Find(x => x.ItemId == itemId);
             }
 
             public void AddItem(string catalogId, int buyCount)
@@ -70,18 +65,8 @@ namespace EvolveThisMatch.Save
                 {
                     var newItem = new ShopItem(catalogId);
                     newItem.IncreaseCount(buyCount);
-                    _items.Add(newItem);
+                    Items.Add(newItem);
                 }
-            }
-
-            public ShopItem GetItem(string itemId)
-            {
-                return _items.Find(x => x.itemId == itemId);
-            }
-
-            public void ResetAllItems()
-            {
-                _items.Clear();
             }
         }
         #endregion
@@ -110,6 +95,11 @@ namespace EvolveThisMatch.Save
             {
                 isLoaded = true;
                 shopTitleData = TitleDataManager.LoadShopData();
+
+                if (_data.ShopCatalogs == null || _data.ShopCatalogs.Count != shopTitleData.subTabCount)
+                {
+                    InitializeShopData();
+                }
             }
 
             return isLoaded;
@@ -131,15 +121,56 @@ namespace EvolveThisMatch.Save
 
         public ShopSaveData.ShopCatalog GetShopCatalog(string id)
         {
-            var catalog = _data.shopCatalogs.Find(x => x.catalogId == id);
+            var shopCatalog = _data.ShopCatalogs.Find(x => x.CatalogId == id);
 
-            if (catalog == null)
+            return shopCatalog;
+        }
+
+        private void InitializeShopData()
+        {
+            var request = new ExecuteCloudScriptRequest
             {
-                catalog = new ShopSaveData.ShopCatalog(id);
-                _data.shopCatalogs.Add(catalog);
-            }
+                FunctionName = "InitializeShopData",
+                GeneratePlayStreamEvent = true
+            };
 
-            return catalog;
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                 (ExecuteCloudScriptResult result) =>
+                 {
+                 }, DebugPlayFabError);
+        }
+
+        public void RefreshShop(string shopId, UnityAction onComplete, UnityAction<float> onFailed)
+        {
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "RefreshShop",
+                FunctionParameter = new { shopId = shopId },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if ((bool)jsonResult["success"])
+                    {
+                        JsonObject shopDataJson = (JsonObject)jsonResult["shopData"];
+                        _data = JsonUtility.FromJson<ShopSaveData>(shopDataJson.ToString());
+
+                        onComplete?.Invoke();
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                        if (float.TryParse(jsonResult["remainTime"].ToString(), out float remainTime))
+                        {
+                            onFailed?.Invoke(remainTime);
+                        }
+                    }
+                }, DebugPlayFabError);
         }
 
         public void PurchaseItem(string itemId, int buyCount, UnityAction onComplete)
@@ -152,9 +183,15 @@ namespace EvolveThisMatch.Save
             };
 
             PlayFabClientAPI.ExecuteCloudScript(request,
-                (ExecuteCloudScriptResult result) => {
-
+                (ExecuteCloudScriptResult result) =>
+                {
                     JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if (result.FunctionResult == null)
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup("서버 응답이 없습니다.");
+                        return;
+                    }
 
                     if ((bool)jsonResult["success"])
                     {

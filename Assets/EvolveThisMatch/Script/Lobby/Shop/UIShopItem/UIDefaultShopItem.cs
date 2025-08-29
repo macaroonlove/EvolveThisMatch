@@ -7,9 +7,9 @@ namespace EvolveThisMatch.Lobby
 {
     public class UIDefaultShopItem : UIShopItem, IPointerClickHandler
     {
-        private UnityAction<ShopSaveData.ShopItem> _onSelect;
+        private UnityAction _onSelect;
 
-        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, UnityAction<ShopSaveData.ShopItem> onSelect)
+        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, UnityAction onSelect)
         {
             _onSelect = onSelect;
 
@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Lobby
         {
             if (!_isBuyAble) return;
 
-            _onSelect?.Invoke(_shopItem);
+            _onSelect?.Invoke();
         }
     }
 }

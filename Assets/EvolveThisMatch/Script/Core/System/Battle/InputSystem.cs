@@ -6,9 +6,12 @@ using UnityEngine.InputSystem;
 
 namespace EvolveThisMatch.Core
 {
+
     public class InputSystem : MonoBehaviour, IBattleSystem
     {
+#if ENABLE_INPUT_SYSTEM
         private PlayerInput _playerInput;
+#endif
 
         public event UnityAction onSkill_1;
         public event UnityAction onSkill_2;
@@ -21,15 +24,19 @@ namespace EvolveThisMatch.Core
 
         public void Initialize()
         {
+#if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
             if (_playerInput != null)
                 _playerInput.enabled = true;
+#endif
         }
 
         public void Deinitialize()
         {
+#if ENABLE_INPUT_SYSTEM
             if (_playerInput != null)
                 _playerInput.enabled = false;
+#endif
         }
 
 #if ENABLE_INPUT_SYSTEM

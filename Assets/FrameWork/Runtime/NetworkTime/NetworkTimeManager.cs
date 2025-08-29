@@ -159,29 +159,31 @@ namespace FrameWork.NetworkTime
         /// 나머지: 매일/매주/매달 12시 기준으로 남은 시간
         /// </summary>
         /// <returns>양수라면 남은 시간 존재/음수라면 남은 시간 없음</returns>
-        public async UniTask<TimeSpan> GetRemainTime(DateTime lastBuyTime, ECycleType cycleType, int interval)
+        public async UniTask<TimeSpan> GetRemainTime(DateTime lastRefresh, ECycleType cycleType, int interval)
         {
             var now = await GetKoreanNow();
 
-            DateTime nextResetTime = lastBuyTime;
+            DateTime nextResetTime = lastRefresh;
+            var koreanZone = GetKoreanTimeZone();
+            lastRefresh = TimeZoneInfo.ConvertTimeFromUtc(lastRefresh, koreanZone);
 
             switch (cycleType)
             {
                 case ECycleType.Minute:
-                    nextResetTime = lastBuyTime.AddMinutes(interval);
+                    nextResetTime = lastRefresh.AddMinutes(interval);
                     break;
                 case ECycleType.Daily:
-                    nextResetTime = now.Date.AddDays(interval);
+                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, lastRefresh.Day).AddDays(interval).Date;
                     break;
                 case ECycleType.Weekly:
-                    int monday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
+                    int monday = ((int)DayOfWeek.Monday - (int)lastRefresh.DayOfWeek + 7) % 7;
                     
                     if (monday == 0) monday = 7;
 
-                    nextResetTime = now.Date.AddDays(monday + (7 * (interval - 1)));
+                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, lastRefresh.Day).AddDays(monday + 7 * (interval - 1)).Date;
                     break;
                 case ECycleType.Monthly:
-                    nextResetTime = new DateTime(now.Year, now.Month, 1).AddMonths(interval).Date;
+                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, 1).AddMonths(interval).Date;
                     break;
             }
 

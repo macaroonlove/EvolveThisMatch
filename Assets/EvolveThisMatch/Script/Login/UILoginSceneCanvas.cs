@@ -157,6 +157,7 @@ namespace EvolveThisMatch.Login
                     if (profileData != null)
                     {
                         profileData.isClearTutorial = true;
+                        _ = SaveManager.Instance.SaveData(SaveKey.Profile);
                     }
 
                     LoadingManager.Instance.LoadScene("Lobby");

@@ -94,11 +94,11 @@ namespace EvolveThisMatch.Lobby
             if (itemData.buyAbleCount > 0)
             {
                 _purchaseLimit.Show(true);
-                _shopItem = shopCatalog.GetItem(itemData.displayName);
+                _shopItem = shopCatalog.GetItem(itemData.id);
 
                 if (_shopItem != null)
                 {
-                    int remainCount = itemData.buyAbleCount - _shopItem.boughtCount;
+                    int remainCount = itemData.buyAbleCount - _shopItem.BoughtCount;
                     _purchaseLimitText.text = $"{remainCount}/{itemData.buyAbleCount}";
 
                     if (remainCount <= 0)

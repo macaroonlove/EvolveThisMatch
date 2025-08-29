@@ -18,7 +18,7 @@ namespace EvolveThisMatch.Lobby
 
         private Transform _gainItemGroup;
 
-        private UnityAction<ShopSaveData.ShopItem> _onSelect;
+        private UnityAction _onSelect;
 
         protected override void Initialize()
         {
@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Lobby
             _gainItemGroup = GetObject((int)Objects.GainItemGroup).transform;
         }
 
-        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, List<UIShopRewardItem> shopRewardItems, UnityAction<ShopSaveData.ShopItem> onSelect)
+        internal void Show(ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, List<UIShopRewardItem> shopRewardItems, UnityAction onSelect)
         {
             _onSelect = onSelect;
 
@@ -56,7 +56,7 @@ namespace EvolveThisMatch.Lobby
         {
             if (!_isBuyAble) return;
 
-            _onSelect?.Invoke(_shopItem);
+            _onSelect?.Invoke();
         }
     }
 }
