@@ -173,17 +173,21 @@ namespace FrameWork.NetworkTime
                     nextResetTime = lastRefresh.AddMinutes(interval);
                     break;
                 case ECycleType.Daily:
-                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, lastRefresh.Day).AddDays(interval).Date;
+                    nextResetTime = lastRefresh.Date.AddDays(interval);
+                    if (nextResetTime <= now) nextResetTime = nextResetTime.AddDays(1);
                     break;
                 case ECycleType.Weekly:
                     int monday = ((int)DayOfWeek.Monday - (int)lastRefresh.DayOfWeek + 7) % 7;
                     
                     if (monday == 0) monday = 7;
 
-                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, lastRefresh.Day).AddDays(monday + 7 * (interval - 1)).Date;
+                    nextResetTime = lastRefresh.Date.AddDays(monday + 7 * (interval - 1));
+                    if (nextResetTime <= now) nextResetTime = nextResetTime.AddDays(7);
                     break;
                 case ECycleType.Monthly:
-                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, 1).AddMonths(interval).Date;
+                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, 1).AddMonths(interval);
+
+                    if (nextResetTime <= now) nextResetTime = nextResetTime.AddMonths(1);
                     break;
             }
 

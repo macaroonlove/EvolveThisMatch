@@ -4,6 +4,7 @@ using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.NetworkTime;
 using FrameWork.PlayFabExtensions;
+using FrameWork.Service;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using FrameWork.UIPopup;
@@ -290,7 +291,7 @@ namespace EvolveThisMatch.Lobby
             if (data.resetInterval > 0)
             {
                 var remainTime = await NetworkTimeManager.Instance.GetRemainTime(shopCatalog.LastRefresh, Enum.Parse<ECycleType>(data.resetType), data.resetInterval);
-                
+
                 // 아직 최신화 할 때가 되지 않았다면
                 if (remainTime.TotalSeconds > 0)
                 {
@@ -446,33 +447,58 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         #region 결제
-        private void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, int buyCount = 1)
+        private async void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, int buyCount = 1)
         {
-            SaveManager.Instance.shopData.PurchaseItem(itemData.id, buyCount, () =>
+            if (itemData.currency == "RM" && itemData.price > 0)
             {
-                // 로컬에서 재화 감소
-                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
-                {
-                    _currencySystem.PayCurrency(currency, buyCount * itemData.price);
-                }
+                var productId = itemData.id.ToLower();
+                var receipt = await IAPManager.Instance.PurchaseProductAsync(productId);
 
-                // 로컬에서 보상 획득
-                foreach (var reward in itemData.rewards)
+                if (receipt != null)
                 {
-                    if (reward.type == "Profile")
+                    SaveManager.Instance.shopData.PurchaseItemRM(itemData.id, receipt, () =>
                     {
-                        AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key, (variable) =>
-                        {
-                            variable.AddValue(buyCount * reward.amount);
-                        });
-                    }
+                        PayAfter(tab, shopCatalog, itemData, buyCount);
+                    });
                 }
-                
-                // 로컬에서 구매 횟수 갱신
-                shopCatalog.AddItem(itemData.id, buyCount);
+                else
+                {
+                    UIPopupManager.Instance.ShowConfirmPopup("결제에 실패하였습니다.");
+                }
+            }
+            else
+            {
+                SaveManager.Instance.shopData.PurchaseItem(itemData.id, buyCount, () =>
+                {
+                    // 로컬에서 재화 감소
+                    if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
+                    {
+                        _currencySystem.PayCurrency(currency, buyCount * itemData.price);
+                    }
 
-                tab.Select();
-            });
+                    PayAfter(tab, shopCatalog, itemData, buyCount);
+                });
+            }
+        }
+
+        private void PayAfter(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, int buyCount)
+        {
+            // 로컬에서 보상 획득
+            foreach (var reward in itemData.rewards)
+            {
+                if (reward.type == "Profile")
+                {
+                    AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key, (variable) =>
+                    {
+                        variable.AddValue(buyCount * reward.amount);
+                    });
+                }
+            }
+
+            // 로컬에서 구매 횟수 갱신
+            shopCatalog.AddItem(itemData.id, buyCount);
+
+            tab.Select();
         }
         #endregion
 

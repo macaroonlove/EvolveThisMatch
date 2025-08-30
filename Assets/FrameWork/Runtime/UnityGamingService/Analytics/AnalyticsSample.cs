@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace FrameWork.UGS
+namespace FrameWork.Service
 {
     public class AnalyticsSample : MonoBehaviour
     {

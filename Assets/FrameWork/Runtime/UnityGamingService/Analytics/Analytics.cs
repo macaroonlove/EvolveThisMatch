@@ -4,7 +4,7 @@ using Unity.Services.Analytics;
 using Unity.Services.Core;
 using UnityEngine;
 
-namespace FrameWork.UGS
+namespace FrameWork.Service
 {
     public class Analytics : PersistentSingleton<Analytics>
     {

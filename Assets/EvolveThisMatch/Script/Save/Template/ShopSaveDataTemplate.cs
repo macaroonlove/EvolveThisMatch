@@ -187,11 +187,30 @@ namespace EvolveThisMatch.Save
                 {
                     JsonObject jsonResult = (JsonObject)result.FunctionResult;
 
-                    if (result.FunctionResult == null)
+                    if ((bool)jsonResult["success"])
                     {
-                        UIPopupManager.Instance.ShowConfirmPopup("서버 응답이 없습니다.");
-                        return;
+                        onComplete?.Invoke();
                     }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                    }
+                }, DebugPlayFabError);
+        }
+        
+        public void PurchaseItemRM(string itemId, string receipt, UnityAction onComplete)
+        {
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "PurchaseItemRM",
+                FunctionParameter = new { itemId = itemId, receipt = receipt },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
 
                     if ((bool)jsonResult["success"])
                     {
