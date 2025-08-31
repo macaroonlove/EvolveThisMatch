@@ -44,6 +44,24 @@ namespace FrameWork.PlayFabExtensions
 
             foodExp = agentData.foodExp.Select(v => (ObscuredInt)v).ToArray();
         }
+        
+        public static void LoadItemData(ref ObscuredInt[] artifactLevelUpRequirements, ref ObscuredInt[] tomeLevelUpRequirements)
+        {
+            if (!_titleData.TryGetValue("ItemData", out string json))
+            {
+#if UNITY_EDITOR
+                Debug.LogError("ItemData를 찾을 수 없습니다.");
+#endif
+                return;
+            }
+
+            var itemData = JsonUtility.FromJson<ItemTitleData>(json);
+
+            // ObscuredInt 배열로 변환
+            artifactLevelUpRequirements = itemData.artifactLevelUpRequirements.Select(v => (ObscuredInt)v).ToArray();
+
+            tomeLevelUpRequirements = itemData.tomeLevelUpRequirements.Select(v => (ObscuredInt)v).ToArray();
+        }
 
         public static ShopTitleData LoadShopData()
         {
@@ -99,6 +117,15 @@ namespace FrameWork.PlayFabExtensions
         public int[] agentTierUpRequirements;
         public int[] agentMaxLevelPerTier;
         public int[] foodExp;
+    }
+    #endregion
+
+    #region ItemTitleData
+    [Serializable]
+    public class ItemTitleData
+    {
+        public int[] artifactLevelUpRequirements;
+        public int[] tomeLevelUpRequirements;
     }
     #endregion
 

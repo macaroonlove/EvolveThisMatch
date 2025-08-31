@@ -63,13 +63,11 @@ namespace EvolveThisMatch.Save
         [SerializeField, ReadOnly] private AgentSaveData _data;
 
         private static ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10 };
-        private static ObscuredInt[] _agentMaxLevelPerTier;// = { 50, 70, 100, 120, 150, 180 };
+        private static ObscuredInt[] _agentMaxLevelPerTier = { 50, 70, 100, 120, 150, 180 };
         private static ObscuredInt[] _foodExp = { 30, 500, 2000, 15000 };
 
         public List<AgentSaveData.Agent> ownedAgents => _data.ownedAgents;
 
-        public static IReadOnlyList<ObscuredInt> agentTierUpRequirements => _agentTierUpRequirements;
-        public static IReadOnlyList<ObscuredInt> agentMaxLevelPerTier => _agentMaxLevelPerTier;
         public static IReadOnlyList<ObscuredInt> foodExp => _foodExp;
 
         public override void SetDefaultValues()
@@ -83,21 +81,21 @@ namespace EvolveThisMatch.Save
             AddAgent(3);
             AddAgent(4);
             AddAgent(5);
-            
+
             isLoaded = true;
         }
 
         public override bool Load(string json)
         {
             _data = JsonUtility.FromJson<AgentSaveData>(json);
-            
+
             if (_data != null)
             {
                 isLoaded = _data.ownedAgents.Count > 0;
-                
+
                 TitleDataManager.LoadAgentData(ref _agentTierUpRequirements, ref _agentMaxLevelPerTier, ref _foodExp);
             }
-            
+
             return isLoaded;
         }
 
@@ -115,6 +113,8 @@ namespace EvolveThisMatch.Save
         }
 
         #region 유닛
+
+        #region 유닛 추가 (로컬 적용)
         /// <summary>
         /// 유닛 추가
         /// </summary>
@@ -137,6 +137,116 @@ namespace EvolveThisMatch.Save
                 modifyUnit.unitCount += count;
             }
         }
+        #endregion
+
+        #region 유닛 레벨업
+        /// <summary>
+        /// 유닛 레벨업
+        /// </summary>
+        public void LevelUpAgent(int id, int[] eatFood, UnityAction onComplete)
+        {
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "LevelUpAgent",
+                FunctionParameter = new { agentId = id, eatFood = eatFood },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if ((bool)jsonResult["success"])
+                    {
+                        int finalLevel = Convert.ToInt32(jsonResult["finalLevel"]);
+                        int finalExp = Convert.ToInt32(jsonResult["finalExp"]);
+
+                        var agent = FindAgent(ownedAgents, id);
+                        agent.exp = finalExp;
+                        agent.level = finalLevel;
+
+                        onComplete?.Invoke();
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                    }
+                }, DebugPlayFabError);
+        }
+
+        /// <summary>
+        /// 해당 티어에서의 최대 레벨 반환
+        /// </summary>
+        public int GetMaxLevelByTier(int tier)
+        {
+            if (tier < 0 || tier >= _agentMaxLevelPerTier.Length)
+                return _agentMaxLevelPerTier[_agentMaxLevelPerTier.Length - 1];
+
+            return _agentMaxLevelPerTier[tier];
+        }
+        #endregion
+
+        #region 유닛 승격
+        /// <summary>
+        /// 유닛 승격
+        /// </summary>
+        public void TierUpAgent(int id, UnityAction onComplete)
+        {
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "TierUpAgent",
+                FunctionParameter = new { agentId = id },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if ((bool)jsonResult["success"])
+                    {
+                        var agent = FindAgent(ownedAgents, id);
+                        int requiredCount = _agentTierUpRequirements[agent.tier];
+
+                        agent.unitCount -= requiredCount;
+                        agent.tier++;
+
+                        onComplete?.Invoke();
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                    }
+                }, DebugPlayFabError);
+        }
+
+        /// <summary>
+        /// 승격 가능한 유닛인지 판별
+        /// </summary>
+        public bool GetTierUpAbleUnit(int id)
+        {
+            var modifyUnit = FindAgent(_data.ownedAgents, id);
+
+            return modifyUnit != null
+                && modifyUnit.tier < _agentTierUpRequirements.Length - 1
+                && modifyUnit.unitCount >= _agentTierUpRequirements[modifyUnit.tier];
+        }
+
+        /// <summary>
+        /// 유닛의 격에 따른 최대 유닛 개수 반환
+        /// </summary>
+        public int GetMaxUnitCountByTier(int tier)
+        {
+            if (tier < 0 || tier >= _agentTierUpRequirements.Length)
+                return -1;
+
+            return _agentTierUpRequirements[tier];
+        }
+        #endregion
 
         #region 스킨
         /// <summary>
@@ -201,113 +311,6 @@ namespace EvolveThisMatch.Save
             }
 
             return -1;
-        }
-        #endregion
-
-        #region 유닛 레벨업
-        /// <summary>
-        /// 유닛 레벨업
-        /// </summary>
-        public void LevelUpAgent(int id, int[] eatFood, UnityAction onComplete)
-        {
-            var request = new ExecuteCloudScriptRequest
-            {
-                FunctionName = "LevelUpAgent",
-                FunctionParameter = new { agentId = id, eatFood = eatFood },
-                GeneratePlayStreamEvent = true
-            };
-
-            PlayFabClientAPI.ExecuteCloudScript(request, 
-                (ExecuteCloudScriptResult result) => {
-                    
-                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
-
-                    if ((bool)jsonResult["success"])
-                    {
-                        int finalLevel = Convert.ToInt32(jsonResult["finalLevel"]);
-                        int finalExp = Convert.ToInt32(jsonResult["finalExp"]);
-
-                        var agent = FindAgent(ownedAgents, id);
-                        agent.exp = finalExp;
-                        agent.level = finalLevel;
-
-                        onComplete?.Invoke();
-                    }
-                    else
-                    {
-                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
-                    }
-                }, DebugPlayFabError);
-        }
-
-        /// <summary>
-        /// 해당 티어에서의 최대 레벨 반환
-        /// </summary>
-        public int GetMaxLevelByTier(int tier)
-        {
-            if (tier < 0 || tier >= _agentMaxLevelPerTier.Length)
-                return _agentMaxLevelPerTier[_agentMaxLevelPerTier.Length - 1];
-
-            return _agentMaxLevelPerTier[tier];
-        }
-        #endregion
-
-        #region 유닛 승격
-        /// <summary>
-        /// 유닛 승격
-        /// </summary>
-        public void TierUpAgent(int id, UnityAction onComplete)
-        {
-            var request = new ExecuteCloudScriptRequest
-            {
-                FunctionName = "TierUpAgent",
-                FunctionParameter = new { agentId = id },
-                GeneratePlayStreamEvent = true
-            };
-
-            PlayFabClientAPI.ExecuteCloudScript(request, 
-                (ExecuteCloudScriptResult result) => {
-
-                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
-
-                    if ((bool)jsonResult["success"])
-                    {
-                        var agent = FindAgent(ownedAgents, id);
-                        int requiredCount = _agentTierUpRequirements[agent.tier];
-
-                        agent.unitCount -= requiredCount;
-                        agent.tier++;
-
-                        onComplete?.Invoke();
-                    }
-                    else
-                    {
-                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
-                    }
-            }, DebugPlayFabError);
-        }
-
-        /// <summary>
-        /// 승격 가능한 유닛인지 판별
-        /// </summary>
-        public bool GetTierUpAbleUnit(int id)
-        {
-            var modifyUnit = FindAgent(_data.ownedAgents, id);
-
-            return modifyUnit != null
-                && modifyUnit.tier < _agentTierUpRequirements.Length - 1
-                && modifyUnit.unitCount >= _agentTierUpRequirements[modifyUnit.tier];
-        }
-
-        /// <summary>
-        /// 유닛의 격에 따른 최대 유닛 개수 반환
-        /// </summary>
-        public int GetMaxUnitCountByTier(int tier)
-        {
-            if (tier < 0 || tier >= _agentTierUpRequirements.Length)
-                return -1;
-
-            return _agentTierUpRequirements[tier];
         }
         #endregion
 

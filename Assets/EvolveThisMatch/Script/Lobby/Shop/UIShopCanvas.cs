@@ -8,7 +8,6 @@ using FrameWork.Service;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using FrameWork.UIPopup;
-using ScriptableObjectArchitecture;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -393,11 +392,11 @@ namespace EvolveThisMatch.Lobby
 
             if (itemData.isOpenPanel)
             {
-                _packagePayPanel.Show(shopCatalog, itemData, () => Pay(tab, shopCatalog, itemData));
+                _packagePayPanel.Show(shopCatalog, itemData, () => Pay(tab, itemData));
             }
             else
             {
-                Pay(tab, shopCatalog, itemData);
+                Pay(tab, itemData);
             }
         }
 
@@ -407,11 +406,11 @@ namespace EvolveThisMatch.Lobby
 
             if (itemData.isOpenPanel)
             {
-                _defaultPayPanel.Show(shopCatalog, itemData, (buyCount) => Pay(tab, shopCatalog, itemData, buyCount));
+                _defaultPayPanel.Show(shopCatalog, itemData, (buyCount) => Pay(tab, itemData, buyCount));
             }
             else
             {
-                Pay(tab, shopCatalog, itemData);
+                Pay(tab, itemData);
             }
         }
 
@@ -447,7 +446,7 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         #region 결제
-        private async void Pay(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, int buyCount = 1)
+        private async void Pay(UIShopSubTab tab, ShopItem itemData, int buyCount = 1)
         {
             if (itemData.currency == "RM" && itemData.price > 0)
             {
@@ -458,7 +457,7 @@ namespace EvolveThisMatch.Lobby
                 {
                     SaveManager.Instance.shopData.PurchaseItemRM(itemData.id, receipt, () =>
                     {
-                        PayAfter(tab, shopCatalog, itemData, buyCount);
+                        PayAfter(tab);
                     });
                 }
                 else
@@ -470,33 +469,14 @@ namespace EvolveThisMatch.Lobby
             {
                 SaveManager.Instance.shopData.PurchaseItem(itemData.id, buyCount, () =>
                 {
-                    // 로컬에서 재화 감소
-                    if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
-                    {
-                        _currencySystem.PayCurrency(currency, buyCount * itemData.price);
-                    }
-
-                    PayAfter(tab, shopCatalog, itemData, buyCount);
+                    PayAfter(tab);
                 });
             }
         }
 
-        private void PayAfter(UIShopSubTab tab, ShopSaveData.ShopCatalog shopCatalog, ShopItem itemData, int buyCount)
+        private async void PayAfter(UIShopSubTab tab)
         {
-            // 로컬에서 보상 획득
-            foreach (var reward in itemData.rewards)
-            {
-                if (reward.type == "Profile")
-                {
-                    AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key, (variable) =>
-                    {
-                        variable.AddValue(buyCount * reward.amount);
-                    });
-                }
-            }
-
-            // 로컬에서 구매 횟수 갱신
-            shopCatalog.AddItem(itemData.id, buyCount);
+            await SaveManager.Instance.LoadData(SaveKey.Profile, SaveKey.Agent, SaveKey.Item, SaveKey.Shop);
 
             tab.Select();
         }
