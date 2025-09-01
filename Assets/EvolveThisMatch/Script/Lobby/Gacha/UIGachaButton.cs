@@ -1,3 +1,5 @@
+using FrameWork;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
 using FrameWork.UIPopup;
 using ScriptableObjectArchitecture;
@@ -32,7 +34,7 @@ namespace EvolveThisMatch.Lobby
         private bool _isGachaAble;
         private int _gachaCount;
         private IReadOnlyList<GachaCost> _costs;
-        private UnityAction<int, IReadOnlyList<GachaCost>> _action;
+        private UnityAction<int> _action;
 
         protected override void Initialize()
         {
@@ -49,43 +51,51 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        internal void Show(int gachaCount, IReadOnlyList<GachaCost> costs, Color color, UnityAction<int, IReadOnlyList<GachaCost>> action)
+        internal async void Show(int gachaCount, List<GachaCost> costs, string colorString, UnityAction<int> action)
         {
             _costs = costs;
             _gachaCount = gachaCount;
             _action = action;
 
-            _background.color = color;
             _titleText.text = $"{gachaCount}회 소환";
+
+            if (ColorUtility.TryParseHtmlString(colorString, out Color color))
+            {
+                _background.color = color;
+            }
 
             var sb = new StringBuilder();
 
             _isGachaAble = true;
             int remainCount = gachaCount;
+
             for (int i = 0; i < costs.Count && remainCount > 0; i++)
             {
                 var cost = costs[i];
 
-                // 최대 소환할 수 있는 개수 구하기
-                int maxPickUpCount = cost.variable.Value / cost.cost;
+                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.costVariable);
 
-                // 소환 불가능
-                if (maxPickUpCount <= 0)
+                if (variable != null)
                 {
-                    continue;
+                    // 최대 소환할 수 있는 개수 구하기
+                    int maxPickUpCount = variable.Value / cost.price;
+
+                    // 소환이 가능하다면
+                    if (maxPickUpCount > 0)
+                    {
+                        // 해당 버튼의 최대 소환량을 넘지 않도록 제한
+                        int pickUpCount = Mathf.Min(remainCount, maxPickUpCount);
+
+                        // 사용 처리
+                        int useAmount = pickUpCount * cost.price;
+                        remainCount -= pickUpCount;
+
+                        sb.Append($"<sprite name={variable.IconText}> {useAmount}");
+
+                        if (remainCount > 0 && i < costs.Count - 1)
+                            sb.Append("  ");
+                    }
                 }
-
-                // 해당 버튼의 최대 소환량을 넘지 않도록 제한
-                int pickUpCount = Mathf.Min(remainCount, maxPickUpCount);
-
-                // 사용 처리
-                int useAmount = pickUpCount * cost.cost;
-                remainCount -= pickUpCount;
-
-                sb.Append($"<sprite name={cost.variable.IconText}> {useAmount}");
-
-                if (remainCount > 0 && i < costs.Count - 1)
-                    sb.Append("  ");
             }
 
             // 소환이 불가능하다면
@@ -93,7 +103,13 @@ namespace EvolveThisMatch.Lobby
             {
                 var cost = costs[costs.Count - 1];
                 sb.Clear();
-                sb.Append($"<sprite name={cost.variable.IconText}> <color=red>{cost.cost * gachaCount}</color>");
+
+                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.costVariable);
+
+                if (variable != null)
+                {
+                    sb.Append($"<sprite name={variable.IconText}> <color=red>{cost.price * gachaCount}</color>");
+                }
                 _isGachaAble = false;
             }
 
@@ -104,15 +120,20 @@ namespace EvolveThisMatch.Lobby
             (transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
         }
 
-        private void OnClick()
+        private async void OnClick()
         {
             if (_isGachaAble)
             {
-                _action?.Invoke(_gachaCount, _costs);
+                _action?.Invoke(_gachaCount);
             }
             else
             {
-                UIPopupManager.Instance.ShowConfirmPopup($"{_costs[_costs.Count - 1].variable.DisplayName}이(가) 부족합니다.");
+                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(_costs[_costs.Count - 1].costVariable);
+                // 해당 ObscuredIntVariable을 찾을 수 있다면
+                if (variable != null)
+                {
+                    UIPopupManager.Instance.ShowConfirmPopup($"{variable.DisplayName}이(가) 부족합니다.");
+                }
             }
         }
     }

@@ -26,10 +26,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c07506fdbaa7fc45875ac46e8746973, type: 3}
   m_Name: "Artifact_\uC6A9\uC758 \uBE44\uB298"
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 21300000, guid: d09155c95647f624db9a2b286f3a5d33, type: 3}
+  _sprite: {fileID: 21300000, guid: b7867caf6548afe4b9dee15bb5193f3d, type: 3}
   _id: 17
   _displayName: "\uC6A9\uC758 \uBE44\uB298"
-  _description: "\uB9C8\uBC95 \uC800\uD56D\uB825\uC774 {value}% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  _description: "\uD68C\uC218 \uC2DC, \uCCB4\uB825 \uD68C\uBCF5 \uC18D\uB3C4\n{value}%
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
   _initValue: 20
   _casterFX: {fileID: 0}
   triggers:

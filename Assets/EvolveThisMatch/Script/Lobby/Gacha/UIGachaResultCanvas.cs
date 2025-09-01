@@ -1,6 +1,4 @@
 using FrameWork.UIBinding;
-using System.Collections.Generic;
-using EvolveThisMatch.Core;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -24,36 +22,16 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.ConfirmButton).onClick.AddListener(Hide);
         }
 
-        internal void Show(List<AgentTemplate> agents)
+        internal void Show(string[] results)
         {
-            int count = agents.Count;
+            int count = results.Length;
 
             // 초기화
             for (int i = 0; i < _uiGachaResultItems.Length; i++)
             {
                 if (i < count)
                 {
-                    _uiGachaResultItems[i].Show(agents[i]);
-                }
-                else
-                {
-                    _uiGachaResultItems[i].Hide();
-                }
-            }
-
-            base.Show(true);
-        }
-
-        internal void Show(List<SkinTemplate> skins)
-        {
-            int count = skins.Count;
-
-            // 초기화
-            for (int i = 0; i < _uiGachaResultItems.Length; i++)
-            {
-                if (i < count)
-                {
-                    _uiGachaResultItems[i].Show(skins[i]);
+                    _uiGachaResultItems[i].Show(results[i]);
                 }
                 else
                 {

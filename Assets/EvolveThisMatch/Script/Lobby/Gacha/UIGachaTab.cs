@@ -1,4 +1,5 @@
 using DG.Tweening;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine;
@@ -27,13 +28,16 @@ namespace EvolveThisMatch.Lobby
         private Image _background;
         private TextMeshProUGUI _tabName;
 
+        private string _gachaTitle;
         private GachaData _gachaData;
         private UnityAction<UIGachaTab> _onSelect;
 
+        internal string gachaTitle => _gachaTitle;
         internal GachaData gachaData => _gachaData;
 
-        internal void Initialize(GachaData gachaData, UnityAction<UIGachaTab> onSelect)
+        internal void Initialize(string tabName, GachaData gachaData, UnityAction<UIGachaTab> onSelect)
         {
+            _gachaTitle = tabName;
             _gachaData = gachaData;
             _onSelect = onSelect;
 
@@ -44,12 +48,11 @@ namespace EvolveThisMatch.Lobby
             {
                 button.onClick.AddListener(OnClick);
             }
+            
+            _background = GetImage((int)Images.Background);
+            _tabName = GetText((int)Texts.TabName);
 
-            _background = GetImage((int)Images.Background); 
-            _tabName = GetText((int)Texts.TabName); 
-
-            _background.sprite = gachaData.tabBackground;
-            _tabName.text = gachaData.tabName;
+            _tabName.text = tabName;
         }
 
         private void OnClick()

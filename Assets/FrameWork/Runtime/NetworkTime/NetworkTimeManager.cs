@@ -163,34 +163,29 @@ namespace FrameWork.NetworkTime
         {
             var now = await GetKoreanNow();
 
-            DateTime nextResetTime = lastRefresh;
             var koreanZone = GetKoreanTimeZone();
-            lastRefresh = TimeZoneInfo.ConvertTimeFromUtc(lastRefresh, koreanZone);
+            var nextResetTime = TimeZoneInfo.ConvertTimeFromUtc(lastRefresh, koreanZone);
 
             switch (cycleType)
             {
                 case ECycleType.Minute:
-                    nextResetTime = lastRefresh.AddMinutes(interval);
+                    nextResetTime = nextResetTime.AddMinutes(interval);
                     break;
                 case ECycleType.Daily:
-                    nextResetTime = lastRefresh.Date.AddDays(interval);
-                    if (nextResetTime <= now) nextResetTime = nextResetTime.AddDays(1);
+                    nextResetTime = nextResetTime.Date.AddDays(interval);
                     break;
                 case ECycleType.Weekly:
-                    int monday = ((int)DayOfWeek.Monday - (int)lastRefresh.DayOfWeek + 7) % 7;
+                    int monday = ((int)DayOfWeek.Monday - (int)nextResetTime.DayOfWeek + 7) % 7;
                     
                     if (monday == 0) monday = 7;
 
-                    nextResetTime = lastRefresh.Date.AddDays(monday + 7 * (interval - 1));
-                    if (nextResetTime <= now) nextResetTime = nextResetTime.AddDays(7);
+                    nextResetTime = nextResetTime.Date.AddDays(monday + 7 * (interval - 1));
                     break;
                 case ECycleType.Monthly:
-                    nextResetTime = new DateTime(lastRefresh.Year, lastRefresh.Month, 1).AddMonths(interval);
-
-                    if (nextResetTime <= now) nextResetTime = nextResetTime.AddMonths(1);
+                    nextResetTime = new DateTime(nextResetTime.Year, nextResetTime.Month, 1).AddMonths(interval);
                     break;
             }
-
+            
             return nextResetTime - now;
         }
         #endregion

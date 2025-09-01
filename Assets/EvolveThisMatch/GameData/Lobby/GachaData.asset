@@ -15,6 +15,7 @@ MonoBehaviour:
   _gachaDatas:
   - rid: 7061457685939224704
   - rid: 7061457685939224694
+  - rid: 7061458003898400853
   references:
     version: 2
     RefIds:
@@ -68,3 +69,18 @@ MonoBehaviour:
         _pickupList:
         - template: {fileID: 11400000, guid: 392d1a34608bb1f4ba01a6f0807002b7, type: 2}
           rarity: 10
+    - rid: 7061458003898400853
+      type: {class: AgentSkinGachaData, ns: EvolveThisMatch.Lobby, asm: EvolveThisMatch.Lobby}
+      data:
+        _tabName: 
+        _tabBackground: {fileID: 0}
+        _background: {fileID: 0}
+        _confirmedPickUpVariable: {fileID: 0}
+        _additionalVariable: {fileID: 0}
+        _costs: []
+        _gachaButtons: []
+        _legendRarity: 0
+        _epicRarity: 0
+        _rareRarity: 0
+        _commonRarity: 0
+        _pickupList: []

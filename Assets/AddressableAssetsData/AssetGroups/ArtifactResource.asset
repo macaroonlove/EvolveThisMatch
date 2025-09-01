@@ -1,0 +1,149 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ArtifactResource
+  m_EditorClassIdentifier: 
+  m_GroupName: ArtifactResource
+  m_GUID: c0fa4d2c04229a042bf661cffe5f4a15
+  m_SerializeEntries:
+  - m_GUID: 01b503e6943451741a42c12b44cfb042
+    m_Address: Artifact_5
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0774c93e997c0af41b43f30f02b0e93c
+    m_Address: Artifact_8
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16d78038e9722234a8f5670bd2fdd99a
+    m_Address: Artifact_1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23a6c5c6d1c24314884ac32c22729971
+    m_Address: Artifact_3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28449b3471820d34db4f8b7a893d6403
+    m_Address: Artifact_4
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c1104e06edf54840a8d1ed84fd0d155
+    m_Address: Artifact_15
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f24c0fb1a4e9674d87d253f3488d650
+    m_Address: Artifact_9
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35539733303e5dd4fa985a4c31ac0e72
+    m_Address: Artifact_2
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 387518a982983e648855653c6335c731
+    m_Address: Artifact_20
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39ed72fd986fa50408f81fe345e60f0a
+    m_Address: Artifact_10
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4078f1d1cc0532647b81f9371a2dfb09
+    m_Address: Artifact_13
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cc3a185ea09a0941b2f3772a9afd0cb
+    m_Address: Artifact_18
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f649b4cd325a0347bd31a4edff55c23
+    m_Address: Artifact_6
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85e2f3450e1a5e549a7fc9008600c876
+    m_Address: Artifact_14
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a34bec00cc152b459070cb2c18b94c7
+    m_Address: Artifact_7
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c7a010c24ee578499392040fdaef738
+    m_Address: Artifact_16
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4224d5407a85774cba6b7cacae5740a
+    m_Address: Artifact_19
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a75c7d8ef8897ef45a40d758798c8a10
+    m_Address: Artifact_17
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac22361d913aaf041a0f4d5307743436
+    m_Address: Artifact_0
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4cbb9a575118de44b2e3f5fcc39eac5
+    m_Address: Artifact_11
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0f03e69297ab7241ac91299a6b05547
+    m_Address: Artifact_12
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 9dbfa78e93c17e14d9a9b1505239b656, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 6d400f0d74a3abf40878abbfe2b59eaa, type: 2}
+    - {fileID: 11400000, guid: 9dfd5be50b1776241a9732e9e99c867a, type: 2}

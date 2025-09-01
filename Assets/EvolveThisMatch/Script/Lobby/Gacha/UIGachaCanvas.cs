@@ -1,9 +1,20 @@
+using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
+using FrameWork;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using FrameWork.UIPopup;
+using Newtonsoft.Json;
+using PlayFab;
+using PlayFab.ClientModels;
+using PlayFab.Json;
 using ScriptableObjectArchitecture;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -28,9 +39,6 @@ namespace EvolveThisMatch.Lobby
         [Header("버튼")]
         [SerializeField] private GameObject _buttonPrefab;
         [SerializeField] private RectTransform _buttonParent;
-
-        [Header("가챠 데이터")]
-        [SerializeField] private GachaDataTemplate _gachaDataTemplate;
 
         private List<UIGachaButton> _gachaButtons = new List<UIGachaButton>();
         private Image _background;
@@ -61,17 +69,15 @@ namespace EvolveThisMatch.Lobby
 
         private void SetTab()
         {
-            if (_gachaDataTemplate == null) return;
-
-            var datas = _gachaDataTemplate.gachaDatas;
+            var datas = TitleDataManager.LoadGachaData();
 
             bool isSelected = false;
-            foreach (var data in datas)
+            foreach (var data in datas.gachaCatalog)
             {
                 var instance = Instantiate(_tabPrefab, _tabParent);
                 var gachaTab = instance.GetComponent<UIGachaTab>();
-                data.Initialize(_gachaResultCanvas);
-                gachaTab.Initialize(data, Select);
+
+                gachaTab.Initialize(data.Key, data.Value, Select);
 
                 if (isSelected == false)
                 {
@@ -81,10 +87,29 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
+        private void Select(UIGachaTab tab)
+        {
+            _currentTab?.UnSelect();
+            _currentTab = tab;
+            _currentTab?.Select();
+
+            // 배경 적용
+            AddressableAssetManager.Instance.GetSprite(tab.gachaData.background, (background) =>
+            {
+                _background.sprite = background;
+            });
+
+            // 버튼 최신화
+            SetButtons(tab);
+
+            // 좌측 상단에 보여질 재화 최신화
+            RefreshVariableDisplay(tab);
+        }
+
         private void SetButtons(UIGachaTab tab)
         {
             var costs = tab.gachaData.costs;
-            var infos = tab.gachaData.gachaButtons;
+            var infos = tab.gachaData.buttons;
             int count = infos.Count;
 
             // 필요한 수만큼 생성
@@ -101,7 +126,7 @@ namespace EvolveThisMatch.Lobby
                 if (i < count)
                 {
                     var info = infos[i];
-                    _gachaButtons[i].Show(info.gachaCount, costs, info.color, PickUp);
+                    _gachaButtons[i].Show(info.count, costs, info.color, PickUp);
                 }
                 else
                 {
@@ -112,62 +137,100 @@ namespace EvolveThisMatch.Lobby
             LayoutRebuilder.ForceRebuildLayoutImmediate(_buttonParent);
         }
 
-        private void Select(UIGachaTab tab)
+        private async void RefreshVariableDisplay(UIGachaTab tab)
         {
-            _currentTab?.UnSelect();
-            _currentTab = tab;
-            _currentTab?.Select();
-
-            _background.sprite = tab.gachaData.background;
-            SetButtons(tab);
-
             VariableDisplayManager.Instance.HideAll();
 
             if (tab.gachaData.additionalVariable != null)
             {
-                VariableDisplayManager.Instance.Show(tab.gachaData.additionalVariable);
+                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(tab.gachaData.additionalVariable);
+                if (currency != null)
+                {
+                    VariableDisplayManager.Instance.Show(currency);
+                }
             }
-            foreach (var item in tab.gachaData.costs)
+            foreach (var cost in tab.gachaData.costs)
             {
-                VariableDisplayManager.Instance.Show(item.variable);
+                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.costVariable);
+                if (currency != null)
+                {
+                    VariableDisplayManager.Instance.Show(currency);
+                }
             }
         }
 
-        private void PickUp(int gachaCount, IReadOnlyList<GachaCost> costs)
+        private void PickUp(int gachaCount)
         {
-            Dictionary<ObscuredIntVariable, int> payCost = new Dictionary<ObscuredIntVariable, int>();
-
-            int remainCount = gachaCount;
-            foreach (var cost in costs)
+            var request = new ExecuteCloudScriptRequest
             {
-                if (remainCount <= 0) break;
+                FunctionName = "PlayGacha",
+                FunctionParameter = new { gachaTitle = _currentTab.gachaTitle, gachaCount = gachaCount },
+                GeneratePlayStreamEvent = true
+            };
 
-                // 최대 소환할 수 있는 개수 구하기
-                int maxPickUpCount = cost.variable.Value / cost.cost;
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
 
-                // 소환 불가능
-                if (maxPickUpCount <= 0) continue;
+                    if ((bool)jsonResult["success"])
+                    {
+                        var payCost = new Dictionary<string, int>();
 
-                // 해당 버튼의 최대 소환량을 넘지 않도록 제한
-                int pickUpCount = Mathf.Min(remainCount, maxPickUpCount);
+                        if (jsonResult.ContainsKey("payCost"))
+                        {
+                            var payCostJsonStr = jsonResult["payCost"].ToString();
+                            var payCostObj = JsonConvert.DeserializeObject<Dictionary<string, int>>(payCostJsonStr);
 
-                // 사용 처리
-                int useAmount = pickUpCount * cost.cost;
-                remainCount -= pickUpCount;
+                            if (payCostObj != null)
+                            {
+                                payCost = payCostObj;
+                            }
+                        }
 
-                payCost[cost.variable] = useAmount;
+                        var resultsArray = (JsonArray)jsonResult["results"];
+                        var rewards = resultsArray.Select(r => r.ToString()).ToArray();
+
+                        PickUpAfter(payCost, rewards);
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                    }
+                }, DebugPlayFabError);
+        }
+
+        private async void PickUpAfter(Dictionary<string, int> payCost, string[] rewards)
+        {
+            foreach (var cost in payCost)
+            {
+                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.Key);
+                variable.AddValue(-cost.Value);
             }
 
-            if (remainCount > 0) return;
-
-            foreach (var pc in payCost)
+            foreach (var reward in rewards)
             {
-                pc.Key.AddValue(-pc.Value);
-            }
+                var parts = reward.Split('_');
+                string type = parts[0];
+                int id = int.Parse(parts[1]);
 
-            _currentTab.gachaData.PickUp(gachaCount);
+                if (type == "Agent")
+                {
+                    SaveManager.Instance.agentData.AddAgent(id);
+                }
+                else if (type == "Artifact")
+                {
+                    SaveManager.Instance.itemData.AddArtifact(id);
+                }
+                else if (type == "Tome")
+                {
+                    SaveManager.Instance.itemData.AddTome(id);
+                }
+            }
 
             SetButtons(_currentTab);
+
+            _gachaResultCanvas.Show(rewards);
         }
 
         public void Hide()
@@ -175,6 +238,35 @@ namespace EvolveThisMatch.Lobby
             VariableDisplayManager.Instance.HideAll();
 
             base.Hide(true);
+        }
+
+        private void DebugPlayFabError(PlayFabError error)
+        {
+            switch (error.Error)
+            {
+                case PlayFabErrorCode.ConnectionError:
+                case PlayFabErrorCode.ExperimentationClientTimeout:
+                    UIPopupManager.Instance.ShowConfirmPopup("네트워크 연결을 확인해주세요.", () =>
+                    {
+                        SceneManager.LoadScene("Login");
+                    });
+                    break;
+                case PlayFabErrorCode.ServiceUnavailable:
+                    UIPopupManager.Instance.ShowConfirmPopup("게임 서버가 불안정합니다.\n나중에 다시 접속해주세요.\n죄송합니다.", () =>
+                    {
+#if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                    Application.Quit();
+#endif
+                    });
+                    break;
+                default:
+#if UNITY_EDITOR
+                    Debug.LogError($"PlayFab Error: {error.ErrorMessage}");
+#endif
+                    break;
+            }
         }
     }
 }

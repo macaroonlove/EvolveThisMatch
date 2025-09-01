@@ -55,24 +55,52 @@ namespace EvolveThisMatch.Lobby
             base.Show(true);
         }
 
-        private void ShowVariableItemData(Reward reward)
+        private async void ShowVariableItemData(Reward reward)
         {
-            AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key, (variable) =>
+            var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key);
+
+            if (variable != null)
             {
                 _itemBG.sprite = variable.IconBG;
                 _itemIcon.sprite = variable.Icon;
                 _itemInfo.text = GetItemInfoText(variable.DisplayName, reward.amount);
-            });
+            }
         }
 
-        private void ShowUnitItemData(Reward reward)
+        private async void ShowUnitItemData(Reward reward)
         {
-            AddressableAssetManager.Instance.GetScriptableObject<AgentTemplate>(reward.key, (agent) =>
+            var agent = await AddressableAssetManager.Instance.GetScriptableObject<AgentTemplate>(reward.key);
+
+            if (agent != null)
             {
                 _itemBG.sprite = agent.rarity.agentInfoSprite;
                 _itemIcon.sprite = agent.sprite;
                 _itemInfo.text = GetItemInfoText(agent.displayName, reward.amount);
-            });
+            }
+        }
+        
+        private async void ShowArtifactItemData(Reward reward)
+        {
+            var artifact = await AddressableAssetManager.Instance.GetScriptableObject<ArtifactTemplate>(reward.key);
+
+            if (artifact != null)
+            {
+                _itemBG.sprite = _artifactBackground;
+                _itemIcon.sprite = artifact.sprite;
+                _itemInfo.text = GetItemInfoText(artifact.displayName, reward.amount);
+            }
+        }
+
+        private async void ShowTomeItemData(Reward reward)
+        {
+            var tome = await AddressableAssetManager.Instance.GetScriptableObject<TomeTemplate>(reward.key);
+
+            if (tome != null)
+            {
+                _itemBG.sprite = _tomeBackground;
+                _itemIcon.sprite = tome.sprite;
+                _itemInfo.text = GetItemInfoText(tome.displayName, reward.amount);
+            }
         }
 
         protected virtual string GetItemInfoText(string displayName, int amount)

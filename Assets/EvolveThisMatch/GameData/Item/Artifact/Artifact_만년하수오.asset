@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c07506fdbaa7fc45875ac46e8746973, type: 3}
   m_Name: "Artifact_\uB9CC\uB144\uD558\uC218\uC624"
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 21300000, guid: e91e5829ed95e5845baffe3d934ec32a, type: 3}
+  _sprite: {fileID: 21300000, guid: b7867caf6548afe4b9dee15bb5193f3d, type: 3}
   _id: 10
   _displayName: "\uB9CC\uB144\uD558\uC218\uC624"
-  _description: "\uACF5\uACA9 \uAC04\uACA9\uC774 {value}% \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  _description: "\uD68C\uC218 \uC2DC, \uCCB4\uB825 \uD68C\uBCF5 \uC18D\uB3C4\n{value}%
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
   _initValue: 12
   _casterFX: {fileID: 0}
   triggers:

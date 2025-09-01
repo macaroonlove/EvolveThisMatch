@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -142,6 +143,30 @@ namespace FrameWork
                     Addressables.Release(handle);
                 }
             };
+        }
+
+        public async UniTask<T> GetScriptableObject<T>(string key) where T : ScriptableObject
+        {
+            if (string.IsNullOrEmpty(key))
+                return null;
+
+            // 캐싱된 경우 바로 반환
+            if (_scriptableObjects.TryGetValue(key, out var cachedHandle))
+                return cachedHandle.Result as T;
+
+            var handle = Addressables.LoadAssetAsync<T>(key);
+            await handle.ToUniTask();
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                _scriptableObjects.TryAdd(key, handle);
+                return handle.Result;
+            }
+            else
+            {
+                Addressables.Release(handle);
+                return null;
+            }
         }
 
         public void ReleaseScriptableObject(string key)

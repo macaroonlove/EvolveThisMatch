@@ -98,6 +98,132 @@ namespace EvolveThisMatch.Save
             isLoaded = false;
         }
 
+        #region 아티팩트 추가 (로컬)
+        /// <summary>
+        /// 아티팩트 추가
+        /// </summary>
+        public void AddArtifact(int id, int count = 1)
+        {
+            if (count <= 0) return;
+
+            var modifyArtifact = FindArtifact(_data.ownedArtifacts, id);
+
+            if (modifyArtifact == null)
+            {
+                var newArtifact = new ItemSaveData.Artifact(id);
+                newArtifact.count = count;
+                _data.ownedArtifacts.Add(newArtifact);
+            }
+            else
+            {
+                modifyArtifact.count += count;
+
+                TryLevelupArtifact(modifyArtifact);
+            }
+        }
+
+        /// <summary>
+        /// 레벨업 시도
+        /// </summary>
+        private void TryLevelupArtifact(ItemSaveData.Artifact modifyArtifact)
+        {
+            if (modifyArtifact == null) return;
+
+            while (modifyArtifact.level < _artifactLevelUpRequirements.Length - 1)
+            {
+                int requiredCount = _artifactLevelUpRequirements[modifyArtifact.level];
+
+                if (modifyArtifact.count >= requiredCount)
+                {
+                    modifyArtifact.count -= requiredCount;
+                    modifyArtifact.level++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 아티팩트 찾기
+        /// </summary>
+        private ItemSaveData.Artifact FindArtifact(List<ItemSaveData.Artifact> artifacts, int artifactId)
+        {
+            for (int i = 0; i < artifacts.Count; i++)
+            {
+                if (artifacts[i].id == artifactId)
+                {
+                    return artifacts[i];
+                }
+            }
+            return null;
+        }
+        #endregion
+
+        #region 아티팩트 추가 (로컬)
+        /// <summary>
+        /// 아티팩트 추가
+        /// </summary>
+        public void AddTome(int id, int count = 1)
+        {
+            if (count <= 0) return;
+
+            var modifyTome = FindTome(_data.ownedTomes, id);
+
+            if (modifyTome == null)
+            {
+                var newTome = new ItemSaveData.Tome(id);
+                newTome.count = count;
+                _data.ownedTomes.Add(newTome);
+            }
+            else
+            {
+                modifyTome.count += count;
+
+                TryLevelupTome(modifyTome);
+            }
+        }
+
+        /// <summary>
+        /// 레벨업 시도
+        /// </summary>
+        private void TryLevelupTome(ItemSaveData.Tome modifyTome)
+        {
+            if (modifyTome == null) return;
+
+            while (modifyTome.level < _tomeLevelUpRequirements.Length - 1)
+            {
+                int requiredCount = _tomeLevelUpRequirements[modifyTome.level];
+
+                if (modifyTome.count >= requiredCount)
+                {
+                    modifyTome.count -= requiredCount;
+                    modifyTome.level++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 아티팩트 찾기
+        /// </summary>
+        private ItemSaveData.Tome FindTome(List<ItemSaveData.Tome> tomes, int tomeId)
+        {
+            for (int i = 0; i < tomes.Count; i++)
+            {
+                if (tomes[i].id == tomeId)
+                {
+                    return tomes[i];
+                }
+            }
+            return null;
+        }
+        #endregion
+
         /// <summary>
         /// 아티팩트 레벨에 따른 최대 요구 개수 반환
         /// </summary>

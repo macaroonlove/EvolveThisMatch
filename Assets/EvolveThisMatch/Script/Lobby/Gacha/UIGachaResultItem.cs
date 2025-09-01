@@ -2,6 +2,7 @@ using FrameWork.UIBinding;
 using EvolveThisMatch.Core;
 using TMPro;
 using UnityEngine.UI;
+using FrameWork;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -33,20 +34,32 @@ namespace EvolveThisMatch.Lobby
             _displayName = GetText((int)Texts.DisplayName);
         }
 
-        internal void Show(AgentTemplate template)
+        internal async void Show(string result)
         {
-            // TODO: 등급마다 배경이 달라야한다면 주석 해제
-            //_background.sprite = template.rarity.sprite;
-            _icon.sprite = template.sprite;
-            _displayName.text = template.displayName;
-        }
+            var parts = result.Split('_');
+            string type = parts[0];
 
-        internal void Show(SkinTemplate template)
-        {
-            // TODO: 등급마다 배경이 달라야한다면 주석 해제
-            //_background.sprite = template.rarity.sprite;
-            _icon.sprite = template.faceSprite;
-            _displayName.text = template.displayName;
+            if (type == "Agent")
+            {
+                var agentTemplate = await AddressableAssetManager.Instance.GetScriptableObject<AgentTemplate>(result);
+
+                _icon.sprite = agentTemplate.sprite;
+                _displayName.text = agentTemplate.displayName;
+            }
+            else if (type == "Artifact")
+            {
+                var artifactTemplate = await AddressableAssetManager.Instance.GetScriptableObject<ArtifactTemplate>(result);
+
+                _icon.sprite = artifactTemplate.sprite;
+                _displayName.text = artifactTemplate.displayName;
+            }
+            else if (type == "Tome")
+            {
+                var tomeTemplate = await AddressableAssetManager.Instance.GetScriptableObject<TomeTemplate>(result);
+
+                _icon.sprite = tomeTemplate.sprite;
+                _displayName.text = tomeTemplate.displayName;
+            }
         }
     }
 }

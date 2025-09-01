@@ -36,7 +36,7 @@ namespace FrameWork.PlayFabExtensions
             }
 
             var agentData = JsonUtility.FromJson<AgentTitleData>(json);
-            
+
             // ObscuredInt 배열로 변환
             agentTierUpRequirements = agentData.agentTierUpRequirements.Select(v => (ObscuredInt)v).ToArray();
 
@@ -44,7 +44,7 @@ namespace FrameWork.PlayFabExtensions
 
             foodExp = agentData.foodExp.Select(v => (ObscuredInt)v).ToArray();
         }
-        
+
         public static void LoadItemData(ref ObscuredInt[] artifactLevelUpRequirements, ref ObscuredInt[] tomeLevelUpRequirements)
         {
             if (!_titleData.TryGetValue("ItemData", out string json))
@@ -76,6 +76,21 @@ namespace FrameWork.PlayFabExtensions
             var shopData = JsonConvert.DeserializeObject<ShopTitleData>(json);
 
             return shopData;
+        }
+
+        public static GachaTitleData LoadGachaData()
+        {
+            if (!_titleData.TryGetValue("GachaData", out string json))
+            {
+#if UNITY_EDITOR
+                Debug.LogError("GachaData를 찾을 수 없습니다.");
+#endif
+                return null;
+            }
+
+            var gachaData = JsonConvert.DeserializeObject<GachaTitleData>(json);
+
+            return gachaData;
         }
 
         #region 오류 처리
@@ -137,7 +152,7 @@ namespace FrameWork.PlayFabExtensions
 
         public int subTabCount
         {
-            get 
+            get
             {
                 int count = 0;
 
@@ -192,4 +207,42 @@ namespace FrameWork.PlayFabExtensions
         public int amount;
     }
     #endregion
+    
+    [Serializable]
+    public class GachaTitleData
+    {
+        public Dictionary<string, GachaData> gachaCatalog;
+    }
+
+    [Serializable]
+    public class GachaData
+    {
+        public string background;
+        public string confirmedPickUp;
+        public string additionalVariable;
+        public List<GachaButton> buttons;
+        public List<GachaCost> costs;
+        public List<GachaTableItem> tables;
+    }
+
+    [Serializable]
+    public class GachaButton
+    {
+        public int count;
+        public string color;
+    }
+
+    [Serializable]
+    public class GachaCost
+    {
+        public string costVariable;
+        public int price;
+    }
+
+    [Serializable]
+    public class GachaTableItem
+    {
+        public string id;
+        public double rate;
+    }
 }
