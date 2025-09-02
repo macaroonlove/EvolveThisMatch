@@ -1,6 +1,7 @@
 using FrameWork.Editor;
 using FrameWork.PlayFabExtensions;
 using FrameWork.UIPopup;
+using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.Json;
@@ -173,7 +174,7 @@ namespace EvolveThisMatch.Save
                 }, DebugPlayFabError);
         }
 
-        public void PurchaseItem(string itemId, int buyCount, UnityAction onComplete)
+        public void PurchaseItem(string itemId, int buyCount, UnityAction<List<ShopReward>> onComplete)
         {
             var request = new ExecuteCloudScriptRequest
             {
@@ -189,7 +190,10 @@ namespace EvolveThisMatch.Save
 
                     if ((bool)jsonResult["success"])
                     {
-                        onComplete?.Invoke();
+                        string rewardJson = jsonResult["reward"].ToString();
+                        List<ShopReward> rewards = JsonConvert.DeserializeObject<List<ShopReward>>(rewardJson);
+
+                        onComplete?.Invoke(rewards);
                     }
                     else
                     {
@@ -198,7 +202,7 @@ namespace EvolveThisMatch.Save
                 }, DebugPlayFabError);
         }
         
-        public void PurchaseItemRM(string itemId, string receipt, UnityAction onComplete)
+        public void PurchaseItemRM(string itemId, string receipt, UnityAction<List<ShopReward>> onComplete)
         {
             var request = new ExecuteCloudScriptRequest
             {
@@ -214,7 +218,10 @@ namespace EvolveThisMatch.Save
 
                     if ((bool)jsonResult["success"])
                     {
-                        onComplete?.Invoke();
+                        string rewardJson = jsonResult["reward"].ToString();
+                        List<ShopReward> rewards = JsonConvert.DeserializeObject<List<ShopReward>>(rewardJson);
+
+                        onComplete?.Invoke(rewards);
                     }
                     else
                     {
@@ -250,6 +257,16 @@ namespace EvolveThisMatch.Save
 #endif
                     break;
             }
+        }
+
+        [Serializable]
+        public class ShopReward
+        {
+            public string type;
+            public string key;
+            public int id;
+            public int amount;
+            public List<string> results;
         }
     }
 }

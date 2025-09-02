@@ -8,6 +8,7 @@ using FrameWork.Service;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using FrameWork.UIPopup;
+using ScriptableObjectArchitecture;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -256,16 +257,14 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        private void RefreshVariableDisplay(ShopSubTab subTabData)
+        private async void RefreshVariableDisplay(ShopSubTab subTabData)
         {
             VariableDisplayManager.Instance.HideAll();
 
             foreach (var showVariable in subTabData.showVariable)
             {
-                if (Enum.TryParse<CurrencyType>(showVariable, true, out var currency))
-                {
-                    VariableDisplayManager.Instance.Show(currency);
-                }
+                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(showVariable);
+                VariableDisplayManager.Instance.Show(currency);
             }
         }
         #endregion
@@ -455,9 +454,9 @@ namespace EvolveThisMatch.Lobby
 
                 if (receipt != null)
                 {
-                    SaveManager.Instance.shopData.PurchaseItemRM(itemData.id, receipt, () =>
+                    SaveManager.Instance.shopData.PurchaseItemRM(itemData.id, receipt, (rewards) =>
                     {
-                        PayAfter(tab);
+                        PayAfter(tab, itemData, buyCount, rewards);
                     });
                 }
                 else
@@ -467,16 +466,67 @@ namespace EvolveThisMatch.Lobby
             }
             else
             {
-                SaveManager.Instance.shopData.PurchaseItem(itemData.id, buyCount, () =>
+                SaveManager.Instance.shopData.PurchaseItem(itemData.id, buyCount, (rewards) =>
                 {
-                    PayAfter(tab);
+                    PayAfter(tab, itemData, buyCount, rewards);
                 });
             }
         }
 
-        private async void PayAfter(UIShopSubTab tab)
+        private async void PayAfter(UIShopSubTab tab, ShopItem itemData, int buyCount, List<ShopSaveDataTemplate.ShopReward> rewards)
         {
-            await SaveManager.Instance.LoadData(SaveKey.Profile, SaveKey.Agent, SaveKey.Item, SaveKey.Shop);
+            // 비용 처리
+            var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(itemData.currency);
+            currency.AddValue(-itemData.price * buyCount);
+
+            // 보상 처리
+            foreach (var reward in rewards)
+            {
+                if (reward.type == "Profile")
+                {
+                    var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key);
+                    variable.AddValue(reward.amount);
+                }
+                else if (reward.type == "Agent")
+                {
+                    SaveManager.Instance.agentData.AddAgent(reward.id, reward.amount);
+                }
+                else if (reward.type == "Artifact")
+                {
+                    SaveManager.Instance.itemData.AddArtifact(reward.id, reward.amount);
+                }
+                else if (reward.type == "Tome")
+                {
+                    SaveManager.Instance.itemData.AddTome(reward.id, reward.amount);
+                }
+                else if (reward.type == "Method")
+                {
+                    // 뽑기 결과를 로컬에 반영
+                    foreach (var result in reward.results)
+                    {
+                        var parts = result.Split('_');
+                        string type = parts[0];
+                        int id = int.Parse(parts[1]);
+
+                        if (type == "Agent")
+                        {
+                            SaveManager.Instance.agentData.AddAgent(id);
+                        }
+                        else if (type == "Artifact")
+                        {
+                            SaveManager.Instance.itemData.AddArtifact(id);
+                        }
+                        else if (type == "Tome")
+                        {
+                            SaveManager.Instance.itemData.AddTome(id);
+                        }
+                    }
+                }
+            }
+
+            // 구매 처리
+            var shopCatalog = SaveManager.Instance.shopData.GetShopCatalog(tab.subTabData.subTab);
+            shopCatalog.AddItem(itemData.id, buyCount);
 
             tab.Select();
         }
