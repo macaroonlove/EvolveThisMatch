@@ -89,7 +89,7 @@ namespace FrameWork.PlayFabExtensions
             }
 
             var gachaData = JsonConvert.DeserializeObject<GachaTitleData>(json);
-
+            
             return gachaData;
         }
 
@@ -220,11 +220,20 @@ namespace FrameWork.PlayFabExtensions
         public string background;
         public string confirmedPickUp;
         public string additionalVariable;
+        public List<GachaAdButton> adButtons;
         public List<GachaButton> buttons;
         public List<GachaCost> costs;
         public List<GachaTableItem> tables;
     }
 
+    [Serializable]
+    public class GachaAdButton
+    {
+        public int count;
+        public string color;
+        public int buyAbleCount;
+    }
+    
     [Serializable]
     public class GachaButton
     {

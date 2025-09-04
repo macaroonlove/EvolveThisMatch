@@ -50,3 +50,4 @@ MonoBehaviour:
   _formationData: {fileID: 11400000, guid: 6a0a8762cf3dd484bab3c8397df21e11, type: 2}
   _departmentData: {fileID: 11400000, guid: 69d4629cd75811644a0fec7f21fb663f, type: 2}
   _shopData: {fileID: 11400000, guid: b6d00b94dc7a9b246840e97eec477fc8, type: 2}
+  _gachaData: {fileID: 11400000, guid: acd2d828be92ae5428e0302d4f34fbf2, type: 2}

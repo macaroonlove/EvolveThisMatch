@@ -24,7 +24,7 @@ namespace EvolveThisMatch.Save
         public int[] equipTomes = new int[] { -1, -1, -1 };
     }
 
-    [CreateAssetMenu(menuName = "Templates/SaveData/FormationSaveData", fileName = "FormationSaveData", order = 0)]
+    [CreateAssetMenu(menuName = "Templates/SaveData/FormationSaveData", fileName = "FormationSaveData", order = 6)]
     public class FormationSaveDataTemplate : SaveDataTemplate
     {
         [SerializeField, ReadOnly] private FormationSaveData _data;

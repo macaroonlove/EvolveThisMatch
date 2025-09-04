@@ -292,9 +292,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tabPrefab: {fileID: 4536837757762822472, guid: a5a68d4aae8d6144792b5af6e424aef4, type: 3}
   _tabParent: {fileID: 6523732318353616270}
+  _adButtonPrefab: {fileID: 4193790013097889742, guid: b0692940257c8574186f2c577588f0ae, type: 3}
   _buttonPrefab: {fileID: 4193790013097889742, guid: 3cf845c9995a3c544b623b5f8d14d835, type: 3}
   _buttonParent: {fileID: 903275473855578394}
-  _gachaDataTemplate: {fileID: 11400000, guid: 6472dcf962b0d274bbd12c6396c3ae90, type: 2}
 --- !u!1 &3892029611060777242
 GameObject:
   m_ObjectHideFlags: 0

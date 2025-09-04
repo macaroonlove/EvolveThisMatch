@@ -15,7 +15,8 @@ namespace EvolveThisMatch.Save
         Agent,
         Item,
         Department,
-        Shop
+        Shop,
+        Gacha,
     }
 
     public class SaveManager : PersistentSingleton<SaveManager>
@@ -26,6 +27,7 @@ namespace EvolveThisMatch.Save
         [SerializeField] private FormationSaveDataTemplate _formationData;
         [SerializeField] private DepartmentSaveDataTemplate _departmentData;
         [SerializeField] private ShopSaveDataTemplate _shopData;
+        [SerializeField] private GachaSaveDataTemplate _gachaData;
 
         public ProfileSaveDataTemplate profileData => _profileData;
         public AgentSaveDataTemplate agentData => _agentData;
@@ -33,6 +35,7 @@ namespace EvolveThisMatch.Save
         public FormationSaveDataTemplate formationData => _formationData;
         public DepartmentSaveDataTemplate departmentData => _departmentData;
         public ShopSaveDataTemplate shopData => _shopData;
+        public GachaSaveDataTemplate gachaData => _gachaData;
 
         private Dictionary<SaveKey, (string key, SaveDataTemplate data)> _saveDataKeys;
 
@@ -60,7 +63,8 @@ namespace EvolveThisMatch.Save
                 { SaveKey.Agent, ("AgentData", _agentData) },
                 { SaveKey.Item, ("ItemData", _itemData) },
                 { SaveKey.Department, ("DepartmentData", _departmentData) },
-                { SaveKey.Shop, ("ShopData", _shopData) }
+                { SaveKey.Shop, ("ShopData", _shopData) },
+                { SaveKey.Gacha, ("GachaData", _gachaData) }
             };
         }
 

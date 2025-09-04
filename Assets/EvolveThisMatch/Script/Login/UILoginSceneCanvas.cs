@@ -101,7 +101,7 @@ namespace EvolveThisMatch.Login
 
         private async void OnLoginSuccess(LoginResult result)
         {
-            await SaveManager.Instance.LoadData(SaveKey.Profile, SaveKey.Agent, SaveKey.Item, SaveKey.Department, SaveKey.Shop);
+            await SaveManager.Instance.LoadData(SaveKey.Profile, SaveKey.Agent, SaveKey.Item, SaveKey.Department, SaveKey.Shop, SaveKey.Gacha);
             SaveManager.Instance.Load_FormationData();
 
             var profileData = SaveManager.Instance.profileData;

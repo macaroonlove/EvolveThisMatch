@@ -476,8 +476,11 @@ namespace EvolveThisMatch.Lobby
         private async void PayAfter(UIShopSubTab tab, ShopItem itemData, int buyCount, List<ShopSaveDataTemplate.ShopReward> rewards)
         {
             // 厚侩 贸府
-            var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(itemData.currency);
-            currency.AddValue(-itemData.price * buyCount);
+            if (itemData.currency != "RM")
+            {
+                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(itemData.currency);
+                currency.AddValue(-itemData.price * buyCount);
+            }
 
             // 焊惑 贸府
             foreach (var reward in rewards)

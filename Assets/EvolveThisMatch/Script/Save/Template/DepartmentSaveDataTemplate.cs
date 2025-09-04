@@ -85,7 +85,7 @@ namespace EvolveThisMatch.Save
         #endregion
     }
 
-    [CreateAssetMenu(menuName = "Templates/SaveData/DepartmentSaveData", fileName = "DepartmentSaveData", order = 2)]
+    [CreateAssetMenu(menuName = "Templates/SaveData/DepartmentSaveData", fileName = "DepartmentSaveData", order = 3)]
     public class DepartmentSaveDataTemplate : SaveDataTemplate
     {
         [SerializeField, ReadOnly] private DepartmentSaveData _data;
