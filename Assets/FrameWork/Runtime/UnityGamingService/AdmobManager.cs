@@ -7,6 +7,7 @@ namespace FrameWork.Service
     // TODO: 퍼블리싱 할 때 사용 현재는 테스트 ID로 구현
     // private const string _adUnitId = "ca-app-pub-4529303677886329/5125850813";
 
+#if !UNITY_EDITOR
     public class AdmobManager : PersistentSingleton<AdmobManager>
     {
         private RewardedAd _rewardedAd;
@@ -75,4 +76,5 @@ namespace FrameWork.Service
             });
         }
     }
+#endif
 }

@@ -283,6 +283,7 @@ namespace EvolveThisMatch.Lobby
 
         private void AdPickUp(int gachaCount, int itemIndex, string catalogId)
         {
+#if !UNITY_EDITOR
             AdmobManager.Instance.ShowRewardAd(() =>
             {
                 SaveManager.Instance.gachaData.AdPickUp(_currentTab.gachaTitle, gachaCount, itemIndex, (rewards) =>
@@ -293,6 +294,7 @@ namespace EvolveThisMatch.Lobby
                     PickUpAfter(rewards);
                 });
             });
+#endif
         }
 
         private void PickUpAfter(string[] rewards)
@@ -321,7 +323,7 @@ namespace EvolveThisMatch.Lobby
 
             _gachaResultCanvas.Show(rewards);
         }
-        #endregion
+#endregion
 
         public void Hide()
         {
