@@ -1,4 +1,3 @@
-using FrameWork.GameSettings;
 using UnityEngine;
 
 namespace FrameWork.UI
@@ -8,25 +7,35 @@ namespace FrameWork.UI
         public bool isRight;
         public Vector3 offset;
 
-        private void Start()
+        private Rect _lastSafeArea = Rect.zero;
+
+        private void Awake()
         {
             OnResolutionChange();
-
-            GameSettingsManager.ResolutionChanged += OnResolutionChange;   
         }
 
-        private void OnDestroy()
+        private void Update()
         {
-            GameSettingsManager.ResolutionChanged -= OnResolutionChange;
+            if (_lastSafeArea != Screen.safeArea)
+            {
+                OnResolutionChange();
+            }
         }
 
         private void OnResolutionChange()
         {
-            int x = isRight ? 1 : 0;
+            Rect safeArea = Screen.safeArea;
+
+            float left = safeArea.xMin / Screen.width;
+            float right = safeArea.xMax / Screen.width;
+
+            float x = isRight ? right : left;
             Vector3 worldPos = Camera.main.ViewportToWorldPoint(new Vector3(x, 0.5f, Camera.main.nearClipPlane));
             worldPos.z = 0;
 
             transform.position = worldPos + offset;
+
+            _lastSafeArea = safeArea;
         }
     }
 }

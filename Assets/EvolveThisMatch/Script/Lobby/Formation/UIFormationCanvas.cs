@@ -1,12 +1,16 @@
 using Cysharp.Threading.Tasks;
-using FrameWork.UIBinding;
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
+using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork;
+using FrameWork.UIBinding;
+using FrameWork.UIPopup;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace EvolveThisMatch.Core
+namespace EvolveThisMatch.Lobby
 {
     public class UIFormationCanvas : UIBase
     {
@@ -14,197 +18,260 @@ namespace EvolveThisMatch.Core
         enum Buttons
         {
             CloseButton,
-            StartButton,
-            BundleFormationButton,
+            ClearButton,
+        }
+        enum Toggles
+        {
+            BundleBatchToggle,
+            ControlToggle,
+        }
+        enum Objects
+        {
+            Background,
         }
         #endregion
 
-        private Button _startButton;
+        private TileSystem _tileSystem;
+        private TileRayCastSystem _tileRayCastSystem;
+        private AgentCreateSystem _agentCreateSystem;
+        private AgentReturnSystem _agentReturnSystem;
+        private UIAgentListCanvas_Formation _agentListCanvas;
 
-        private UIFormationAgentSelectCanvas _agentSelectCanvas;
-        private UIFormationSlot[] _uiFormationSlots;
+        private RectTransform _background;
+        private Toggle _bundleBatchToggle;
+        private Toggle _controlToggle;
 
-        private int _formationMaxCount;
+        private AgentTemplate _selectedAgent;
+        private Vector2 _initialPos;
+        private UnityAction _onClose;
 
         protected override void Initialize()
         {
-            _agentSelectCanvas = GetComponentInChildren<UIFormationAgentSelectCanvas>();
+            _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
+            _tileRayCastSystem = BattleManager.Instance.GetSubSystem<TileRayCastSystem>();
+            _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
+            _agentReturnSystem = BattleManager.Instance.GetSubSystem<AgentReturnSystem>();
+
+            _agentListCanvas = GetComponentInChildren<UIAgentListCanvas_Formation>();
+            _agentListCanvas.Initialize(SelectAgent);
 
             BindButton(typeof(Buttons));
+            BindToggle(typeof(Toggles));
+            BindObject(typeof(Objects));
 
-            _startButton = GetButton((int)Buttons.StartButton);
+            _background = GetObject((int)Objects.Background).transform as RectTransform;
+            _bundleBatchToggle = GetToggle((int)Toggles.BundleBatchToggle);
+            _controlToggle = GetToggle((int)Toggles.ControlToggle);
 
+            _initialPos = _background.anchoredPosition;
+
+            _bundleBatchToggle.onValueChanged.AddListener(ResetSelectedAgent);
+            _controlToggle.onValueChanged.AddListener(ResetSelectedAgent);
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
-            _startButton.onClick.AddListener(GameStart);
-            GetButton((int)Buttons.BundleFormationButton).onClick.AddListener(BundleFormation);
+            GetButton((int)Buttons.ClearButton).onClick.AddListener(ClearButton);
 
-            _uiFormationSlots = GetComponentsInChildren<UIFormationSlot>();
+            BattleManager.Instance.onBattleInitialize += InitializeFormation;
         }
 
-        [ContextMenu("초기화")]
-        public void Show()
+        private async void InitializeFormation()
         {
-            var formationSaveData = SaveManager.Instance.formationData;
+            Clear();
 
+            await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
+
+            var formationSaveData = SaveManager.Instance.formationData;
             var formationSlots = formationSaveData.formation;
+            
+            if (formationSlots == null) return;
+
             int formationCount = formationSlots.Count;
 
-            // TODO: 맵 데이터와 같은 곳에서 최대 배치 수를 받아오기
-            _formationMaxCount = 10;
-
-            for (int i = 0; i < _uiFormationSlots.Length; i++)
+            for (int i = 0; i < formationCount; i++)
             {
                 int index = i;
-                // 최대 배치 수를 넘어간다면
-                if (index >= _formationMaxCount)
-                {
-                    _uiFormationSlots[index].Lock();
-                }
+
                 // 해당 자리에 유닛이 존재한다면
-                else if (index < formationCount)
+                if (index < formationCount)
                 {
                     var slot = formationSlots[index];
+                    
+                    // 빈 공간이라면 넘어가기
+                    if (slot.id == -1) continue;
+
                     var agentTemplate = GameDataManager.Instance.GetAgentTemplateById(slot.id);
+                    var tileController = _tileSystem.GetTile(index);
+                    
+                    // 유닛 배치
+                    _agentCreateSystem.CreateFixedUnit(agentTemplate, tileController);
 
-                    _uiFormationSlots[index].Show(agentTemplate, () => { ShowSelectCanvas(index); });
-                }
-                // 해당 자리가 비어있다면
-                else
-                {
-                    _uiFormationSlots[index].Show(null, () => { ShowSelectCanvas(index); });
+                    // 리스트에서 제외
+                    _agentListCanvas.HideItem(agentTemplate);
                 }
             }
-
-            _startButton.interactable = true;
-
-            base.Show();
         }
 
-        private void ShowSelectCanvas(int index)
+        public void Show(UnityAction onClose)
         {
-            index = GetFinalIndex(index);
+            _onClose = onClose;
 
-            _agentSelectCanvas.Show(index, _uiFormationSlots, (template) => { ChangeSlot(index, template); });
+            // 시작 위치를 화면 오른쪽 바깥으로 이동
+            _background.anchoredPosition = new Vector2(_initialPos.x + _background.rect.width, _initialPos.y);
+
+            // 보이기
+            _background.DOAnchorPos(_initialPos, 0.5f).SetEase(Ease.OutCubic);
+
+            _tileSystem.VisibleRenderer(true);
+
+            _tileRayCastSystem.onCast += OnCastTile;
+
+            base.Show(true);
         }
 
-        private void ChangeSlot(int index, AgentTemplate template)
+        public void Hide()
         {
-            _uiFormationSlots[index].Change(template);
+            _tileSystem.VisibleRenderer(false);
 
-            if (template == null)
+            _tileRayCastSystem.onCast -= OnCastTile;
+
+            // 최종 위치 저장
+            Vector2 targetPos = new Vector2(_initialPos.x + _background.rect.width, _initialPos.y);
+
+            // 숨기기
+            _background.DOAnchorPos(targetPos, 0.5f).SetEase(Ease.InCubic).OnComplete(() =>
             {
-                // 슬롯 당기기
-                for (int i = index + 1; i < _uiFormationSlots.Length; i++)
-                {
-                    var nextTemplate = _uiFormationSlots[i].template;
-                    if (nextTemplate != null)
-                    {
-                        _uiFormationSlots[i - 1].Change(nextTemplate);
-                        _uiFormationSlots[i].Change(null);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
+                base.Hide(false);
+
+                _onClose?.Invoke();
+            });
         }
 
-        private void BundleFormation()
+        private void SelectAgent(AgentTemplate template, AgentSaveData.Agent owned)
         {
-            _agentSelectCanvas.Show(_formationMaxCount, _uiFormationSlots, (templates) => { ChangeBunddle(templates); });
-        }
-
-        private void ChangeBunddle(List<AgentTemplate> templates)
-        {
-            for (int i = 0; i < _uiFormationSlots.Length; i++)
+            // 일괄 배치
+            if (_bundleBatchToggle.isOn)
             {
-                if (i < templates.Count)
-                {
-                    _uiFormationSlots[i].Change(templates[i]);
-                }
-                else
-                {
-                    _uiFormationSlots[i].Clear();
-                }
+                BundleTile(template);
+            }
+            // 선택 배치
+            else
+            {
+                _selectedAgent = template;
             }
         }
 
-        private async void GameStart()
+        private void ResetSelectedAgent(bool isOn)
         {
-            _startButton.interactable = false;
+            _selectedAgent = null;
+            _agentListCanvas.SelectedClear();
+        }
 
-            // 전투에 사용될 유닛 어드레서블 로드
-            List<UniTask> tasks = new List<UniTask>();
-
-            foreach (var slot in _uiFormationSlots) 
+        private void OnCastTile(TileController tileController)
+        {
+            // 유닛 반환
+            if (_controlToggle.isOn)
             {
-                if (slot.template != null)
-                {
-                    var task = slot.template.LoadSkinBattleTemplate();
-                    tasks.Add(task);
-                }
+                ReturnUnit(tileController);
+
+                return;
             }
 
-            await UniTask.WhenAll(tasks);
+            if (_selectedAgent != null)
+            {
+                // 유닛이 배치되어 있다면 리턴
+                ReturnUnit(tileController);
 
-            // 전투 시작
-            BattleManager.Instance.InitializeBattle();
-            BattleManager.Instance.onBattleDeinitialize += OnBattleDeinitialize;
+                // 유닛 배치
+                _agentCreateSystem.CreateFixedUnit(_selectedAgent, tileController);
 
+                RegistFormation();
+
+                // 리스트에서 제외
+                _agentListCanvas.HideItem(_selectedAgent);
+
+                _selectedAgent = null;
+            }
+        }
+
+        private void BundleTile(AgentTemplate template)
+        {
+            _agentCreateSystem.CreateFixedUnit(template);
+
+            RegistFormation();
+
+            // 리스트에서 제외
+            _agentListCanvas.HideItem(template);
+        }
+
+        private void ReturnUnit(TileController tileController)
+        {
+            if (tileController.isPlaceUnit && tileController.placedAgentData.agentTemplate != null)
+            {
+                // 리스트에 추가
+                _agentListCanvas.ShowItem(tileController.placedAgentData.agentTemplate);
+
+                _agentReturnSystem.ReturnUnit(tileController.placedAgentData, false);
+
+                RegistFormation();
+            }
+        }
+
+        private void RegistFormation()
+        {
             // 배치 저장
             List<FormationSlot> formation = new List<FormationSlot>();
 
-            foreach (var slot in _uiFormationSlots)
+            var datas = _tileSystem.GetPlacedAgentDatas();
+
+            foreach (var data in datas)
             {
-                if (slot.template != null)
+                var newFormationSlot = new FormationSlot();
+
+                if (data != null)
                 {
-                    var newFormationSlot = new FormationSlot();
-                    newFormationSlot.id = slot.template.id;
-                    
-                    formation.Add(newFormationSlot);
+                    newFormationSlot.id = data.agentTemplate.id;
                 }
+                else
+                {
+                    newFormationSlot.id = -1;
+                }
+
+                formation.Add(newFormationSlot);
             }
 
             SaveManager.Instance.formationData.UpdateFormation(formation);
             SaveManager.Instance.Save_FormationData();
-
-            Hide();
         }
 
-        private void OnBattleDeinitialize()
+        private void ClearButton()
         {
-            // 전투 종료시, 어드레서블 해제
-            foreach (var slot in _uiFormationSlots)
+            UIPopupManager.Instance.ShowConfirmCancelPopup("정말 초기화 하시겠습니까?", (isConfirm) =>
             {
-                if (slot.template != null)
+                if (isConfirm)
                 {
-                    slot.template.ReleaseSkinBattleTemplate();
+                    Clear();
+
+                    SaveManager.Instance.formationData.UpdateFormation(null);
+                    SaveManager.Instance.Save_FormationData();
                 }
-            }
+            });
         }
 
-        private void Hide()
+        private void Clear()
         {
-            base.Hide();
-        }
+            var datas = _tileSystem.GetPlacedAgentDatas();
 
-        private int GetFinalIndex(int index)
-        {
-            // 현재 인덱스가 비어있다면 가장 앞쪽의 인덱스를 선택
-            if (_uiFormationSlots[index].isEmpty)
+            foreach (var data in datas)
             {
-                for (int i = 0; i < _uiFormationSlots.Length; i++)
+                if (data != null)
                 {
-                    if (_uiFormationSlots[i].isEmpty)
-                    {
-                        return i;
-                    }
+                    // 리스트에 추가
+                    _agentListCanvas.ShowItem(data.agentTemplate);
+                    
+                    _agentReturnSystem.ReturnUnit(data, false);
                 }
             }
 
-            // 현재 인덱스 반환
-            return index;
+            
         }
     }
 }

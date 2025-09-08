@@ -97,7 +97,7 @@ namespace EvolveThisMatch.Save
                 isLoaded = true;
                 shopTitleData = TitleDataManager.LoadShopData();
 
-                if (_data.ShopCatalogs == null || _data.ShopCatalogs.Count != shopTitleData.subTabCount)
+                if (PlayFabAuthService.IsLoginState && (_data.ShopCatalogs == null || _data.ShopCatalogs.Count != shopTitleData.subTabCount))
                 {
                     InitializeShopData();
                 }
@@ -118,7 +118,7 @@ namespace EvolveThisMatch.Save
             _data = null;
             isLoaded = false;
         }
-        #endregion
+#endregion
 
         public ShopSaveData.ShopCatalog GetShopCatalog(string id)
         {

@@ -85,7 +85,9 @@ namespace EvolveThisMatch.Lobby
             _background = GetImage((int)Images.Background);
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
 
-            await UniTask.WaitUntil(() => SaveManager.Instance.shopData.isLoaded);
+            //if (PlayFabAuthService.IsLoginState)
+                await UniTask.WaitUntil(() => SaveManager.Instance.shopData.isLoaded);
+
             CreateTabs();
             CreateItems();
         }

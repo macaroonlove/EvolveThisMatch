@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EvolveThisMatch.Core
 {
@@ -26,6 +27,23 @@ namespace EvolveThisMatch.Core
             }
             _objectPool.Clear();
         }
+
+        #region 씬이 넘어갈 때 마다 풀 비워주기
+        private void OnEnable()
+        {
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        }
+
+        private void OnSceneUnloaded(Scene scene)
+        {
+            Deinitialize();
+        }
+        #endregion
 
         public GameObject Spawn(GameObject obj, Transform parent = null)
         {

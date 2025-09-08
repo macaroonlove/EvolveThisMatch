@@ -44,8 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7643201cb3973624da8c891a17e2bd5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _profileSaveData: {fileID: 11400000, guid: 778655154cf61e7479cef77ac17d8de0, type: 2}
-  _formationSaveData: {fileID: 11400000, guid: 6a0a8762cf3dd484bab3c8397df21e11, type: 2}
   _battleData: {fileID: 11400000, guid: 4af91a433593f8d4cb32f9138c9a613e, type: 2}
   _agentLibrary: {fileID: 11400000, guid: a2d62277f65baab47aadbc5ffeea41b5, type: 2}
   _agentSkinLibrary: {fileID: 11400000, guid: 6ee7cf71a5a805244afe866242e149ec, type: 2}

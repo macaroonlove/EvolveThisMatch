@@ -45,24 +45,8 @@ namespace EvolveThisMatch.Core
         }
 
         [ContextMenu("배틀시작")]
-        public async void InitializeBattle()
+        public void InitializeBattle()
         {
-            List<UniTask> tasks = new List<UniTask>();
-
-            var agents = SaveManager.Instance.agentData.ownedAgents;
-            foreach (var agent in agents)
-            {
-                var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
-
-                if (template != null)
-                {
-                    var task = template.LoadSkinBattleTemplate();
-                    tasks.Add(task);
-                }
-            }
-
-            await UniTask.WhenAll(tasks);
-
             foreach (var system in this._subSystems.Values)
             {
                 system.Initialize();
@@ -79,25 +63,9 @@ namespace EvolveThisMatch.Core
         {
             onBattleDeinitialize?.Invoke();
 
-            ReleaseSkinAddressable();
-
             foreach (var item in _subSystems.Values)
             {
                 item.Deinitialize();
-            }
-        }
-
-        private void ReleaseSkinAddressable()
-        {
-            var agents = SaveManager.Instance.agentData.ownedAgents;
-            foreach (var agent in agents)
-            {
-                var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
-
-                if (template != null)
-                {
-                    template.ReleaseSkinBattleTemplate();
-                }
             }
         }
 

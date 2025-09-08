@@ -64,13 +64,32 @@ namespace EvolveThisMatch.Core
             return CreateUnit(template);
         }
 
-        private bool CreateUnit(AgentTemplate template)
+        /// <summary>
+        /// 타일 선택, 고정 유닛
+        /// </summary>
+        public bool CreateFixedUnit(AgentTemplate template ,TileController tile)
         {
-            // 타일 위치 가져오기
-            var tile = _tileSystem.GetPlaceAbleTile(template.id);
+            return CreateUnit(template, tile);
+        }
 
-            // TODO: 더 이상 소환할 수 없다고 팝업 띄워주기
-            if (tile == null) return false;
+        /// <summary>
+        /// 타일 순차, 고정 유닛
+        /// </summary>
+        public bool CreateFixedUnit(AgentTemplate template)
+        {
+            return CreateUnit(template);
+        }
+
+        private bool CreateUnit(AgentTemplate template, TileController tile = null)
+        {
+            if (tile == null)
+            {
+                // 타일 위치 가져오기
+                tile = _tileSystem.GetPlaceAbleTile();
+
+                // TODO: 더 이상 소환할 수 없다고 팝업 띄워주기
+                if (tile == null) return false;
+            }
 
             // 유닛 생성하기
             var obj = _poolSystem.Spawn(template.prefab, transform);

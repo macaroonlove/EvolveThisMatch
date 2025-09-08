@@ -15,6 +15,7 @@ namespace EvolveThisMatch.Lobby
             StoreButton,
             GachaButton,
             LootButton,
+            FormationButton,
         }
         #endregion
 
@@ -24,6 +25,7 @@ namespace EvolveThisMatch.Lobby
         private UITomeCanvas _tomeCanvas;
         private UIShopCanvas _shopCanvas;
         private UIGachaCanvas _gachaCanvas;
+        private UIFormationCanvas _formationCanvas;
 
         protected override void Initialize()
         {
@@ -35,6 +37,7 @@ namespace EvolveThisMatch.Lobby
             _tomeCanvas = transform.parent.GetComponentInChildren<UITomeCanvas>();
             _shopCanvas = transform.parent.GetComponentInChildren<UIShopCanvas>();
             _gachaCanvas = transform.parent.GetComponentInChildren<UIGachaCanvas>();
+            _formationCanvas = transform.parent.GetComponentInChildren<UIFormationCanvas>();
 
             GetButton((int)Buttons.BattleStartButton).onClick.AddListener(BattleStart);
             GetButton((int)Buttons.AgentInfoButton).onClick.AddListener(ShowAgentInfo);
@@ -44,6 +47,7 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.StoreButton).onClick.AddListener(ShowShop);
             GetButton((int)Buttons.GachaButton).onClick.AddListener(ShowGacha);
             GetButton((int)Buttons.LootButton).onClick.AddListener(ShowLoot);
+            GetButton((int)Buttons.FormationButton).onClick.AddListener(ShowFormation);
         }
 
         private void BattleStart()
@@ -84,6 +88,12 @@ namespace EvolveThisMatch.Lobby
         private void ShowLoot()
         {
 
+        }
+
+        private void ShowFormation()
+        {
+            Hide();
+            _formationCanvas?.Show(() => Show(true));
         }
     }
 }

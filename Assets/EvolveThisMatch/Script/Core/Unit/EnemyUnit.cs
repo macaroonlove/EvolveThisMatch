@@ -30,11 +30,11 @@ namespace EvolveThisMatch.Core
 
             if (_gainCoin > 0)
             {
-                BattleManager.Instance.GetSubSystem<CoinSystem>().AddCoin(_gainCoin);
+                //BattleManager.Instance.GetSubSystem<CoinSystem>().AddCoin(_gainCoin);
             }
             if (_gainCrystal > 0)
             {
-                BattleManager.Instance.GetSubSystem<CrystalSystem>().AddCrystal(_gainCrystal);
+                //BattleManager.Instance.GetSubSystem<CrystalSystem>().AddCrystal(_gainCrystal);
             }
 
             _deathGlobalEvent?.Raise();

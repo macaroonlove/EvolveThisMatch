@@ -22,8 +22,53 @@ namespace FrameWork.PlayFabExtensions
             {
                 _titleData = result.Data;
                 onComplete?.Invoke();
+
+#if UNITY_EDITOR
+                string json = JsonUtility.ToJson(new LocalTitleDataDictionary(_titleData));
+                PlayerPrefs.SetString("cachedTitleData", json);
+                PlayerPrefs.Save();
+#endif
             }, DebugPlayFabError);
         }
+
+#if UNITY_EDITOR
+        public static void LoadTitleDataEditor()
+        {
+            if (PlayerPrefs.HasKey("cachedTitleData"))
+            {
+                string json = PlayerPrefs.GetString("cachedTitleData");
+                _titleData = JsonUtility.FromJson<LocalTitleDataDictionary>(json).ToDictionary();
+            }
+            else
+            {
+                Debug.LogError("에디터에서 타이틀 데이터를 불러오기 위해, 한 번 로그인을 해주세요.");
+            }
+        }
+
+        [System.Serializable]
+        private class LocalTitleDataDictionary
+        {
+            public List<string> keys = new List<string>();
+            public List<string> values = new List<string>();
+
+            public LocalTitleDataDictionary(Dictionary<string, string> dict)
+            {
+                foreach (var kvp in dict)
+                {
+                    keys.Add(kvp.Key);
+                    values.Add(kvp.Value);
+                }
+            }
+
+            public Dictionary<string, string> ToDictionary()
+            {
+                var dict = new Dictionary<string, string>();
+                for (int i = 0; i < keys.Count; i++)
+                    dict[keys[i]] = values[i];
+                return dict;
+            }
+        }
+#endif
 
         public static void LoadAgentData(ref ObscuredInt[] agentTierUpRequirements, ref ObscuredInt[] agentMaxLevelPerTier, ref ObscuredInt[] foodExp)
         {

@@ -14,7 +14,7 @@ namespace EvolveThisMatch.Core
         public bool isPlaceUnit => _placedAgentData != null;
 
         // 배치된 유닛의 아이디
-        public int placedAgentUnitId => _placedAgentData.agentUnit.id;
+        public AgentBattleData placedAgentData => _placedAgentData;
 
         private void Awake()
         {
@@ -24,6 +24,7 @@ namespace EvolveThisMatch.Core
         internal void Initialize()
         {
             _spriteRenderer.enabled = false;
+            _placedAgentData = null;
 
             _allySystem = BattleManager.Instance.GetSubSystem<AllySystem>();
         }

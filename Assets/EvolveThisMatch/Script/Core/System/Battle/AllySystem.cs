@@ -24,16 +24,16 @@ namespace EvolveThisMatch.Core
 
         public void Deinitialize()
         {
-            // 유닛 오브젝트 모두 파괴
-            foreach (var agent in _agents)
-            {
-                Destroy(agent.agentUnit.gameObject);
-            }
+            //// 유닛 오브젝트 모두 파괴
+            //foreach (var agent in _agents)
+            //{
+            //    Destroy(agent.agentUnit.gameObject);
+            //}
 
-            foreach (var summon in _summons)
-            {
-                Destroy(summon.gameObject);
-            }
+            //foreach (var summon in _summons)
+            //{
+            //    Destroy(summon.gameObject);
+            //}
         }
 
         #region 아군 유닛 등록·해제

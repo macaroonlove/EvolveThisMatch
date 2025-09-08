@@ -132,6 +132,7 @@ namespace EvolveThisMatch.Save
                     }
                 }
             }
+#if UNITY_EDITOR
             else
             {
                 foreach (var saveKey in saveKeys)
@@ -146,6 +147,7 @@ namespace EvolveThisMatch.Save
                     }
                 }
             }
+#endif
 
             return true;
         }

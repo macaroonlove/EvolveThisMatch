@@ -25,10 +25,13 @@ namespace EvolveThisMatch.Core
         }
 
         #region 유닛 반환
-        public async void ReturnUnit(AgentBattleData agentData)
+        public async void ReturnUnit(AgentBattleData agentData, bool isReward = true)
         {
             // 유닛 반환 FX
             _returnFX.Play(agentData.agentUnit);
+
+            // 유닛을 타일에서 반환
+            agentData.mountTile.ReturnUnit();
 
             await UniTask.Delay(600);
 
@@ -38,29 +41,29 @@ namespace EvolveThisMatch.Core
             // 유닛 오브젝트 반환
             _poolSystem.DeSpawn(agentData.agentUnit.gameObject);
 
-            // 유닛의 등급별로 반환받을 크리스탈 설정
-            int returnCrystal = 0;
-            switch (agentData.agentTemplate.rarity.rarity)
+            if (isReward)
             {
-                case EAgentRarity.Myth:
-                    returnCrystal = 5;
-                    break;
-                case EAgentRarity.Legend:
-                    returnCrystal = 3;
-                    break;
-                case EAgentRarity.Epic:
-                    returnCrystal = 1;
-                    break;
+                // 유닛의 등급별로 반환받을 크리스탈 설정
+                int returnCrystal = 0;
+                switch (agentData.agentTemplate.rarity.rarity)
+                {
+                    case EAgentRarity.Myth:
+                        returnCrystal = 5;
+                        break;
+                    case EAgentRarity.Legend:
+                        returnCrystal = 3;
+                        break;
+                    case EAgentRarity.Epic:
+                        returnCrystal = 1;
+                        break;
+                }
+
+                if (returnCrystal > 0)
+                {
+                    _crystalSystem.AddCrystal(returnCrystal);
+                }
             }
-
-            if (returnCrystal > 0)
-            {
-                _crystalSystem.AddCrystal(returnCrystal);
-            }
-
-            // 유닛을 타일에서 반환
-            agentData.mountTile.ReturnUnit();
-
+            
             onDeinitializedUnit?.Invoke(agentData);
         }
         #endregion

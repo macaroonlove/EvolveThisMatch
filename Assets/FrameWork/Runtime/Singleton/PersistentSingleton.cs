@@ -15,7 +15,7 @@ namespace FrameWork
             {
                 if (instance == null)
                 {
-                    instance = FindObjectOfType<T>();
+                    instance = FindFirstObjectByType<T>();
 
                     if (instance == null)
                     {
@@ -36,6 +36,8 @@ namespace FrameWork
 
         private static async UniTask AutoLoad()
         {
+            if (instance != null) return;
+
             string key = typeof(T).Name;
 
             // 어드레서블에 키가 존재한다면

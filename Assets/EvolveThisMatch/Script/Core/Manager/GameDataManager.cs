@@ -37,9 +37,27 @@ namespace EvolveThisMatch.Core
         /// <summary>
         /// 게임을 시작할 때 초기화
         /// </summary>
-        protected override void Initialize()
+        protected override async void Initialize()
         {
             _agentTalentLibrary.Initialize();
+
+            await UniTask.WaitUntil(() => SaveManager.Instance.agentData.isLoaded);
+
+            List<UniTask> tasks = new List<UniTask>();
+            
+            var agents = SaveManager.Instance.agentData.ownedAgents;
+            foreach (var agent in agents)
+            {
+                var template = GetAgentTemplateById(agent.id);
+
+                if (template != null)
+                {
+                    var task = template.LoadSkinBattleTemplate();
+                    tasks.Add(task);
+                }
+            }
+
+            await UniTask.WhenAll(tasks);
         }
 
         /// <summary>
