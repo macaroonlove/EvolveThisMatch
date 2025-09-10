@@ -27,7 +27,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c07506fdbaa7fc45875ac46e8746973, type: 3}
   m_Name: "Artifact_\uC601\uD63C \uCD94\uC2EC\uC11C"
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 21300000, guid: b7867caf6548afe4b9dee15bb5193f3d, type: 3}
+  _sprite: {fileID: 21300000, guid: f6aa12cd14d2a5a48be10e98d306f5a0, type: 3}
   _id: 20
   _displayName: "\uC601\uD63C \uCD94\uC2EC\uC11C"
   _description: "\uD68C\uC218 \uC2DC, \uCCB4\uB825 \uD68C\uBCF5 \uC18D\uB3C4\n{value}%

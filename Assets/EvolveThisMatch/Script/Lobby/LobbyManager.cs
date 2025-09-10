@@ -15,15 +15,43 @@ namespace EvolveThisMatch.Lobby
         internal DepartmentSaveDataTemplate departmentSaveData => _departmentSaveData;
         internal IReadOnlyList<DepartmentTemplate> departments => _departmentGroup.departments;
 
+        private List<AgentTemplate> _loadedTemplates = new List<AgentTemplate>();
+
         protected override async void Initialize()
         {
             await UniTask.WaitUntil(() => SaveManager.Instance.agentData.isLoaded);
+
+            List<UniTask> tasks = new List<UniTask>();
+
+            var agents = SaveManager.Instance.agentData.ownedAgents;
+            foreach (var agent in agents)
+            {
+                var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
+
+                if (template != null)
+                {
+                    _loadedTemplates.Add(template);
+                    var task = template.LoadAllSkinLobbyTemplate();
+                    tasks.Add(task);
+                }
+            }
+
+            await UniTask.WhenAll(tasks);
 
             BattleManager.Instance.InitializeBattle();
         }
 
         private void OnDestroy()
         {
+            if (_loadedTemplates.Count > 0)
+            {
+                foreach (var template in _loadedTemplates)
+                {
+                    template.ReleaseSkinLobbyTemplate();
+                }
+            }
+            _loadedTemplates.Clear();
+
             BattleManager.Instance.DeinitializeBattle();
         }
     }

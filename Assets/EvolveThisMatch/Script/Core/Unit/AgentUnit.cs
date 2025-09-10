@@ -21,11 +21,6 @@ namespace EvolveThisMatch.Core
             deployAbility = GetAbility<DeployAbility>();
         }
 
-        public void Deinitialize()
-        {
-            base.Deinitialize();
-        }
-
         internal override void OnDeath()
         {
             deployAbility.ReturnSortie().Forget();

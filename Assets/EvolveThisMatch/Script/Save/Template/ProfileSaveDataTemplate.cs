@@ -34,8 +34,11 @@ namespace EvolveThisMatch.Save
         [Tooltip("찢어진 책 조각")]
         public int BookFragments;
 
-        [Tooltip("픽업 유닛 책갈피")]
+        [Tooltip("유닛 천장")]
         public int UnitLimit;
+
+        [Tooltip("아이템 돋보기")]
+        public int Magnifier;
 
         [Tooltip("말캉 버터")]
         public int SmoothButter;
@@ -66,6 +69,7 @@ namespace EvolveThisMatch.Save
         [SerializeField] private ObscuredIntVariable _pickUpUnitBookmarkVariable;
         [SerializeField] private ObscuredIntVariable _bookFragmentVariable;
         [SerializeField] private ObscuredIntVariable _unitLimitVariable;
+        [SerializeField] private ObscuredIntVariable _magnifierVariable;
 
         [Header("부서_식품")]
         [SerializeField] private ObscuredIntVariable _butterVariable;
@@ -105,6 +109,7 @@ namespace EvolveThisMatch.Save
                 _pickUpUnitBookmarkVariable.Value = _data.PickUpUnitBookmark;
                 _bookFragmentVariable.Value = _data.BookFragments;
                 _unitLimitVariable.Value = _data.UnitLimit;
+                _magnifierVariable.Value = _data.Magnifier;
 
                 // 식품부
                 _butterVariable.Value = _data.SmoothButter;
@@ -135,6 +140,7 @@ namespace EvolveThisMatch.Save
             _data.PickUpUnitBookmark = _pickUpUnitBookmarkVariable.Value;
             _data.BookFragments = _bookFragmentVariable.Value;
             _data.UnitLimit = _unitLimitVariable.Value;
+            _data.Magnifier = _magnifierVariable.Value;
 
             // 식품부
             _data.SmoothButter = _butterVariable.Value;
