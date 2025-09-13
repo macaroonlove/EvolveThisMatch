@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -70,6 +71,8 @@ namespace EvolveThisMatch.Lobby
         private WaitForSecondsRealtime _refreshMinuteWFS = new WaitForSecondsRealtime(60);
         private WaitForSecondsRealtime _refreshSecondWFS = new WaitForSecondsRealtime(1);
 
+        private UnityAction _onClose;
+
         protected async override void Initialize()
         {
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
@@ -92,11 +95,20 @@ namespace EvolveThisMatch.Lobby
             CreateItems();
         }
 
-        public override void Show(bool isForce = false)
+        public void Show(UnityAction onClose)
         {
-            base.Show(isForce);
+            _onClose = onClose;
+
+            base.Show(true);
 
             SelectMainTab(_shopMainTabs[0]);
+        }
+
+        private void Hide()
+        {
+            _onClose?.Invoke();
+
+            base.Hide(true);
         }
 
         #region »ý¼º
@@ -536,12 +548,5 @@ namespace EvolveThisMatch.Lobby
             tab.Select();
         }
         #endregion
-
-        public void Hide()
-        {
-            VariableDisplayManager.Instance.HideAll();
-
-            base.Hide(true);
-        }
     }
 }

@@ -3,6 +3,7 @@ using EvolveThisMatch.Save;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -19,6 +20,7 @@ namespace EvolveThisMatch.Lobby
         private UIAgentDetailCanvas _agentDetailCanvas;
 
         private GameObject _overUICamera;
+        private UnityAction _onClose;
 
         protected override void Initialize()
         {
@@ -34,21 +36,22 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
         }
 
-        public override void Show(bool isForce = false)
+        public void Show(UnityAction onClose)
         {
+            _onClose = onClose;
+
             _agentListCanvas.SelectFirstItem();
             _overUICamera.SetActive(true);
 
-            base.Show(isForce);
+            base.Show(true);
         }
 
         public void Hide()
         {
-            VariableDisplayManager.Instance.HideAll();
-
             _agentDetailCanvas.HidePanel();
             _overUICamera.SetActive(false);
 
+            _onClose?.Invoke();
             base.Hide(true);
         }
     }

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -38,6 +39,8 @@ namespace EvolveThisMatch.Lobby
 
         private PoolSystem _poolSystem;
         private GameObject _overUICamera;
+        private UnityAction _onClose;
+
         private readonly List<GameObject> _spawnedUnits = new List<GameObject>();
 
         protected override void Initialize()
@@ -96,13 +99,15 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        public override void Show(bool isForce = false)
+        public void Show(UnityAction onClose)
         {
+            _onClose = onClose;
+
             _departmentItems[0].SelectItem();
 
             _overUICamera.SetActive(true);
 
-            base.Show(isForce);
+            base.Show(true);
         }
 
         /// <summary>
@@ -238,8 +243,6 @@ namespace EvolveThisMatch.Lobby
 
         private void Hide()
         {
-            VariableDisplayManager.Instance.HideAll();
-
             _overUICamera.SetActive(false);
 
             // À¯´Ö ¼û±â±â
@@ -252,6 +255,7 @@ namespace EvolveThisMatch.Lobby
                 _spawnedUnits.Clear();
             }
 
+            _onClose?.Invoke();
             Hide(true);
         }
     }

@@ -9260,6 +9260,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TalentFilterPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 8778425283584145533, guid: 527278f091905fb4c8b08ea5d15c9a8e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

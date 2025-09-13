@@ -1,6 +1,8 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
+using System;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -15,6 +17,7 @@ namespace EvolveThisMatch.Lobby
 
         private UIArtifactListCanvas _artifactListCanvas;
         private UIArtifactInfoCanvas _artifactInfoCanvas;
+        private UnityAction _onClose;
 
         protected override void Initialize()
         {
@@ -26,7 +29,21 @@ namespace EvolveThisMatch.Lobby
 
             BindButton(typeof(Buttons));
 
-            GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
+            GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
+        }
+
+        public void Show(UnityAction onClose)
+        {
+            _onClose = onClose;
+
+            Show(true);
+        }
+
+        private void Hide()
+        {
+            _onClose?.Invoke();
+
+            Hide(true);
         }
     }
 }

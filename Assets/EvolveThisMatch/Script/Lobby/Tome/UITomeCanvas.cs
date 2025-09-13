@@ -1,6 +1,7 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -16,6 +17,7 @@ namespace EvolveThisMatch.Lobby
         private UITomeListCanvas _tomeListCanvas;
         private UITomeInfoCanvas _tomeInfoCanvas;
         private UITomeEquipCanvas _tomeEquipCanvas;
+        private UnityAction _onClose;
 
         protected override void Initialize()
         {
@@ -29,13 +31,27 @@ namespace EvolveThisMatch.Lobby
 
             BindButton(typeof(Buttons));
 
-            GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
+            GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
         }
 
         private void Start()
         {
             _tomeEquipCanvas.InitializeItem();
             _tomeListCanvas.InitializeItem();
+        }
+
+        public void Show(UnityAction onClose)
+        {
+            _onClose = onClose;
+
+            Show(true);
+        }
+
+        private void Hide()
+        {
+            _onClose?.Invoke();
+
+            Hide(true);
         }
     }
 }

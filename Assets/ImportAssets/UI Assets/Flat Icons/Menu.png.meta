@@ -1,5 +1,12 @@
 fileFormatVersion: 2
-guid: 461c7ab371b3c814e836b1682d4162b3
+guid: c53a8d00e4c3bb34998868ca02b1cd74
+AssetOrigin:
+  serializedVersion: 1
+  productId: 202525
+  packageName: 'UX Flat Icons [Free]'
+  packageVersion: 2019.1.1
+  assetPath: Assets/ImportAssets/UI Assets/Flat Icons/Free Flat Menu 9 Icon.png
+  uploadId: 451587
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -82,6 +89,32 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1

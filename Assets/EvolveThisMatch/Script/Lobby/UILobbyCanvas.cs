@@ -1,4 +1,10 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using FrameWork;
+using FrameWork.UI;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
+using UnityEngine;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -17,6 +23,14 @@ namespace EvolveThisMatch.Lobby
             LootButton,
             FormationButton,
         }
+        enum Toggles
+        {
+            MenuToggle,
+        }
+        enum CanvasGroups
+        {
+            MenuPanel,
+        }
         #endregion
 
         private UIAgentInfoCanvas _agentInfoCanvas;
@@ -27,9 +41,15 @@ namespace EvolveThisMatch.Lobby
         private UIGachaCanvas _gachaCanvas;
         private UIFormationCanvas _formationCanvas;
 
+        private CanvasGroupController _menuPanel;
+
         protected override void Initialize()
         {
+            ShowVariable();
+
             BindButton(typeof(Buttons));
+            BindToggle(typeof(Toggles));
+            BindCanvasGroupController(typeof(CanvasGroups));
 
             _agentInfoCanvas = transform.parent.GetComponentInChildren<UIAgentInfoCanvas>();
             _departmentCanvas = transform.parent.GetComponentInChildren<UIDepartmentCanvas>();
@@ -38,6 +58,9 @@ namespace EvolveThisMatch.Lobby
             _shopCanvas = transform.parent.GetComponentInChildren<UIShopCanvas>();
             _gachaCanvas = transform.parent.GetComponentInChildren<UIGachaCanvas>();
             _formationCanvas = transform.parent.GetComponentInChildren<UIFormationCanvas>();
+
+            _menuPanel = GetCanvasGroupController((int)CanvasGroups.MenuPanel);
+            _menuPanel.Hide(true);
 
             GetButton((int)Buttons.BattleStartButton).onClick.AddListener(BattleStart);
             GetButton((int)Buttons.AgentInfoButton).onClick.AddListener(ShowAgentInfo);
@@ -48,6 +71,24 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.GachaButton).onClick.AddListener(ShowGacha);
             GetButton((int)Buttons.LootButton).onClick.AddListener(ShowLoot);
             GetButton((int)Buttons.FormationButton).onClick.AddListener(ShowFormation);
+            GetToggle((int)Toggles.MenuToggle).onValueChanged.AddListener(OnChangedMenu);
+        }
+
+        private async void ShowVariable()
+        {
+            await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
+
+            VariableDisplayManager.Instance.HideAll();
+
+            var gold = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Gold");
+            var essence = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Essence");
+            var loot = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Loot");
+            var action = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Action");
+
+            if (gold != null) VariableDisplayManager.Instance.Show(gold);
+            if (essence != null) VariableDisplayManager.Instance.Show(essence);
+            if (loot != null) VariableDisplayManager.Instance.Show(loot);
+            if (action != null) VariableDisplayManager.Instance.Show(action);
         }
 
         private void BattleStart()
@@ -55,36 +96,69 @@ namespace EvolveThisMatch.Lobby
 
         }
 
+        #region Bottom Left
         private void ShowAgentInfo()
         {
-            _agentInfoCanvas?.Show(true);
+            VariableDisplayManager.Instance.HideAll();
+
+            _agentInfoCanvas?.Show(() =>
+            {
+                ShowVariable();
+            });
         }
 
         private void ShowDepartment()
         {
-            _departmentCanvas?.Show(true);
+            VariableDisplayManager.Instance.HideAll();
+
+            _departmentCanvas?.Show(() =>
+            {
+                ShowVariable();
+            });
         }
 
         private void ShowArtifact()
         {
-            _artifactCanvas?.Show(true);
+            VariableDisplayManager.Instance.HideAll();
+
+            _artifactCanvas?.Show(() =>
+            {
+                ShowVariable();
+            });
         }
 
         private void ShowTome()
         {
-            _tomeCanvas?.Show(true);
+            VariableDisplayManager.Instance.HideAll();
+
+            _tomeCanvas?.Show(() =>
+            {
+                ShowVariable();
+            });
         }
 
         private void ShowShop()
         {
-            _shopCanvas?.Show(true);
+            VariableDisplayManager.Instance.HideAll();
+
+            _shopCanvas?.Show(() =>
+            {
+                ShowVariable();
+            });
         }
 
         private void ShowGacha()
         {
-            _gachaCanvas?.Show(true);
-        }
+            VariableDisplayManager.Instance.HideAll();
 
+            _gachaCanvas?.Show(() =>
+            {
+                ShowVariable();
+            });
+        }
+        #endregion
+
+        #region Bottom Right
         private void ShowLoot()
         {
 
@@ -92,8 +166,32 @@ namespace EvolveThisMatch.Lobby
 
         private void ShowFormation()
         {
+            VariableDisplayManager.Instance.HideAll();
             Hide();
-            _formationCanvas?.Show(() => Show(true));
+
+            _formationCanvas?.Show(() =>
+            {
+                ShowVariable();
+                Show(true);
+            });
         }
+        #endregion
+
+        #region Top Right
+        private void OnChangedMenu(bool isOn)
+        {
+            if (isOn)
+            {
+                _menuPanel.transform.localScale = new Vector3(1, 0, 1);
+                _menuPanel.Show(true);
+
+                _menuPanel.transform.DOScaleY(1, 0.1f);
+            }
+            else
+            {
+                _menuPanel.transform.DOScaleY(0, 0.1f).OnComplete(() => { _menuPanel.Hide(true); });
+            }
+        }
+        #endregion
     }
 }

@@ -11,6 +11,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -46,6 +47,7 @@ namespace EvolveThisMatch.Lobby
         private UIGachaTab _currentTab;
 
         private Coroutine _refreshCoroutine;
+        private UnityAction _onClose;
 
         protected async override void Initialize()
         {
@@ -63,11 +65,20 @@ namespace EvolveThisMatch.Lobby
             SetTab();
         }
 
-        public override void Show(bool isForce = false)
+        public void Show(UnityAction onClose)
         {
-            base.Show(isForce);
+            _onClose = onClose;
+
+            base.Show(true);
 
             Select(_firstTab);
+        }
+
+        private void Hide()
+        {
+            _onClose?.Invoke();
+
+            base.Hide(true);
         }
 
         private void SetTab()
@@ -92,21 +103,18 @@ namespace EvolveThisMatch.Lobby
 
         private void Select(UIGachaTab tab)
         {
-            if (_currentTab != tab)
+            _currentTab?.UnSelect();
+            _currentTab = tab;
+            _currentTab?.Select();
+
+            // 배경 적용
+            AddressableAssetManager.Instance.GetSprite(tab.gachaData.background, (background) =>
             {
-                _currentTab?.UnSelect();
-                _currentTab = tab;
-                _currentTab?.Select();
+                _background.sprite = background;
+            });
 
-                // 배경 적용
-                AddressableAssetManager.Instance.GetSprite(tab.gachaData.background, (background) =>
-                {
-                    _background.sprite = background;
-                });
-
-                // 좌측 상단에 보여질 재화 최신화
-                RefreshVariableDisplay(tab);
-            }
+            // 좌측 상단에 보여질 재화 최신화
+            RefreshVariableDisplay(tab);
 
             var gachaCatalog = SaveManager.Instance.gachaData.GetGachaCatalog(tab.gachaTitle);
 
@@ -326,12 +334,5 @@ namespace EvolveThisMatch.Lobby
             _gachaResultCanvas.Show(rewards);
         }
 #endregion
-
-        public void Hide()
-        {
-            VariableDisplayManager.Instance.HideAll();
-
-            base.Hide(true);
-        }
     }
 }

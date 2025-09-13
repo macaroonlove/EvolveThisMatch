@@ -15,12 +15,6 @@ MonoBehaviour:
   m_GroupName: LobbyResource
   m_GUID: c25d8eb1e22c98f43a5207a193fe6655
   m_SerializeEntries:
-  - m_GUID: 0775d0ca2ae900f468f5a093f79bc6eb
-    m_Address: ActionIcon
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - LobbyResource
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0abb81b14fabf8448965b65256379cc6
     m_Address: MythBookmark
     m_ReadOnly: 0
