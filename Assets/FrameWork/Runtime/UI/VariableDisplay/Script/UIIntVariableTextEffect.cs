@@ -3,11 +3,12 @@ using FrameWork.UIBinding;
 using ScriptableObjectArchitecture;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace FrameWork.UI
 {
-    public class UIIntVariableTextEffect : UIBase
+    public class UIIntVariableTextEffect : UIBase, IPointerClickHandler
     {
         #region ¹ÙÀÎµù
         enum Images
@@ -22,6 +23,7 @@ namespace FrameWork.UI
 
         [SerializeField] private ObscuredIntVariable _variable;
         [SerializeField] private int _maxLength;
+        [SerializeField] private bool _isShowInfo;
 
         private TextMeshProUGUI _valueText;
         private Image _iconImage;
@@ -87,6 +89,13 @@ namespace FrameWork.UI
         private void Apply(int value)
         {
             _valueText.text = value.Format(_maxLength);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!_isShowInfo) return;
+
+            VariableDisplayManager.Instance.ShowInfo(_variable);
         }
     }
 }

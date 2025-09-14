@@ -9,10 +9,12 @@ namespace FrameWork.UI
     {
         private CurrencySystem _currencySystem;
         private UIIntVariableTextEffect[] _intVariables;
+        private UIVariableInfoCanvas _variableInfoCanvas;
 
         protected override void Initialize()
         {   
             _intVariables = GetComponentsInChildren<UIIntVariableTextEffect>();
+            _variableInfoCanvas = GetComponentInChildren<UIVariableInfoCanvas>();
         }
 
         public void Show(CurrencyType currencyType)
@@ -45,6 +47,11 @@ namespace FrameWork.UI
             {
                 variable.Hide();
             }
+        }
+
+        public void ShowInfo(ObscuredIntVariable variable)
+        {
+            _variableInfoCanvas.Show(variable);
         }
 
         #region 골드 애니메이션
