@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 namespace FrameWork.GameSettings
 {
-    [AddComponentMenu("GameSettings/UI/DisplayName Visible Toggle")]
-    public class DisplayNameVisibleToggle : MonoBehaviour
+    [AddComponentMenu("GameSettings/UI/Damage Visible Toggle")]
+    public class DamageVisibleToggle : MonoBehaviour
     {
         [SerializeField] private Toggle targetElement;
 
@@ -21,19 +21,19 @@ namespace FrameWork.GameSettings
                 if (targetElement == null)
                 {
 #if UNITY_EDITOR
-                    Debug.LogError("[DisplayNameVisibleToggle] Toggle 컴포넌트를 찾을 수 없습니다.", gameObject);
+                    Debug.LogError("[DamageVisibleToggle] Toggle 컴포넌트를 찾을 수 없습니다.", gameObject);
 #endif
                     return;
                 }
             }
 
-            targetElement.isOn = GameSettingsManager.DisplayNameVisible;
+            targetElement.isOn = GameSettingsManager.DamageVisible;
             targetElement.onValueChanged.AddListener(OnValueChange);
         }
 
         private void OnValueChange(bool isOn)
         {
-            GameSettingsManager.DisplayNameVisible = isOn;
+            GameSettingsManager.DamageVisible = isOn;
         }
     }
 }

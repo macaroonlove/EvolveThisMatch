@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using FrameWork;
-using FrameWork.GameSettings;
 using FrameWork.PlayFabExtensions;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -41,9 +40,6 @@ namespace EvolveThisMatch.Save
 
         protected override void Initialize()
         {
-            // 게임 설정 불러오기
-            GameSettingsManager.RestoreSettings();
-
             // 데이터 지우기
             _profileData.Clear();
             _agentData.Clear();
@@ -71,10 +67,8 @@ namespace EvolveThisMatch.Save
         #region Formation Data
         public bool Load_FormationData()
         {
-            bool isSuccess;
-            string safeKey = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(profileData.displayName));
-            
-            isSuccess = LoadPlayerPrefs(_formationData, $"{safeKey}_FormationData");
+            bool isSuccess;            
+            isSuccess = LoadPlayerPrefs(_formationData, $"FormationData");
             
             if (isSuccess == false)
             {
@@ -87,16 +81,12 @@ namespace EvolveThisMatch.Save
 
         public bool Save_FormationData()
         {
-            string safeKey = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(profileData.displayName));
-
-            return SavePlayerPrefs(_formationData, $"{safeKey}_FormationData");
+            return SavePlayerPrefs(_formationData, $"FormationData");
         }
 
         public bool Clear_FormationData()
         {
-            string safeKey = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(profileData.displayName));
-
-            return ClearPlayerPrefs($"{safeKey}_FormationData");
+            return ClearPlayerPrefs($"FormationData");
         }
         #endregion
 

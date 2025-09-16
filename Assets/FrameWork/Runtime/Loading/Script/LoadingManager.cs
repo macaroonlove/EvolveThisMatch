@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using EvolveThisMatch.Save;
+using FrameWork.GameSettings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,8 @@ namespace FrameWork.Loading
 
         protected override void Initialize()
         {
+            GameSettingsManager.RestoreSettings();
+
             _uiLoadingCanvas = GetComponentInChildren<UILoadingCanvas>();
         }
 

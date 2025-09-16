@@ -1,5 +1,6 @@
 using DamageNumbersPro;
 using FrameWork.Editor;
+using FrameWork.GameSettings;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace EvolveThisMatch.Core
         private int _currentHP;
         private int _baseHPRecoveryPerSec;
         private float _hpRecoveryCooldown = 1;
+        private bool _isDamageVisible;
 
         internal int currentHP => _currentHP;
         internal bool isAlive => _currentHP > 0;
@@ -234,6 +236,19 @@ namespace EvolveThisMatch.Core
             }
 
             SetHP(finalMaxHP);
+
+            _isDamageVisible = GameSettingsManager.DamageVisible;
+            GameSettingsManager.DamageVisibleChanged += DamageVisibleChanged;
+        }
+
+        internal override void Deinitialize()
+        {
+            GameSettingsManager.DamageVisibleChanged -= DamageVisibleChanged;
+        }
+
+        private void DamageVisibleChanged(bool isOn)
+        {
+            _isDamageVisible = isOn;
         }
 
         internal override void UpdateAbility()
@@ -466,6 +481,7 @@ namespace EvolveThisMatch.Core
         private void DamagePopup(float damage, EDamageType damageType)
         {
             if (this == null) return;
+            if (!_isDamageVisible) return;
 
             DamageNumber popup;
 
@@ -488,6 +504,7 @@ namespace EvolveThisMatch.Core
         private void HealPopup(float heal)
         {
             if (this == null) return;
+            if (!_isDamageVisible) return;
 
             DamageNumber popup = _healPopup?.Spawn(transform.position, heal);
 
@@ -497,6 +514,7 @@ namespace EvolveThisMatch.Core
         private void ShieldPopup(float absorption)
         {
             if (this == null) return;
+            if (!_isDamageVisible) return;
 
             DamageNumber popup = _shieldPopup?.Spawn(transform.position, absorption);
 

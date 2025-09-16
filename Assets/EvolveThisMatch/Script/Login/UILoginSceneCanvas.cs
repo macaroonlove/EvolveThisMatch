@@ -7,6 +7,7 @@ using FrameWork.UIBinding;
 using FrameWork.UIPopup;
 using PlayFab;
 using PlayFab.ClientModels;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Login
@@ -119,7 +120,7 @@ namespace EvolveThisMatch.Login
                 }
                 else
                 {
-                    TutorialOrLobby(profileData);
+                    TutorialOrLobby();
                 }
             }
         }
@@ -135,29 +136,32 @@ namespace EvolveThisMatch.Login
             _startButton.interactable = true;
         }
 
-        private async void SetDisplayName(string displayName)
+        private void SetDisplayName(string displayName, UnityAction onComplete)
         {
-            var profileData = SaveManager.Instance.profileData;
-
             if (string.IsNullOrEmpty(displayName) == false)
             {
-                profileData.displayName = displayName;
-                await SaveManager.Instance.SaveData(SaveKey.Profile);
+                SaveManager.Instance.profileData.SaveDisplayName(displayName, (isComplete) =>
+                {
+                    if (isComplete)
+                    {
+                        TutorialOrLobby();
+                        onComplete?.Invoke();
+                    }
+                });
             }
-
-            TutorialOrLobby(profileData);
         }
 
-        private void TutorialOrLobby(ProfileSaveDataTemplate profileData)
+        private void TutorialOrLobby()
         {
             UIPopupManager.Instance.ShowConfirmCancelPopup("튜토리얼 스킵이 가능합니다.\n스킵하시겠습니까?", result =>
             {
                 if (result)
                 {
+                    var profileData = SaveManager.Instance.profileData;
+
                     if (profileData != null)
                     {
-                        profileData.isClearTutorial = true;
-                        _ = SaveManager.Instance.SaveData(SaveKey.Profile);
+                        SaveManager.Instance.profileData.ClearTutorial();
                     }
 
                     LoadingManager.Instance.LoadScene("Lobby");

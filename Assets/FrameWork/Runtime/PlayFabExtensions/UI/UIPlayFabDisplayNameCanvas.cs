@@ -25,9 +25,9 @@ namespace FrameWork.PlayFabExtensions
         private TextMeshProUGUI _errorText;
         private TMP_InputField _displayNameInputField;
 
-        private UnityAction<string> _onConfirm;
+        private UnityAction<string, UnityAction> _onConfirm;
 
-        public void Show(UnityAction<string> confirm)
+        public void Show(UnityAction<string, UnityAction> confirm)
         {
             base.Show(true);
 
@@ -57,13 +57,11 @@ namespace FrameWork.PlayFabExtensions
             }
             else if (displayName.Length < 3 || displayName.Length > 18)
             {
-                _errorText.text = "허용된 길이(3~18자 사이)를 벗어났습니다.";
+                _errorText.text = "허용된 길이(2~10자 사이)를 벗어났습니다.";
                 return;
             }
 
-            _onConfirm?.Invoke(displayName);
-            
-            Cancel();
+            _onConfirm?.Invoke(displayName, Cancel);
         }
 
         private void Cancel()
