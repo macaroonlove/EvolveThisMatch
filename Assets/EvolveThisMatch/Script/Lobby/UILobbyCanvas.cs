@@ -22,6 +22,7 @@ namespace EvolveThisMatch.Lobby
             GachaButton,
             LootButton,
             FormationButton,
+            StageDisplay,
         }
         enum Toggles
         {
@@ -40,6 +41,7 @@ namespace EvolveThisMatch.Lobby
         private UIShopCanvas _shopCanvas;
         private UIGachaCanvas _gachaCanvas;
         private UIFormationCanvas _formationCanvas;
+        private UIStagePanel _stagePanel;
 
         private CanvasGroupController _menuPanel;
 
@@ -58,6 +60,7 @@ namespace EvolveThisMatch.Lobby
             _shopCanvas = transform.parent.GetComponentInChildren<UIShopCanvas>();
             _gachaCanvas = transform.parent.GetComponentInChildren<UIGachaCanvas>();
             _formationCanvas = transform.parent.GetComponentInChildren<UIFormationCanvas>();
+            _stagePanel = transform.parent.GetComponentInChildren<UIStagePanel>();
 
             _menuPanel = GetCanvasGroupController((int)CanvasGroups.MenuPanel);
             _menuPanel.Hide(true);
@@ -71,6 +74,7 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.GachaButton).onClick.AddListener(ShowGacha);
             GetButton((int)Buttons.LootButton).onClick.AddListener(ShowLoot);
             GetButton((int)Buttons.FormationButton).onClick.AddListener(ShowFormation);
+            GetButton((int)Buttons.StageDisplay).onClick.AddListener(ShowStagePanel);
             GetToggle((int)Toggles.MenuToggle).onValueChanged.AddListener(OnChangedMenu);
         }
 
@@ -191,6 +195,16 @@ namespace EvolveThisMatch.Lobby
             {
                 _menuPanel.transform.DOScaleY(0, 0.1f).OnComplete(() => { _menuPanel.Hide(true); });
             }
+        }
+
+        private void ShowStagePanel()
+        {
+            VariableDisplayManager.Instance.HideAll();
+
+            _stagePanel?.Show(() =>
+            {
+                ShowVariable();
+            });
         }
         #endregion
     }

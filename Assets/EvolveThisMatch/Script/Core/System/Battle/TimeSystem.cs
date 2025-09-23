@@ -9,7 +9,7 @@ namespace EvolveThisMatch.Core
     {
         private float _startTime;
 
-        internal float currentTime => Time.time - _startTime;
+        public float currentTime => Time.time - _startTime;
 
         public void Initialize()
         {

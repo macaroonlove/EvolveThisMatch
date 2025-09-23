@@ -30,7 +30,18 @@ namespace EvolveThisMatch.Core
             var systems = this.GetComponentsInChildren<IBattleSystem>(true);
             foreach (var system in systems)
             {
-                _subSystems.Add(system.GetType(), system);
+                var type = system.GetType();
+                _subSystems.Add(type, system);
+
+                var baseType = type.BaseType;
+                while (baseType != null && typeof(IBattleSystem).IsAssignableFrom(baseType))
+                {
+                    if (!_subSystems.ContainsKey(baseType))
+                    {
+                        _subSystems.Add(baseType, system);
+                    }
+                    baseType = baseType.BaseType;
+                }
             }
 
             canvas = GetComponentInChildren<Canvas>().transform;
@@ -47,7 +58,7 @@ namespace EvolveThisMatch.Core
         [ContextMenu("배틀시작")]
         public void InitializeBattle()
         {
-            foreach (var system in this._subSystems.Values)
+            foreach (var system in new HashSet<IBattleSystem>(_subSystems.Values))
             {
                 system.Initialize();
             }

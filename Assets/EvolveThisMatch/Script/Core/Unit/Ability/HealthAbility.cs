@@ -231,8 +231,8 @@ namespace EvolveThisMatch.Core
             }
             else if (unit is EnemyUnit enemyUnit)
             {
-                _baseMaxHP = enemyUnit.template.MaxHP;
-                _baseHPRecoveryPerSec = enemyUnit.template.HPRecoveryPerSec;
+                _baseMaxHP = enemyUnit.enemyData.hp;
+                _baseHPRecoveryPerSec = enemyUnit.enemyData.template.HPRecoveryPerSec;
             }
 
             SetHP(finalMaxHP);

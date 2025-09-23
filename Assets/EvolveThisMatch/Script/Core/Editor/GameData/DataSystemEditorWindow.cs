@@ -14,31 +14,48 @@ namespace EvolveThisMatch.Editor
     {
         private int selectedTab = 0;
         private Vector2 contentScrollPosition;
-        //private List<Texture2D> resizedTextures = new List<Texture2D>();
         private Dictionary<string, List<Texture2D>> resizedTextures = new Dictionary<string, List<Texture2D>>();
 
         #region 유닛
         private int selectedUnitTitle = 0;
         private int prevUnitTitle = -1;
 
-        #region 아군 유닛
+        #region 아군
+        private int selectedAllyTitle = 0;
+
+        #region 등장인물
         private UnityEditor.Editor agentEditor;
         private int selectedAgentIndex = 0;
         private Vector2 agentScrollPosition;
         private List<AgentTemplate> agentTemplates = new List<AgentTemplate>();
         #endregion
-        #region 소환수 유닛
+
+        #region 소환수
         private UnityEditor.Editor summonEditor;
         private int selectedSummonIndex = 0;
         private Vector2 summonScrollPosition;
         private List<SummonTemplate> summonTemplates = new List<SummonTemplate>();
         #endregion
-        #region 적군 유닛
+        #endregion
+
+        #region 적군
+        private int selectedRoundTitle = 0;
+
+        #region 적
         private UnityEditor.Editor enemyEditor;
         private int selectedEnemyIndex = 0;
         private Vector2 enemyScrollPosition;
         private List<EnemyTemplate> enemyTemplates = new List<EnemyTemplate>();
         #endregion
+
+        #region 웨이브
+        private UnityEditor.Editor waveEditor;
+        private int selectedWaveIndex = 0;
+        private Vector2 waveScrollPosition;
+        private List<WaveTemplate> waveTemplates = new List<WaveTemplate>();
+        #endregion
+        #endregion
+
         #endregion
 
         #region 상태
@@ -189,16 +206,14 @@ namespace EvolveThisMatch.Editor
         private void DrawUnitTitle()
         {
             GUILayout.BeginHorizontal();
-            if (GUILayout.Toggle(selectedUnitTitle == 0, "아군 유닛", "Button")) selectedUnitTitle = 0;
-            if (GUILayout.Toggle(selectedUnitTitle == 1, "소환수 유닛", "Button")) selectedUnitTitle = 1;
-            if (GUILayout.Toggle(selectedUnitTitle == 2, "적 유닛", "Button")) selectedUnitTitle = 2;
+            if (GUILayout.Toggle(selectedUnitTitle == 0, "아군", "Button")) selectedUnitTitle = 0;
+            if (GUILayout.Toggle(selectedUnitTitle == 2, "라운드", "Button")) selectedUnitTitle = 1;
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10);
 
-            if (selectedUnitTitle == 0) DrawAgentTab();
-            else if (selectedUnitTitle == 1) DrawSummonTab();
-            else DrawEnemyTab();
+            if (selectedUnitTitle == 0) DrawAllyTab();
+            else DrawRoundTab();
         }
 
         private void DrawStatusTitle()
@@ -253,6 +268,18 @@ namespace EvolveThisMatch.Editor
             }
         }
 
+        #region 아군
+        private void DrawAllyTab()
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Toggle(selectedAllyTitle == 0, "등장인물", "Button")) selectedAllyTitle = 0;
+            if (GUILayout.Toggle(selectedAllyTitle == 1, "소환수", "Button")) selectedAllyTitle = 1;
+            GUILayout.EndHorizontal();
+
+            if (selectedAllyTitle == 0) DrawAgentTab();
+            else DrawSummonTab();
+        }
+
         private void DrawAgentTab()
         {
             AutoLoadUnit(ref agentTemplates, "Agent");
@@ -262,13 +289,13 @@ namespace EvolveThisMatch.Editor
                 ref selectedAgentIndex,
                 ref agentScrollPosition,
                 ref agentEditor,
-                "아군",
+                "등장인물",
                 "Assets/EvolveThisMatch/GameData/Unit/Agent",
                 "Agent",
                 () =>
                 {
                     var window = GetWindow<LoadAgentTemplateEditorWindow>();
-                    window.titleContent = new GUIContent("아군 유닛 불러오기");
+                    window.titleContent = new GUIContent("등장인물 불러오기");
                     window.minSize = new Vector2(300, 100);
                     window.maxSize = new Vector2(300, 100);
                 }
@@ -290,11 +317,24 @@ namespace EvolveThisMatch.Editor
                 () =>
                 {
                     var window = GetWindow<LoadSummonTemplateEditorWindow>();
-                    window.titleContent = new GUIContent("소환수 유닛 불러오기");
+                    window.titleContent = new GUIContent("소환수 불러오기");
                     window.minSize = new Vector2(300, 100);
                     window.maxSize = new Vector2(300, 100);
                 }
             );
+        }
+        #endregion
+
+        #region 라운드
+        private void DrawRoundTab()
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Toggle(selectedRoundTitle == 0, "적", "Button")) selectedRoundTitle = 0;
+            if (GUILayout.Toggle(selectedRoundTitle == 1, "웨이브", "Button")) selectedRoundTitle = 1;
+            GUILayout.EndHorizontal();
+
+            if (selectedRoundTitle == 0) DrawEnemyTab();
+            else DrawWaveTab();
         }
 
         private void DrawEnemyTab()
@@ -312,12 +352,40 @@ namespace EvolveThisMatch.Editor
                 () =>
                 {
                     var window = GetWindow<LoadEnemyTemplateEditorWindow>();
-                    window.titleContent = new GUIContent("적 유닛 불러오기");
+                    window.titleContent = new GUIContent("적 불러오기");
                     window.minSize = new Vector2(300, 100);
                     window.maxSize = new Vector2(300, 100);
                 }
             );
         }
+
+        private void DrawWaveTab()
+        {
+            if (prevUnitTitle != selectedUnitTitle)
+            {
+                prevUnitTitle = selectedUnitTitle;
+
+                LoadTemplates(ref waveTemplates, $"Assets/EvolveThisMatch/GameData/ETC/Library/Wave", "Wave");
+            }
+
+            DrawTemplateTab<WaveTemplate>(
+                ref waveTemplates,
+                ref selectedWaveIndex,
+                ref waveScrollPosition,
+                ref waveEditor,
+                "웨이브",
+                "Assets/EvolveThisMatch/GameData/ETC/Library/Wave",
+                "Wave",
+                () =>
+                {
+                    var window = GetWindow<LoadWaveTemplateEditorWindow>();
+                    window.titleContent = new GUIContent("웨이브 불러오기");
+                    window.minSize = new Vector2(300, 100);
+                    window.maxSize = new Vector2(300, 100);
+                }
+            );
+        }
+        #endregion
         #endregion
 
         #region 상태

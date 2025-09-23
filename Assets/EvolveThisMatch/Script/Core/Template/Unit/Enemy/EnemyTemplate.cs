@@ -39,7 +39,7 @@ namespace EvolveThisMatch.Core
 
         #region 프로퍼티
         public int id => _id;
-        public RarityTemplate rarity => _rarity;
+        public EnemyRarityTemplate rarity => _rarity;
         public string displayName => _displayName;
 
         public Sprite sprite => _sprite;

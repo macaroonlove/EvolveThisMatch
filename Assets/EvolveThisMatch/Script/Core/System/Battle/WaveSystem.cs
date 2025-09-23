@@ -1,42 +1,47 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace EvolveThisMatch.Core
 {
-    public class WaveSystem : MonoBehaviour, IBattleSystem
+    public abstract class WaveSystem : MonoBehaviour, IBattleSystem
     {
-        private EnemySpawnSystem _enemySpawnSystem;
-        private TimeSystem _timeSystem;
-        private WaveLibraryTemplate _waveLibrary;
+        [SerializeField] protected WaveLibraryTemplate _waveLibrary;
 
-        private Transform _spawnPoint;
+        protected EnemySpawnSystem _enemySpawnSystem;
+        protected TimeSystem _timeSystem;
 
-        public int currentWaveIndex { get; private set; }
-        public bool isWaveEnd { get; private set; }
-        public bool isSpawnEnd { get; private set; }
-        public Transform boundaryPoint { get; private set; }
-
-        public event UnityAction<int, float> onWaveChanged;
+        public int currentWaveIndex { get; protected set; }
+        public bool isWaveEnd { get; protected set; }
+        public bool isSpawnEnd { get; protected set; }
+        public Transform spawnPoint { get; protected set; }
+        public Transform boundaryPoint { get; protected set; }
 
         public void Initialize()
         {
             _enemySpawnSystem = BattleManager.Instance.GetSubSystem<EnemySpawnSystem>();
             _timeSystem = BattleManager.Instance.GetSubSystem<TimeSystem>();
-            _waveLibrary = GameDataManager.Instance.battleData.waveLibrary;
-            _spawnPoint = transform.GetChild(0);
+
+            spawnPoint = transform.GetChild(0);
             boundaryPoint = transform.GetChild(1);
 
+            currentWaveIndex = 0;
             isWaveEnd = false;
+            isSpawnEnd = false;
+
+            StartCoroutine(CoUpdateWave());
         }
 
         public void Deinitialize()
         {
+            if (this != null)
+            {
+                StopAllCoroutines();
+            }
+
             _enemySpawnSystem = null;
             _timeSystem = null;
-            isWaveEnd = true;
 
-            StopAllCoroutines();
+            isWaveEnd = true;
         }
 
         public void ForceEndWave()
@@ -44,29 +49,9 @@ namespace EvolveThisMatch.Core
             Deinitialize();
         }
 
-        private void Update()
-        {
-            if (_timeSystem == null) return;
-            if (isWaveEnd) return;
+        protected abstract IEnumerator CoUpdateWave();
 
-            if (currentWaveIndex >= _waveLibrary.waves.Count)
-            {
-                isWaveEnd = true;
-                return;
-            }
-
-            if (_timeSystem.currentTime >= _waveLibrary.waves[currentWaveIndex].spawnTime)
-            {
-                WaveTemplate currentWave = _waveLibrary.waves[currentWaveIndex];
-                StartCoroutine(SpawnWave(currentWave));
-
-                onWaveChanged?.Invoke(currentWaveIndex + 1, (_waveLibrary.waves.Count == currentWaveIndex + 1) ? 0 : _waveLibrary.waves[currentWaveIndex + 1].spawnTime - _waveLibrary.waves[currentWaveIndex].spawnTime);
-
-                currentWaveIndex++;
-            }
-        }
-
-        private IEnumerator SpawnWave(WaveTemplate wave)
+        protected IEnumerator SpawnWave(WaveTemplate wave, bool isIdle)
         {
             isSpawnEnd = false;
 
@@ -79,10 +64,12 @@ namespace EvolveThisMatch.Core
 
                 for (int i = 0; i < waveInfo.spawnCount; i++)
                 {
-                    Vector3 spawnPos = _spawnPoint.position;
+                    Vector3 spawnPos = spawnPoint.position;
                     spawnPos.y = Random.Range(-4f, 4f);
 
-                    _enemySpawnSystem.SpawnUnit(waveInfo.template, spawnPos, waveInfo.coin, waveInfo.crystal);
+                    var enemyData = wave.GetEnemyData(waveInfo.rarity);
+
+                    _enemySpawnSystem.SpawnUnit(enemyData, spawnPos, isIdle);
 
                     if (i < waveInfo.spawnCount - 1)
                     {

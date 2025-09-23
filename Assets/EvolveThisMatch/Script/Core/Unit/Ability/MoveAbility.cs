@@ -76,7 +76,7 @@ namespace EvolveThisMatch.Core
             }
             else if (unit is EnemyUnit enemyUnit)
             {
-                _baseMoveSpeed = enemyUnit.template.MoveSpeed;
+                _baseMoveSpeed = enemyUnit.enemyData.template.MoveSpeed;
             }
 
             _scaleX = transform.GetChild(3).localScale.x;

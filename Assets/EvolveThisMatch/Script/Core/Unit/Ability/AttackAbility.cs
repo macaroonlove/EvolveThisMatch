@@ -193,12 +193,12 @@ namespace EvolveThisMatch.Core
             }
             else if (unit is EnemyUnit enemyUnit)
             {
-                _baseATK = enemyUnit.template.ATK;
-                _baseAttackTerm = enemyUnit.template.AttackTerm;
-                _baseAttackRange = enemyUnit.template.AttackRange;
+                _baseATK = enemyUnit.enemyData.atk;
+                _baseAttackTerm = enemyUnit.enemyData.template.AttackTerm;
+                _baseAttackRange = enemyUnit.enemyData.template.AttackRange;
                 _baseAttackType = EAttackType.Near;
-                _casterFX = enemyUnit.template.casterFX;
-                _targetFX = enemyUnit.template.targetFX;
+                _casterFX = enemyUnit.enemyData.template.casterFX;
+                _targetFX = enemyUnit.enemyData.template.targetFX;
             }
 
             _attackCooldown = finalAttackTerm;

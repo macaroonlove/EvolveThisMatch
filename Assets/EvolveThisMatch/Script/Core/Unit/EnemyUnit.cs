@@ -6,18 +6,16 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private GlobalEvent _deathGlobalEvent;
 
-        private int _gainCoin;
-        private int _gainCrystal;
+        private bool _isIdle;
 
-        internal EnemyTemplate template { get; private set; }
+        internal EnemyData enemyData { get; private set; }
 
-        internal void Initialize(EnemyTemplate template, int coin, int crystal)
+        internal void Initialize(EnemyData data, bool isIdle)
         {
-            id = template.id;
-            this.template = template;
+            id = data.template.id;
 
-            _gainCoin = coin;
-            _gainCrystal = crystal;
+            enemyData = data;
+            _isIdle = isIdle;
 
             base.Initialize(this);
         }
@@ -28,14 +26,30 @@ namespace EvolveThisMatch.Core
 
             var enemySystem = BattleManager.Instance.GetSubSystem<EnemySystem>();
 
-            if (_gainCoin > 0)
+            #region º¸»ó È¹µæ
+            if (_isIdle)
             {
-                //BattleManager.Instance.GetSubSystem<CoinSystem>().AddCoin(_gainCoin);
+                if (enemyData.gold > 0)
+                {
+                    CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Gold, enemyData.gold);
+                }
+                if (enemyData.loot > 0)
+                {
+                    CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Loot, enemyData.loot);
+                }
             }
-            if (_gainCrystal > 0)
+            else
             {
-                //BattleManager.Instance.GetSubSystem<CrystalSystem>().AddCrystal(_gainCrystal);
+                if (enemyData.coin > 0)
+                {
+                    BattleManager.Instance.GetSubSystem<CoinSystem>().AddCoin(enemyData.coin);
+                }
+                if (enemyData.crystal > 0)
+                {
+                    BattleManager.Instance.GetSubSystem<CrystalSystem>().AddCrystal(enemyData.crystal);
+                }
             }
+            #endregion
 
             _deathGlobalEvent?.Raise();
 

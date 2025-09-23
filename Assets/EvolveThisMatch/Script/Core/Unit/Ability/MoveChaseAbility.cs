@@ -27,7 +27,7 @@ namespace EvolveThisMatch.Core
             }
             else if (unit is EnemyUnit enemyUnit)
             {
-                float range = enemyUnit.template.AttackRange;
+                float range = enemyUnit.enemyData.template.AttackRange;
 
                 _chaseRange = range;
                 _stoppingDistance = range * range;

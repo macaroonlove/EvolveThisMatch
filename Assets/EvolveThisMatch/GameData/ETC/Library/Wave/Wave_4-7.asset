@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f15acee0675053b448a4357f1b507107, type: 3}
+  m_Name: Wave_4-7
+  m_EditorClassIdentifier: 
+  _id: 37
+  _displayName: "4-7\\n\uAD49\uC74C\uC758 \uB3D9\uAD74"
+  _waveTime: 18
+  _minion:
+    _template: {fileID: 11400000, guid: 2fdce6f74e1e61f4f84a87d0c7464a99, type: 2}
+    _hp: 798
+    _atk: 145
+    _coin: 2
+    _crystal: 0
+    _gold: 10632
+    _loot: 306
+  _common:
+    _template: {fileID: 11400000, guid: d93b835e4753aa247a93a85a987c7431, type: 2}
+    _hp: 3091
+    _atk: 798
+    _coin: 4
+    _crystal: 0
+    _gold: 25703
+    _loot: 855
+  _elite:
+    _template: {fileID: 11400000, guid: 48360d8a06c8aec46852b98291e92012, type: 2}
+    _hp: 70963
+    _atk: 3091
+    _coin: 0
+    _crystal: 6
+    _gold: 0
+    _loot: 0
+  _boss:
+    _template: {fileID: 11400000, guid: 7e001ed4c6068b149b8547042e12a7b7, type: 2}
+    _hp: 0
+    _atk: 0
+    _coin: 0
+    _crystal: 0
+    _gold: 0
+    _loot: 0
+  _waveInfo:
+  - _rarity: 3
+    _delayTime: 0
+    _spawnCount: 16
+    _spawnInterval: 1
+  - _rarity: 2
+    _delayTime: 1
+    _spawnCount: 12
+    _spawnInterval: 1.4

@@ -19,7 +19,7 @@ namespace EvolveThisMatch.Battle
         private TextMeshProUGUI _waveStepText;
         private TextMeshProUGUI _waveTimeText;
 
-        private WaveSystem _waveSystem;
+        private BattleWaveSystem _waveSystem;
 
         private WaitForSeconds _wfs = new WaitForSeconds(1f);
 
@@ -30,7 +30,7 @@ namespace EvolveThisMatch.Battle
             _waveStepText = GetText((int)Texts.WaveStep);
             _waveTimeText = GetText((int)Texts.WaveTime);
 
-            _waveSystem = BattleManager.Instance.GetSubSystem<WaveSystem>();
+            _waveSystem = BattleManager.Instance.GetSubSystem<BattleWaveSystem>();
             _waveSystem.onWaveChanged += OnWaveChanged;
         }
 

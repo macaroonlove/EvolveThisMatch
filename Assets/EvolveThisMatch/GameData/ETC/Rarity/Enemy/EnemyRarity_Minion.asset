@@ -15,4 +15,4 @@ MonoBehaviour:
   _order: 3
   _displayName: "\uD558\uAE09 \uBAAC\uC2A4\uD130"
   _rarity: 3
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}

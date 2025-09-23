@@ -53,9 +53,9 @@ namespace EvolveThisMatch.Core
             {
                 InitializeActiveSkillInstance(summonUnit.template.skillTemplates);
             }
-            else if (unit is EnemyUnit enemyUnit && enemyUnit.template.skillTemplates.Count > 0)
+            else if (unit is EnemyUnit enemyUnit && enemyUnit.enemyData.template.skillTemplates.Count > 0)
             {
-                InitializeActiveSkillInstance(enemyUnit.template.skillTemplates);
+                InitializeActiveSkillInstance(enemyUnit.enemyData.template.skillTemplates);
             }
         }
 

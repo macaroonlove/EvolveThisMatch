@@ -20,10 +20,10 @@ namespace EvolveThisMatch.Core
             _poolSystem = null;
         }
 
-        internal EnemyUnit SpawnUnit(EnemyTemplate template, Vector3 pos, int coin, int crystal)
+        public EnemyUnit SpawnUnit(EnemyData data, Vector3 pos, bool isIdle)
         {
             // 유닛 생성하기
-            var obj = _poolSystem.Spawn(template.prefab, transform);
+            var obj = _poolSystem.Spawn(data.template.prefab, transform);
 
             // 유닛 위치 정해주기 (위치가 타일과 같을 경우 타일에서 위치 정해주기도 가능)
             obj.transform.SetPositionAndRotation(pos, Quaternion.identity);
@@ -31,7 +31,7 @@ namespace EvolveThisMatch.Core
             if (obj.TryGetComponent(out EnemyUnit unit))
             {
                 // 유닛 초기화
-                unit.Initialize(template, coin, crystal);
+                unit.Initialize(data, isIdle);
 
                 // 유닛 등록
                 _enemySystem.Regist(unit);

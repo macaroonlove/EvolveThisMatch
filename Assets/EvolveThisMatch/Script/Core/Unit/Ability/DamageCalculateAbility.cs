@@ -367,13 +367,13 @@ namespace EvolveThisMatch.Core
             }
             else if (unit is EnemyUnit enemyUnit)
             {
-                _baseDamageType = enemyUnit.template.DamageType;
-                _basePhysicalResistance = enemyUnit.template.PhysicalResistance;
-                _baseMagicResistance = enemyUnit.template.MagicResistance;
-                _basePhysicalPenetration = enemyUnit.template.PhysicalPenetration;
-                _baseMagicPenetration = enemyUnit.template.MagicPenetration;
-                _baseCriticalHitChance = enemyUnit.template.CriticalHitChance;
-                _baseCriticalHitDamage = enemyUnit.template.CriticalHitDamage;
+                _baseDamageType = enemyUnit.enemyData.template.DamageType;
+                _basePhysicalResistance = enemyUnit.enemyData.template.PhysicalResistance;
+                _baseMagicResistance = enemyUnit.enemyData.template.MagicResistance;
+                _basePhysicalPenetration = enemyUnit.enemyData.template.PhysicalPenetration;
+                _baseMagicPenetration = enemyUnit.enemyData.template.MagicPenetration;
+                _baseCriticalHitChance = enemyUnit.enemyData.template.CriticalHitChance;
+                _baseCriticalHitDamage = enemyUnit.enemyData.template.CriticalHitDamage;
             }
         }
 
