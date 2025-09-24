@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Wave_5-8
   m_EditorClassIdentifier: 
   _id: 48
-  _displayName: "5-8\\n\uB9C8\uC655\uC758 \uC0AC\uC790"
+  _stage: 5-8
+  _displayName: "\uB9C8\uC655\uC758 \uC0AC\uC790"
   _waveTime: 18
   _minion:
     _template: {fileID: 11400000, guid: 5344e9d73f3ee5f46b6ffde2e8958c72, type: 2}

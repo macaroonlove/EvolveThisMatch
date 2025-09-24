@@ -208,7 +208,7 @@ namespace EvolveThisMatch.Lobby
 
         private void ShowStageInfo(WaveTemplate waveTemplate)
         {
-            _stageName.text = waveTemplate.displayName;
+            _stageName.text = $"<size=32>{waveTemplate.stage}</size>\n{waveTemplate.displayName}";
 
             foreach (var item in _stageEnemyItems)
             {

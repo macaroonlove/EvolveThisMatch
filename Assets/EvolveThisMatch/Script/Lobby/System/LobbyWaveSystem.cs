@@ -37,6 +37,9 @@ namespace EvolveThisMatch.Lobby
             // 전투 중단
             BattleManager.Instance.DeinitializeBattle();
 
+            // 풀 비우기
+            CoreManager.Instance.GetSubSystem<PoolSystem>().Deinitialize();
+
             // 웨이브 변경
             _currentWave = template;
 

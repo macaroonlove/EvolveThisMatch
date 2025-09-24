@@ -100,7 +100,7 @@ namespace EvolveThisMatch.Lobby
 
                     var agentTemplate = GameDataManager.Instance.GetAgentTemplateById(slot.id);
                     var tileController = _tileSystem.GetTile(index);
-                    
+
                     // À¯´Ö ¹èÄ¡
                     _agentCreateSystem.CreateFixedUnit(agentTemplate, tileController);
 

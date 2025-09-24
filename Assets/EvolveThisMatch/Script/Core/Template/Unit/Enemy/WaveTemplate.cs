@@ -13,7 +13,8 @@ namespace EvolveThisMatch.Core
     public class WaveTemplate : ScriptableObject, IDataWindowEntry
     {
         [SerializeField, Label("식별번호")] private int _id;
-        [SerializeField, Label("웨이브 이름")] private string _displayName;
+        [SerializeField, Label("스테이지")] private string _stage;
+        [SerializeField, Label("이름")] private string _displayName;
 
         [Space(10)]
         [SerializeField, Label("웨이브 유지 시간")] private int _waveTime;
@@ -36,6 +37,7 @@ namespace EvolveThisMatch.Core
         #region 프로퍼티
         public int id => _id;
         public Sprite sprite => null;
+        public string stage => _stage;
         public string displayName => _displayName;
         public int waveTime => _waveTime;
 
@@ -44,6 +46,7 @@ namespace EvolveThisMatch.Core
 
         #region 값 변경 메서드
         internal void SetId(int id) => _id = id;
+        public void SetStage(string stage) => _stage = stage;
         public void SetDisplayName(string name) => _displayName = name;
         public void SetWaveTime(int waveTime) => _waveTime = waveTime;
         #endregion

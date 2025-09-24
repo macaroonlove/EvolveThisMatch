@@ -31,7 +31,8 @@ namespace EvolveThisMatch.Lobby
 
         private void OnChangeWave()
         {
-            _text.text = _lobbyWaveSystem.currentWave.displayName;
+            var currentWave = _lobbyWaveSystem.currentWave;
+            _text.text = $"<color=#FBE698>{currentWave.stage}</color>  {currentWave.displayName}";
         }
     }
 }

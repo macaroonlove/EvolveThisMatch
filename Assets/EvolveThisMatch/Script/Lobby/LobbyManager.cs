@@ -21,8 +21,6 @@ namespace EvolveThisMatch.Lobby
         {
             await UniTask.WaitUntil(() => SaveManager.Instance.agentData.isLoaded);
 
-            List<UniTask> tasks = new List<UniTask>();
-
             var agents = SaveManager.Instance.agentData.ownedAgents;
             foreach (var agent in agents)
             {
@@ -31,14 +29,9 @@ namespace EvolveThisMatch.Lobby
                 if (template != null)
                 {
                     _loadedTemplates.Add(template);
-                    var task = template.LoadAllSkinLobbyTemplate();
-                    tasks.Add(task);
+                    template.LoadAllSkinLobbyTemplate().Forget();
                 }
             }
-
-            await UniTask.WhenAll(tasks);
-
-            BattleManager.Instance.InitializeBattle();
         }
 
         private void OnDestroy()

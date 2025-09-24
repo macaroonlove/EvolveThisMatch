@@ -48,7 +48,7 @@ namespace EvolveThisMatch.Lobby
         {
             this.waveTemplate = waveTemplate;
 
-            _title.text = waveTemplate.displayName;
+            _title.text = $"{waveTemplate.stage}\n{waveTemplate.displayName}";
             _background.color = isActive ? Color.yellow : Color.white;
         }
 

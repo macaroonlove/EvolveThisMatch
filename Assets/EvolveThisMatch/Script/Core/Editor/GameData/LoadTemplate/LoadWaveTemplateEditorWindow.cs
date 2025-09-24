@@ -32,15 +32,18 @@ namespace EvolveThisMatch.Editor
                 // 템플릿이 존재한다면 수정
                 if (templateDic.TryGetValue(id, out var template))
                 {
-                    // 스테이지 이름
-                    if (template.displayName != csvDic["스테이지"][i])
+                    // 스테이지
+                    if (template.stage != csvDic["스테이지"][i])
                     {
                         string newName = csvDic["스테이지"][i];
-                        template.SetDisplayName(newName);
+                        template.SetStage(newName);
 
                         string assetPath = AssetDatabase.GetAssetPath(template);
                         AssetDatabase.RenameAsset(assetPath, $"Wave_{newName}");
                     }
+
+                    // 이름
+                    template.SetDisplayName(csvDic["이름"][i]);
 
                     // 웨이브 시간
                     if (int.TryParse(csvDic["웨이브 시간"][i], out var waveTime))
@@ -181,8 +184,11 @@ namespace EvolveThisMatch.Editor
                     // 식별번호
                     newTemplate.SetId(id);
 
-                    // 스테이지 이름
-                    newTemplate.SetDisplayName(csvDic["스테이지"][i]);
+                    // 스테이지
+                    newTemplate.SetStage(csvDic["스테이지"][i]);
+
+                    // 이름
+                    newTemplate.SetDisplayName(csvDic["이름"][i]);
 
                     // 웨이브 시간
                     if (int.TryParse(csvDic["웨이브 시간"][i], out var waveTime))

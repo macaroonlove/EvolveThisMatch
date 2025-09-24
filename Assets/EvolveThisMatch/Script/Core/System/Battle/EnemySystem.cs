@@ -28,11 +28,13 @@ namespace EvolveThisMatch.Core
 
         public void Deinitialize()
         {
-            //// À¯´Ö ¿ÀºêÁ§Æ® ¸ðµÎ ÆÄ±«
-            //foreach (var enemy in _enemies)
-            //{
-            //    Destroy(enemy.gameObject);
-            //}
+            // À¯´Ö ¿ÀºêÁ§Æ® ¸ðµÎ ÆÄ±«
+            foreach (var enemy in _enemies)
+            {
+                if (enemy?.gameObject != null)
+                    Destroy(enemy.gameObject);
+            }
+            _enemies.Clear();
         }
 
         internal void Regist(EnemyUnit enemy)
