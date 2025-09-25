@@ -1,12 +1,10 @@
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 using PlayFab;
 using PlayFab.ClientModels;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-
-#if FACEBOOK
-using Facebook.Unity;
-#endif
 
 namespace FrameWork.PlayFabExtensions
 {
@@ -16,8 +14,6 @@ namespace FrameWork.PlayFabExtensions
         Guest,
         EmailAndPassword,
         CraeteAccount,
-        Steam,
-        Facebook,
         Google
     }
 
@@ -91,15 +87,11 @@ namespace FrameWork.PlayFabExtensions
                 case Authtypes.CraeteAccount:
                     CreateAccount();
                     break;
-                case Authtypes.Steam:
-                    AuthenticateSteam();
-                    break;
-                case Authtypes.Facebook:
-                    AuthenticateFacebook();
-                    break;
+#if UNITY_ANDROID && !UNITY_EDITOR
                 case Authtypes.Google:
                     AuthenticateGooglePlayGames();
                     break;
+#endif
             }
         }
 
@@ -196,76 +188,78 @@ namespace FrameWork.PlayFabExtensions
             });
         }
 
-        /// <summary>
-        /// 스팀으로 로그인
-        /// </summary>
-        private void AuthenticateSteam()
-        {
-#if STEAM
-            if (!string.IsNullOrEmpty(AuthTicket)) 
-            {
-                //PlayFabClientAPI.LoginWithSteam(new LoginWithSteamRequest
-                //{
-                //    TitleId = PlayFabSettings.TitleId,
-                //    SteamTicket = AuthTicket,
-                //    InfoRequestParameters = InfoRequestParams
-                //}, result =>
-                //{
-                //    HandleLoginSuccess(result);
-                //}, HandlePlayFabError);
-            }
-#endif
-        }
-
-        /// <summary>
-        /// 페이스북으로 로그인
-        /// </summary>
-        private void AuthenticateFacebook()
-        {
-
-#if FACEBOOK
-            //if (FB.IsInitialized && FB.IsLoggedIn && !string.IsNullOrEmpty(AuthTicket))
-            //{
-            //    PlayFabClientAPI.LoginWithFacebook(new LoginWithFacebookRequest()
-            //    {
-            //        TitleId = PlayFabSettings.TitleId,
-            //        AccessToken = AuthTicket,
-            //        CreateAccount = true,
-            //        InfoRequestParameters = InfoRequestParams
-            //    }, HandleLoginSuccess, HandlePlayFabError);
-            //}
-            //else
-            //{
-            //        OnDisplayAuthentication?.Invoke();
-            //}
-#endif
-        }
-
+        #region 구글 로그인
         /// <summary>
         /// 구글 플레이 게임즈로 로그인
         /// </summary>
         private void AuthenticateGooglePlayGames()
         {
-#if GOOGLEGAMES
-            if (!string.IsNullOrEmpty(AuthTicket)) 
+            PlayGamesPlatform.DebugLogEnabled = true;
+
+            PlayGamesPlatform.Instance.Authenticate((status) =>
             {
-                PlayFabClientAPI.LoginWithGoogleAccount(new LoginWithGoogleAccountRequest()
+                Debug.Log($"[GPGS] Authenticate result: {status}");
+
+                if (status == SignInStatus.Success)
                 {
-                    TitleId = PlayFabSettings.TitleId,
-                    ServerAuthCode = AuthTicket,
-                    InfoRequestParameters = InfoRequestParams,
-                    CreateAccount = true
-                }, HandleLoginSuccess, HandlePlayFabError);
-            }
-#endif
+                    Debug.Log("[GPGS] 인증 성공, ServerAuthCode 요청 중...");
+
+                    PlayGamesPlatform.Instance.RequestServerSideAccess(false, (serverAuthCode) =>
+                    {
+                        if (string.IsNullOrEmpty(serverAuthCode))
+                        {
+                            Debug.LogError("[GPGS] ServerAuthCode가 비어있습니다. Play Console 설정(SHA1, 패키지명) 확인 필요.");
+                            HandlePlayFabError(new PlayFabError
+                            {
+                                Error = PlayFabErrorCode.Unknown,
+                                ErrorMessage = "ServerAuthCode 없음 (Play Console 설정 확인)"
+                            });
+                            return;
+                        }
+
+                        Debug.Log($"[GPGS] ServerAuthCode 획득 성공: {serverAuthCode}");
+
+                        AuthTicket = serverAuthCode;
+
+                        PlayFabClientAPI.LoginWithGooglePlayGamesServices(new LoginWithGooglePlayGamesServicesRequest
+                        {
+                            ServerAuthCode = serverAuthCode,
+                            CreateAccount = true,
+                            InfoRequestParameters = InfoRequestParams
+                        },
+                        result =>
+                        {
+                            Debug.Log("[PlayFab] GPGS 로그인 성공");
+                            HandleLoginSuccess(result);
+                        },
+                        error =>
+                        {
+                            Debug.LogError($"[PlayFab] 로그인 실패: {error.Error} / {error.ErrorMessage}");
+                            HandlePlayFabError(error);
+                        });
+                    });
+                }
+                else
+                {
+                    Debug.LogError($"[GPGS] 로그인 실패 상태: {status}");
+                    HandlePlayFabError(new PlayFabError
+                    {
+                        Error = PlayFabErrorCode.Unknown,
+                        ErrorMessage = $"Google Play Games 로그인 실패 (상태: {status})"
+                    });
+                }
+            });
         }
+
+        #endregion
 
         private void HandleLoginSuccess(LoginResult result)
         {
             PlayFabId = result.PlayFabId;
             SessionTicket = result.SessionTicket;
 
-            TitleDataManager.LoadTitleData(() => {
+            TitleDataManager.LoadTitleData(() =>
+            {
                 OnLoginSuccess?.Invoke(result);
             });
         }

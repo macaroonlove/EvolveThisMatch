@@ -19,6 +19,7 @@ namespace EvolveThisMatch.Login
         {
             GuestLoginButton,
             EmailLoginButton,
+            GoogleLoginButton,
             StartButton,
             LogoutButton,
         }
@@ -33,6 +34,7 @@ namespace EvolveThisMatch.Login
         private UIPlayFabDisplayNameCanvas _uiPlayFabDisplayNameCanvas;
 
         private Button _guestLoginButton;
+        private Button _googleLoginButton;
         private Button _startButton;
 
         private CanvasGroupController _startGroup;
@@ -47,6 +49,7 @@ namespace EvolveThisMatch.Login
             BindCanvasGroupController(typeof(CanvasGroupControllers));
 
             _guestLoginButton = GetButton((int)Buttons.GuestLoginButton);
+            _googleLoginButton = GetButton((int)Buttons.GoogleLoginButton);
             _startButton = GetButton((int)Buttons.StartButton);
             _startGroup = GetCanvasGroupController((int)CanvasGroupControllers.StartGroup);
             _loginButtonGroup = GetCanvasGroupController((int)CanvasGroupControllers.LoginButtonGroup);
@@ -54,6 +57,7 @@ namespace EvolveThisMatch.Login
             GetButton((int)Buttons.EmailLoginButton).onClick.AddListener(EmailLogin);
             GetButton((int)Buttons.LogoutButton).onClick.AddListener(Logout);
             _guestLoginButton.onClick.AddListener(GuestLogin);
+            _googleLoginButton.onClick.AddListener(GoogleLogin);
             _startButton.onClick.AddListener(GameStart);
 
             _startGroup.Hide(true);
@@ -94,6 +98,12 @@ namespace EvolveThisMatch.Login
             _guestLoginButton.interactable = false;
             PlayFabAuthService.Instance.Authenticate(Authtypes.Guest);
         }
+        
+        private void GoogleLogin()
+        {
+            _googleLoginButton.interactable = false;
+            PlayFabAuthService.Instance.Authenticate(Authtypes.Google);
+        }
 
         private void EmailLogin()
         {
@@ -133,6 +143,7 @@ namespace EvolveThisMatch.Login
         private void ResetButtonInteractable()
         {
             _guestLoginButton.interactable = true;
+            _googleLoginButton.interactable = true;
             _startButton.interactable = true;
         }
 

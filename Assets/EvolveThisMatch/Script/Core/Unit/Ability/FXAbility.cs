@@ -136,7 +136,8 @@ namespace EvolveThisMatch.Core
 
             foreach (var renderer in _renderers)
             {
-                renderer?.material?.SetTexture("_MainTex", renderer?.sprite?.texture);
+                renderer?.sharedMaterial?.SetTexture("_MainTex", renderer?.sprite?.texture);
+                renderer?.GetPropertyBlock(_propertyBlock);
                 renderer?.SetPropertyBlock(_propertyBlock);
             }
         }
@@ -147,7 +148,7 @@ namespace EvolveThisMatch.Core
             {
                 foreach (var renderer in _renderers)
                 {
-                    renderer?.material?.SetTexture("_MainTex", renderer?.sprite?.texture);
+                    //renderer?.material?.SetTexture("_MainTex", renderer?.sprite?.texture);
                     renderer?.SetPropertyBlock(_propertyBlock);
                 }
                 _isDirty = false;
