@@ -38,6 +38,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _buttonText;
         private CanvasGroupController _panel;
 
+        #region 초기화
         protected override void Initialize()
         {
             BindObject(typeof(Objects));
@@ -58,14 +59,14 @@ namespace EvolveThisMatch.Lobby
         {
             await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
 
-            var talentDatas = GameDataManager.Instance.GetAllTalentEffect();
+            var effects = GameDataManager.Instance.talentEffects;
 
             var prefab = GetObject((int)Objects.TalentCondition);
             var parent = GetObject((int)Objects.Content).transform;
 
-            foreach (var data in talentDatas)
+            foreach (var effect in effects)
             {
-                if (data.effect is not IRuntimeDataEffect runtimeDataEffect) continue;
+                if (effect is not IRuntimeDataEffect runtimeDataEffect) continue;
 
                 var instance = Instantiate(prefab, parent);
                 var toggle = instance.GetComponent<Toggle>();
@@ -82,6 +83,7 @@ namespace EvolveThisMatch.Lobby
         {
             _talentPanel = talentPanel;
         }
+        #endregion
 
         internal void Show()
         {
@@ -91,18 +93,19 @@ namespace EvolveThisMatch.Lobby
             Show(true);
         }
 
-        private void ConditionResetting()
-        {
-            _talentPanel?.ChangeTalent(GetActiveRarityToggle(), GetActiveTalentToggle());
-
-            _panel.Hide(true);
-        }
-
         private void Hide()
         {
             _talentPanel?.StopFilter();
 
             Hide(true);
+        }
+
+        #region 필터 체크 및 ChangeTalent 호출
+        private void ConditionResetting()
+        {
+            _talentPanel?.ChangeTalent(GetActiveRarityToggle(), GetActiveTalentToggle());
+
+            _panel.Hide(true);
         }
 
         /// <summary>
@@ -118,6 +121,9 @@ namespace EvolveThisMatch.Lobby
             return -1;
         }
 
+        /// <summary>
+        /// 활성화된 재능 종류 토글 찾기
+        /// </summary>
         public List<int> GetActiveTalentToggle()
         {
             var selectedList = new List<int>();
@@ -129,5 +135,6 @@ namespace EvolveThisMatch.Lobby
 
             return selectedList;
         }
+        #endregion
     }
 }

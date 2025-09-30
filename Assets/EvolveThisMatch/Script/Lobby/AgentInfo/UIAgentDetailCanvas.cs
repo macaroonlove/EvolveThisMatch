@@ -56,7 +56,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _displayName;
         private TextMeshProUGUI _level;
         private Image _fullBody;
-        
+
         private PoolSystem _poolSystem;
         private GameObject _spawnObj;
 
@@ -155,7 +155,7 @@ namespace EvolveThisMatch.Lobby
                 _tierUpPanel.Show(owned, () => { ReShow(template, owned); });
 
                 // 재능 패널
-                _talentPanel.Show(owned, SaveTalent, () => { _talentFileterPanel.Show(); });
+                _talentPanel.Show(owned, () => _talentFileterPanel.Hide(true), () => { _talentFileterPanel.Show(); });
             }
         }
 
@@ -184,6 +184,8 @@ namespace EvolveThisMatch.Lobby
                 _poolSystem.DeSpawn(_spawnObj);
                 _spawnObj = null;
             }
+
+            SaveTalent();
         }
 
         private void ReShow(AgentTemplate template, AgentSaveData.Agent owned)
@@ -194,9 +196,11 @@ namespace EvolveThisMatch.Lobby
 
         private void SaveTalent()
         {
-            _ = SaveManager.Instance.SaveData(SaveKey.Profile, SaveKey.Agent);
-
-            _talentFileterPanel.Hide(true);
+            // 변경사항이 있으면 서버에 저장하기
+            SaveManager.Instance.agentData.VerifyTalents(() =>
+            {
+                _talentPanel?.ClearRNG();
+            });
         }
     }
 }

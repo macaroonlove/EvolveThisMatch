@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Random = FrameWork.PlayFabExtensions.Random;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -35,13 +36,18 @@ namespace EvolveThisMatch.Lobby
         private UITalentItem[] _items;
 
         private CurrencySystem _currencySystem;
-
+        private AgentSaveData.Agent _owned;
+        private TalentSaveData _talentSaveData;
         private UnityAction _action;
         private UnityAction _openFilterPanel;
 
         private bool _isStopResetting;
         private int _cachedPowderCount;
+        private float[] _rarityProbabilities;
 
+        private Dictionary<int, Random> _rngs = new Dictionary<int, Random>();
+
+        #region 초기화
         protected override void Initialize()
         {
             _items = GetComponentsInChildren<UITalentItem>();
@@ -59,10 +65,28 @@ namespace EvolveThisMatch.Lobby
 
             _changeTalentButton.onClick.AddListener(ChangeTalent);
             _openTalentFilterButton.onClick.AddListener(() => _openFilterPanel?.Invoke());
+
+            InitializeTalentProbabilities();
         }
+
+        private async void InitializeTalentProbabilities()
+        {
+            await UniTask.WaitUntil(() => SaveManager.Instance.agentData.isLoaded);
+
+            var data = AgentSaveDataTemplate.talentTitleData;
+            _rarityProbabilities = new float[5];
+            _rarityProbabilities[0] = data.mythRarity;
+            _rarityProbabilities[1] = data.legendRarity;
+            _rarityProbabilities[2] = data.epicRarity;
+            _rarityProbabilities[3] = data.rareRarity;
+            _rarityProbabilities[4] = data.commonRarity;
+        }
+        #endregion
 
         internal void Show(AgentSaveData.Agent owned, UnityAction action, UnityAction openFilterPanel)
         {
+            _owned = null;
+
             if (owned == null) return;
 
             if (owned.tier <= 2)
@@ -73,16 +97,50 @@ namespace EvolveThisMatch.Lobby
 
             _dim.Hide(true);
 
+            _owned = owned;
             _action = action;
             _openFilterPanel = openFilterPanel;
 
+            var agentData = SaveManager.Instance.agentData;
+            _talentSaveData = agentData.GetTalentSaveData(owned.id);
+
             for (int i = 0; i < _items.Length; i++)
             {
-                _items[i].Show(owned.talent[i], UpdateUI);
+                int idx = i;
+
+                _items[idx].Show(_talentSaveData.finalTalent[idx], (isOn) =>
+                {
+                    var lockEntry = new TalentSaveData.LockHistory
+                    {
+                        order = _talentSaveData.rollCount,
+                        index = idx,
+                        isLock = isOn
+                    };
+                    _talentSaveData.lockHistory.Add(lockEntry);
+
+                    agentData.SaveTalentLocalData();
+
+                    UpdateUI();
+                });
             }
 
             UpdateUI();
             CheckEnoughPowder();
+        }
+
+        internal void ClearRNG()
+        {
+            _rngs.Clear();
+        }
+
+        private Random GetRng(int unitId, int seed)
+        {
+            if (!_rngs.TryGetValue(unitId, out var rng))
+            {
+                rng = new Random(seed);
+                _rngs[unitId] = rng;
+            }
+            return rng;
         }
 
         #region 재능 돌리기
@@ -95,6 +153,9 @@ namespace EvolveThisMatch.Lobby
             {
                 TryChangeTalentItem(item);
             }
+
+            ApplyRollCount();
+            SaveManager.Instance.agentData.SaveTalentLocalData();
 
             _action?.Invoke();
         }
@@ -119,27 +180,40 @@ namespace EvolveThisMatch.Lobby
                     }
                 }
 
+                ApplyRollCount();
+
                 if (isBreak) break;
 
                 await UniTask.Yield();
             }
 
+            SaveManager.Instance.agentData.SaveTalentLocalData();
+
             UpdateUI();
             _action?.Invoke();
+        }
+
+        private void ApplyRollCount()
+        {
+            _talentSaveData.rollCount++;
+
+            if (_talentSaveData.rollCount % 50 == 0)
+            {
+                SaveManager.Instance.agentData.SaveTalentLocalData();
+            }
         }
 
         private bool TryChangeTalentItem(UITalentItem item, int rarity = -1, List<int> talents = null)
         {
             if (item.isLock) return false;
 
-            var data = item.Resetting();
+            var isSuccess = item.Resetting(GetRng(_owned.id, _owned.seed), _rarityProbabilities, rarity, talents);
 
             // 조건 없이 재설정
-            if (rarity == -1 || talents == null)
-                return false;
+            if (rarity == -1 || talents == null) return false;
 
             // 조건에 만족하면 루프 중단 (true)
-            return rarity >= (int)data.GetRarity(item.talent.value).rarity && talents.Contains(item.talent.id);
+            return isSuccess;
         }
         #endregion
 

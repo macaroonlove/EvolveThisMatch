@@ -90,6 +90,21 @@ namespace FrameWork.PlayFabExtensions
             foodExp = agentData.foodExp.Select(v => (ObscuredInt)v).ToArray();
         }
 
+        public static TalentTitleData LoadTalentData()
+        {
+            if (!_titleData.TryGetValue("TalentData", out string json))
+            {
+#if UNITY_EDITOR
+                Debug.LogError("TalentData를 찾을 수 없습니다.");
+#endif
+                return null;
+            }
+
+            var talentData = JsonConvert.DeserializeObject<TalentTitleData>(json);
+
+            return talentData;
+        }
+
         public static void LoadItemData(ref ObscuredInt[] artifactLevelUpRequirements, ref ObscuredInt[] tomeLevelUpRequirements)
         {
             if (!_titleData.TryGetValue("ItemData", out string json))
@@ -180,6 +195,32 @@ namespace FrameWork.PlayFabExtensions
     }
     #endregion
 
+    #region TalentTitleData
+    [Serializable]
+    public class TalentTitleData
+    {
+        public List<TalentConfig> talentData;
+
+        public int mythRarity;
+        public int legendRarity;
+        public int epicRarity;
+        public int rareRarity;
+        public int commonRarity;
+    }
+
+    [Serializable]
+    public class TalentConfig
+    {
+        public int id;
+        public int minValue;
+        public int maxValue;
+        public int rareLimit;
+        public int epicLimit;
+        public int legendLimit;
+        public int mythLimit;
+    }
+    #endregion
+
     #region ItemTitleData
     [Serializable]
     public class ItemTitleData
@@ -252,7 +293,8 @@ namespace FrameWork.PlayFabExtensions
         public int amount;
     }
     #endregion
-    
+
+    #region GachaTitleData
     [Serializable]
     public class GachaTitleData
     {
@@ -299,4 +341,5 @@ namespace FrameWork.PlayFabExtensions
         public string id;
         public double rate;
     }
+    #endregion
 }

@@ -27,15 +27,26 @@ namespace EvolveThisMatch.Core
             // À¯´Ö ¿ÀºêÁ§Æ® ¸ðµÎ ÆÄ±«
             foreach (var agent in _agents)
             {
-                if (agent?.agentUnit?.gameObject != null)
-                    Destroy(agent.agentUnit.gameObject);
+                if (agent == null) continue;
+                if (agent.agentUnit == null) continue;
+
+                var obj = agent.agentUnit.gameObject;
+                if (obj != null)
+                {
+                    Destroy(obj);
+                }
             }
             _agents.Clear();
 
             foreach (var summon in _summons)
             {
-                if (summon?.gameObject != null)
-                    Destroy(summon.gameObject);
+                if (summon == null) continue;
+
+                var obj = summon.gameObject;
+                if (obj != null)
+                {
+                    Destroy(obj);
+                }
             }
             _summons.Clear();
         }

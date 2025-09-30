@@ -118,7 +118,7 @@ namespace EvolveThisMatch.Save
 
                     if (missingData.Count > 0)
                     {
-                        await SavePlayFab(missingData);
+                        //await SavePlayFab(missingData);
                     }
                 }
             }

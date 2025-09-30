@@ -7,12 +7,14 @@ using PlayFab.ClientModels;
 using PlayFab.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace EvolveThisMatch.Save
 {
+    #region 유닛 데이터
     [Serializable]
     public class AgentSaveData
     {
@@ -29,6 +31,7 @@ namespace EvolveThisMatch.Save
             public int exp;
             public int level;
 
+            public int seed;
             public Talent[] talent;
 
             public int selectedSkinId;
@@ -56,11 +59,91 @@ namespace EvolveThisMatch.Save
         }
         #endregion
     }
+    #endregion
+
+    #region 재능 클라이언트 저장 데이터
+    [Serializable]
+    public class TalentSaveData
+    {
+        public int agentId;
+        public int rollCount;
+
+        public Talent[] finalTalent;
+        public List<LockHistory> lockHistory;
+
+        [Serializable]
+        public class Talent
+        {
+            public ObscuredInt id = -1;
+            public ObscuredInt value;
+            public ObscuredBool isLock;
+        }
+
+        [Serializable]
+        public class LockHistory
+        {
+            public ObscuredInt order;
+            public ObscuredInt index;
+            public ObscuredBool isLock;
+        }
+    }
+
+    #region 서버 전송 시, 사용할 객체 (복호화용)
+    [Serializable]
+    public class TalentSaveDataEncrypted
+    {
+        public int agentId;
+        public int rollCount;
+        public List<Talent> finalTalent;
+        public List<LockHistory> lockHistory;
+
+        [Serializable]
+        public class Talent
+        {
+            public int id;
+            public int value;
+            public bool isLock;
+        }
+
+        [Serializable]
+        public class LockHistory
+        {
+            public int order;
+            public int index;
+            public bool isLock;
+        }
+
+        public static TalentSaveDataEncrypted FromEncrypted(TalentSaveData enc)
+        {
+            return new TalentSaveDataEncrypted
+            {
+                agentId = enc.agentId,
+                rollCount = enc.rollCount,
+                finalTalent = enc.finalTalent
+                    .Select(t => new Talent
+                    {
+                        id = t.id,
+                        value = t.value,
+                        isLock = t.isLock
+                    }).ToList(),
+                lockHistory = enc.lockHistory
+                    .Select(l => new LockHistory
+                    {
+                        order = l.order,
+                        index = l.index,
+                        isLock = l.isLock
+                    }).ToList()
+            };
+        }
+    }
+    #endregion
+    #endregion
 
     [CreateAssetMenu(menuName = "Templates/SaveData/AgentSaveData", fileName = "AgentSaveData", order = 1)]
     public class AgentSaveDataTemplate : SaveDataTemplate
     {
         [SerializeField, ReadOnly] private AgentSaveData _data;
+        private Dictionary<int, TalentSaveData> _talentLocalData = new Dictionary<int, TalentSaveData>();
 
         private static ObscuredInt[] _agentTierUpRequirements = { 1, 3, 5, 7, 10 };
         private static ObscuredInt[] _agentMaxLevelPerTier = { 50, 70, 100, 120, 150, 180 };
@@ -69,24 +152,45 @@ namespace EvolveThisMatch.Save
         public List<AgentSaveData.Agent> ownedAgents => _data.ownedAgents;
 
         public static IReadOnlyList<ObscuredInt> foodExp => _foodExp;
+        public static TalentTitleData talentTitleData { get; private set; }
 
         public override void SetDefaultValues()
         {
             _data = new AgentSaveData();
 
             // 초기 캐릭터 추가
-            AddAgent(0);
-            AddAgent(1);
-            AddAgent(2);
-            AddAgent(3);
-            AddAgent(4);
-            AddAgent(5);
+            for (int i = 0; i <= 35; i++)
+            {
+                AddAgent(i);
+            }
+
+            // 서버에도 초기 캐릭터 추가
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "InitializeAgent",
+                FunctionParameter = new { count = 35 },
+                GeneratePlayStreamEvent = true
+            };
+            PlayFabClientAPI.ExecuteCloudScript(request, result =>
+            {
+                JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                if ((bool)jsonResult["success"])
+                {
+                    var agentDataJson = jsonResult["agentData"].ToString();
+                    if (!string.IsNullOrEmpty(agentDataJson))
+                    {
+                        _data = JsonUtility.FromJson<AgentSaveData>(agentDataJson);
+                    }
+                }
+            }, DebugPlayFabError);
 
             isLoaded = true;
         }
 
         public override bool Load(string json)
         {
+            _data = null;
             _data = JsonUtility.FromJson<AgentSaveData>(json);
 
             if (_data != null)
@@ -94,6 +198,11 @@ namespace EvolveThisMatch.Save
                 isLoaded = _data.ownedAgents.Count > 0;
 
                 TitleDataManager.LoadAgentData(ref _agentTierUpRequirements, ref _agentMaxLevelPerTier, ref _foodExp);
+                talentTitleData = TitleDataManager.LoadTalentData();
+
+                // 로드할 때 데이터가 남아있었다면 즉시 서버로 전송
+                LoadTalentLocalData();
+                VerifyTalents();
             }
 
             return isLoaded;
@@ -112,6 +221,172 @@ namespace EvolveThisMatch.Save
             isLoaded = false;
         }
 
+        #region 재능
+        public TalentSaveData GetTalentSaveData(int agentId)
+        {
+            if (!_talentLocalData.TryGetValue(agentId, out var saveData))
+            {
+                saveData = new TalentSaveData
+                {
+                    agentId = agentId,
+                    rollCount = 0,
+                    finalTalent = new TalentSaveData.Talent[5],
+                    lockHistory = new List<TalentSaveData.LockHistory>()
+                };
+
+                var agent = FindAgent(ownedAgents, agentId);
+                if (agent != null)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        saveData.finalTalent[i] = new TalentSaveData.Talent();
+                        saveData.finalTalent[i].id = agent.talent[i].id;
+                        saveData.finalTalent[i].value = agent.talent[i].value;
+                        saveData.finalTalent[i].isLock = agent.talent[i].isLock;
+                    }
+                }
+
+                _talentLocalData[agentId] = saveData;
+            }
+
+            return saveData;
+        }
+
+        #region 재능 데이터 래퍼
+        [Serializable]
+        private class TalentSaveDataWrapper
+        {
+            public List<TalentSaveData> data = new List<TalentSaveData>();
+        }
+
+        [System.Serializable]
+        public class SeedWrapper
+        {
+            public List<SeedData> list;
+        }
+
+        [System.Serializable]
+        public class SeedData
+        {
+            public int agentId;
+            public int seed;
+        }
+        #endregion
+
+        #region 재능 - 로컬 로드 및 저장
+        private void LoadTalentLocalData()
+        {
+            string json = PlayerPrefs.GetString("TalentData", "{}");
+            var wrapper = JsonUtility.FromJson<TalentSaveDataWrapper>(json);
+
+            _talentLocalData = wrapper.data.ToDictionary(x => x.agentId, x => x);
+        }
+
+        public void SaveTalentLocalData()
+        {
+            List<TalentSaveData> saveList = _talentLocalData.Values.ToList();
+            string json = JsonUtility.ToJson(new TalentSaveDataWrapper { data = saveList });
+            PlayerPrefs.SetString("TalentData", json);
+        }
+
+        private void ClearTalentLocalData()
+        {
+            _talentLocalData.Clear();
+            PlayerPrefs.DeleteKey("TalentData");
+            PlayerPrefs.Save();
+        }
+        #endregion
+
+        #region 유닛 재능 검증
+        /// <summary>
+        /// 유닛 재능 검증
+        /// </summary>
+        public void VerifyTalents(UnityAction onComplete = null)
+        {
+            if (_talentLocalData.Count == 0) return;
+            if (!IsChangedTalent()) return;
+
+            // 동일한 order와 index 기준으로 마지막 잠금 상태만 남기기
+            foreach (var localData in _talentLocalData.Values)
+            {
+                var lockHistory = localData.lockHistory
+                    .GroupBy(h => new { h.order, h.index })
+                    .Select(g => g.Last())
+                    .OrderBy(h => h.order)
+                    .ThenBy(h => h.index)
+                    .ToList();
+
+                localData.lockHistory = lockHistory;
+            }
+
+            var talentLocalData = _talentLocalData.Values.Select(TalentSaveDataEncrypted.FromEncrypted).ToList();
+
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "VerifyTalents",
+                FunctionParameter = new { data = talentLocalData },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if ((bool)jsonResult["success"])
+                    {
+                        var seedsJson = jsonResult["updatedSeeds"].ToString();
+                        var updatedSeeds = JsonUtility.FromJson<SeedWrapper>("{\"list\":" + seedsJson + "}");
+                        foreach (var updatedSeed in updatedSeeds.list)
+                        {
+                            var agent = FindAgent(ownedAgents, updatedSeed.agentId);
+                            if (agent != null) agent.seed = updatedSeed.seed;
+
+                            var finalTalent = _talentLocalData[agent.id].finalTalent;
+                            for (int i = 0; i < 5; i++)
+                            {
+                                agent.talent[i].id = finalTalent[i].id;
+                                agent.talent[i].value = finalTalent[i].value;
+                                agent.talent[i].isLock = finalTalent[i].isLock;
+                            }
+                        }
+
+                        ClearTalentLocalData();
+
+                        onComplete?.Invoke();
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup("검증에 실패하였습니다.\n고객센터에 문의해주세요.");
+                    }
+                }, DebugPlayFabError);
+        }
+
+        private bool IsChangedTalent()
+        {
+            foreach (var agent in _data.ownedAgents)
+            {
+                if (_talentLocalData.ContainsKey(agent.id))
+                {
+                    var localTalent = _talentLocalData[agent.id].finalTalent;
+                    if (agent.talent == null || localTalent == null) continue;
+                    int len = Math.Min(agent.talent.Length, localTalent.Length);
+
+                    for (int i = 0; i < len; i++)
+                    {
+                        if (agent.talent[i].id != localTalent[i].id || agent.talent[i].value != localTalent[i].value || agent.talent[i].isLock != localTalent[i].isLock)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+        #endregion
+        #endregion
+
         #region 유닛
 
         #region 유닛 추가 (로컬 적용)
@@ -128,7 +403,7 @@ namespace EvolveThisMatch.Save
             if (modifyUnit == null)
             {
                 var newUnit = new AgentSaveData.Agent(id);
-                newUnit.unitCount = count;
+                newUnit.unitCount = 0;
                 _data.ownedAgents.Add(newUnit);
             }
             // 유닛이 있었다면 유닛의 개수 추가

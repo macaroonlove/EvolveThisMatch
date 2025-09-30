@@ -46,8 +46,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _battleData: {fileID: 11400000, guid: 4af91a433593f8d4cb32f9138c9a613e, type: 2}
   _agentLibrary: {fileID: 11400000, guid: a2d62277f65baab47aadbc5ffeea41b5, type: 2}
+  _talentEffects:
+  - {fileID: 11400000, guid: 8fa1bc04f2f2cf5419c89c41894a7eea, type: 2}
+  - {fileID: 11400000, guid: 988a116943be81a469700f11c27825fe, type: 2}
+  - {fileID: 11400000, guid: 124fda4670bb1f749a9b47c07c0b6303, type: 2}
+  - {fileID: 11400000, guid: 6ff4c36af5b43a546bb197bd90e397ea, type: 2}
   _agentSkinLibrary: {fileID: 11400000, guid: 6ee7cf71a5a805244afe866242e149ec, type: 2}
   _agentRarityLibrary: {fileID: 11400000, guid: f101581105b0f354388d46f3228c35e6, type: 2}
-  _agentTalentLibrary: {fileID: 11400000, guid: aea4e8b6c074a164eae56f477243bef3, type: 2}
   _artifactLibrary: {fileID: 11400000, guid: e0f526dd7bfbf064b8fda9580e3f12e7, type: 2}
   _tomeLibrary: {fileID: 11400000, guid: 8a74e553e0c65af4187e0a5d565c0c49, type: 2}

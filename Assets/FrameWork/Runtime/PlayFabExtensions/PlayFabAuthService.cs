@@ -67,6 +67,7 @@ namespace FrameWork.PlayFabExtensions
 
         public void Authenticate(Authtypes authType)
         {
+            PlayGamesPlatform.DebugLogEnabled = false;
             AuthType = authType;
             Authenticate();
         }

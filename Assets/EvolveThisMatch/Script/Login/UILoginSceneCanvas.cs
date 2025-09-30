@@ -89,7 +89,6 @@ namespace EvolveThisMatch.Login
 
         private void GameStart()
         {
-            _startButton.interactable = false;
             PlayFabAuthService.Instance.Authenticate();
         }
 
@@ -98,7 +97,7 @@ namespace EvolveThisMatch.Login
             _guestLoginButton.interactable = false;
             PlayFabAuthService.Instance.Authenticate(Authtypes.Guest);
         }
-        
+
         private void GoogleLogin()
         {
             _googleLoginButton.interactable = false;

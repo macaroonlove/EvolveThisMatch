@@ -31,8 +31,13 @@ namespace EvolveThisMatch.Core
             // À¯´Ö ¿ÀºêÁ§Æ® ¸ðµÎ ÆÄ±«
             foreach (var enemy in _enemies)
             {
-                if (enemy?.gameObject != null)
-                    Destroy(enemy.gameObject);
+                if (enemy == null) continue;
+
+                var obj = enemy.gameObject;
+                if (obj != null)
+                {
+                    Destroy(obj);
+                }
             }
             _enemies.Clear();
         }
