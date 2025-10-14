@@ -1,4 +1,3 @@
-using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine.Events;
@@ -32,8 +31,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _storageWeightText;
         private TextMeshProUGUI _speedText;
 
-        private UnityAction _openDisposePanelAction;
-        private UnityAction _bundleGain;
+        private UnityAction<int> _stateControler;
 
         protected override void Initialize()
         {
@@ -47,50 +45,31 @@ namespace EvolveThisMatch.Lobby
             _storageWeightText = GetText((int)Texts.StorageWeightText);
             _speedText = GetText((int)Texts.SpeedText);
 
-            GetButton((int)Buttons.DisposeButton).onClick.AddListener(OpenDisposePanel);
-            GetButton((int)Buttons.DepartmentLevelUpButton).onClick.AddListener(DepartmentLevelUp);
-            GetButton((int)Buttons.BundleGainButton).onClick.AddListener(BundleGain);
+            GetButton((int)Buttons.DisposeButton).onClick.AddListener(() => _stateControler?.Invoke(0));
+            GetButton((int)Buttons.DepartmentLevelUpButton).onClick.AddListener(() => _stateControler?.Invoke(1));
+            GetButton((int)Buttons.BundleGainButton).onClick.AddListener(() => _stateControler?.Invoke(2));
         }
 
-        internal void Initialize(DepartmentTemplate template, DepartmentSaveData.Department departmentData, int totalWeight, UnityAction openDisposePanelAction, UnityAction bundleGain)
+        internal void Initialize(UIDepartmentCanvas departmentCanvas, int totalWeight, UnityAction<int> stateControler)
         {
-            if (template == null) return;
+            _stateControler = stateControler;
 
-            _openDisposePanelAction = openDisposePanelAction;
-            _bundleGain = bundleGain;
-            _title.text = template.departmentName;
-            _description.text = template.departmentDescription;
+            _title.text = departmentCanvas.titleData.DepartmentName;
+            _description.text = departmentCanvas.titleData.Description;
 
-            int level = departmentData == null ? 1 : departmentData.level;
-            var levelData = template.GetLevelData(level);
+            var levelData = departmentCanvas.GetDepartmentLevelData();
 
-            _levelText.text = level.ToString();
-            _personnelText.text = $"{departmentData.activeJobCount}/{levelData.maxUnits} Έν";
-            _storageWeightText.text = $"{totalWeight}/{levelData.storageWeight} kg";
-            _speedText.text = $"{levelData.speed * 100:F0} %";
+            _levelText.text = departmentCanvas.userData.level.ToString();
+            _personnelText.text = $"{departmentCanvas.localData.activeJobCount}/{levelData.MaxUnits} Έν";
+            _storageWeightText.text = $"{totalWeight}/{levelData.StorageWeight} kg";
+            _speedText.text = $"{levelData.Speed * 100:F0} %";
         }
 
-        internal void UpdateWeightInfo(DepartmentTemplate template, DepartmentSaveData.Department departmentData, int totalWeight)
+        internal void UpdateWeightInfo(UIDepartmentCanvas departmentCanvas, int totalWeight)
         {
-            int level = departmentData == null ? 1 : departmentData.level;
-            var levelData = template.GetLevelData(level);
+            var levelData = departmentCanvas.GetDepartmentLevelData();
 
-            _storageWeightText.text = $"{totalWeight}/{levelData.storageWeight} kg";
-        }
-
-        private void OpenDisposePanel()
-        {
-            _openDisposePanelAction?.Invoke();
-        }
-
-        private void DepartmentLevelUp()
-        {
-
-        }
-
-        private void BundleGain()
-        {
-            _bundleGain?.Invoke();
+            _storageWeightText.text = $"{totalWeight}/{levelData.StorageWeight} kg";
         }
     }
 }

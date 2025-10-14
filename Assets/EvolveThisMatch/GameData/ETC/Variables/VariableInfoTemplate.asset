@@ -45,6 +45,14 @@ MonoBehaviour:
       \uC0AC\uC6A9\uB418\uB294 \uD544\uC218 \n\uC5D0\uB108\uC9C0\uC6D0\uC774\uBA70
       \uC601\uC9C0\uB97C \uAD00\uB9AC\uD558\uB294\uB370 \uC0AC\uC6A9\uB41C\uB2E4."
     _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: d3e984ab8ca024347a6d83c957350af8, type: 2}
+    _description: "\uC138\uACC4\uB825\uC774 \uC2A4\uBA70\uB4E0 \uAD34\uBB3C\uC758
+      \uCCB4\uB0B4\uC5D0\uC11C \uB5BC\uC5B4\uB0B8 \uB4A4\uD2C0\uB9B0 \uACE0\uAE43\uB369\uC5B4\uB9AC\n\uD45C\uBA74\uC740
+      \uC9C8\uCC99\uD558\uACE0 \uC548\uCABD\uC740 \uB05D\uC5C6\uC774 \uAFC8\uD2C0\uAC70\uB9AC\uBA70,
+      \uC775\uD788\uAC70\uB098 \uC815\uC81C\uD558\uC9C0 \uC54A\uC73C\uBA74 \uC12D\uCDE8\uB294\uCEE4\uB155
+      \uAC00\uAE4C\uC774\uD558\uAE30\uB3C4 \uD798\uB4E4\uB2E4.\n\uBAA8\uB4E0 \uC694\uB9AC
+      \uC81C\uC791\uC758 \uAE30\uCD08 \uC7AC\uB8CC"
+    _acquisitionLocations: []
   - _vairable: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
     _description: "\uAD34\uBB3C\uC758 \uC9C0\uBC29\uC744 \uC815\uC81C\uD574 \uC5BB\uC740
       \uC774\uC9C8\uC801\uC778 \uACE0\uCCB4\uC720\n\uC12D\uCDE8 \uC2DC, \uACBD\uD5D8\uCE58
@@ -65,11 +73,73 @@ MonoBehaviour:
       \uC870\uB9AC\uD574 \uC644\uC131\uD55C \n\uCD5C\uC0C1\uAE09 \uC2A4\uD14C\uC774\uD06C\n\uC12D\uCDE8
       \uC2DC, \uACBD\uD5D8\uCE58 15000 \uD68D\uB4DD"
     _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: 04a1ea658063489499f70457faeefc9b, type: 2}
+    _description: "\uAD34\uBB3C\uC758 \uC794\uD574\uC5D0\uC11C \uD758\uB7EC\uB098\uC628
+      \uBCF4\uC774\uC9C0 \uC54A\uB294 \uC2E4\uD0C0\uB798\n\uC2E4\uD0C0\uB798\uB97C
+      \uC798 \uD480\uC5B4 \uAC00\uACF5\uD558\uBA74 \uC6D0\uC778\uACFC \uACB0\uACFC\uB97C
+      \uBE44\uD2C0\uC5B4\uB0B4\uB294 \uD798\uC744 \uC801\uC6A9\uD560 \uC218 \uC788\uB2E4."
+    _acquisitionLocations: []
   - _vairable: {fileID: 11400000, guid: e58b3121932f85d44ad52dad4f5f8a66, type: 2}
     _description: "\uC774\uC57C\uAE30 \uC18D \uC778\uBB3C\uC5D0\uAC8C \uB0A8\uC544\uC788\uB294
-      \uC5D0\uB108\uC9C0\uC758 \uC794\uC7AC\n\uC0AC\uC6A9 \uC2DC, \uB2E4\uB978 \uC774\uC57C\uAE30\uC758
-      \uB4F1\uC7A5\uC778\uBB3C\uC5D0\uAC8C \n\uBE59\uC758\uB41C \uC778\uBB3C\uC758
-      \uC7AC\uB2A5\uC744 \uBCC0\uACBD\uD560 \uC218 \uC788\uB2E4."
+      \uC5D0\uB108\uC9C0\uC758 \uC794\uC7AC\n\uC0AC\uC6A9 \uC2DC, \uC138\uACC4\uAD00
+      \uCDA9\uB3CC\uC5D0 \uC758\uD574 \uB4A4\uD2C0\uB9B0 \uB2E4\uB978 \uC774\uC57C\uAE30
+      \uB4F1\uC7A5\uC778\uBB3C\uC758 \uCD95\uBCF5\uC744 \uBB34\uC791\uC704\uB85C
+      \uBC1B\uC744 \uC218 \uC788\uB2E4."
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: 0032cc0b984fc0e4b8d4cd5187fc9e34, type: 2}
+    _description: "\uC138\uACC4\uAC00 \uD0DC\uC5B4\uB0A0 \uB54C \uB0A8\uC740 \uBE5B\uC758
+      \uC870\uAC01\uC774 \uB2F4\uAE34 \uC740\uD654\n\uC804\uD22C \uC2DC\uC791 \uC2DC,
+      \uCF54\uC778 +100"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: 772fd5be26d149e4db0e60ca17dd12c5, type: 2}
+    _description: "\uD0DC\uCD08\uC758 \uD798\uC774 \uACB0\uC815\uD654\uB41C \uC2E0\uBE44\uB85C\uC6B4
+      \uC218\uC815 \uC870\uAC01\n\uC804\uD22C \uC2DC\uC791 \uC2DC, \uC138\uACC4\uC758
+      \uD30C\uD3B8 +1"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: 89aec9c43f52ed44486621681ac4df8f, type: 2}
+    _description: "\uACE0\uB300 \uB8EC\uC774 \uC0C8\uACA8\uC9C4 \uB3CC\n\uC804\uD22C
+      \uC2DC\uC791 \uC2DC, \uB79C\uB364 \uAC01\uC778\uC758 \uB808\uBCA8 +1"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: f064f254d73c49b4da03d2b7a38f300e, type: 2}
+    _description: "\uC704\uB300\uD55C \uC601\uC6C5\uC5D0\uAC8C\uB9CC \uC8FC\uC5B4\uC9C0\uB294
+      \uC2E0\uBE44\uB85C\uC6B4 \uC778\uC7A5\n\uC804\uD22C \uC2DC\uC791 \uD6C4, \uCC98\uC74C\uC73C\uB85C
+      \uC0C1\uC0C1\uB418\uB294 \uC778\uBB3C\uC740 \uC601\uC6C5 \uB4F1\uAE09 \uC774\uC0C1\uC774
+      \uB41C\uB2E4."
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: 6b3f3b6075f1d544589e7de7a04dd68f, type: 2}
+    _description: "\uAD34\uBB3C\uC758 \uADFC\uC721\uC5D0\uC11C \uB72F\uACA8\uB098\uC628
+      \uC774\uC9C8\uC801\uC778 \uC12C\uC720 \uB2E4\uBC1C\n\uC798 \uC5EE\uACE0 \uB9D0\uB9AC\uBA74
+      \uB3CC\uBCF4\uB2E4 \uB2E8\uB2E8\uD55C, \uAE30\uBB18\uD55C \uAC74\uCD95 \uC790\uC7AC\uAC00
+      \uB41C\uB2E4."
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: 62bfaa20c55e9ad4bbac8f138ca6b903, type: 2}
+    _description: "\uBCC0\uC9C8\uB41C \uADFC\uC721 \uC904\uAE30\uC5D0\uC11C \uCD94\uCD9C\uD55C
+      \uC0AC\uC6A9\uD560\uBC95\uD55C \uADFC\uC721 \uC12C\uC720"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: e0e2216147bbe7d44b1161cba0ff6f8c, type: 2}
+    _description: "\uC794 \uADFC\uC721 \uC12C\uC720\uB4E4\uC744 \uC798\uB77C\uB0B4\uC5B4
+      \uC5EE\uAE30 \uC88B\uC740 \uC0C1\uD0DC\uB85C \uC815\uC81C\uB41C \uADFC\uC721
+      \uC12C\uC720"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: b1465c350ddf8984fb7ce19fc1871d01, type: 2}
+    _description: "\uC815\uC81C\uB41C \uC12C\uC720\uB97C \uB2E8\uB2E8\uC774 \uC5EE\uC5B4
+      \uB9CC\uB4E0 \uC904\uAE30"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: ea327be13c8b21d4981408f4862120c3, type: 2}
+    _description: "\uC904\uAE30\uB97C \uC555\uCD95\xB7\uAC74\uC870\uD558\uC5EC \uB9CC\uB4E0
+      \uB3CC\uBCF4\uB2E4 \uB2E8\uB2E8\uD55C \uBE14\uB85D"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: e275cdbea8c7b0e4aa4054b8d2dd03eb, type: 2}
+    _description: "\uBC14\uB9AC\uCF00\uC774\uB4DC\uB97C \uAC15\uD654\uC2DC\uD0AC
+      \uC218 \uC788\uB294 \uAC15\uD654\uC7AC"
+    _acquisitionLocations: []
+  - _vairable: {fileID: 11400000, guid: 7bb178eeef7eb8849b1ad1834a188c00, type: 2}
+    _description: "\uC804\uC7A5\uC5D0 \uBC84\uB824\uC838\uC788\uB358 \uBD80\uC154\uC9C4
+      \uD06C\uB85C\uB2C8\uD074\n\uD55C\uB54C\uB294 \uC138\uACC4\uB97C \uC774\uB8E8\uB358
+      \uC11C\uC0AC\uC758 \uC77C\uBD80\uC600\uC73C\uB098 \uC9C0\uAE08\uC740 \uC870\uAC01\uB09C
+      \uC0C1\uD0DC\uB77C \uD6A8\uACFC\uAC00 \uC5C6\uB2E4.\n\uC5F0\uAD6C\uC790\uB4E4\uC740
+      \uC774 \uC794\uD574\uB97C \uC774\uC5B4 \uBD99\uC5EC \uC0C8\uB85C\uC6B4 \uD06C\uB85C\uB2C8\uD074\uC744
+      \uCC3D\uC870\uD558\uB824 \uD55C\uB2E4."
     _acquisitionLocations: []
   - _vairable: {fileID: 11400000, guid: a7d2524475fb40b4190c662e4183ee54, type: 2}
     _description: "\uC774\uC57C\uAE30\uC758 \uC18D\uC758 \uB4F1\uC7A5\uC778\uBB3C\uACFC

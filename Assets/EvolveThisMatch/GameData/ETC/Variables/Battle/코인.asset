@@ -22,17 +22,17 @@ MonoBehaviour:
   _raiseWarning: 1
   _isClamped: 0
   _minClampedValue:
-    currentCryptoKey: 0
-    hiddenValue: 0
+    currentCryptoKey: 2058545455
+    hiddenValue: 2058545455
     fakeValue: 0
     fakeValueActive: 0
-    inited: 0
+    inited: 1
   _maxClampedValue:
-    currentCryptoKey: 0
-    hiddenValue: 0
+    currentCryptoKey: 1698655596
+    hiddenValue: 1698655596
     fakeValue: 0
     fakeValueActive: 0
-    inited: 0
+    inited: 1
   _event:
     m_PersistentCalls:
       m_Calls: []

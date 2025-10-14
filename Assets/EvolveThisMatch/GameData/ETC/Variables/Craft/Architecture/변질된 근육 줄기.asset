@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c058bd575b53b804db17b9459309b6ee, type: 3}
+  m_Name: "\uBCC0\uC9C8\uB41C \uADFC\uC721 \uC904\uAE30"
+  m_EditorClassIdentifier: 
+  _value:
+    currentCryptoKey: 1726034632
+    hiddenValue: 1726034654
+    fakeValue: 22
+    fakeValueActive: 1
+    inited: 1
+  _readOnly: 0
+  _raiseWarning: 1
+  _isClamped: 0
+  _minClampedValue:
+    currentCryptoKey: 1746283771
+    hiddenValue: 1746283771
+    fakeValue: 0
+    fakeValueActive: 0
+    inited: 1
+  _maxClampedValue:
+    currentCryptoKey: 1425297634
+    hiddenValue: 1425297634
+    fakeValue: 0
+    fakeValueActive: 0
+    inited: 1
+  _event:
+    m_PersistentCalls:
+      m_Calls: []
+  _displayName: "\uBCC0\uC9C8\uB41C \uADFC\uC721 \uC904\uAE30"
+  _iconText: MuscleStem
+  _icon: {fileID: 21300000, guid: dd9503bde2ad50940b2133f72bff2054, type: 3}
+  _iconBG: {fileID: 21300000, guid: 37dbc62800c9cc84996704ba0cc82876, type: 3}

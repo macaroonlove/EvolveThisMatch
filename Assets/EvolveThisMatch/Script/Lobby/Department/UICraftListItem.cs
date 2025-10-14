@@ -1,4 +1,7 @@
+using FrameWork;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -52,25 +55,27 @@ namespace EvolveThisMatch.Lobby
             _craftWeight = GetText((int)Texts.CraftWeight);
         }
 
-        internal void Show(CraftItemData itemData, int index)
+        internal async void Show(DepartmentCraftData itemData, int index)
         {
             this.index = index;
 
-            int minutes = itemData.craftTime / 60;
-            int seconds = itemData.craftTime % 60;
+            int minutes = itemData.CraftTime / 60;
+            int seconds = itemData.CraftTime % 60;
 
-            _craftBackground.sprite = itemData.variable.IconBG;
-            _craftIcon.sprite = itemData.variable.Icon;
+            var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(itemData.Variable);
+
+            _craftBackground.sprite = variable.IconBG;
+            _craftIcon.sprite = variable.Icon;
             _craftTime.text = $"{minutes:D2}:{seconds:D2}";
-            _craftName.text = itemData.variable.DisplayName;
-            _craftWeight.text = $"{itemData.weight}kg";
+            _craftName.text = variable.DisplayName;
+            _craftWeight.text = $"{itemData.Weight}kg";
 
-            int requiredItemCount = itemData.requiredItems.Count;
+            int requiredItemCount = itemData.RequiredItems.Count;
             for (int i = 0; i < _requiredItems.Length; i++)
             {
                 if (i < requiredItemCount)
                 {
-                    _requiredItems[i].Show(itemData.requiredItems[i]);
+                    _requiredItems[i].Show(itemData.RequiredItems[i]);
                 }
                 else
                 {

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using FrameWork.Editor;
 using FrameWork.PlayFabExtensions;
 using FrameWork.UIPopup;
@@ -6,6 +7,8 @@ using PlayFab.ClientModels;
 using PlayFab.Json;
 using ScriptableObjectArchitecture;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -18,44 +21,106 @@ namespace EvolveThisMatch.Save
         [Tooltip("튜토리얼 클리어 여부")]
         public bool isClearTutorial;
 
+        // =========================
+        // 기본
+        // =========================
         [Tooltip("골드")]
         public int Gold;
 
         [Tooltip("세계석")]
         public int Essence;
 
+        [Tooltip("봉인된 서약서")]
+        public int Action;
+
         [Tooltip("전리품")]
         public int Loot;
 
-        [Tooltip("행동력")]
-        public int Action;
+
+        // =========================
+        // 식품부
+        // =========================
+        [Tooltip("괴이한 고깃덩어리")]
+        public int ChunkMeat;
+
+        [Tooltip("말캉버터")]
+        public int SmoothButter;
+
+        [Tooltip("갈빗살 꼬치")]
+        public int RibSkewers;
+
+        [Tooltip("골수 스튜")]
+        public int BoneStew;
+
+        [Tooltip("하트빔 스테이크")]
+        public int HeartSteak;
+
+
+        // =========================
+        // 연금부
+        // =========================
+        [Tooltip("희미한 인과력")]
+        public int Causality;
+
+        [Tooltip("세계의 흔적")]
+        public int Powder;
+
+        [Tooltip("창세의 코인")]
+        public int GenesisCoin;
+
+        [Tooltip("기원의 파편")]
+        public int OriginCrystal;
+
+        [Tooltip("운명의 룬석")]
+        public int FateRoneStone;
+
+        [Tooltip("영웅의 인장")]
+        public int HeroSeal;
+
+
+        // =========================
+        // 건축부
+        // =========================
+        [Tooltip("변질된 근육 줄기")]
+        public int MuscleStem;
+
+        [Tooltip("거친 근육 섬유")]
+        public int RawMuscleFiber;
+
+        [Tooltip("정제된 근육 섬유")]
+        public int PurifiedMuscleFiber;
+
+        [Tooltip("엮은 근육 줄기")]
+        public int BoundMuscleStrand;
+
+        [Tooltip("단단한 근육 블록")]
+        public int HardenedMuscleBlock;
+
+        [Tooltip("강화 바리케이드 재료")]
+        public int ReinforcedBarrier;
+
+
+        // =========================
+        // 연구부
+        // =========================
+        [Tooltip("부셔진 크로니클")]
+        public int BrokenChronicle;
+
+
+        // =========================
+        // 뽑기
+        // =========================
+        [Tooltip("픽업 유닛 책갈피")]
+        public int PickUpUnitBookmark;
 
         [Tooltip("일반 유닛 책갈피")]
         public int DefaultUnitBookmark;
 
-        [Tooltip("픽업 유닛 책갈피")]
-        public int PickUpUnitBookmark;
-
         [Tooltip("찢어진 책 조각")]
         public int BookFragments;
 
-        [Tooltip("유닛 천장")]
-        public int UnitLimit;
-
-        [Tooltip("아이템 돋보기")]
+        [Tooltip("돋보기")]
         public int Magnifier;
-
-        [Tooltip("말캉 버터")]
-        public int SmoothButter;
-        [Tooltip("갈빗살 꼬치")]
-        public int RibSkewers;
-        [Tooltip("골수 스튜")]
-        public int BoneStew;
-        [Tooltip("하트빔 스테이크")]
-        public int HeartSteak;
-
-        [Tooltip("세계의 흔적")]
-        public int Powder;
     }
 
     [CreateAssetMenu(menuName = "Templates/SaveData/ProfileSaveData", fileName = "ProfileSaveData", order = 0)]
@@ -63,32 +128,14 @@ namespace EvolveThisMatch.Save
     {
         [SerializeField, ReadOnly] private ProfileSaveData _data;
 
-        [Header("기본")]
-        [SerializeField] private ObscuredIntVariable _goldVariable;
-        [SerializeField] private ObscuredIntVariable _essenceVariable;
-        [SerializeField] private ObscuredIntVariable _lootVariable;
-        [SerializeField] private ObscuredIntVariable _actionVariable;
-
-        [Header("뽑기")]
-        [SerializeField] private ObscuredIntVariable _defaultUnitBookmarkVariable;
-        [SerializeField] private ObscuredIntVariable _pickUpUnitBookmarkVariable;
-        [SerializeField] private ObscuredIntVariable _bookFragmentVariable;
-        [SerializeField] private ObscuredIntVariable _unitLimitVariable;
-        [SerializeField] private ObscuredIntVariable _magnifierVariable;
-
-        [Header("부서_식품")]
-        [SerializeField] private ObscuredIntVariable _butterVariable;
-        [SerializeField] private ObscuredIntVariable _skewersVariable;
-        [SerializeField] private ObscuredIntVariable _stewVariable;
-        [SerializeField] private ObscuredIntVariable _steakVariable;
-
-        [Header("부서_가공")]
-        [SerializeField] private ObscuredIntVariable _powderVariable;
+        [SerializeField] private List<VariableEntry> _variables = new List<VariableEntry>();
+        private Dictionary<EVariableType, ObscuredIntVariable> _variableDic;
 
         private string _displayName;
         public string displayName => _displayName;
         public bool isClearTutorial => _data.isClearTutorial;
 
+        #region 저장 및 로드
         public override void SetDefaultValues()
         {
             _data = new ProfileSaveData();
@@ -104,29 +151,45 @@ namespace EvolveThisMatch.Save
             {
                 isLoaded = true;
 
-                LoadDisplayName();
+                _variableDic = _variables.ToDictionary(v => v.key, v => v.variable);
 
                 // 기본
-                _goldVariable.Value = _data.Gold;
-                _essenceVariable.Value = _data.Essence;
-                _lootVariable.Value = _data.Loot;
-                _actionVariable.Value = _data.Action;
-
-                // 뽑기
-                _defaultUnitBookmarkVariable.Value = _data.DefaultUnitBookmark;
-                _pickUpUnitBookmarkVariable.Value = _data.PickUpUnitBookmark;
-                _bookFragmentVariable.Value = _data.BookFragments;
-                _unitLimitVariable.Value = _data.UnitLimit;
-                _magnifierVariable.Value = _data.Magnifier;
+                _variableDic[EVariableType.Gold].Value = _data.Gold;
+                _variableDic[EVariableType.Essence].Value = _data.Essence;
+                _variableDic[EVariableType.Action].Value = _data.Action;
+                _variableDic[EVariableType.Loot].Value = _data.Loot;
 
                 // 식품부
-                _butterVariable.Value = _data.SmoothButter;
-                _skewersVariable.Value = _data.RibSkewers;
-                _stewVariable.Value = _data.BoneStew;
-                _steakVariable.Value = _data.HeartSteak;
+                _variableDic[EVariableType.ChunkMeat].Value = _data.ChunkMeat;
+                _variableDic[EVariableType.SmoothButter].Value = _data.SmoothButter;
+                _variableDic[EVariableType.RibSkewers].Value = _data.RibSkewers;
+                _variableDic[EVariableType.BoneStew].Value = _data.BoneStew;
+                _variableDic[EVariableType.HeartSteak].Value = _data.HeartSteak;
 
-                // 가공부
-                _powderVariable.Value = _data.Powder;
+                // 연금부
+                _variableDic[EVariableType.Causality].Value = _data.Causality;
+                _variableDic[EVariableType.Powder].Value = _data.Powder;
+                _variableDic[EVariableType.GenesisCoin].Value = _data.GenesisCoin;
+                _variableDic[EVariableType.OriginCrystal].Value = _data.OriginCrystal;
+                _variableDic[EVariableType.FateRoneStone].Value = _data.FateRoneStone;
+                _variableDic[EVariableType.HeroSeal].Value = _data.HeroSeal;
+
+                // 건축부
+                _variableDic[EVariableType.MuscleStem].Value = _data.MuscleStem;
+                _variableDic[EVariableType.RawMuscleFiber].Value = _data.RawMuscleFiber;
+                _variableDic[EVariableType.PurifiedMuscleFiber].Value = _data.PurifiedMuscleFiber;
+                _variableDic[EVariableType.BoundMuscleStrand].Value = _data.BoundMuscleStrand;
+                _variableDic[EVariableType.HardenedMuscleBlock].Value = _data.HardenedMuscleBlock;
+                _variableDic[EVariableType.ReinforcedBarrier].Value = _data.ReinforcedBarrier;
+
+                // 연구부
+                _variableDic[EVariableType.BrokenChronicle].Value = _data.BrokenChronicle;
+
+                // 뽑기
+                _variableDic[EVariableType.PickUpUnitBookmark].Value = _data.PickUpUnitBookmark;
+                _variableDic[EVariableType.DefaultUnitBookmark].Value = _data.DefaultUnitBookmark;
+                _variableDic[EVariableType.BookFragments].Value = _data.BookFragments;
+                _variableDic[EVariableType.Magnifier].Value = _data.Magnifier;
             }
 
             return isLoaded;
@@ -137,27 +200,42 @@ namespace EvolveThisMatch.Save
             if (_data == null) return null;
 
             // 기본
-            _data.Gold = _goldVariable.Value;
-            _data.Essence = _essenceVariable.Value;
-            _data.Loot = _lootVariable.Value;
-
-            _data.Action = _actionVariable.Value;
-
-            // 뽑기
-            _data.DefaultUnitBookmark = _defaultUnitBookmarkVariable.Value;
-            _data.PickUpUnitBookmark = _pickUpUnitBookmarkVariable.Value;
-            _data.BookFragments = _bookFragmentVariable.Value;
-            _data.UnitLimit = _unitLimitVariable.Value;
-            _data.Magnifier = _magnifierVariable.Value;
+            _data.Gold = _variableDic[EVariableType.Gold].Value;
+            _data.Essence = _variableDic[EVariableType.Essence].Value;
+            _data.Action = _variableDic[EVariableType.Action].Value;
+            _data.Loot = _variableDic[EVariableType.Loot].Value;
 
             // 식품부
-            _data.SmoothButter = _butterVariable.Value;
-            _data.RibSkewers = _skewersVariable.Value;
-            _data.BoneStew = _stewVariable.Value;
-            _data.HeartSteak = _steakVariable.Value;
+            _data.ChunkMeat = _variableDic[EVariableType.ChunkMeat].Value;
+            _data.SmoothButter = _variableDic[EVariableType.SmoothButter].Value;
+            _data.RibSkewers = _variableDic[EVariableType.RibSkewers].Value;
+            _data.BoneStew = _variableDic[EVariableType.BoneStew].Value;
+            _data.HeartSteak = _variableDic[EVariableType.HeartSteak].Value;
 
-            // 가공부
-            _data.Powder = _powderVariable.Value;
+            // 연금부
+            _data.Causality = _variableDic[EVariableType.Causality].Value;
+            _data.Powder = _variableDic[EVariableType.Powder].Value;
+            _data.GenesisCoin = _variableDic[EVariableType.GenesisCoin].Value;
+            _data.OriginCrystal = _variableDic[EVariableType.OriginCrystal].Value;
+            _data.FateRoneStone = _variableDic[EVariableType.FateRoneStone].Value;
+            _data.HeroSeal = _variableDic[EVariableType.HeroSeal].Value;
+
+            // 건축부
+            _data.MuscleStem = _variableDic[EVariableType.MuscleStem].Value;
+            _data.RawMuscleFiber = _variableDic[EVariableType.RawMuscleFiber].Value;
+            _data.PurifiedMuscleFiber = _variableDic[EVariableType.PurifiedMuscleFiber].Value;
+            _data.BoundMuscleStrand = _variableDic[EVariableType.BoundMuscleStrand].Value;
+            _data.HardenedMuscleBlock = _variableDic[EVariableType.HardenedMuscleBlock].Value;
+            _data.ReinforcedBarrier = _variableDic[EVariableType.ReinforcedBarrier].Value;
+
+            // 연구부
+            _data.BrokenChronicle = _variableDic[EVariableType.BrokenChronicle].Value;
+
+            // 뽑기
+            _data.PickUpUnitBookmark = _variableDic[EVariableType.PickUpUnitBookmark].Value;
+            _data.DefaultUnitBookmark = _variableDic[EVariableType.DefaultUnitBookmark].Value;
+            _data.BookFragments = _variableDic[EVariableType.BookFragments].Value;
+            _data.Magnifier = _variableDic[EVariableType.Magnifier].Value;
 
             return JsonUtility.ToJson(_data);
         }
@@ -167,19 +245,97 @@ namespace EvolveThisMatch.Save
             _data = null;
             isLoaded = false;
         }
+        #endregion
+
+        public List<(ObscuredIntVariable, int)> ChangeProfileData(string json)
+        {
+            var results = new List<(ObscuredIntVariable, int)>();
+
+            var data = JsonUtility.FromJson<ProfileSaveData>(json);
+
+            void CompareAndUpdate(EVariableType type, ref int oldValue, int newValue)
+            {
+                if (oldValue != newValue)
+                {
+                    int diff = newValue - oldValue;
+                    oldValue = newValue;
+                    _variableDic[type].Value = newValue;
+                    results.Add((_variableDic[type], diff));
+                }
+            }
+
+            // 기본
+            CompareAndUpdate(EVariableType.Gold, ref _data.Gold, data.Gold);
+            CompareAndUpdate(EVariableType.Essence, ref _data.Essence, data.Essence);
+            CompareAndUpdate(EVariableType.Action, ref _data.Action, data.Action);
+            CompareAndUpdate(EVariableType.Loot, ref _data.Loot, data.Loot);
+
+            // 식품부
+            CompareAndUpdate(EVariableType.ChunkMeat, ref _data.ChunkMeat, data.ChunkMeat);
+            CompareAndUpdate(EVariableType.SmoothButter, ref _data.SmoothButter, data.SmoothButter);
+            CompareAndUpdate(EVariableType.RibSkewers, ref _data.RibSkewers, data.RibSkewers);
+            CompareAndUpdate(EVariableType.BoneStew, ref _data.BoneStew, data.BoneStew);
+            CompareAndUpdate(EVariableType.HeartSteak, ref _data.HeartSteak, data.HeartSteak);
+
+            // 연금부
+            CompareAndUpdate(EVariableType.Causality, ref _data.Causality, data.Causality);
+            CompareAndUpdate(EVariableType.Powder, ref _data.Powder, data.Powder);
+            CompareAndUpdate(EVariableType.GenesisCoin, ref _data.GenesisCoin, data.GenesisCoin);
+            CompareAndUpdate(EVariableType.OriginCrystal, ref _data.OriginCrystal, data.OriginCrystal);
+            CompareAndUpdate(EVariableType.FateRoneStone, ref _data.FateRoneStone, data.FateRoneStone);
+            CompareAndUpdate(EVariableType.HeroSeal, ref _data.HeroSeal, data.HeroSeal);
+
+            // 건축부
+            CompareAndUpdate(EVariableType.MuscleStem, ref _data.MuscleStem, data.MuscleStem);
+            CompareAndUpdate(EVariableType.RawMuscleFiber, ref _data.RawMuscleFiber, data.RawMuscleFiber);
+            CompareAndUpdate(EVariableType.PurifiedMuscleFiber, ref _data.PurifiedMuscleFiber, data.PurifiedMuscleFiber);
+            CompareAndUpdate(EVariableType.BoundMuscleStrand, ref _data.BoundMuscleStrand, data.BoundMuscleStrand);
+            CompareAndUpdate(EVariableType.HardenedMuscleBlock, ref _data.HardenedMuscleBlock, data.HardenedMuscleBlock);
+            CompareAndUpdate(EVariableType.ReinforcedBarrier, ref _data.ReinforcedBarrier, data.ReinforcedBarrier);
+
+            // 연구부
+            CompareAndUpdate(EVariableType.BrokenChronicle, ref _data.BrokenChronicle, data.BrokenChronicle);
+
+            // 뽑기
+            CompareAndUpdate(EVariableType.PickUpUnitBookmark, ref _data.PickUpUnitBookmark, data.PickUpUnitBookmark);
+            CompareAndUpdate(EVariableType.DefaultUnitBookmark, ref _data.DefaultUnitBookmark, data.DefaultUnitBookmark);
+            CompareAndUpdate(EVariableType.BookFragments, ref _data.BookFragments, data.BookFragments);
+            CompareAndUpdate(EVariableType.Magnifier, ref _data.Magnifier, data.Magnifier);
+
+            return results;
+        }
+
+        public ObscuredIntVariable GetVariable(string name)
+        {
+            if (Enum.TryParse<EVariableType>(name, out var type))
+            {
+                return _variableDic[type];
+            }
+
+            return null;
+        }
 
         #region 닉네임
-        private void LoadDisplayName()
+        internal async UniTask LoadDisplayName()
         {
             if (PlayFabAuthService.IsLoginState)
             {
+                var tcs = new UniTaskCompletionSource<string>();
+
                 // 계정 이름 불러오기
                 PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(),
                     result =>
                     {
-                        _displayName = result.AccountInfo.TitleInfo.DisplayName;
+                        tcs.TrySetResult(result.AccountInfo.TitleInfo.DisplayName);
+                        
                     },
-                    DebugPlayFabError);
+                    error =>
+                    {
+                        DebugPlayFabError(error);
+                        tcs.TrySetResult(string.Empty);
+                    });
+
+                _displayName = await tcs.Task;
             }
 #if UNITY_EDITOR
             else
@@ -222,9 +378,12 @@ namespace EvolveThisMatch.Save
 #endif
         }
 
+        /// <summary>
+        /// 닉네임 변경
+        /// </summary>
         public void ChangeDisplayName(string displayName, UnityAction onComplete)
         {
-            if (_essenceVariable.Value < 500)
+            if (_variableDic[EVariableType.Essence].Value < 500)
             {
                 UIPopupManager.Instance.ShowConfirmPopup("세계석이 부족합니다.");
                 return;
@@ -240,6 +399,9 @@ namespace EvolveThisMatch.Save
             });
         }
 
+        /// <summary>
+        /// 지불하기 (획득 불가)
+        /// </summary>
         private void PayEssenceVariable()
         {
             var request = new ExecuteCloudScriptRequest
@@ -256,7 +418,7 @@ namespace EvolveThisMatch.Save
 
                     if ((bool)jsonResult["success"])
                     {
-                        _essenceVariable.AddValue(-500);
+                        _variableDic[EVariableType.Essence].AddValue(-500);
                     }
                     else
                     {
@@ -326,5 +488,44 @@ namespace EvolveThisMatch.Save
                     break;
             }
         }
+    }
+
+
+
+    [Serializable]
+    public class VariableEntry
+    {
+        public EVariableType key;
+        public ObscuredIntVariable variable;
+    }
+
+    public enum EVariableType
+    {
+        Gold,
+        Essence,
+        Action,
+        Loot,
+        ChunkMeat,
+        SmoothButter,
+        RibSkewers,
+        BoneStew,
+        HeartSteak,
+        Causality,
+        Powder,
+        GenesisCoin,
+        OriginCrystal,
+        FateRoneStone,
+        HeroSeal,
+        MuscleStem,
+        RawMuscleFiber,
+        PurifiedMuscleFiber,
+        BoundMuscleStrand,
+        HardenedMuscleBlock,
+        ReinforcedBarrier,
+        BrokenChronicle,
+        PickUpUnitBookmark,
+        DefaultUnitBookmark,
+        BookFragments,
+        Magnifier
     }
 }

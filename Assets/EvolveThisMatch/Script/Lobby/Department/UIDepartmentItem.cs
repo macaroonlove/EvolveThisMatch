@@ -1,3 +1,5 @@
+using FrameWork;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,10 +36,13 @@ namespace EvolveThisMatch.Lobby
             _itemBackground = GetImage((int)Images.ItemBackground);
         }
 
-        internal void Show(DepartmentTemplate template, UnityAction action)
+        internal void Show(DepartmentData template, UnityAction action)
         {
-            GetImage((int)Images.DepartmentIcon).sprite = template.departmentBackground;
-            GetText((int)Texts.Title).text = template.departmentName;
+            AddressableAssetManager.Instance.GetSprite(template.Background, (sprite) => {
+                GetImage((int)Images.DepartmentIcon).sprite = sprite;
+            });
+            
+            GetText((int)Texts.Title).text = template.DepartmentName;
 
             _action = action;
         }

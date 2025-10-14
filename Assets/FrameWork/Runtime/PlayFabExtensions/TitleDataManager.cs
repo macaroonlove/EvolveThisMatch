@@ -32,6 +32,7 @@ namespace FrameWork.PlayFabExtensions
         }
 
 #if UNITY_EDITOR
+        #region 에디터에서 불러오기
         public static void LoadTitleDataEditor()
         {
             if (PlayerPrefs.HasKey("cachedTitleData"))
@@ -68,8 +69,10 @@ namespace FrameWork.PlayFabExtensions
                 return dict;
             }
         }
+        #endregion
 #endif
 
+        #region 유닛
         public static void LoadAgentData(ref ObscuredInt[] agentTierUpRequirements, ref ObscuredInt[] agentMaxLevelPerTier, ref ObscuredInt[] foodExp)
         {
             if (!_titleData.TryGetValue("AgentData", out string json))
@@ -104,7 +107,25 @@ namespace FrameWork.PlayFabExtensions
 
             return talentData;
         }
+        #endregion
 
+        #region 부서
+        public static DepartmentTitleData LoadDepartmentData()
+        {
+            if (!_titleData.TryGetValue("DepartmentData", out string json))
+            {
+#if UNITY_EDITOR
+                Debug.LogError("DepartmentData를 찾을 수 없습니다.");
+#endif
+                return null;
+            }
+
+            var departmentData = JsonConvert.DeserializeObject<DepartmentTitleData>(json);
+            return departmentData;
+        }
+        #endregion
+
+        #region 크로니클
         public static void LoadItemData(ref ObscuredInt[] artifactLevelUpRequirements, ref ObscuredInt[] tomeLevelUpRequirements)
         {
             if (!_titleData.TryGetValue("ItemData", out string json))
@@ -122,7 +143,9 @@ namespace FrameWork.PlayFabExtensions
 
             tomeLevelUpRequirements = itemData.tomeLevelUpRequirements.Select(v => (ObscuredInt)v).ToArray();
         }
+        #endregion
 
+        #region 상점
         public static ShopTitleData LoadShopData()
         {
             if (!_titleData.TryGetValue("ShopData", out string json))
@@ -137,7 +160,9 @@ namespace FrameWork.PlayFabExtensions
 
             return shopData;
         }
+        #endregion
 
+        #region 소환
         public static GachaTitleData LoadGachaData()
         {
             if (!_titleData.TryGetValue("GachaData", out string json))
@@ -152,6 +177,7 @@ namespace FrameWork.PlayFabExtensions
             
             return gachaData;
         }
+        #endregion
 
         #region 오류 처리
         private static void DebugPlayFabError(PlayFabError error)
@@ -218,6 +244,70 @@ namespace FrameWork.PlayFabExtensions
         public int epicLimit;
         public int legendLimit;
         public int mythLimit;
+    }
+    #endregion
+
+    #region DepartmentTitleData
+    [Serializable]
+    public class DepartmentTitleData
+    {
+        public List<DepartmentData> Departments;
+    }
+
+    [Serializable]
+    public class DepartmentData
+    {
+        public string DepartmentName;
+        public string Description;
+        public string Background;
+        public List<Vector2> UnitPos;
+        public List<string> ShowVariables;
+        public List<DepartmentLevelData> LevelData;
+        public List<DepartmentCraftData> CraftItems;
+
+        public DepartmentLevelData GetLevelData(int level)
+        {
+            if (level <= 0 || level > LevelData.Count) return null;
+
+            return LevelData[level - 1];
+        }
+
+        public int GetUnLockMaxUnitLevel(int index)
+        {
+            for (int i = 0; i < LevelData.Count; i++)
+            {
+                if (index + 1 == LevelData[i].MaxUnits)
+                {
+                    return i + 1;
+                }
+            }
+
+            return 0;
+        }
+    }
+
+    [Serializable]
+    public class DepartmentLevelData
+    {
+        public int MaxUnits;
+        public int StorageWeight;
+        public float Speed;
+    }
+
+    [Serializable]
+    public class DepartmentCraftData
+    {
+        public string Variable;
+        public int CraftTime;
+        public int Weight;
+        public List<RequiredItem> RequiredItems;
+    }
+
+    [Serializable]
+    public class RequiredItem
+    {
+        public string Variable;
+        public int Amount;
     }
     #endregion
 

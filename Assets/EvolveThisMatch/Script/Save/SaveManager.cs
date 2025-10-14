@@ -201,6 +201,8 @@ namespace EvolveThisMatch.Save
 
             var keys = new List<string>(datas.Keys);
 
+            await _profileData.LoadDisplayName();
+
             PlayFabClientAPI.GetUserData(new GetUserDataRequest
             {
                 PlayFabId = PlayFabAuthService.PlayFabId,

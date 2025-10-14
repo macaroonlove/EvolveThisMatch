@@ -12811,8 +12811,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ba6d0e101cc2149ba6cae37c5d178f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _departmentSaveData: {fileID: 11400000, guid: 69d4629cd75811644a0fec7f21fb663f, type: 2}
-  _departmentGroup: {fileID: 11400000, guid: d6ebc388395057a4f965d793e3fa6311, type: 2}
 --- !u!4 &1181425749
 Transform:
   m_ObjectHideFlags: 0
@@ -21776,6 +21774,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1357813357091337944, guid: 2f89d1acc9bd698488a2ba626d349bd6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981798445324882184, guid: 2f89d1acc9bd698488a2ba626d349bd6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981798445324882184, guid: 2f89d1acc9bd698488a2ba626d349bd6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981798445324882184, guid: 2f89d1acc9bd698488a2ba626d349bd6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981798445324882184, guid: 2f89d1acc9bd698488a2ba626d349bd6, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3983884992738438332, guid: 2f89d1acc9bd698488a2ba626d349bd6, type: 3}

@@ -13,33 +13,83 @@ MonoBehaviour:
   m_Name: ProfileSaveData
   m_EditorClassIdentifier: 
   _data:
-    displayName: 
     isClearTutorial: 0
     Gold: 0
     Essence: 0
-    Loot: 0
     Action: 0
-    DefaultUnitBookmark: 0
-    PickUpUnitBookmark: 0
-    BookFragments: 0
-    UnitLimit: 0
-    Magnifier: 0
+    Loot: 0
+    ChunkMeat: 0
     SmoothButter: 0
     RibSkewers: 0
     BoneStew: 0
     HeartSteak: 0
+    Causality: 0
     Powder: 0
-  _goldVariable: {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}
-  _essenceVariable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
-  _lootVariable: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
-  _actionVariable: {fileID: 11400000, guid: 4d88b44f9a3268546aa36967b284cbff, type: 2}
-  _defaultUnitBookmarkVariable: {fileID: 11400000, guid: 43f242fa87dc70d45965f0282e63237f, type: 2}
-  _pickUpUnitBookmarkVariable: {fileID: 11400000, guid: a7d2524475fb40b4190c662e4183ee54, type: 2}
-  _bookFragmentVariable: {fileID: 11400000, guid: f0882b25629d1604098e974c9bd6df06, type: 2}
-  _unitLimitVariable: {fileID: 11400000, guid: e1484d9d8b7744941bec9c0466d2bf01, type: 2}
-  _magnifierVariable: {fileID: 11400000, guid: 4a925be51c9061445ac89994bc185814, type: 2}
-  _butterVariable: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
-  _skewersVariable: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
-  _stewVariable: {fileID: 11400000, guid: e68af46fe6436f147850398607880a5b, type: 2}
-  _steakVariable: {fileID: 11400000, guid: 31e216b00ab0ca049b33c3b60b509a23, type: 2}
-  _powderVariable: {fileID: 11400000, guid: e58b3121932f85d44ad52dad4f5f8a66, type: 2}
+    GenesisCoin: 0
+    OriginCrystal: 0
+    FateRoneStone: 0
+    HeroSeal: 0
+    MuscleStem: 0
+    RawMuscleFiber: 0
+    PurifiedMuscleFiber: 0
+    BoundMuscleStrand: 0
+    HardenedMuscleBlock: 0
+    ReinforcedBarrier: 0
+    BrokenChronicle: 0
+    PickUpUnitBookmark: 0
+    DefaultUnitBookmark: 0
+    BookFragments: 0
+    Magnifier: 0
+  _variables:
+  - key: 0
+    variable: {fileID: 11400000, guid: 54d4ab083b789544bbf5096f9f1d06f2, type: 2}
+  - key: 1
+    variable: {fileID: 11400000, guid: cd6e0721715aee247acafbef5c707707, type: 2}
+  - key: 2
+    variable: {fileID: 11400000, guid: 4d88b44f9a3268546aa36967b284cbff, type: 2}
+  - key: 3
+    variable: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
+  - key: 4
+    variable: {fileID: 11400000, guid: d3e984ab8ca024347a6d83c957350af8, type: 2}
+  - key: 5
+    variable: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
+  - key: 6
+    variable: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
+  - key: 7
+    variable: {fileID: 11400000, guid: e68af46fe6436f147850398607880a5b, type: 2}
+  - key: 8
+    variable: {fileID: 11400000, guid: 31e216b00ab0ca049b33c3b60b509a23, type: 2}
+  - key: 9
+    variable: {fileID: 11400000, guid: 04a1ea658063489499f70457faeefc9b, type: 2}
+  - key: 10
+    variable: {fileID: 11400000, guid: e58b3121932f85d44ad52dad4f5f8a66, type: 2}
+  - key: 11
+    variable: {fileID: 11400000, guid: 0032cc0b984fc0e4b8d4cd5187fc9e34, type: 2}
+  - key: 12
+    variable: {fileID: 11400000, guid: 772fd5be26d149e4db0e60ca17dd12c5, type: 2}
+  - key: 13
+    variable: {fileID: 11400000, guid: 89aec9c43f52ed44486621681ac4df8f, type: 2}
+  - key: 14
+    variable: {fileID: 11400000, guid: f064f254d73c49b4da03d2b7a38f300e, type: 2}
+  - key: 15
+    variable: {fileID: 11400000, guid: 6b3f3b6075f1d544589e7de7a04dd68f, type: 2}
+  - key: 16
+    variable: {fileID: 11400000, guid: 62bfaa20c55e9ad4bbac8f138ca6b903, type: 2}
+  - key: 17
+    variable: {fileID: 11400000, guid: e0e2216147bbe7d44b1161cba0ff6f8c, type: 2}
+  - key: 18
+    variable: {fileID: 11400000, guid: b1465c350ddf8984fb7ce19fc1871d01, type: 2}
+  - key: 19
+    variable: {fileID: 11400000, guid: ea327be13c8b21d4981408f4862120c3, type: 2}
+  - key: 20
+    variable: {fileID: 11400000, guid: e275cdbea8c7b0e4aa4054b8d2dd03eb, type: 2}
+  - key: 21
+    variable: {fileID: 11400000, guid: 7bb178eeef7eb8849b1ad1834a188c00, type: 2}
+  - key: 22
+    variable: {fileID: 11400000, guid: a7d2524475fb40b4190c662e4183ee54, type: 2}
+  - key: 23
+    variable: {fileID: 11400000, guid: 43f242fa87dc70d45965f0282e63237f, type: 2}
+  - key: 24
+    variable: {fileID: 11400000, guid: f0882b25629d1604098e974c9bd6df06, type: 2}
+  - key: 25
+    variable: {fileID: 11400000, guid: 4a925be51c9061445ac89994bc185814, type: 2}

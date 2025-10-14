@@ -1,3 +1,4 @@
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,14 +38,14 @@ namespace EvolveThisMatch.Lobby
             _craftListItems[0].SelectItem();
         }
 
-        internal void Show(DepartmentTemplate template)
+        internal void Show(DepartmentData template)
         {
-            int count = template.craftItems.Count;
+            int count = template.CraftItems.Count;
             for (int i = 0; i < _itemCount; i++)
             {
                 if (i < count)
                 {
-                    _craftListItems[i].Show(template.craftItems[i], i);
+                    _craftListItems[i].Show(template.CraftItems[i], i);
                 }
                 else
                 {

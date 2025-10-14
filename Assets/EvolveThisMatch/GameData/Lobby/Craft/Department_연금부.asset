@@ -10,20 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b28e849c0780924ca97cd74f8cd8f76, type: 3}
-  m_Name: "Department_\uAC00\uACF5\uBD80"
+  m_Name: "Department_\uC5F0\uAE08\uBD80"
   m_EditorClassIdentifier: 
-  _departmentName: "\uAC00\uACF5\uBD80"
+  _departmentName: "\uC5F0\uAE08\uBD80"
   _departmentDescription: "\uC7AC\uB2A5\uC758 \uB369\uC5B4\uB9AC\uB97C \uC815\uC218\uB85C
     \uB9CC\uB4E4\uACE0 \uB0A8\uC740 \uBD80\uC0B0\uBB3C\uB85C\n\uC5EC\uB7EC \uC2E4\uD5D8\uC744
     \uD558\uB294 \uBD80\uC11C\uC785\uB2C8\uB2E4."
-  _departmentBackground: {fileID: 21300000, guid: a2d1dca2937dcd24a896dc60b2ef938e, type: 3}
+  _departmentBackground: {fileID: 0}
   _unitPos:
   - {x: 0, y: -4.8}
   - {x: 0, y: -4.8}
   - {x: 0, y: -4.8}
   _craftItems:
   - _variable: {fileID: 11400000, guid: e58b3121932f85d44ad52dad4f5f8a66, type: 2}
-    _background: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}
     _craftTime: 60
     _weight: 10
     _requiredItems:

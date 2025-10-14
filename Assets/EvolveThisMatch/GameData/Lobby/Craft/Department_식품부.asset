@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "Department_\uC2DD\uD488\uBD80"
   m_EditorClassIdentifier: 
   _departmentName: "\uC2DD\uD488\uBD80"
-  _departmentDescription: "\uC7AC\uB2A5\uC758 \uD798\uC774 \uC2A4\uBA70\uB4E0 \uC801\uC758
+  _departmentDescription: "\uC138\uACC4\uB825\uC774 \uC2A4\uBA70\uB4E0 \uC801\uC758
     \uC721\uCCB4\uB97C \uC0AC\uC6A9\uD558\uC5EC \uC694\uB9AC\uB97C\n\uB9CC\uB4DC\uB294
     \uBD80\uC11C\uC785\uB2C8\uB2E4."
   _departmentBackground: {fileID: 21300000, guid: 40f550fc5f0861346ad0cfc2d17f0eef, type: 3}
@@ -23,14 +23,12 @@ MonoBehaviour:
   - {x: 4, y: -4.8}
   _craftItems:
   - _variable: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
-    _background: {fileID: 21300000, guid: 7d650437e77823e45a4e9b75d09f1d4a, type: 3}
     _craftTime: 60
     _weight: 1
     _requiredItems:
     - _item: {fileID: 11400000, guid: a9fd2d4275580a14b888b1318d91bb44, type: 2}
       _amount: 1
   - _variable: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
-    _background: {fileID: 21300000, guid: 37dbc62800c9cc84996704ba0cc82876, type: 3}
     _craftTime: 300
     _weight: 4
     _requiredItems:
@@ -39,7 +37,6 @@ MonoBehaviour:
     - _item: {fileID: 11400000, guid: f092f802d3e2def4983ba92eaf7aa008, type: 2}
       _amount: 1
   - _variable: {fileID: 11400000, guid: e68af46fe6436f147850398607880a5b, type: 2}
-    _background: {fileID: 21300000, guid: 64012c6aa62cf0e44ac9dd28ba47d664, type: 3}
     _craftTime: 900
     _weight: 10
     _requiredItems:
@@ -50,7 +47,6 @@ MonoBehaviour:
     - _item: {fileID: 11400000, guid: 8ee168ad8e1f951448e4fd455ce9e4e7, type: 2}
       _amount: 1
   - _variable: {fileID: 11400000, guid: 31e216b00ab0ca049b33c3b60b509a23, type: 2}
-    _background: {fileID: 21300000, guid: a9140ac1a3d3ad444a4643f6a2c451d9, type: 3}
     _craftTime: 3600
     _weight: 30
     _requiredItems:

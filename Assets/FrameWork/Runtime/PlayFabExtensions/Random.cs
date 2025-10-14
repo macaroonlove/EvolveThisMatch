@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace FrameWork.PlayFabExtensions
 {
@@ -22,7 +21,7 @@ namespace FrameWork.PlayFabExtensions
             x ^= x << 13;
             x ^= x >> 7;
             x ^= x << 17;
-            this.state = x & 0xFFFFFFFFFFFFFFFFUL; // 64비트 마스킹
+            this.state = x & 0xFFFFFFFFFFFFFFFFUL;
             return this.state;
         }
 

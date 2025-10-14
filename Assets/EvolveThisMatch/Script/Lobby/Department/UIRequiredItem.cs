@@ -1,4 +1,7 @@
+using FrameWork;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
 using TMPro;
 using UnityEngine.UI;
 
@@ -29,10 +32,12 @@ namespace EvolveThisMatch.Lobby
             _needCount = GetText((int)Texts.NeedCount);
         }
 
-        internal void Show(CraftItemData.RequiredItem requiredItem)
+        internal async void Show(RequiredItem requiredItem)
         {
-            _icon.sprite = requiredItem.item.Icon;
-            _needCount.text = requiredItem.amount.ToString();
+            var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(requiredItem.Variable);
+
+            _icon.sprite = variable.Icon;
+            _needCount.text = requiredItem.Amount.ToString();
 
             base.Show(true);
         }

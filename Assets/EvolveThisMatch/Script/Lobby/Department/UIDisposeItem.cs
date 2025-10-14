@@ -3,7 +3,9 @@ using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.NetworkTime;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
 using System;
 using TMPro;
 using UnityEngine;
@@ -61,13 +63,12 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _lockText;
         private CanvasGroupController _lock;
 
-        private int _prevProductionCount;
-        private int _checkProductionCount;
+        private int _prevCraftCount;
         private float _remainTime;
         private bool _isFirst;
 
         private UnityAction _showDisposeSettingPanel;
-        private UnityAction<int> _updateInfoPanel;
+        private UnityAction<int> _completeCraft;
         private UnityAction<int, float> _gainCraftItem;
         private UnityAction _removeJob;
 
@@ -98,7 +99,7 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.GainButton).onClick.AddListener(GainCraftItem);
             GetButton((int)Buttons.RemoveJobButton).onClick.AddListener(RemoveJob);
 
-            _prevProductionCount = -1;
+            _prevCraftCount = -1;
             _isFirst = true;
         }
 
@@ -108,7 +109,7 @@ namespace EvolveThisMatch.Lobby
         internal void Lock(int unLockIndex)
         {
             _showDisposeSettingPanel = null;
-            _updateInfoPanel = null;
+            _completeCraft = null;
 
             // 잠금 이미지 켜기
             _lock.Show(true);
@@ -151,40 +152,38 @@ namespace EvolveThisMatch.Lobby
         /// <param name="job">작업대 사용정보</param>
         /// <param name="craftItem">생산중이던 아이템</param>
         /// <param name="craftResult">현재까지 생산 정보</param>
-        internal void Initialize(DepartmentSaveData.CraftingJob job, CraftItemData craftItem, CraftResult craftResult, float craftSpeed, UnityAction showDisposeSettingPanel, UnityAction<int> updateInfoPanel, UnityAction<int, float> gainCraftItem, UnityAction removeJob)
+        internal async void Initialize(DepartmentLocalSaveData.CraftingJob job, DepartmentCraftData craftItem, CraftResult craftResult, float craftSpeed, UnityAction showDisposeSettingPanel, UnityAction<int> completeCraft, UnityAction<int, float> gainCraftItem, UnityAction removeJob)
         {
-            _showDisposeSettingPanel = showDisposeSettingPanel;
-
             // 잠금 이미지 끄기
             _lock.Hide(true);
 
             _showDisposeSettingPanel = showDisposeSettingPanel;
-            _updateInfoPanel = updateInfoPanel;
+            _completeCraft = completeCraft;
             _gainCraftItem = gainCraftItem;
             _removeJob = removeJob;
 
             var agentTemplate = GameDataManager.Instance.GetAgentTemplateById(job.unitId);
 
             // 생산 개수
-            int productionCount = craftResult.productionCount;
+            int productionCount = craftResult.craftCount;
 
             // 대기 개수
             int waitCount = job.maxAmount - productionCount;
 
-            _checkProductionCount = -1;
+            var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(craftItem.Variable);
 
             _agentBG.color = Color.white;
             _agentBG.sprite = agentTemplate.rarity.agentInfoSprite;
             _craftBG.color = Color.white;
-            _craftBG.sprite = craftItem.variable.IconBG;
+            _craftBG.sprite = variable.IconBG;
             _fullBody.enabled = true;
             _fullBody.sprite = agentTemplate.sprite;
             _fullBody.rectTransform.anchoredPosition = agentTemplate.faceCenterPosition + new Vector2(0, -40);
             _craftIcon.enabled = true;
-            _craftIcon.sprite = craftItem.variable.Icon;
-            _craftName.text = craftItem.variable.DisplayName;
+            _craftIcon.sprite = variable.Icon;
+            _craftName.text = variable.DisplayName;
             _speedText.text = $"속도  <color=white>{craftSpeed * 100}%</color>";
-            _weightText.text = $"무게  <color=white>{craftItem.weight}kg</color>";
+            _weightText.text = $"무게  <color=white>{craftItem.Weight}kg</color>";
             _productionCount.text = $"생산  <color=white>{productionCount}개</color>";
             _waitCount.text = $"대기  <color=white>{waitCount}개</color>";
 
@@ -205,7 +204,7 @@ namespace EvolveThisMatch.Lobby
             _sliderText.text = "0%";
         }
 
-        internal async UniTask<bool>  UpdateItem(DepartmentLevelData levelData, CraftItemData craftItem, DepartmentSaveData.CraftingJob job, float timePerItem)
+        internal async UniTask<bool> UpdateItem(DepartmentLevelData levelData, DepartmentCraftData craftItem, DepartmentLocalSaveData.CraftingJob job, float timePerItem)
         {
             // 경과 시간
             var currentTime = await NetworkTimeManager.Instance.GetUtcNow();
@@ -216,56 +215,29 @@ namespace EvolveThisMatch.Lobby
             int maxAmount = job.maxAmount;
 
             // 생산 개수
-            int productionCount = Mathf.Min(maxAmount, Mathf.FloorToInt(second / timePerItem));
+            int craftCount = Mathf.Min(maxAmount, Mathf.FloorToInt(second / timePerItem));
 
             // 생산 개수 갱신
-            if (productionCount != _prevProductionCount)
+            if (craftCount != _prevCraftCount)
             {
                 // 대기 개수
-                int waitCount = maxAmount - productionCount;
+                int waitCount = maxAmount - craftCount;
 
-                _productionCount.text = $"생산  <color=white>{productionCount}개</color>";
+                _productionCount.text = $"생산  <color=white>{craftCount}개</color>";
                 _waitCount.text = $"대기  <color=white>{waitCount}개</color>";
 
-                _prevProductionCount = productionCount;
+                _prevCraftCount = craftCount;
 
                 if (_isFirst == false)
                 {
-                    _updateInfoPanel?.Invoke(craftItem.weight);
+                    _completeCraft?.Invoke(craftItem.Weight);
                 }
 
                 _isFirst = false;
             }
 
-            if (_checkProductionCount != productionCount)
-            {
-                // 무게 초과로 인한 생산 중단
-                int totalWeight = productionCount * craftItem.weight;
-                if (totalWeight >= levelData.storageWeight)
-                {
-                    FullStorageWeight();
-
-                    _updateInfoPanel?.Invoke(craftItem.weight);
-                    return false;
-                }
-
-                // 필요한 재료가 충분한지 검사
-                foreach (var required in craftItem.requiredItems)
-                {
-                    // 충분하지 않다면
-                    if (required.item.Value < required.amount)
-                    {
-                        LackRequiredItem();
-
-                        return false;
-                    }
-                }
-
-                _checkProductionCount = productionCount;
-            }
-
             // 생산 완료
-            if (productionCount >= maxAmount)
+            if (craftCount >= maxAmount)
             {
                 _remainTimeText.text = "생산 완료";
                 _slider.fillAmount = 1f;
@@ -275,15 +247,16 @@ namespace EvolveThisMatch.Lobby
             else
             {
                 // 남은 시간 계산
-                _remainTime = Mathf.Clamp((productionCount + 1) * timePerItem - second, 0, timePerItem);
+                _remainTime = Mathf.Clamp((craftCount + 1) * timePerItem - second, 0, timePerItem);
                 int remainMinute = Mathf.FloorToInt(_remainTime / 60f);
                 int remainSecond = Mathf.FloorToInt(_remainTime % 60f);
 
+                _remainTimeText.text = $"남은 시간\n<color=white>{remainMinute}분 {remainSecond}초</color>";
+
                 // 진행도 계산
-                float currentItemElapsed = second - (productionCount * timePerItem);
+                float currentItemElapsed = second - (craftCount * timePerItem);
                 float progress = Mathf.Clamp01(currentItemElapsed / timePerItem);
 
-                _remainTimeText.text = $"남은 시간\n<color=white>{remainMinute}분 {remainSecond}초</color>";
                 _slider.fillAmount = progress;
                 _sliderText.text = $"{progress * 100f:F0}%";
             }
@@ -305,17 +278,19 @@ namespace EvolveThisMatch.Lobby
         internal void GainCraftItem()
         {
             // 생산한게 없다면 반환
-            if (_prevProductionCount == 0) return;
+            if (_prevCraftCount == 0) return;
 
             _isFirst = true;
-            _gainCraftItem?.Invoke(_prevProductionCount, _remainTime);
+            _gainCraftItem?.Invoke(_prevCraftCount, _remainTime);
+        }
+
+        internal float GetRemainTime()
+        {
+            return _remainTime;
         }
 
         internal void RemoveJob()
         {
-            // 생산한 아이템이 있다면 먼저 획득
-            GainCraftItem();
-
             _removeJob?.Invoke();
         }
     }
