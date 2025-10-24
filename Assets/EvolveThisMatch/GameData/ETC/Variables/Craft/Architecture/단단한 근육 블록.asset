@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uB2E8\uB2E8\uD55C \uADFC\uC721 \uBE14\uB85D"
   _iconText: HardenedMuscleBlock
-  _icon: {fileID: 21300000, guid: 8466ec56573e8c14995cbfd273deda13, type: 3}
+  _icon: {fileID: 21300000, guid: fe45a39ff6f4e254690b0e4adc853dc7, type: 3}
   _iconBG: {fileID: 21300000, guid: a9140ac1a3d3ad444a4643f6a2c451d9, type: 3}

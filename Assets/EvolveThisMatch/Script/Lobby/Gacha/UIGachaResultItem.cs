@@ -3,6 +3,8 @@ using EvolveThisMatch.Core;
 using TMPro;
 using UnityEngine.UI;
 using FrameWork;
+using ScriptableObjectArchitecture;
+using UnityEngine;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -19,6 +21,9 @@ namespace EvolveThisMatch.Lobby
             DisplayName,
         }
         #endregion
+
+        [SerializeField] private Sprite _artifactBackground;
+        [SerializeField] private Sprite _tomeBackground;
 
         private Image _background;
         private Image _icon;
@@ -44,6 +49,7 @@ namespace EvolveThisMatch.Lobby
                 var agentTemplate = await AddressableAssetManager.Instance.GetScriptableObject<AgentTemplate>(result);
 
                 _icon.sprite = agentTemplate.sprite;
+                _background.sprite = agentTemplate.rarity.agentInfoSprite;
                 _displayName.text = agentTemplate.displayName;
             }
             else if (type == "Artifact")
@@ -51,6 +57,7 @@ namespace EvolveThisMatch.Lobby
                 var artifactTemplate = await AddressableAssetManager.Instance.GetScriptableObject<ArtifactTemplate>(result);
 
                 _icon.sprite = artifactTemplate.sprite;
+                _background.sprite = _artifactBackground;
                 _displayName.text = artifactTemplate.displayName;
             }
             else if (type == "Tome")
@@ -58,7 +65,18 @@ namespace EvolveThisMatch.Lobby
                 var tomeTemplate = await AddressableAssetManager.Instance.GetScriptableObject<TomeTemplate>(result);
 
                 _icon.sprite = tomeTemplate.sprite;
+                _background.sprite = _tomeBackground;
                 _displayName.text = tomeTemplate.displayName;
+            }
+            else
+            {
+                int value = int.Parse(parts[1]);
+
+                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(result);
+
+                _icon.sprite = variable.Icon;
+                _background.sprite = variable.IconBG;
+                _displayName.text = $"{variable.DisplayName} x{value}";
             }
         }
     }

@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uCC3D\uC138\uC758 \uCF54\uC778"
   _iconText: GenesisCoin
-  _icon: {fileID: 21300000, guid: dfccfbfdbba62d84388b7fa122d383db, type: 3}
+  _icon: {fileID: 21300000, guid: 83462bf228e65804f9a8ca56b8b460a9, type: 3}
   _iconBG: {fileID: 21300000, guid: 7d650437e77823e45a4e9b75d09f1d4a, type: 3}

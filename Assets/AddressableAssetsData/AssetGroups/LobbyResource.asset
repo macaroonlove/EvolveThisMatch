@@ -27,6 +27,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0775d0ca2ae900f468f5a093f79bc6eb
+    m_Address: ActionIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0abb81b14fabf8448965b65256379cc6
     m_Address: MythBookmark
     m_ReadOnly: 0
@@ -39,8 +45,14 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1d8aee1455be4fc4da0d316451d5fae8
-    m_Address: "DepartmentBackground_\uC5F0\uAE08\uBD80"
+  - m_GUID: 1b182cd80b0834f498885eeb49dfc897
+    m_Address: PurifiedMuscleFiberIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 215287cf7c961bb4d88fda468dc2ff54
+    m_Address: FateRoneStoneIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -75,6 +87,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3219725de0e635742aa6bb4d1655db4b
+    m_Address: CausalityIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 33616a8aeeb66d34490ab89d7685b8f0
     m_Address: DefaultUnitBookmarkIcon
     m_ReadOnly: 0
@@ -105,8 +123,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ae6c8435aecf9242a5fb3a7ab1ce1b0
+    m_Address: MuscleStemIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4d88b44f9a3268546aa36967b284cbff
     m_Address: Action
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53a19b35997065f478777b2c9e989e69
+    m_Address: HeroSealIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -117,14 +147,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6227578bd747fce40ab2da0002b2975b
-    m_Address: "DepartmentBackground_\uAC74\uCD95\uBD80"
+  - m_GUID: 587d077bbd6f0464aba4e89bfac62831
+    m_Address: "DepartmentBackground_\uC5F0\uAD6C\uBD80"
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 62bfaa20c55e9ad4bbac8f138ca6b903
     m_Address: RawMuscleFiber
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69c9c14345896a1419616309f1a797d1
+    m_Address: "DepartmentBackground_\uAC74\uCD95\uBD80"
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -137,6 +173,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6b3f3b6075f1d544589e7de7a04dd68f
     m_Address: MuscleStem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7381fc5aa2d2b8c448adbbe8d739cd0d
+    m_Address: ChunkMeatIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -165,14 +207,38 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e7e92c8c87f5db49896eb041d44b039
+    m_Address: ReinforcedBarrierIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83462bf228e65804f9a8ca56b8b460a9
+    m_Address: GenesisCoinIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8466ec56573e8c14995cbfd273deda13
     m_Address: HeartSteakIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 869c58859e966384cb01bcfbe66548b4
+    m_Address: OriginCrystalIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 89aec9c43f52ed44486621681ac4df8f
     m_Address: FateRoneStone
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8eb803bbb7f34cb41b2eb5ff9831a34b
+    m_Address: BoundMuscleStrandIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -225,6 +291,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf058afc448f75e4caa5b72151a36e6f
+    m_Address: "GachaBackground_\uB4F1\uC7A5\uC778\uBB3C\uC18C\uD658"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bf25d5bcf4ee1264bbe1c888be02d554
     m_Address: Gold_100000
     m_ReadOnly: 0
@@ -237,14 +309,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf30d03e90856f846a2580e53ed0349e
+    m_Address: MagnifierIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d3e984ab8ca024347a6d83c957350af8
     m_Address: ChunkMeat
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d778cfcbaa3d00042bfb61d1e72dc268
-    m_Address: "DepartmentBackground_\uC5F0\uAD6C\uBD80"
+  - m_GUID: d9c0e7f4e8457bb42996cc69cfd530e8
+    m_Address: "DepartmentBackground_\uC5F0\uAE08\uBD80"
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -261,8 +339,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfccfbfdbba62d84388b7fa122d383db
+    m_Address: PowderIcon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0e2216147bbe7d44b1161cba0ff6f8c
     m_Address: PurifiedMuscleFiber
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e12ec308513ef354fa072b03c9aac23a
+    m_Address: BrokenChronicleIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -275,6 +365,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e275cdbea8c7b0e4aa4054b8d2dd03eb
     m_Address: ReinforcedBarrier
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3fa45617cf831748af227fe24a2d4f7
+    m_Address: RawMuscleFiber
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource
@@ -311,6 +407,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f092f802d3e2def4983ba92eaf7aa008
     m_Address: SmoothButter
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LobbyResource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe45a39ff6f4e254690b0e4adc853dc7
+    m_Address: HardenedMuscleBlockIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource

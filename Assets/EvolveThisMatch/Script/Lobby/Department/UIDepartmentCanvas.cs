@@ -126,6 +126,7 @@ namespace EvolveThisMatch.Lobby
         private void Hide()
         {
             _overUICamera.SetActive(false);
+            _disposePanel.StopAllCoroutines();
 
             // 유닛 숨기기
             if (_spawnedUnits.Count > 0)
@@ -165,7 +166,7 @@ namespace EvolveThisMatch.Lobby
 
             // 부서 정보창 최신화
             _departmentInfoPanel.Initialize(this, _totalWeight, ControlInfoPanelState);
-
+            
             // 배치창 최신화
             _disposePanel.Initialize(this, craftResults, _totalWeight, 
                 () => ShowDepartment(userData, titleData, localData), 
@@ -237,12 +238,12 @@ namespace EvolveThisMatch.Lobby
 
             foreach (var job in allJobs)
             {
-                var result = results[job.slotIndex];
-
                 if (usedWeight + job.weight > levelData.StorageWeight) continue;
 
+                var result = results[job.slotIndex];
+                results[job.slotIndex] = result.Increment(job.weight);
+
                 usedWeight += job.weight;
-                result.Increment(job.weight);
             }
 
             return results.Values.ToList();

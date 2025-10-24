@@ -63,6 +63,12 @@ namespace EvolveThisMatch.Lobby
             _button.interactable = isGachaAble;
 
             _costText.text = $"<sprite name=Ad> {buyAbleCount - boughtCount} / {buyAbleCount}";
+            gameObject.SetActive(true);
+        }
+
+        public override void Hide(bool isForce = false)
+        {
+            gameObject.SetActive(false);
         }
 
         private void OnClick()

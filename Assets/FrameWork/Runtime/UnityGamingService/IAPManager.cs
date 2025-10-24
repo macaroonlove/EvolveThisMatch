@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.Json;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -60,7 +61,7 @@ namespace FrameWork.Service
             _storeController.FetchProducts(products);
         }
 
-        public async UniTask<string> PurchaseProductAsync(string productId)
+        public async UniTask<string> PurchaseProductAsync(string itemId)
         {
             var tcs = new UniTaskCompletionSource<string>();
 
@@ -92,7 +93,7 @@ namespace FrameWork.Service
 #if UNITY_EDITOR
                 _storeController.ConfirmPurchase(pending);
 #else
-                CheckReceipt(pending.Info.Receipt, () =>
+                CheckReceipt(pending.Info.Receipt, itemId, () =>
                 {
                     _storeController.ConfirmPurchase(pending);
                 }, () =>
@@ -107,18 +108,42 @@ namespace FrameWork.Service
             _storeController.OnPurchaseFailed += OnFailed;
             _storeController.OnPurchasePending += OnPending;
 
+            var productId = itemId.ToLower();
+
             _storeController.PurchaseProduct(productId);
 
             return await tcs.Task;
         }
 
         #region 명세서 검증 (PlayFab 서버)
-        private void CheckReceipt(string receipt, UnityAction onComplete, UnityAction onFailed)
+        private void CheckReceipt(string receipt, string itemId, UnityAction onComplete, UnityAction onFailed)
+        {
+            var (receiptJson, signature) = ParseGoogleReceipt(receipt);
+
+            var request = new ValidateGooglePlayPurchaseRequest
+            {
+                ReceiptJson = receiptJson,
+                Signature = signature
+            };
+
+            PlayFabClientAPI.ValidateGooglePlayPurchase(request,
+                (ValidateGooglePlayPurchaseResult result) =>
+                {
+                    CheckBuyAble(itemId, onComplete, onFailed);
+                }, 
+                (PlayFabError error) =>
+                {
+                    DebugPlayFabError(error);
+                    onFailed?.Invoke();
+                });
+        }
+
+        private void CheckBuyAble(string itemId, UnityAction onComplete, UnityAction onFailed)
         {
             var request = new ExecuteCloudScriptRequest
             {
-                FunctionName = "CheckReceipt",
-                FunctionParameter = new { receipt = receipt },
+                FunctionName = "CheckBuyAble",
+                FunctionParameter = new { itemId = itemId },
                 GeneratePlayStreamEvent = true
             };
 
@@ -138,6 +163,18 @@ namespace FrameWork.Service
                     }
                 }, DebugPlayFabError);
         }
+
+        #region 영수증 파싱
+        [Serializable] private class Wrapper { public string Payload; }
+        [Serializable] private class PayloadData { public string json; public string signature; }
+
+        private (string json, string signature) ParseGoogleReceipt(string unityReceipt)
+        {
+            var wrapper = JsonUtility.FromJson<Wrapper>(unityReceipt);
+            var payload = JsonUtility.FromJson<PayloadData>(wrapper.Payload);
+            return (payload.json, payload.signature);
+        }
+        #endregion
 
         private void DebugPlayFabError(PlayFabError error)
         {
@@ -170,3 +207,4 @@ namespace FrameWork.Service
         #endregion
     }
 }
+

@@ -2,8 +2,6 @@ using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.NetworkTime;
-using FrameWork.PlayFabExtensions;
-using FrameWork.Service;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using ScriptableObjectArchitecture;
@@ -60,7 +58,7 @@ namespace EvolveThisMatch.Lobby
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
 
             //if (PlayFabAuthService.IsLoginState)
-                await UniTask.WaitUntil(() => SaveManager.Instance.shopData.isLoaded);
+            await UniTask.WaitUntil(() => SaveManager.Instance.shopData.isLoaded);
 
             SetTab();
         }
@@ -84,7 +82,7 @@ namespace EvolveThisMatch.Lobby
         private void SetTab()
         {
             var datas = GachaSaveDataTemplate.gachaTitleData;
-            
+
             bool isSelected = false;
             foreach (var data in datas.gachaCatalog)
             {
@@ -327,12 +325,19 @@ namespace EvolveThisMatch.Lobby
                 {
                     SaveManager.Instance.itemData.AddTome(id);
                 }
+                else
+                {
+                    AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(type, (variable) =>
+                    {
+                        variable.AddValue(id);
+                    });
+                }
             }
 
             Select(_currentTab);
 
             _gachaResultCanvas.Show(rewards);
         }
-#endregion
+        #endregion
     }
 }

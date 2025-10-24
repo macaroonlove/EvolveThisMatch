@@ -118,6 +118,13 @@ namespace EvolveThisMatch.Lobby
             LayoutRebuilder.ForceRebuildLayoutImmediate(_costText.rectTransform);
             float width = Mathf.Max(160f, _costText.preferredWidth);
             (transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+
+            gameObject.SetActive(true);
+        }
+
+        public override void Hide(bool isForce = false)
+        {
+            gameObject.SetActive(false);
         }
 
         private async void OnClick()

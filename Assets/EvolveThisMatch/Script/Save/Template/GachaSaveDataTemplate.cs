@@ -75,6 +75,8 @@ namespace EvolveThisMatch.Save
         {
             _data = new GachaSaveData();
 
+            gachaTitleData = TitleDataManager.LoadGachaData();
+
             isLoaded = true;
         }
 

@@ -169,7 +169,7 @@ namespace EvolveThisMatch.Lobby
 
             // 대기 개수
             int waitCount = job.maxAmount - productionCount;
-
+            
             var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(craftItem.Variable);
 
             _agentBG.color = Color.white;
@@ -213,7 +213,7 @@ namespace EvolveThisMatch.Lobby
 
             // 최대 생산량
             int maxAmount = job.maxAmount;
-
+            
             // 생산 개수
             int craftCount = Mathf.Min(maxAmount, Mathf.FloorToInt(second / timePerItem));
 
@@ -284,9 +284,9 @@ namespace EvolveThisMatch.Lobby
             _gainCraftItem?.Invoke(_prevCraftCount, _remainTime);
         }
 
-        internal float GetRemainTime()
+        internal (int, float) GetDataToSendServer()
         {
-            return _remainTime;
+            return (_prevCraftCount, _remainTime);
         }
 
         internal void RemoveJob()

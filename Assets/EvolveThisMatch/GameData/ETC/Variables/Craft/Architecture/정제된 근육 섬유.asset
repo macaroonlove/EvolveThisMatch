@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uC815\uC81C\uB41C \uADFC\uC721 \uC12C\uC720"
   _iconText: PurifiedMuscleFiber
-  _icon: {fileID: 21300000, guid: dd9503bde2ad50940b2133f72bff2054, type: 3}
+  _icon: {fileID: 21300000, guid: 1b182cd80b0834f498885eeb49dfc897, type: 3}
   _iconBG: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}

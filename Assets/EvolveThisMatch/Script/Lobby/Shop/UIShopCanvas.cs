@@ -224,6 +224,19 @@ namespace EvolveThisMatch.Lobby
         {
             var items = tab.subTabData.items;
 
+            if (tab.subTabData.shopType == "Random")
+            {
+                var newItems = new List<ShopItem>();
+
+                foreach (var item in shopCatalog.Items)
+                {
+                    var newItem = items.Find(x => x.id == item.ItemId);
+                    newItems.Add(newItem);
+                }
+
+                items = newItems;
+            }
+            
             int pIndex = 0;
             int dIndex = 0;
             foreach (var item in items)
@@ -463,8 +476,7 @@ namespace EvolveThisMatch.Lobby
         {
             if (itemData.currency == "RM" && itemData.price > 0)
             {
-                var productId = itemData.id.ToLower();
-                var receipt = await IAPManager.Instance.PurchaseProductAsync(productId);
+                var receipt = await IAPManager.Instance.PurchaseProductAsync(itemData.id);
 
                 if (receipt != null)
                 {

@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uBCC0\uC9C8\uB41C \uADFC\uC721 \uC904\uAE30"
   _iconText: MuscleStem
-  _icon: {fileID: 21300000, guid: dd9503bde2ad50940b2133f72bff2054, type: 3}
+  _icon: {fileID: 21300000, guid: 4ae6c8435aecf9242a5fb3a7ab1ce1b0, type: 3}
   _iconBG: {fileID: 21300000, guid: 37dbc62800c9cc84996704ba0cc82876, type: 3}

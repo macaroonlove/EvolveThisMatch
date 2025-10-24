@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uC5EE\uC740 \uADFC\uC721 \uC904\uAE30"
   _iconText: BoundMuscleStrand
-  _icon: {fileID: 21300000, guid: dddb0ac29fb9cd84eb17115cd91e5ba2, type: 3}
+  _icon: {fileID: 21300000, guid: 8eb803bbb7f34cb41b2eb5ff9831a34b, type: 3}
   _iconBG: {fileID: 21300000, guid: 7d650437e77823e45a4e9b75d09f1d4a, type: 3}

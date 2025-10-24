@@ -149,6 +149,8 @@ namespace EvolveThisMatch.Save
         {
             _data = new DepartmentSaveData();
 
+            departmentTitleData = TitleDataManager.LoadDepartmentData();
+
             isLoaded = true;
         }
 
@@ -240,7 +242,7 @@ namespace EvolveThisMatch.Save
         #endregion
 
         #region 생산품 획득
-        public void GainCraftItem(string departmentId, int workbenchId, int craftCount, float remainTime, UnityAction onComplete)
+        public void GainCraftItem(string departmentId, int workbenchId, int craftCount, DateTime utcNow, float remainTime, UnityAction onComplete)
         {
             var localData = _departmentLocalSaveData.TryGetValue(departmentId, out var departmentLocalSaveData) ? DepartmentLocalSaveDataEncrypted.FromEncrypted(departmentLocalSaveData) : null;
 
@@ -249,7 +251,7 @@ namespace EvolveThisMatch.Save
             var request = new ExecuteCloudScriptRequest
             {
                 FunctionName = "GainCraftItem",
-                FunctionParameter = new { departmentId = departmentId, workbenchId = workbenchId, localData = localData },
+                FunctionParameter = new { departmentId = departmentId, workbenchId = workbenchId, localData = localData, craftCount = craftCount },
                 GeneratePlayStreamEvent = true
             };
 
@@ -263,16 +265,25 @@ namespace EvolveThisMatch.Save
                         var job = departmentLocalSaveData.GetActiveJob(workbenchId);
 
                         // 시작 시간 보정
-                        var currentTimeStr = jsonResult["currentTime"]?.ToString();
-                        if (DateTime.TryParse(currentTimeStr, out DateTime currentTime))
-                            job.startTime = currentTime - TimeSpan.FromSeconds(remainTime);
+                        job.startTime = utcNow - TimeSpan.FromSeconds(remainTime);
 
-                        // 생산 개수 감소
-                        int craftCount = Convert.ToInt32(jsonResult["craftCount"]);
-                        job.maxAmount = Math.Max(0, job.maxAmount - craftCount);
+                        // 최대 생산량 적용
+                        int remainCount = Convert.ToInt32(jsonResult["remainCount"]);
+
+                        if (remainCount == 0)
+                        {
+                            // 남은 개수가 0개 라면 작업대 비우기
+                            departmentLocalSaveData.RemoveActiveJob(job);
+                        }
+                        else
+                        {
+                            job.maxAmount = remainCount;
+                        }
 
                         // 변경된 생산품 적용
                         SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+
+                        SaveDepartmentLocalData();
 
                         onComplete?.Invoke();
                     }
@@ -283,14 +294,14 @@ namespace EvolveThisMatch.Save
                 }, DebugPlayFabError);
         }
 
-        public void BundleGainCraftItem(string departmentId, List<float> remainTimes, UnityAction onComplete)
+        public void BundleGainCraftItem(string departmentId, List<int> craftCounts, DateTime utcNow, List<float> remainTimes, UnityAction onComplete)
         {
             var localData = _departmentLocalSaveData.TryGetValue(departmentId, out var departmentLocalSaveData) ? DepartmentLocalSaveDataEncrypted.FromEncrypted(departmentLocalSaveData) : null;
 
             var request = new ExecuteCloudScriptRequest
             {
                 FunctionName = "BundleGainCraftItem",
-                FunctionParameter = new { departmentId = departmentId, localData = localData },
+                FunctionParameter = new { departmentId = departmentId, localData = localData, craftCounts = craftCounts },
                 GeneratePlayStreamEvent = true
             };
 
@@ -301,33 +312,36 @@ namespace EvolveThisMatch.Save
 
                     if ((bool)jsonResult["success"])
                     {
-                        // 시작 시간 불러오기
-                        var currentTimeStr = jsonResult["currentTime"]?.ToString();
-                        if (DateTime.TryParse(currentTimeStr, out DateTime currentTime))
-                        {
-                            currentTime = DateTime.UtcNow;
-                        }
-
                         // 모든 작업대 순회
                         if (jsonResult.TryGetValue("workbenches", out var workbenchObj) && workbenchObj is JsonObject workbenches)
                         {
                             foreach (var kvp in workbenches)
                             {
                                 int workbenchId = Convert.ToInt32(kvp.Key);
-                                int craftCount = Convert.ToInt32(kvp.Value);
+                                int remainCount = Convert.ToInt32(kvp.Value);
 
                                 var job = departmentLocalSaveData.GetActiveJob(workbenchId);
 
                                 // 시작 시간 보정
-                                job.startTime = currentTime - TimeSpan.FromSeconds(remainTimes[workbenchId]);
+                                job.startTime = utcNow - TimeSpan.FromSeconds(remainTimes[workbenchId]);
 
-                                // 생산 개수 감소
-                                job.maxAmount = Math.Max(0, job.maxAmount - craftCount);
+                                // 최대 생산량 적용
+                                if (remainCount == 0)
+                                {
+                                    // 개수가 0개 라면 작업대 비우기
+                                    departmentLocalSaveData.RemoveActiveJob(job);
+                                }
+                                else
+                                {
+                                    job.maxAmount = remainCount;
+                                }
                             }
                         }
 
                         // 변경된 생산품 적용
                         SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+
+                        SaveDepartmentLocalData();
 
                         onComplete?.Invoke();
                     }

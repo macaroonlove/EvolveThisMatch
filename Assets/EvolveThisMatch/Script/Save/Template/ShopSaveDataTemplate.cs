@@ -85,6 +85,8 @@ namespace EvolveThisMatch.Save
         {
             _data = new ShopSaveData();
 
+            shopTitleData = TitleDataManager.LoadShopData();
+
             isLoaded = true;
         }
 
@@ -153,7 +155,6 @@ namespace EvolveThisMatch.Save
             PlayFabClientAPI.ExecuteCloudScript(request,
                 (ExecuteCloudScriptResult result) =>
                 {
-
                     JsonObject jsonResult = (JsonObject)result.FunctionResult;
 
                     if ((bool)jsonResult["success"])

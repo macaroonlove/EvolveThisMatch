@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uBD80\uC154\uC9C4 \uD06C\uB85C\uB2C8\uD074"
   _iconText: BrokenChronicle
-  _icon: {fileID: 21300000, guid: dd9503bde2ad50940b2133f72bff2054, type: 3}
+  _icon: {fileID: 21300000, guid: e12ec308513ef354fa072b03c9aac23a, type: 3}
   _iconBG: {fileID: 21300000, guid: 37dbc62800c9cc84996704ba0cc82876, type: 3}

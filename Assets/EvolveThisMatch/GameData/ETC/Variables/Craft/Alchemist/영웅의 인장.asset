@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uC601\uC6C5\uC758 \uC778\uC7A5"
   _iconText: HeroSeal
-  _icon: {fileID: 21300000, guid: dfccfbfdbba62d84388b7fa122d383db, type: 3}
+  _icon: {fileID: 21300000, guid: 53a19b35997065f478777b2c9e989e69, type: 3}
   _iconBG: {fileID: 21300000, guid: 37dbc62800c9cc84996704ba0cc82876, type: 3}

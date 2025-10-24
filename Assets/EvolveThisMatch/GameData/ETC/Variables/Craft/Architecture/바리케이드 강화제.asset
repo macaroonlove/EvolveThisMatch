@@ -38,5 +38,5 @@ MonoBehaviour:
       m_Calls: []
   _displayName: "\uBC14\uB9AC\uCF00\uC774\uB4DC \uAC15\uD654\uC81C"
   _iconText: ReinforcedBarrier
-  _icon: {fileID: 21300000, guid: dd9503bde2ad50940b2133f72bff2054, type: 3}
+  _icon: {fileID: 21300000, guid: 7e7e92c8c87f5db49896eb041d44b039, type: 3}
   _iconBG: {fileID: 21300000, guid: 5d384a9422b9e6b4eb5b2ddb8d7af041, type: 3}

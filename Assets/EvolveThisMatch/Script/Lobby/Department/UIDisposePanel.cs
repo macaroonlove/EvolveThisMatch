@@ -86,7 +86,7 @@ namespace EvolveThisMatch.Lobby
                     {
                         // 패널이 열릴 때까지 진행된 작업 불러오기
                         var craftResult = craftResults[i];
-
+                        
                         // 등록된 작업
                         var craftItem = departmentCanvas.titleData.CraftItems[job.craftItemId];
 
@@ -228,7 +228,7 @@ namespace EvolveThisMatch.Lobby
         /// <summary>
         /// 생산품 개별 획득
         /// </summary>
-        private void GainCraftItem(int workbenchId, int craftCount, float remainTime, CraftResult craftResult)
+        private async void GainCraftItem(int workbenchId, int craftCount, float remainTime, CraftResult craftResult)
         {
             // 더 이상 생산이 불가능할 경우
             if (craftCount == -1)
@@ -237,8 +237,10 @@ namespace EvolveThisMatch.Lobby
                 craftCount = craftResult.craftCount;
             }
 
+            var utcNow = await NetworkTimeManager.Instance.GetUtcNow();
+
             // 아이템 획득 시도하기
-            SaveManager.Instance.departmentData.GainCraftItem(_departmentId, workbenchId, craftCount, remainTime, () =>
+            SaveManager.Instance.departmentData.GainCraftItem(_departmentId, workbenchId, craftCount, utcNow, remainTime, () =>
             {
                 // 부서 업데이트
                 _updateDepartment?.Invoke();
@@ -248,16 +250,21 @@ namespace EvolveThisMatch.Lobby
         /// <summary>
         /// 부서의 생산품 일괄 획득
         /// </summary>
-        internal void BundleGainCraftItem()
+        internal async void BundleGainCraftItem()
         {
+            List<int> craftCounts = new List<int>();
             List<float> remainTimes = new List<float>();
             foreach (var item in _disposeItems)
             {
-                remainTimes.Add(item.GetRemainTime());
+                var data = item.GetDataToSendServer();
+                craftCounts.Add(data.Item1);
+                remainTimes.Add(data.Item2);
             }
 
+            var utcNow = await NetworkTimeManager.Instance.GetUtcNow();
+
             // 아이템 획득 시도하기
-            SaveManager.Instance.departmentData.BundleGainCraftItem(_departmentId, remainTimes, () =>
+            SaveManager.Instance.departmentData.BundleGainCraftItem(_departmentId, craftCounts, utcNow, remainTimes, () =>
             {
                 // 부서 업데이트
                 _updateDepartment?.Invoke();

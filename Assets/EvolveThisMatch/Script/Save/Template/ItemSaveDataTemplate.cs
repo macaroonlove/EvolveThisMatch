@@ -68,6 +68,8 @@ namespace EvolveThisMatch.Save
         {
             _data = new ItemSaveData();
 
+            TitleDataManager.LoadItemData(ref _artifactLevelUpRequirements, ref _tomeLevelUpRequirements);
+
             isLoaded = true;
         }
 

@@ -158,6 +158,9 @@ namespace EvolveThisMatch.Save
         {
             _data = new AgentSaveData();
 
+            TitleDataManager.LoadAgentData(ref _agentTierUpRequirements, ref _agentMaxLevelPerTier, ref _foodExp);
+            talentTitleData = TitleDataManager.LoadTalentData();
+
             // 초기 캐릭터 추가
             for (int i = 0; i <= 35; i++)
             {

@@ -22655,6 +22655,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GachaCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2254524175423851537, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2777797837170344724, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -22749,6 +22753,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3912304681237625033, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740387805135098229, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740387805135098229, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740387805135098229, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5071087082585991774, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
@@ -22826,6 +22842,10 @@ PrefabInstance:
     - target: {fileID: 7652445158690887549, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7736255610321938771, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7876892437964321200, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
       propertyPath: m_fontSize
