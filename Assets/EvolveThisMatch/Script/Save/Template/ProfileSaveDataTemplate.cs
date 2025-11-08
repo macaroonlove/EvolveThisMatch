@@ -135,6 +135,8 @@ namespace EvolveThisMatch.Save
         public string displayName => _displayName;
         public bool isClearTutorial => _data.isClearTutorial;
 
+        public event UnityAction changedDisplayName;
+
         #region 저장 및 로드
         public override void SetDefaultValues()
         {
@@ -327,7 +329,6 @@ namespace EvolveThisMatch.Save
                     result =>
                     {
                         tcs.TrySetResult(result.AccountInfo.TitleInfo.DisplayName);
-                        
                     },
                     error =>
                     {
@@ -394,6 +395,7 @@ namespace EvolveThisMatch.Save
                 if (isComplete)
                 {
                     PayEssenceVariable();
+                    changedDisplayName?.Invoke();
                     onComplete?.Invoke();
                 }
             });

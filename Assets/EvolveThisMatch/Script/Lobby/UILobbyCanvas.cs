@@ -42,6 +42,7 @@ namespace EvolveThisMatch.Lobby
         private UIGachaCanvas _gachaCanvas;
         private UIFormationCanvas _formationCanvas;
         private UIStagePanel _stagePanel;
+        private UIBattleStartCanvas _battleStartCanvas;
 
         private CanvasGroupController _menuPanel;
 
@@ -61,6 +62,7 @@ namespace EvolveThisMatch.Lobby
             _gachaCanvas = transform.parent.GetComponentInChildren<UIGachaCanvas>();
             _formationCanvas = transform.parent.GetComponentInChildren<UIFormationCanvas>();
             _stagePanel = transform.parent.GetComponentInChildren<UIStagePanel>();
+            _battleStartCanvas = transform.parent.GetComponentInChildren<UIBattleStartCanvas>();
 
             _menuPanel = GetCanvasGroupController((int)CanvasGroups.MenuPanel);
             _menuPanel.Hide(true);
@@ -97,7 +99,7 @@ namespace EvolveThisMatch.Lobby
 
         private void BattleStart()
         {
-
+            _battleStartCanvas?.Show();
         }
 
         #region Bottom Left
