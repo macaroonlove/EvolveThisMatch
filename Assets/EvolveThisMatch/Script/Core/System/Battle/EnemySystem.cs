@@ -20,6 +20,7 @@ namespace EvolveThisMatch.Core
 
         public event UnityAction<Unit> onRegist;
         public event UnityAction<Unit> onDeregist;
+        public event UnityAction<int> onDeath;
 
         public void Initialize()
         {
@@ -54,6 +55,13 @@ namespace EvolveThisMatch.Core
             _enemies.Remove(enemy);
 
             onDeregist?.Invoke(enemy);
+        }
+
+        internal void DeathEnemy(EnemyUnit enemy)
+        {
+            onDeath?.Invoke(enemy.id);
+
+            Deregist(enemy);
         }
 
         #region 유틸리티 메서드

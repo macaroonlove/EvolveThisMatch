@@ -12,7 +12,7 @@ namespace FrameWork.Service
     {
         private RewardedAd _rewardedAd;
 
-        private UnityAction _onRewardComplete;
+        private UnityAction<bool> _onRewardComplete;
 
         private const string _adUnitId = "ca-app-pub-3940256099942544/5224354917";
 
@@ -44,9 +44,22 @@ namespace FrameWork.Service
 
                 _rewardedAd = ad;
 
+                _rewardedAd.OnAdFullScreenContentFailed += (error) =>
+                {
+#if UNITY_EDITOR
+                    Debug.LogError($"±¤°í Ç¥½Ã ½ÇÆÐ: {error.GetMessage()}");
+#endif
+
+                    _onRewardComplete?.Invoke(false);
+                    _onRewardComplete = null;
+
+                    // ±¤°í ½ÇÆÐ ½Ã, »õ ±¤°í ·Îµå
+                    LoadRewardAd();
+                };
+
                 _rewardedAd.OnAdFullScreenContentClosed += () =>
                 {
-                    _onRewardComplete?.Invoke();
+                    _onRewardComplete?.Invoke(true);
                     _onRewardComplete = null;
 
                     // ±¤°í ´ÝÈ÷¸é »õ ±¤°í ·Îµå
@@ -58,7 +71,7 @@ namespace FrameWork.Service
         /// <summary>
         /// º¸»óÇü ±¤°í º¸¿©ÁÖ±â
         /// </summary>
-        public void ShowRewardAd(UnityAction onComplete)
+        public void ShowRewardAd(UnityAction<bool> onComplete)
         {
             if (_rewardedAd == null || !_rewardedAd.CanShowAd())
             {

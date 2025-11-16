@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.NetworkTime;
+using FrameWork.Service;
 using FrameWork.UI;
 using FrameWork.UIBinding;
 using ScriptableObjectArchitecture;
@@ -291,18 +292,18 @@ namespace EvolveThisMatch.Lobby
 
         private void AdPickUp(int gachaCount, int itemIndex, string catalogId)
         {
-#if !UNITY_EDITOR
-            AdmobManager.Instance.ShowRewardAd(() =>
+            #if !UNITY_EDITOR
+            AdmobManager.Instance.ShowRewardAd((isSuccess) =>
             {
                 SaveManager.Instance.gachaData.AdPickUp(_currentTab.gachaTitle, gachaCount, itemIndex, (rewards) =>
                 {
                     // 구매 횟수 증가
                     SaveManager.Instance.gachaData.AddItem(catalogId, itemIndex);
-                    
+
                     PickUpAfter(rewards);
                 });
             });
-#endif
+            #endif
         }
 
         private void PickUpAfter(string[] rewards)

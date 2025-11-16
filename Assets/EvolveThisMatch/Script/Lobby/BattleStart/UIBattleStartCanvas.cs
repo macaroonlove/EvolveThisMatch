@@ -50,7 +50,7 @@ namespace EvolveThisMatch.Lobby
         private int _selectedUsabilityItem;
         private int _multiplyReward;
 
-        private Dictionary<int, ObscuredIntVariable> _variables;
+        private Dictionary<int, ObscuredIntVariable> _variables = new Dictionary<int, ObscuredIntVariable>();
 
         protected override void Initialize()
         {

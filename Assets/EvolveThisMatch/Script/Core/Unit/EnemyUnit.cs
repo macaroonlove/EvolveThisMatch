@@ -53,7 +53,7 @@ namespace EvolveThisMatch.Core
 
             _deathGlobalEvent?.Raise();
 
-            enemySystem.Deregist(this);
+            enemySystem.DeathEnemy(this);
         }
     }
 }
