@@ -1,10 +1,17 @@
 using EvolveThisMatch.Core;
 using FrameWork;
+using FrameWork.Loading;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
+using PlayFab;
+using PlayFab.ClientModels;
+using PlayFab.Json;
 using ScriptableObjectArchitecture;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -37,7 +44,6 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        [SerializeField] private WaveLibraryTemplate[] _waveLibraryTemplates;
 
         private TMP_Dropdown _categoryDropdown;
         private UIChapterItem[] _chapterItems;
@@ -45,6 +51,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _rewardText;
         private TextMeshProUGUI _battleStartText;
 
+        private WaveLibraryTemplate _waveLibraryTemplates;
         private int _currentCategory;
         private int _currentChapter;
         private int _selectedUsabilityItem;
@@ -82,6 +89,11 @@ namespace EvolveThisMatch.Lobby
             _description = GetText((int)Texts.Description);
             _rewardText = GetText((int)Texts.RewardText);
             _battleStartText = GetText((int)Texts.BattleStartText);
+        }
+
+        private void Start()
+        {
+            _waveLibraryTemplates = BattleManager.Instance.GetSubSystem<LobbyWaveSystem>().waveLibrary;
 
             InitializeCategory();
 
@@ -122,9 +134,9 @@ namespace EvolveThisMatch.Lobby
 
             // 드롭다운 새롭게 추가
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
-            foreach (var waveLibrary in _waveLibraryTemplates)
+            foreach (var category in _waveLibraryTemplates.categorys)
             {
-                options.Add(new TMP_Dropdown.OptionData(waveLibrary.title));
+                options.Add(new TMP_Dropdown.OptionData(category.title));
             }
 
             _categoryDropdown.AddOptions(options);
@@ -134,7 +146,7 @@ namespace EvolveThisMatch.Lobby
         {
             for (int i = 0; i < _chapterItems.Length; i++)
             {
-                _chapterItems[i].Show(_waveLibraryTemplates[_currentCategory].waves[i]);
+                _chapterItems[i].Show(_waveLibraryTemplates.categorys[_currentCategory].chapters[i]);
             }
         }
 
@@ -158,7 +170,7 @@ namespace EvolveThisMatch.Lobby
             }
             else
             {
-                _description.text = $"적 몬스터의 공격력 및 이동속도 {chapter * 10}% 상승";
+                _description.text = $"적 몬스터의 전투력 및 이동속도 {chapter * 10}% 상승";
             }
         }
         #endregion
@@ -170,7 +182,7 @@ namespace EvolveThisMatch.Lobby
             int bit = 1 << index;
 
             if (isOn) _selectedUsabilityItem |= bit;
-            else _selectedUsabilityItem  &= ~bit;
+            else _selectedUsabilityItem &= ~bit;
         }
 
         private void MultipleReward(int delta)
@@ -184,7 +196,74 @@ namespace EvolveThisMatch.Lobby
 
         private void BattleStartButton()
         {
+            BattleContext.Clear();
 
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "BattleStart",
+                FunctionParameter = new { CurrentCategory = _currentCategory, CurrentChapter = _currentChapter, SelectedUsabilityItem = _selectedUsabilityItem, MultiplyReward = _multiplyReward },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if ((bool)jsonResult["success"])
+                    {
+                        int possibleItem = Convert.ToInt32(jsonResult["possibleItem"]);
+
+                        // 전투 상황에 기록
+                        BattleContext.category = _currentCategory;
+                        BattleContext.chapter = _currentChapter;
+                        if ((possibleItem & (1 << 0)) != 0) BattleContext.genesisCoin = true;
+                        if ((possibleItem & (1 << 1)) != 0) BattleContext.originCrystal = true;
+                        if ((possibleItem & (1 << 2)) != 0) BattleContext.fateRoneStone = true;
+                        if ((possibleItem & (1 << 3)) != 0) BattleContext.heroSeal = true;
+
+                        LoadingManager.Instance.LoadScene("Battle");
+                    }
+                    else
+                    {
+                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                    }
+                },
+                (PlayFabError error) =>
+                {
+                    DebugPlayFabError(error);
+                });
         }
+
+        #region 오류 디버그
+        private void DebugPlayFabError(PlayFabError error)
+        {
+            switch (error.Error)
+            {
+                case PlayFabErrorCode.ConnectionError:
+                case PlayFabErrorCode.ExperimentationClientTimeout:
+                    UIPopupManager.Instance.ShowConfirmPopup("네트워크 연결을 확인해주세요.", () =>
+                    {
+                        SceneManager.LoadScene("Login");
+                    });
+                    break;
+                case PlayFabErrorCode.ServiceUnavailable:
+                    UIPopupManager.Instance.ShowConfirmPopup("게임 서버가 불안정합니다.\n나중에 다시 접속해주세요.\n죄송합니다.", () =>
+                    {
+#if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                    Application.Quit();
+#endif
+                    });
+                    break;
+                default:
+#if UNITY_EDITOR
+                    Debug.LogError($"PlayFab Error: {error.ErrorMessage}");
+#endif
+                    break;
+            }
+        }
+        #endregion
     }
 }

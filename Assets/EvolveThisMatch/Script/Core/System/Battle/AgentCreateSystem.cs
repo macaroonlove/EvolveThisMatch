@@ -22,10 +22,15 @@ namespace EvolveThisMatch.Core
             _tileSystem = BattleManager.Instance.GetSubSystem<TileSystem>();
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
 
-            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
-            foreach (var agent in ownedAgents)
+            var agents = SaveManager.Instance.agentData.ownedAgents;
+            foreach (var agent in agents)
             {
-                _ownedAgentTemplates.Add(GameDataManager.Instance.GetAgentTemplateById(agent.id));
+                var template = GameDataManager.Instance.GetAgentTemplateById(agent.id);
+
+                if (template != null)
+                {
+                    _ownedAgentTemplates.Add(template);
+                }
             }
         }
 
@@ -40,7 +45,7 @@ namespace EvolveThisMatch.Core
         /// </summary>
         public bool CreateRandomUnit()
         {
-            var rand = GameDataManager.Instance.GetAgentRandomRarity();
+            var rand = GameDataManager.Instance.GetAgentRandomRarity();            
             var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity == rand.rarity).ToList();
 
             int index = Random.Range(0, filtered.Count);
@@ -54,6 +59,8 @@ namespace EvolveThisMatch.Core
         /// </summary>
         public bool CreateRandomUnit(EAgentRarity rarity)
         {
+            if (rarity == EAgentRarity.Common) return CreateRandomUnit();
+
             var rand = GameDataManager.Instance.GetAgentRandomRarity();
             var finalRarity = (rand.rarity < rarity) ? rand.rarity : rarity;
             var filtered = _ownedAgentTemplates.Where(t => t.rarity.rarity == finalRarity).ToList();

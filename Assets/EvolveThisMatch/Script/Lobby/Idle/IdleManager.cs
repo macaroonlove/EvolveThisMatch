@@ -18,6 +18,7 @@ namespace EvolveThisMatch.Lobby
         private LobbyWaveSystem _waveSystem;
         private UIIdleCanvas _idleCanvas;
         private bool _isRunning = true;
+        private bool _isInitialize = false;
 
         private void Start()
         {
@@ -33,6 +34,7 @@ namespace EvolveThisMatch.Lobby
             _idleCanvas = GetComponentInChildren<UIIdleCanvas>();
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
 
+            RequestOfflineIdleReward().Forget();
             SendDataTimer().Forget();
         }
 
@@ -51,7 +53,7 @@ namespace EvolveThisMatch.Lobby
             {
                 await UniTask.Delay(TimeSpan.FromMinutes(5), ignoreTimeScale: true);
 
-                await RequestIdleReward();
+                await RequestOnlineIdleReward();
             }
         }
 
@@ -60,7 +62,12 @@ namespace EvolveThisMatch.Lobby
         /// </summary>
         public void OnBattleInitialize()
         {
-            RequestIdleReward().Forget();
+            if (!_isInitialize)
+            {
+                _isInitialize = true;
+                return;
+            }
+            RequestOnlineIdleReward().Forget();
         }
 
         /// <summary>
@@ -68,24 +75,26 @@ namespace EvolveThisMatch.Lobby
         /// </summary>
         private void OnApplicationQuit()
         {
-            RequestIdleReward().Forget();
+            RequestOnlineIdleReward().Forget();
 
             _isRunning = false;
         }
         #endregion
 
         #region 서버에 방치 보상을 요청
-        private async UniTask RequestIdleReward()
+        /// <summary>
+        /// 오프라인 보상 획득 시도
+        /// </summary>
+        private async UniTask RequestOfflineIdleReward()
         {
             var records = _enemyRecordSystem.GetRecords();
-
-            if (records.Length == 0) return;
-
             var tcs = new UniTaskCompletionSource();
+
+            await UniTask.WaitUntil(() => _waveSystem.currentWave != null);
 
             var request = new ExecuteCloudScriptRequest
             {
-                FunctionName = "RequestIdleReward",
+                FunctionName = "RequestOfflineIdleReward",
                 FunctionParameter = new { CurrentWave = _waveSystem.currentWave.id, EnemyRecords = records },
                 GeneratePlayStreamEvent = true
             };
@@ -134,6 +143,45 @@ namespace EvolveThisMatch.Lobby
             await tcs.Task;
         }
 
+        /// <summary>
+        /// 온라인 보상 획득 시도
+        /// </summary>
+        private async UniTask RequestOnlineIdleReward()
+        {
+            var records = _enemyRecordSystem.GetRecords();
+            var tcs = new UniTaskCompletionSource();
+
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "RequestOnlineIdleReward",
+                FunctionParameter = new { CurrentWave = _waveSystem.currentWave.id, EnemyRecords = records },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                    if ((bool)jsonResult["success"])
+                    {
+                        _enemyRecordSystem.ClearRecords();
+                        SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+                        tcs.TrySetResult();
+                    }
+                },
+                (PlayFabError error) =>
+                {
+                    DebugPlayFabError(error);
+                    tcs.TrySetResult();
+                });
+
+            await tcs.Task;
+        }
+
+        /// <summary>
+        /// 보상 2배 획득 시도
+        /// </summary>
         private async UniTask RequestAgainIdleReward()
         {
             var request = new ExecuteCloudScriptRequest

@@ -8,6 +8,7 @@ namespace FrameWork
     public class PersistentSingleton<T> : MonoBehaviour where T : PersistentSingleton<T>
     {
         protected static T instance;
+        private bool isInitialize = false;
 
         public static T Instance
         {
@@ -64,8 +65,13 @@ namespace FrameWork
                 CraeteNewInstance();
             }
 
-            instance.Initialize();
-            instance.SetupDontDestroy();
+            if (!instance.isInitialize)
+            {
+                instance.Initialize();
+                instance.SetupDontDestroy();
+
+                instance.isInitialize = true;
+            }
         }
 
         private static void CraeteNewInstance()
@@ -80,8 +86,13 @@ namespace FrameWork
             if (instance == null || instance == this)
             {
                 instance = this as T;
-                instance.Initialize();
-                SetupDontDestroy();
+                if (!instance.isInitialize)
+                {
+                    instance.Initialize();
+                    instance.SetupDontDestroy();
+
+                    instance.isInitialize = true;
+                }
             }
             else
             {

@@ -10,7 +10,6 @@ namespace EvolveThisMatch.Core
     public class GameDataManager : PersistentSingleton<GameDataManager>
     {
         [Header("Library")]
-        [SerializeField] private BattleDataTemplate _battleData;
         [SerializeField] private AgentLibraryTemplate _agentLibrary;
         [SerializeField] private List<Effect> _talentEffects = new List<Effect>();
         [SerializeField] private SkinLibraryTemplate _agentSkinLibrary;
@@ -18,8 +17,6 @@ namespace EvolveThisMatch.Core
 
         [SerializeField] private ArtifactLibraryTemplate _artifactLibrary;
         [SerializeField] private TomeLibraryTemplate _tomeLibrary;
-
-        public BattleDataTemplate battleData => _battleData;
 
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
         public IReadOnlyList<Effect> talentEffects => _talentEffects;

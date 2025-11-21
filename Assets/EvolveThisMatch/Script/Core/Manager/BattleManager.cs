@@ -45,9 +45,6 @@ namespace EvolveThisMatch.Core
             }
 
             canvas = GetComponentInChildren<Canvas>().transform;
-
-            // TODO: 포톤을 통해 방에 입장하면 RPC를 통해 target을 AllViaServer로 Ready 여부를 보냄, 두 플레이어가 모두 준비 완료했을 때, 호출하도록 구현
-            //InitializeBattle();
         }
 
         private void OnDestroy()

@@ -54,6 +54,14 @@ namespace EvolveThisMatch.Battle
             }
         }
 
+        internal override void ForceEngrave()
+        {
+            if (GameDataManager.Instance.UpgradeProbabilityLevel())
+            {
+                Refrash();
+            }
+        }
+
         private void Refrash()
         {
             var probability = GameDataManager.Instance.GetProbabilityList();

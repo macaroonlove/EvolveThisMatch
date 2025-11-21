@@ -10,6 +10,7 @@ namespace EvolveThisMatch.Core
         protected EnemySpawnSystem _enemySpawnSystem;
         protected TimeSystem _timeSystem;
 
+        public WaveLibraryTemplate waveLibrary => _waveLibrary;
         public int currentWaveIndex { get; protected set; }
         public bool isWaveEnd { get; protected set; }
         public bool isSpawnEnd { get; protected set; }

@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Lobby
         private TMP_Dropdown _categoryDropdown;
         private TextMeshProUGUI _stageName;
 
-        [SerializeField] private WaveLibraryTemplate[] _waveLibraryTemplates;
+        [SerializeField] private WaveLibraryTemplate _waveLibraryTemplates;
 
         private LobbyWaveSystem _lobbyWaveSystem;
         private UIChapterItem[] _chapterItems;
@@ -83,7 +83,7 @@ namespace EvolveThisMatch.Lobby
 
             SyncStageData();
 
-            var waveTemplate = _waveLibraryTemplates[_currentCategory].waves[_currentChapter].waves[_currentStage];
+            var waveTemplate = _waveLibraryTemplates.categorys[_currentCategory].chapters[_currentChapter].waves[_currentStage];
             _lobbyWaveSystem.ChangeWave(waveTemplate);
         }
 
@@ -150,9 +150,9 @@ namespace EvolveThisMatch.Lobby
 
             // 드롭다운 새롭게 추가
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
-            foreach (var waveLibrary in _waveLibraryTemplates)
+            foreach (var category in _waveLibraryTemplates.categorys)
             {
-                options.Add(new TMP_Dropdown.OptionData(waveLibrary.title));
+                options.Add(new TMP_Dropdown.OptionData(category.title));
             }
 
             _categoryDropdown.AddOptions(options);
@@ -162,7 +162,7 @@ namespace EvolveThisMatch.Lobby
         {
             for (int i = 0; i < _chapterItems.Length; i++)
             {
-                _chapterItems[i].Show(_waveLibraryTemplates[_currentCategory].waves[i]);
+                _chapterItems[i].Show(_waveLibraryTemplates.categorys[_currentCategory].chapters[i]);
             }
         }
 

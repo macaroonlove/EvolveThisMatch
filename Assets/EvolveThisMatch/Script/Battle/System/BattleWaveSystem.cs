@@ -7,9 +7,17 @@ namespace EvolveThisMatch.Battle
 {
     public class BattleWaveSystem : WaveSystem
     {
+        private int _currentCategoryIndex;
         private int _currentChapterIndex;
 
+        public WaveCategory waveCategory => _waveLibrary.categorys[_currentCategoryIndex];
+
         public event UnityAction<int, float> onWaveChanged;
+
+        private void Awake()
+        {
+            _currentCategoryIndex = BattleContext.category;
+        }
 
         protected override IEnumerator CoUpdateWave()
         {
@@ -19,13 +27,13 @@ namespace EvolveThisMatch.Battle
             {
                 if (_timeSystem == null) yield break;
 
-                if (_currentChapterIndex >= _waveLibrary.waves.Count)
+                if (_currentChapterIndex >= waveCategory.chapters.Count)
                 {
                     isWaveEnd = true;
                     yield break;
                 }
 
-                var chapter = _waveLibrary.waves[_currentChapterIndex];
+                var chapter = waveCategory.chapters[_currentChapterIndex];
 
                 // 챕터 종료 시, 다음 챕터로 이동
                 if (currentWaveIndex >= chapter.waves.Count)

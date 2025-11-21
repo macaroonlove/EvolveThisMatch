@@ -1,8 +1,9 @@
+using EvolveThisMatch.Core;
 using ScriptableObjectArchitecture;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace EvolveThisMatch.Core
+namespace EvolveThisMatch.Battle
 {
     /// <summary>
     /// 전투에서 사용하는 Crystal 값을 관리하는 클래스
@@ -17,14 +18,20 @@ namespace EvolveThisMatch.Core
 
         public void Initialize()
         {
-            SetCrystal(100);
+            SetCrystal(BattleManager.Instance.GetSubSystem<BattleWaveSystem>().waveCategory.startCrystal);
+
+            if (BattleContext.originCrystal) AddCrystal(1);
+
+            BattleManager.Instance.GetSubSystem<AgentReturnSystem>().onReturnCrystal += AddCrystal;
+            BattleManager.Instance.GetSubSystem<EnemySystem>().onReturnCrystal += AddCrystal;
         }
 
         public void Deinitialize()
         {
+            BattleManager.Instance.GetSubSystem<AgentReturnSystem>().onReturnCrystal -= AddCrystal;
         }
 
-        internal void AddCrystal(int value)
+        private void AddCrystal(int value)
         {
             SetCrystal(_crystalVariable.Value + value);
         }

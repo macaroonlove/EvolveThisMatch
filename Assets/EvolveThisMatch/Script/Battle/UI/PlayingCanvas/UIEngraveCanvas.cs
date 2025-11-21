@@ -1,6 +1,7 @@
 using EvolveThisMatch.Core;
 using FrameWork;
 using FrameWork.UIBinding;
+using UnityEngine;
 
 namespace EvolveThisMatch.Battle
 {
@@ -40,6 +41,11 @@ namespace EvolveThisMatch.Battle
             foreach (var button in _uiEngraveButtons)
             {
                 button.InitializeBattle(this);
+            }
+
+            if (BattleContext.fateRoneStone)
+            {
+                _uiEngraveButtons[Random.Range(1, _uiEngraveButtons.Length)].ForceEngrave();
             }
         }
 

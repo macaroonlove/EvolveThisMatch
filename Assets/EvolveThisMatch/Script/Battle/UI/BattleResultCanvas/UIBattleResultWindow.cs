@@ -62,33 +62,32 @@ namespace EvolveThisMatch.Battle
 
         internal void Show()
         {
-            var battleData = GameDataManager.Instance.battleData;
             var finalWave = BattleManager.Instance.GetSubSystem<WaveSystem>().currentWaveIndex;
             var currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
 
-            _difficultyText.text = battleData.displayName;
+            //_difficultyText.text = battleData.displayName;
             _finalWaveText.text = finalWave.ToString();
 
-            foreach (var reward in battleData.rewardsPerWave)
-            {
-                int amount = reward.amount * finalWave;
-                currencySystem.AddCurrency(reward.type, amount);
-            }
+            //foreach (var reward in battleData.rewardsPerWave)
+            //{
+            //    int amount = reward.amount * finalWave;
+            //    currencySystem.AddCurrency(reward.type, amount);
+            //}
 
-            void ShowRewardItems(IReadOnlyList<RewardData> rewards, int index)
-            {
-                if (index >= rewards.Count) return;
+            //void ShowRewardItems(IReadOnlyList<RewardData> rewards, int index)
+            //{
+            //    if (index >= rewards.Count) return;
 
-                var reward = rewards[index];
-                int totalAmount = reward.amount * finalWave;
+            //    var reward = rewards[index];
+            //    int totalAmount = reward.amount * finalWave;
 
-                _rewardItems[index].Show(currencySystem.GetIcon(reward.type), totalAmount, () =>
-                {
-                    ShowRewardItems(rewards, index + 1);
-                });
-            }
+            //    _rewardItems[index].Show(currencySystem.GetIcon(reward.type), totalAmount, () =>
+            //    {
+            //        ShowRewardItems(rewards, index + 1);
+            //    });
+            //}
 
-            ShowRewardItems(battleData.rewardsPerWave, 0);
+            //ShowRewardItems(battleData.rewardsPerWave, 0);
 
             base.Show();
         }

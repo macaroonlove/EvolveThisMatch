@@ -35,5 +35,6 @@ namespace EvolveThisMatch.Battle
         internal abstract void DeinitializeBattle();
 
         protected abstract void Engrave();
+        internal abstract void ForceEngrave();
     }
 }

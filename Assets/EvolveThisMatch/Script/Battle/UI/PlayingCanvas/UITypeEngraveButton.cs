@@ -56,6 +56,14 @@ namespace EvolveThisMatch.Battle
             }
         }
 
+        internal override void ForceEngrave()
+        {
+            if (_skillTypeTemplate.UpgradeEngraveLevel())
+            {
+                Refrash();
+            }
+        }
+
         private void Refrash()
         {
             var data = _skillTypeTemplate.GetEngraveData();

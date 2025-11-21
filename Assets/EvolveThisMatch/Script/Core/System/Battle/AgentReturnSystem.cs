@@ -9,14 +9,13 @@ namespace EvolveThisMatch.Core
         [SerializeField] private FX _returnFX;
 
         private PoolSystem _poolSystem;
-        private CrystalSystem _crystalSystem;
 
         public event UnityAction<AgentBattleData> onDeinitializedUnit;
+        public event UnityAction<int> onReturnCrystal;
 
         public void Initialize()
         {
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
-            _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
         }
 
         public void Deinitialize()
@@ -60,10 +59,10 @@ namespace EvolveThisMatch.Core
 
                 if (returnCrystal > 0)
                 {
-                    _crystalSystem.AddCrystal(returnCrystal);
+                    onReturnCrystal?.Invoke(returnCrystal);
                 }
             }
-            
+
             onDeinitializedUnit?.Invoke(agentData);
         }
         #endregion

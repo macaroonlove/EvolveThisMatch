@@ -21,7 +21,7 @@ MonoBehaviour:
   _moveType: 0
   _moveSpeed: 0.8
   _chaseRange: 10
-  _chaseFailRange: 0
+  _chaseFailRange: 10
   _attackType: 0
   _damageType: 0
   _atk: 60

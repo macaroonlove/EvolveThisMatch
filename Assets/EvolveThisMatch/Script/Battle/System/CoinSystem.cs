@@ -1,8 +1,9 @@
+using EvolveThisMatch.Core;
 using ScriptableObjectArchitecture;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace EvolveThisMatch.Core
+namespace EvolveThisMatch.Battle
 {
     /// <summary>
     /// 전투에서 사용하는 Coin 값을 관리하는 클래스
@@ -16,15 +17,19 @@ namespace EvolveThisMatch.Core
         public event UnityAction<int> onChangedCoin;
 
         public void Initialize()
-        {
-            SetCoin(10000);
+        {   
+            SetCoin(BattleManager.Instance.GetSubSystem<BattleWaveSystem>().waveCategory.startCoin);
+
+            if (BattleContext.genesisCoin) AddCoin(100);
+
+            BattleManager.Instance.GetSubSystem<EnemySystem>().onReturnCoin += AddCoin;
         }
 
         public void Deinitialize()
         {
         }
 
-        internal void AddCoin(int value)
+        private void AddCoin(int value)
         {
             SetCoin(_coinVariable.Value + value);
         }

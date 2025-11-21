@@ -10960,8 +10960,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3932e936b3f64c438eff6b6d10a5ccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _waveLibraryTemplates:
-  - {fileID: 11400000, guid: 1518715b4424af94d8659f9cc3d1bfd6, type: 2}
 --- !u!114 &644675917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29300,8 +29298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0106ba5a87421b84e9e5d93a01673b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _waveLibraryTemplates:
-  - {fileID: 11400000, guid: 1518715b4424af94d8659f9cc3d1bfd6, type: 2}
+  _waveLibraryTemplates: {fileID: 11400000, guid: 1518715b4424af94d8659f9cc3d1bfd6, type: 2}
 --- !u!114 &1966227651
 MonoBehaviour:
   m_ObjectHideFlags: 0

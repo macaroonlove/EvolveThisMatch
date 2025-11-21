@@ -77,7 +77,15 @@ namespace EvolveThisMatch.Battle
                 // TODO: 코인이 부족하다고 알림 주기
             }
 
-            if (_agentCreateSystem.CreateRandomUnit())
+            var rarity = EAgentRarity.Common;
+
+            if (BattleContext.heroSeal)
+            {
+                rarity = EAgentRarity.Epic;
+                BattleContext.heroSeal = false;
+            }
+
+            if (_agentCreateSystem.CreateRandomUnit(rarity))
             {
                 _coinSystem.PayCoin(_needCoin);
                 _needCoin++;

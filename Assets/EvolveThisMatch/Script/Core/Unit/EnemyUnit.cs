@@ -38,17 +38,6 @@ namespace EvolveThisMatch.Core
                     CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Loot, enemyData.loot);
                 }
             }
-            else
-            {
-                if (enemyData.coin > 0)
-                {
-                    BattleManager.Instance.GetSubSystem<CoinSystem>().AddCoin(enemyData.coin);
-                }
-                if (enemyData.crystal > 0)
-                {
-                    BattleManager.Instance.GetSubSystem<CrystalSystem>().AddCrystal(enemyData.crystal);
-                }
-            }
             #endregion
 
             _deathGlobalEvent?.Raise();
