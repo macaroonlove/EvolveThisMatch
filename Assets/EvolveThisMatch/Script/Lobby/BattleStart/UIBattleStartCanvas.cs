@@ -56,6 +56,7 @@ namespace EvolveThisMatch.Lobby
         private int _currentChapter;
         private int _selectedUsabilityItem;
         private int _multiplyReward;
+        private bool _isBattleAble;
 
         private Dictionary<int, ObscuredIntVariable> _variables = new Dictionary<int, ObscuredIntVariable>();
 
@@ -188,14 +189,30 @@ namespace EvolveThisMatch.Lobby
         private void MultipleReward(int delta)
         {
             int limit = Mathf.Min(_variables[4].Value / 5, 3);
+            if (limit < 1) limit = 1;
+
             _multiplyReward = Mathf.Clamp(_multiplyReward + delta, 1, limit);
+            _isBattleAble = _variables[4].Value >= _multiplyReward * 5;
 
             _rewardText.text = $"보상 <size=18>×</size>{_multiplyReward}";
-            _battleStartText.text = $"개입 시작\n<sprite name=Action> {_multiplyReward * 5}";
+            if (_isBattleAble)
+            {
+                _battleStartText.text = $"개입 시작\n<sprite name=Action> {_multiplyReward * 5}";
+            }
+            else
+            {
+                _battleStartText.text = $"<color=#FF4B4B>개입 시작\n<sprite name=Action> {_multiplyReward * 5}</color>";
+            }
         }
 
         private void BattleStartButton()
         {
+            if (_isBattleAble == false)
+            {
+                UIPopupManager.Instance.ShowConfirmPopup("봉인된 서약서의 개수가 부족하여 전투를 시작할 수 없습니다.");
+                return;
+            }
+
             BattleContext.Clear();
 
             var request = new ExecuteCloudScriptRequest

@@ -443,6 +443,7 @@ namespace EvolveThisMatch.Save
         /// </summary>
         public void VerifyTalents(UnityAction onComplete = null)
         {
+            if (!PlayFabAuthService.IsLoginState) return;
             if (_talentLocalData.Count == 0) return;
             if (!IsChangedTalent()) return;
 

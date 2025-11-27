@@ -68,14 +68,7 @@ namespace EvolveThisMatch.Lobby
 #if !UNITY_EDITOR
             AdmobManager.Instance.ShowRewardAd((isSuccess) =>
             {
-                if (isSuccess)
-                {
-                    _onGainReward?.Invoke(true);
-                }
-                else
-                {
-                    _onGainReward?.Invoke(false);
-                }
+                _onGainReward?.Invoke(isSuccess);
                 Hide(true);
             });
 #else

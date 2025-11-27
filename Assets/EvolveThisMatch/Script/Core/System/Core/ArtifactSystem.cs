@@ -30,7 +30,7 @@ namespace EvolveThisMatch.Core
         public async void Initialize()
         {
             await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
-            await UniTask.WaitUntil(() => SaveManager.Instance.profileData.isLoaded);
+            await UniTask.WaitUntil(() => SaveManager.Instance.itemData.isLoaded);
 
             var artifactTemplates = GameDataManager.Instance.artifactTemplates.ToList();
             var ownedArtifacts = SaveManager.Instance.itemData.ownedArtifacts;

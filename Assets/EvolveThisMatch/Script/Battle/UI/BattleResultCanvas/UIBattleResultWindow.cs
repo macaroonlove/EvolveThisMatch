@@ -1,6 +1,9 @@
+using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
+using FrameWork;
 using FrameWork.Loading;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -12,8 +15,9 @@ namespace EvolveThisMatch.Battle
         #region 바인딩
         enum Texts
         {
-            DifficultyText,
-            FinalWaveText,
+            CategoryText,
+            ChapterText,
+            FinalPageText,
         }
         enum Buttons
         {
@@ -26,10 +30,14 @@ namespace EvolveThisMatch.Battle
         }
         #endregion
 
-        private TextMeshProUGUI _difficultyText;
-        private TextMeshProUGUI _finalWaveText;
+        [SerializeField] private GameObject _rewardItemPrefab;
+
+        private TextMeshProUGUI _categoryText;
+        private TextMeshProUGUI _chapterText;
+        private TextMeshProUGUI _finalPageText;
         private Transform _rewardGroup;
-        private UIRewardItem[] _rewardItems;
+
+        private BattleResultData _data;
 
         protected override void Initialize()
         {
@@ -37,67 +45,54 @@ namespace EvolveThisMatch.Battle
             BindButton(typeof(Buttons));
             BindObject(typeof(Objects));
 
-            _difficultyText = GetText((int)Texts.DifficultyText);
-            _finalWaveText = GetText((int)Texts.FinalWaveText);
+            _categoryText = GetText((int)Texts.CategoryText);
+            _chapterText = GetText((int)Texts.ChapterText);
+            _finalPageText = GetText((int)Texts.FinalPageText);
             _rewardGroup = GetObject((int)Objects.RewardGroup).transform;
-
-            InitializeRewardItem();
 
             GetButton((int)Buttons.AD).onClick.AddListener(AD);
             GetButton((int)Buttons.GoLobby).onClick.AddListener(GoLobby);
         }
 
-        private void InitializeRewardItem()
+        internal async void Show(BattleResultData data)
         {
-            _rewardItems = new UIRewardItem[3];
-            var rewardItem = GetComponentInChildren<UIRewardItem>();
-            _rewardItems[0] = rewardItem;
-
-            for (int i = 1; i < 3; i++)
-            {
-                var item = Instantiate(rewardItem.gameObject, _rewardGroup).GetComponent<UIRewardItem>();
-                _rewardItems[i] = item;
-            }
-        }
-
-        internal void Show()
-        {
-            var finalWave = BattleManager.Instance.GetSubSystem<WaveSystem>().currentWaveIndex;
-            var currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
-
-            //_difficultyText.text = battleData.displayName;
-            _finalWaveText.text = finalWave.ToString();
-
-            //foreach (var reward in battleData.rewardsPerWave)
-            //{
-            //    int amount = reward.amount * finalWave;
-            //    currencySystem.AddCurrency(reward.type, amount);
-            //}
-
-            //void ShowRewardItems(IReadOnlyList<RewardData> rewards, int index)
-            //{
-            //    if (index >= rewards.Count) return;
-
-            //    var reward = rewards[index];
-            //    int totalAmount = reward.amount * finalWave;
-
-            //    _rewardItems[index].Show(currencySystem.GetIcon(reward.type), totalAmount, () =>
-            //    {
-            //        ShowRewardItems(rewards, index + 1);
-            //    });
-            //}
-
-            //ShowRewardItems(battleData.rewardsPerWave, 0);
-
             base.Show();
+            _data = data;
+
+            _categoryText.text = data.category;
+            _chapterText.text = data.chapter;
+            _finalPageText.text = data.finalPage;
+
+            await ShowReward(0);
+
+            async UniTask ShowReward(int index)
+            {
+                if (index >= data.rewardData.Count)
+                    return;
+
+                var rewardData = data.rewardData[index];
+
+                var item = Instantiate(_rewardItemPrefab, _rewardGroup).GetComponent<UIRewardItem>();
+                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(rewardData.Item1);
+
+                item.Show(variable, rewardData.Item2, async () =>
+                {
+                    await ShowReward(index + 1);
+                });
+            }
         }
 
         private void AD()
         {
-            // 광고 보여주기
-
-            // 로비로 보내기
+#if !UNITY_EDITOR
+            AdmobManager.Instance.ShowRewardAd((isSuccess) =>
+            {
+                _data?.onAgainReward(isSuccess);
+                GoLobby();
+            });
+#else
             GoLobby();
+#endif
         }
 
         private void GoLobby()
