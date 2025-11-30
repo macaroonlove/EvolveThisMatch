@@ -1,6 +1,8 @@
 using EvolveThisMatch.Core;
 using FrameWork;
 using FrameWork.UIBinding;
+using TMPro;
+using UnityEngine;
 
 namespace EvolveThisMatch.Battle
 {
@@ -10,6 +12,12 @@ namespace EvolveThisMatch.Battle
         enum Toggles
         {
             TrainingSchoolToggle,
+        }
+        enum Texts
+        {
+            RarePayText,
+            EpicPayText,
+            LegendPayText,
         }
         enum Buttons
         {
@@ -23,6 +31,9 @@ namespace EvolveThisMatch.Battle
         }
         #endregion
 
+        private TextMeshProUGUI _rarePayText;
+        private TextMeshProUGUI _epicPayText;
+        private TextMeshProUGUI _legendPayText;
         private CanvasGroupController _panel;
 
         private AgentCreateSystem _agentCreateSystem;
@@ -31,9 +42,13 @@ namespace EvolveThisMatch.Battle
         protected override void Initialize()
         {
             BindToggle(typeof(Toggles));
+            BindText(typeof(Texts));
             BindButton(typeof(Buttons));
             BindCanvasGroupController(typeof(CanvasGroup));
 
+            _rarePayText = GetText((int)Texts.RarePayText);
+            _epicPayText = GetText((int)Texts.EpicPayText);
+            _legendPayText = GetText((int)Texts.LegendPayText);
             _panel = GetCanvasGroupController((int)CanvasGroup.TrainingSchoolPanel);
 
             GetToggle((int)Toggles.TrainingSchoolToggle).onValueChanged.AddListener(ActivePanel);
@@ -46,6 +61,13 @@ namespace EvolveThisMatch.Battle
         {
             _agentCreateSystem = BattleManager.Instance.GetSubSystem<AgentCreateSystem>();
             _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
+
+            _crystalSystem.onChangedCrystal += OnChangeCrystal;
+        }
+
+        internal void DeinitializeBattle()
+        {
+            _crystalSystem.onChangedCrystal -= OnChangeCrystal;
         }
 
         private void ActivePanel(bool isOn)
@@ -58,6 +80,13 @@ namespace EvolveThisMatch.Battle
             {
                 _panel.Hide();
             }
+        }
+
+        private void OnChangeCrystal(int value)
+        {
+            _rarePayText.color = value >= 1 ? Color.white : Color.red;
+            _epicPayText.color = value >= 3 ? Color.white : Color.red;
+            _legendPayText.color = value >= 7 ? Color.white : Color.red;
         }
 
         private void CreateRareUnit()
@@ -80,6 +109,7 @@ namespace EvolveThisMatch.Battle
             if (!_crystalSystem.CheckCrystal(payCrystal))
             {
                 // TODO: 재능의 파편이 부족하다고 알림 주기
+                return;
             }
 
             if (_agentCreateSystem.CreateRandomUnit(rarity))

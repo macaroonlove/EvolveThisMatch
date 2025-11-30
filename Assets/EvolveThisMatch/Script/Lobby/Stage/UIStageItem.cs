@@ -29,6 +29,8 @@ namespace EvolveThisMatch.Lobby
         private UnityAction<UIStageItem> _onSelect;
 
         internal WaveTemplate waveTemplate { get; private set; }
+        internal bool isActive { get; private set; }
+        internal bool isClear { get; private set; }
 
         internal void Initialize(UnityAction<UIStageItem> onSelect)
         {
@@ -44,12 +46,14 @@ namespace EvolveThisMatch.Lobby
             _selected.enabled = false;
         }
 
-        internal void Show(WaveTemplate waveTemplate, bool isActive)
+        internal void Show(WaveTemplate waveTemplate, bool isActive, bool isClear)
         {
             this.waveTemplate = waveTemplate;
+            this.isActive = isActive;
+            this.isClear = isClear;
 
             _title.text = $"{waveTemplate.stage}\n{waveTemplate.displayName}";
-            _background.color = isActive ? Color.yellow : Color.white;
+            _background.color = isClear ? (isActive ? Color.yellow : Color.white) : Color.gray4;
         }
 
         internal void Select()

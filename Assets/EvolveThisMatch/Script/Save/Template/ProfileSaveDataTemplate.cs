@@ -21,6 +21,9 @@ namespace EvolveThisMatch.Save
         [Tooltip("튜토리얼 클리어 여부")]
         public bool isClearTutorial;
 
+        [Tooltip("카테고리 별 진행 정보")]
+        public Dictionary<string, CategoryInfo> Categories = new Dictionary<string, CategoryInfo>();
+
         // =========================
         // 기본
         // =========================
@@ -121,6 +124,13 @@ namespace EvolveThisMatch.Save
 
         [Tooltip("돋보기")]
         public int Magnifier;
+
+        [Serializable]
+        public class CategoryInfo
+        {
+            public int MaxChapter;
+            public int MaxStage;
+        }
     }
 
     [CreateAssetMenu(menuName = "Templates/SaveData/ProfileSaveData", fileName = "ProfileSaveData", order = 0)]
@@ -134,6 +144,7 @@ namespace EvolveThisMatch.Save
         private string _displayName;
         public string displayName => _displayName;
         public bool isClearTutorial => _data.isClearTutorial;
+        public Dictionary<string, ProfileSaveData.CategoryInfo> categories => _data.Categories;
 
         public event UnityAction changedDisplayName;
 
@@ -147,7 +158,7 @@ namespace EvolveThisMatch.Save
 
         public override bool Load(string json)
         {
-            _data = JsonUtility.FromJson<ProfileSaveData>(json);
+            _data = PlayFabSimpleJson.DeserializeObject<ProfileSaveData>(json);
 
             if (_data != null)
             {
@@ -390,7 +401,7 @@ namespace EvolveThisMatch.Save
                 return;
             }
 
-            SaveDisplayName(displayName, (isComplete) => 
+            SaveDisplayName(displayName, (isComplete) =>
             {
                 if (isComplete)
                 {

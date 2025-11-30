@@ -16,6 +16,7 @@ namespace FrameWork.UI
         #endregion
 
         [SerializeField] private int _maxTextLength = 3;
+        [SerializeField] private int _turncate = 2;
         [SerializeField] private float _holdingTime = 1;
         [SerializeField] private float _moveTime = 1;
         [SerializeField] private Color _plus = Color.green;
@@ -54,7 +55,7 @@ namespace FrameWork.UI
             
             if (diff > 0)
             {
-                text.text = $"+{diff.Format(_maxTextLength)}";
+                text.text = $"+{diff.Format(_maxTextLength, _turncate)}";
                 text.color = _plus;
 
                 _cachedSequence = DOTween.Sequence();
@@ -63,7 +64,7 @@ namespace FrameWork.UI
             }
             else
             {
-                text.text = $"-{diff.Format(_maxTextLength)}";
+                text.text = $"-{diff.Format(_maxTextLength, _turncate)}";
                 text.color = _minus;
 
                 _cachedSequence = DOTween.Sequence();

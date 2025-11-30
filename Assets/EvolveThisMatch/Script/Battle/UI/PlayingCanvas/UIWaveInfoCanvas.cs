@@ -41,7 +41,7 @@ namespace EvolveThisMatch.Battle
 
         private void OnWaveChanged(int waveInfo, float remaining)
         {
-            _waveStepText.text = $"Wave {waveInfo}";
+            _waveStepText.text = $"Page {waveInfo}";
             StartCoroutine(UpdateRemainingTime(remaining));
         }
 

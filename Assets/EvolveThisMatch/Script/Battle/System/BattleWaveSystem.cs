@@ -10,6 +10,7 @@ namespace EvolveThisMatch.Battle
         private int _currentCategoryIndex;
         private int _currentChapterIndex;
 
+        public int waveIndex => _currentChapterIndex * 10 + currentWaveIndex;
         public WaveCategory waveCategory => _waveLibrary.categorys[_currentCategoryIndex];
 
         public event UnityAction<int, float> onWaveChanged;

@@ -1,10 +1,12 @@
 using CodeStage.AntiCheat.ObscuredTypes;
 using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -28,6 +30,7 @@ namespace EvolveThisMatch.Lobby
 
         private TMP_Dropdown _categoryDropdown;
         private TextMeshProUGUI _stageName;
+        private Button _enterStageButton;
 
         [SerializeField] private WaveLibraryTemplate _waveLibraryTemplates;
 
@@ -58,6 +61,7 @@ namespace EvolveThisMatch.Lobby
 
             _stageName = GetText((int)Texts.StageName);
             _categoryDropdown = GetDropdown((int)Dropdowns.CategoryDropdown);
+            _enterStageButton = GetButton((int)Buttons.EnterStageButton);
             InitializeCategory();
 
             for (int i = 0; i < _chapterItems.Length; i++)
@@ -72,7 +76,7 @@ namespace EvolveThisMatch.Lobby
             }
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
-            GetButton((int)Buttons.EnterStageButton).onClick.AddListener(EnterStage);
+            _enterStageButton.onClick.AddListener(EnterStage);
         }
 
         private void Start()
@@ -162,7 +166,7 @@ namespace EvolveThisMatch.Lobby
         {
             for (int i = 0; i < _chapterItems.Length; i++)
             {
-                _chapterItems[i].Show(_waveLibraryTemplates.categorys[_currentCategory].chapters[i]);
+                _chapterItems[i].Show(_waveLibraryTemplates.categorys[_currentCategory].chapters[i], true);
             }
         }
 
@@ -178,10 +182,14 @@ namespace EvolveThisMatch.Lobby
         #region 챕터
         private void ShowChapter()
         {
+            SaveManager.Instance.profileData.categories.TryGetValue($"{_currentCategory}", out var info);
+
             for (int i = 0; i < _stageItems.Length; i++)
             {
                 bool isActiveStage = MatchStageData(_currentCategory, _currentChapter, i);
-                _stageItems[i].Show(_chapterItems[_currentChapter].waveChapter.waves[i], isActiveStage);
+                bool isClear = info != null && _currentChapter * 10 + i <= info.MaxStage;
+
+                _stageItems[i].Show(_chapterItems[_currentChapter].waveChapter.waves[i], isActiveStage, isClear);
             }
         }
 
@@ -240,6 +248,9 @@ namespace EvolveThisMatch.Lobby
                     index++;
                 }
             }
+
+            // 이미 활성화된 스테이지라면 && 클리어한 스테이지라면
+            _enterStageButton.interactable = !_currentStageItem.isActive && _currentStageItem.isClear;
         }
 
         private void EnterStage()

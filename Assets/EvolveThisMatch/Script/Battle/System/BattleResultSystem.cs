@@ -73,13 +73,15 @@ namespace EvolveThisMatch.Battle
 
         private void RequestBattleReward(bool battleResult)
         {
+            var waveIndex = _waveSystem.waveIndex;
+
             var request = new ExecuteCloudScriptRequest
             {
                 FunctionName = "BattleEnd",
                 FunctionParameter = new
                 {
                     BattleResult = battleResult,
-                    WaveIndex = _waveSystem.currentWaveIndex
+                    WaveIndex = waveIndex
                 },
                 GeneratePlayStreamEvent = true
             };
@@ -96,7 +98,7 @@ namespace EvolveThisMatch.Battle
 
                         var category = _waveSystem.waveLibrary.categorys[categoryIndex];
                         var chapter = category.chapters[chapterIndex];
-                        var page = _waveSystem.currentWaveIndex;
+                        var page = waveIndex;
 
                         var rewards = new List<(string, int)>();
 

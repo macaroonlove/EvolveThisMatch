@@ -42,11 +42,13 @@ namespace EvolveThisMatch.Lobby
             _toggle.onValueChanged.AddListener(ChangeChapter);
         }
 
-        internal void Show(WaveChapter waveChapter)
+        internal void Show(WaveChapter waveChapter, bool isSelectAble)
         {
             this.waveChapter = waveChapter;
 
             _label.text = waveChapter.chapterName;
+
+            _toggle.interactable = isSelectAble;
         }
 
         internal void Select()

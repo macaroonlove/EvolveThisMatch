@@ -1,4 +1,5 @@
 using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.Loading;
 using FrameWork.UIBinding;
@@ -56,7 +57,7 @@ namespace EvolveThisMatch.Lobby
         private int _currentChapter;
         private int _selectedUsabilityItem;
         private int _multiplyReward;
-        private bool _isBattleAble;
+        private bool _isLackAction;
 
         private Dictionary<int, ObscuredIntVariable> _variables = new Dictionary<int, ObscuredIntVariable>();
 
@@ -118,7 +119,8 @@ namespace EvolveThisMatch.Lobby
         {
             _categoryDropdown.value = _currentCategory;
 
-            ShowCategory();
+            SaveManager.Instance.profileData.categories.TryGetValue($"{_currentCategory}", out var info);
+            ShowCategory(info);
 
             base.Show(true);
         }
@@ -143,19 +145,33 @@ namespace EvolveThisMatch.Lobby
             _categoryDropdown.AddOptions(options);
         }
 
-        private void ShowCategory()
+        private void ShowCategory(ProfileSaveData.CategoryInfo info)
         {
             for (int i = 0; i < _chapterItems.Length; i++)
             {
-                _chapterItems[i].Show(_waveLibraryTemplates.categorys[_currentCategory].chapters[i]);
+                var isSelectAble = info != null && info.MaxChapter >= i;
+
+                _chapterItems[i].Show(_waveLibraryTemplates.categorys[_currentCategory].chapters[i], isSelectAble);
             }
         }
 
         private void ChangeCategory(int category)
         {
+            SaveManager.Instance.profileData.categories.TryGetValue($"{category}", out var info);
+
+            if (info == null)
+            {
+                // 되돌리기
+                _categoryDropdown.SetValueWithoutNotify(_currentCategory);
+
+                // 경고 띄우기
+                UIPopupManager.Instance.ShowConfirmPopup("해금되지 않은 카테고리입니다.");
+                return;
+            }
+
             _currentCategory = category;
 
-            ShowCategory();
+            ShowCategory(info);
             ChangeChapter(0);
         }
         #endregion
@@ -192,22 +208,22 @@ namespace EvolveThisMatch.Lobby
             if (limit < 1) limit = 1;
 
             _multiplyReward = Mathf.Clamp(_multiplyReward + delta, 1, limit);
-            _isBattleAble = _variables[4].Value >= _multiplyReward * 5;
+            _isLackAction = _variables[4].Value < _multiplyReward * 5;
 
             _rewardText.text = $"보상 <size=18>×</size>{_multiplyReward}";
-            if (_isBattleAble)
+            if (_isLackAction)
             {
-                _battleStartText.text = $"개입 시작\n<sprite name=Action> {_multiplyReward * 5}";
+                _battleStartText.text = $"<color=#FF4B4B>개입 시작\n<sprite name=Action> {_multiplyReward * 5}</color>";
             }
             else
             {
-                _battleStartText.text = $"<color=#FF4B4B>개입 시작\n<sprite name=Action> {_multiplyReward * 5}</color>";
+                _battleStartText.text = $"개입 시작\n<sprite name=Action> {_multiplyReward * 5}";
             }
         }
 
         private void BattleStartButton()
         {
-            if (_isBattleAble == false)
+            if (_isLackAction)
             {
                 UIPopupManager.Instance.ShowConfirmPopup("봉인된 서약서의 개수가 부족하여 전투를 시작할 수 없습니다.");
                 return;

@@ -239,7 +239,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _variable: {fileID: 0}
-  _maxLength: 6
+  _maxLength: 5
+  _turncate: 1
+  _isShowInfo: 0
 --- !u!225 &7649500645076260714
 CanvasGroup:
   m_ObjectHideFlags: 0

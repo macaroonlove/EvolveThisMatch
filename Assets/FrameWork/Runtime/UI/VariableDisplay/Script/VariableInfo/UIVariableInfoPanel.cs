@@ -56,7 +56,7 @@ namespace FrameWork.UI
             _background.sprite = info.variable.IconBG;
             _icon.sprite = info.variable.Icon;
             _displayName.text = info.variable.DisplayName;
-            _count.text = $"{info.variable.Value} 개";
+            _count.text = $"{info.variable.Value:N0} 개";
             _descriptionText.text = info.description;
 
             // 모든 기존 아이템 비활성화

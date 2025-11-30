@@ -48,6 +48,7 @@ namespace EvolveThisMatch.Battle
         private void OnBattleDeinitialize()
         {
             _uiEnemyCountCanvas.DeinitializeBattle();
+            _uiTrainingSchoolCanvas.DeinitializeBattle();
             _uiEngraveCanvas.DeinitializeBattle();
             _uiSynergyCanvas.DeinitializeBattle();
 

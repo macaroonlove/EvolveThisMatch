@@ -1,7 +1,5 @@
 using Cysharp.Threading.Tasks;
-using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
-using FrameWork.PlayFabExtensions;
 using FrameWork.UIPopup;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -20,6 +18,7 @@ namespace EvolveThisMatch.Lobby
         private bool _isRunning = true;
         private bool _isInitialize = false;
 
+#if !UNITY_EDITOR
         private void Start()
         {
             // 비로그인 상태라면 기록하지 않는다.
@@ -80,7 +79,8 @@ namespace EvolveThisMatch.Lobby
             _isRunning = false;
         }
         #endregion
-
+#endif
+        
         #region 서버에 방치 보상을 요청
         /// <summary>
         /// 오프라인 보상 획득 시도

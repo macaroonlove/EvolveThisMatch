@@ -45,7 +45,7 @@ namespace EvolveThisMatch.Battle
             _coinSystem.onChangedCoin += OnChangeCoin;
 
             _needCoin = 20;
-            _needCostText.text = _needCoin.ToString();
+            _needCostText.text = $"<sprite name=coin> {_needCoin}";
         }
 
         private void OnDestroy()
@@ -89,7 +89,7 @@ namespace EvolveThisMatch.Battle
             {
                 _coinSystem.PayCoin(_needCoin);
                 _needCoin++;
-                _needCostText.text = _needCoin.ToString();
+                _needCostText.text = $"<sprite name=coin> {_needCoin}";
             }
             else
             {

@@ -755,6 +755,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _variable: {fileID: 11400000, guid: f064f254d73c49b4da03d2b7a38f300e, type: 2}
   _maxLength: 3
+  _turncate: 2
   _isShowInfo: 0
 --- !u!114 &37424728
 MonoBehaviour:
@@ -4540,6 +4541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _variable: {fileID: 11400000, guid: 89aec9c43f52ed44486621681ac4df8f, type: 2}
   _maxLength: 3
+  _turncate: 2
   _isShowInfo: 0
 --- !u!114 &272437894
 MonoBehaviour:
@@ -18230,6 +18232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _variable: {fileID: 11400000, guid: 772fd5be26d149e4db0e60ca17dd12c5, type: 2}
   _maxLength: 3
+  _turncate: 2
   _isShowInfo: 0
 --- !u!114 &1100165797
 MonoBehaviour:
@@ -30287,6 +30290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _variable: {fileID: 11400000, guid: 0032cc0b984fc0e4b8d4cd5187fc9e34, type: 2}
   _maxLength: 3
+  _turncate: 2
   _isShowInfo: 0
 --- !u!114 &2053671433
 MonoBehaviour:
@@ -32073,6 +32077,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FormationCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2973897345226145025, guid: bc7f887702399ff4fa40b4d20795afb7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4813945993878790556, guid: bc7f887702399ff4fa40b4d20795afb7, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -32155,6 +32163,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4968401158955519956, guid: bc7f887702399ff4fa40b4d20795afb7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140510428256790881, guid: bc7f887702399ff4fa40b4d20795afb7, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140510428256790881, guid: bc7f887702399ff4fa40b4d20795afb7, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140510428256790881, guid: bc7f887702399ff4fa40b4d20795afb7, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5692641567670789461, guid: bc7f887702399ff4fa40b4d20795afb7, type: 3}
@@ -32304,6 +32324,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1790732632}
     m_Modifications:
+    - target: {fileID: 1008762672708056007, guid: 62c1b105358d9fa4baba4e0217e3e25b, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008762672708056007, guid: 62c1b105358d9fa4baba4e0217e3e25b, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008762672708056007, guid: 62c1b105358d9fa4baba4e0217e3e25b, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2337885216029958906, guid: 62c1b105358d9fa4baba4e0217e3e25b, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -32571,6 +32603,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1880622659132542414, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2066566742400824796, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2066566742400824796, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2066566742400824796, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2254524175423851537, guid: bae8a1ff75cc794459ecb9ef05a1ce99, type: 3}
@@ -33779,11 +33823,27 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4428182078280531440, guid: c66094328bb67214fb91b2851f1532a0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4428182078280531440, guid: c66094328bb67214fb91b2851f1532a0, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4826810275677240161, guid: c66094328bb67214fb91b2851f1532a0, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5310176694449801756, guid: c66094328bb67214fb91b2851f1532a0, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5310176694449801756, guid: c66094328bb67214fb91b2851f1532a0, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5310176694449801756, guid: c66094328bb67214fb91b2851f1532a0, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7088989540196908399, guid: c66094328bb67214fb91b2851f1532a0, type: 3}
@@ -35458,6 +35518,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1790732632}
     m_Modifications:
+    - target: {fileID: 272901047094518110, guid: 88c82b36980fa044aa17592ce89cc09e, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 272901047094518110, guid: 88c82b36980fa044aa17592ce89cc09e, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 272901047094518110, guid: 88c82b36980fa044aa17592ce89cc09e, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 897773000959859424, guid: 88c82b36980fa044aa17592ce89cc09e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -36677,6 +36749,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1790732632}
     m_Modifications:
+    - target: {fileID: 1333437636715970051, guid: abfc46ac1a2a5a342abab2f29684db66, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333437636715970051, guid: abfc46ac1a2a5a342abab2f29684db66, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333437636715970051, guid: abfc46ac1a2a5a342abab2f29684db66, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2348340819229647012, guid: abfc46ac1a2a5a342abab2f29684db66, type: 3}
       propertyPath: m_Name
       value: TomeCanvas
@@ -38176,6 +38260,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 696236296620110332, guid: e72590cbebf4a3d4b97a6f37a3a107c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 696236296620110332, guid: e72590cbebf4a3d4b97a6f37a3a107c6, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
@@ -38221,6 +38309,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1127128321378677167, guid: e72590cbebf4a3d4b97a6f37a3a107c6, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1272138836135903716, guid: e72590cbebf4a3d4b97a6f37a3a107c6, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1272138836135903716, guid: e72590cbebf4a3d4b97a6f37a3a107c6, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1272138836135903716, guid: e72590cbebf4a3d4b97a6f37a3a107c6, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1422039295858918597, guid: e72590cbebf4a3d4b97a6f37a3a107c6, type: 3}

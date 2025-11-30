@@ -23,6 +23,7 @@ namespace FrameWork.UI
 
         [SerializeField] private ObscuredIntVariable _variable;
         [SerializeField] private int _maxLength;
+        [SerializeField] private int _turncate = 2;
         [SerializeField] private bool _isShowInfo;
 
         private TextMeshProUGUI _valueText;
@@ -88,7 +89,7 @@ namespace FrameWork.UI
 
         private void Apply(int value)
         {
-            _valueText.text = value.Format(_maxLength);
+            _valueText.text = value.Format(_maxLength, _turncate);
         }
 
         public void OnPointerClick(PointerEventData eventData)
