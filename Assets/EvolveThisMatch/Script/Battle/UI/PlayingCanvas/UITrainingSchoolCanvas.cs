@@ -1,6 +1,7 @@
 using EvolveThisMatch.Core;
 using FrameWork;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
 using TMPro;
 using UnityEngine;
 
@@ -108,7 +109,7 @@ namespace EvolveThisMatch.Battle
         {
             if (!_crystalSystem.CheckCrystal(payCrystal))
             {
-                // TODO: 재능의 파편이 부족하다고 알림 주기
+                UIPopupManager.Instance.ShowNotificationPopup("재능의 파편이 부족해 소환할 수 없습니다.");
                 return;
             }
 
@@ -118,7 +119,7 @@ namespace EvolveThisMatch.Battle
             }
             else
             {
-                // TODO: 자리가 부족하다고 알림 주기
+                UIPopupManager.Instance.ShowNotificationPopup("더 이상 인물을 투영시키기 힘들어..");
             }
         }
     }

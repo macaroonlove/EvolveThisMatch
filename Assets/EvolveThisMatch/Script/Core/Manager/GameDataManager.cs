@@ -32,6 +32,16 @@ namespace EvolveThisMatch.Core
             return _agentLibrary.templates.Where(x => x.id == id).FirstOrDefault();
         }
 
+        public ArtifactTemplate GetArtifactTemplateById(int id)
+        {
+            return _artifactLibrary.templates.Where(x => x.id == id).FirstOrDefault();
+        }
+
+        public TomeTemplate GetTomeTemplateById(int id)
+        {
+            return _tomeLibrary.templates.Where(x => x.id == id).FirstOrDefault();
+        }
+
         /// <summary>
         /// 게임을 시작할 때 초기화
         /// </summary>

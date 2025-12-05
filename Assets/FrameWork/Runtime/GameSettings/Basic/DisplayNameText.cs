@@ -91,7 +91,7 @@ namespace FrameWork.GameSettings
             }
             else
             {
-                UIPopupManager.Instance.ShowConfirmPopup("닉네임은 2글자 이상 10글자 이하여야 합니다.");
+                UIPopupManager.Instance.ShowNotificationPopup("닉네임은 2글자 이상 10글자 이하여야 합니다.");
             }
         }
     }

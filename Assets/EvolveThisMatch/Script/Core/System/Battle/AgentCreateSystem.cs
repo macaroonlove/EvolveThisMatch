@@ -1,4 +1,5 @@
 using EvolveThisMatch.Save;
+using FrameWork.UIPopup;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -94,7 +95,8 @@ namespace EvolveThisMatch.Core
                 // 타일 위치 가져오기
                 tile = _tileSystem.GetPlaceAbleTile();
 
-                // TODO: 더 이상 소환할 수 없다고 팝업 띄워주기
+                UIPopupManager.Instance.ShowNotificationPopup("더 이상 인물을 투영시키기 힘들어..");
+
                 if (tile == null) return false;
             }
 

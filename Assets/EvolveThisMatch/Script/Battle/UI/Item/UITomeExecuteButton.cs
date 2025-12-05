@@ -1,6 +1,7 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -485,7 +486,7 @@ namespace EvolveThisMatch.Battle
                 }
                 else
                 {
-                    // TODO: 대상 검출에 실패했다는 UI를 보여주거나 실패 사운드 들려주기
+                    UIPopupManager.Instance.ShowNotificationPopup("대상 검출에 실패했습니다.");
                 }
             }, ExecuteItem);
         }
@@ -504,7 +505,7 @@ namespace EvolveThisMatch.Battle
                 }
                 else
                 {
-                    // TODO: 대상 검출에 실패했다는 UI를 보여주거나 실패 사운드 들려주기
+                    UIPopupManager.Instance.ShowNotificationPopup("대상 검출에 실패했습니다.");
                 }
             });
             _isActiveRangeRenderer = true;

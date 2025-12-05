@@ -12,6 +12,7 @@ using ScriptableObjectArchitecture;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -454,7 +455,7 @@ namespace EvolveThisMatch.Lobby
 
                     if (maxValue <= 0)
                     {
-                        UIPopupManager.Instance.ShowConfirmPopup("재화가 부족해서 구매가 불가능합니다.");
+                        UIPopupManager.Instance.ShowNotificationPopup("재화가 부족해서 구매가 불가능합니다.");
                         return false;
                     }
                 }
@@ -487,7 +488,7 @@ namespace EvolveThisMatch.Lobby
                 }
                 else
                 {
-                    UIPopupManager.Instance.ShowConfirmPopup("결제에 실패하였습니다.");
+                    UIPopupManager.Instance.ShowNotificationPopup("결제에 실패하였습니다.");
                 }
             }
             else
@@ -499,65 +500,111 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        private async void PayAfter(UIShopSubTab tab, ShopItem itemData, int buyCount, List<ShopSaveDataTemplate.ShopReward> rewards)
+        private void PayAfter(UIShopSubTab tab, ShopItem itemData, int buyCount, List<ShopSaveDataTemplate.ShopReward> rewards)
         {
             // 비용 처리
             if (itemData.currency != "RM")
             {
-                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(itemData.currency);
+                var currency = SaveManager.Instance.profileData.GetVariable(itemData.currency);
                 currency.AddValue(-itemData.price * buyCount);
             }
 
-            // 보상 처리
+            Dictionary<string, AcquireItem> acquireDic = new Dictionary<string, AcquireItem>();
+
             foreach (var reward in rewards)
             {
-                if (reward.type == "Profile")
-                {
-                    var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key);
-                    variable.AddValue(reward.amount);
-                }
-                else if (reward.type == "Agent")
-                {
-                    SaveManager.Instance.agentData.AddAgent(reward.id, reward.amount);
-                }
-                else if (reward.type == "Artifact")
-                {
-                    SaveManager.Instance.itemData.AddArtifact(reward.id, reward.amount);
-                }
-                else if (reward.type == "Tome")
-                {
-                    SaveManager.Instance.itemData.AddTome(reward.id, reward.amount);
-                }
-                else if (reward.type == "Method")
-                {
-                    // 뽑기 결과를 로컬에 반영
-                    foreach (var result in reward.results)
-                    {
-                        var parts = result.Split('_');
-                        string type = parts[0];
-                        int id = int.Parse(parts[1]);
-
-                        if (type == "Agent")
-                        {
-                            SaveManager.Instance.agentData.AddAgent(id);
-                        }
-                        else if (type == "Artifact")
-                        {
-                            SaveManager.Instance.itemData.AddArtifact(id);
-                        }
-                        else if (type == "Tome")
-                        {
-                            SaveManager.Instance.itemData.AddTome(id);
-                        }
-                    }
-                }
+                OrganizeReward(reward, acquireDic);
             }
+
+            UIPopupManager.Instance.ShowAcquirePopup(acquireDic.Values.ToList());
 
             // 구매 처리
             var shopCatalog = SaveManager.Instance.shopData.GetShopCatalog(tab.subTabData.subTab);
             shopCatalog.AddItem(itemData.id, buyCount);
 
             tab.Select();
+        }
+
+        private void OrganizeReward(ShopSaveDataTemplate.ShopReward reward, Dictionary<string, AcquireItem> acquireDic)
+        {
+            if (reward.type == "Profile")
+            {
+                var variable = SaveManager.Instance.profileData.GetVariable(reward.key);
+                variable.AddValue(reward.amount);
+
+                OverlapItem(acquireDic, variable.Icon, reward.amount, variable.DisplayName);
+                return;
+            }
+
+            if (reward.type == "Agent")
+            {
+                SaveManager.Instance.agentData.AddAgent(reward.id, reward.amount);
+                var template = GameDataManager.Instance.GetAgentTemplateById(reward.id);
+
+                OverlapItem(acquireDic, template.sprite, reward.amount, template.displayName);
+                return;
+            }
+
+            if (reward.type == "Artifact")
+            {
+                SaveManager.Instance.itemData.AddArtifact(reward.id, reward.amount);
+                var template = GameDataManager.Instance.GetArtifactTemplateById(reward.id);
+
+                OverlapItem(acquireDic, template.sprite, reward.amount, template.displayName);
+                return;
+            }
+
+            if (reward.type == "Tome")
+            {
+                SaveManager.Instance.itemData.AddTome(reward.id, reward.amount);
+                var template = GameDataManager.Instance.GetTomeTemplateById(reward.id);
+
+                OverlapItem(acquireDic, template.sprite, reward.amount, template.displayName);
+                return;
+            }
+
+            if (reward.type == "Method")
+            {
+                foreach (var result in reward.results)
+                {
+                    var parts = result.Split('_');
+                    string type = parts[0];
+                    int id = int.Parse(parts[1]);
+
+                    if (type == "Agent")
+                    {
+                        SaveManager.Instance.agentData.AddAgent(id);
+                        var template = GameDataManager.Instance.GetAgentTemplateById(id);
+                        OverlapItem(acquireDic, template.sprite, 1, template.displayName);
+                    }
+                    else if (type == "Artifact")
+                    {
+                        SaveManager.Instance.itemData.AddArtifact(id);
+                        var template = GameDataManager.Instance.GetArtifactTemplateById(id);
+                        OverlapItem(acquireDic, template.sprite, 1, template.displayName);
+                    }
+                    else if (type == "Tome")
+                    {
+                        SaveManager.Instance.itemData.AddTome(id);
+                        var template = GameDataManager.Instance.GetTomeTemplateById(id);
+                        OverlapItem(acquireDic, template.sprite, 1, template.displayName);
+                    }
+                }
+            }
+        }
+
+        private void OverlapItem(Dictionary<string, AcquireItem> acquireDic, Sprite icon, int amount, string displayName)
+        {
+            if (acquireDic.TryGetValue(displayName, out var item))
+            {
+                // 기존 획득량에 추가
+                item.count += amount;
+                acquireDic[displayName] = item;
+            }
+            else
+            {
+                acquireDic[displayName] = new AcquireItem(icon, amount, displayName);
+            }
         }
         #endregion
     }

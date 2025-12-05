@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c81f323772a24b24f9a6cb5cdb6f430c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239875
+  packageName: Flipbook VFX - URP
+  packageVersion: 1.0.22
+  assetPath: Assets/Vefects/Flipbook VFX URP/Elements 2D/Fire/Materials/M_VFX_2D_URP_Fire_Burst_02.mat
+  uploadId: 766199

@@ -281,7 +281,17 @@ namespace EvolveThisMatch.Save
                         }
 
                         // 函版等 积魂前 利侩
-                        SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+                        var results = SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+
+                        List<AcquireItem> acquireItems = new List<AcquireItem>();
+                        foreach (var (variable, diff) in results)
+                        {
+                            if (diff <= 0) continue;
+
+                            acquireItems.Add(new AcquireItem(variable.Icon, diff, variable.DisplayName));
+                        }
+
+                        UIPopupManager.Instance.ShowAcquirePopup(acquireItems);
 
                         SaveDepartmentLocalData();
 
@@ -339,7 +349,17 @@ namespace EvolveThisMatch.Save
                         }
 
                         // 函版等 积魂前 利侩
-                        SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+                        var results = SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+
+                        List<AcquireItem> acquireItems = new List<AcquireItem>();
+                        foreach (var (variable, diff) in results)
+                        {
+                            if (diff <= 0) continue;
+
+                            acquireItems.Add(new AcquireItem(variable.Icon, diff, variable.DisplayName));
+                        }
+
+                        UIPopupManager.Instance.ShowAcquirePopup(acquireItems);
 
                         SaveDepartmentLocalData();
 

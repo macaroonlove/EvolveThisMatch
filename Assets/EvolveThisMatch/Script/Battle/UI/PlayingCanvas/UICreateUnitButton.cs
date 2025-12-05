@@ -1,5 +1,6 @@
 using EvolveThisMatch.Core;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -74,7 +75,7 @@ namespace EvolveThisMatch.Battle
         {
             if (!_coinSystem.CheckCoin(_needCoin))
             {
-                // TODO: 코인이 부족하다고 알림 주기
+                UIPopupManager.Instance.ShowNotificationPopup("코인이 부족해 소환할 수 없습니다.");
             }
 
             var rarity = EAgentRarity.Common;
@@ -93,7 +94,7 @@ namespace EvolveThisMatch.Battle
             }
             else
             {
-                // TODO: 자리가 부족하다고 알림 주기
+                UIPopupManager.Instance.ShowNotificationPopup("더 이상 인물을 투영시키기 힘들어..");
             }
         }
     }

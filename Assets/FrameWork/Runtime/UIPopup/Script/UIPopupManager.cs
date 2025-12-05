@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,16 +7,30 @@ namespace FrameWork.UIPopup
     public class UIPopupManager : Singleton<UIPopupManager>
     {
         [SerializeField] private UINotificationPopup _notificationPopup;
+        [SerializeField] private UIAcquirePopup _acquirePopup;
         [SerializeField] private UIConfirmPopup _confirmPopup;
         [SerializeField] private UIConfirmCancelPopup _confirmCancelPopup;
         [SerializeField] private UIInputPopup _inputPopup;
 
         /// <summary>
-        /// 우측 상단에서 정보만 보여주는 팝업
+        /// 상단에서 정보 보여주는 팝업
         /// </summary>
-        public void ShowNotificationPopup(string title, string description, ENotificationType notificationType = ENotificationType.BasicNotificationPop, Sprite sprite = null)
+        public void ShowNotificationPopup(string context)
         {
-            _notificationPopup.Show(title, description, sprite, notificationType);
+            _notificationPopup.Show(context);
+        }
+
+        /// <summary>
+        /// 아이템 획득 팝업
+        /// </summary>
+        public void ShowAcquirePopup(List<AcquireItem> acquireItems, UnityAction action = null)
+        {
+            _acquirePopup.Show(acquireItems);
+
+            _acquirePopup.OnResult += () =>
+            {
+                action?.Invoke();
+            };
         }
 
         /// <summary>

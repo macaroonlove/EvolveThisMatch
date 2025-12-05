@@ -397,7 +397,7 @@ namespace EvolveThisMatch.Save
         {
             if (_variableDic[EVariableType.Essence].Value < 500)
             {
-                UIPopupManager.Instance.ShowConfirmPopup("세계석이 부족합니다.");
+                UIPopupManager.Instance.ShowNotificationPopup("세계석이 부족합니다.");
                 return;
             }
 
@@ -487,11 +487,11 @@ namespace EvolveThisMatch.Save
                     break;
 
                 case PlayFabErrorCode.NameNotAvailable:
-                    UIPopupManager.Instance.ShowConfirmPopup("이미 존재하는 닉네임입니다. 다른 이름을 입력해주세요.");
+                    UIPopupManager.Instance.ShowNotificationPopup("이미 존재하는 닉네임입니다. 다른 이름을 입력해주세요.");
                     break;
 
                 case PlayFabErrorCode.InvalidUsername:
-                    UIPopupManager.Instance.ShowConfirmPopup("닉네임 규칙에 맞지 않습니다. 다시 입력해주세요.");
+                    UIPopupManager.Instance.ShowNotificationPopup("닉네임 규칙에 맞지 않습니다. 다시 입력해주세요.");
                     break;
 
                 default:

@@ -139,7 +139,7 @@ namespace EvolveThisMatch.Lobby
                 // 해당 ObscuredIntVariable을 찾을 수 있다면
                 if (variable != null)
                 {
-                    UIPopupManager.Instance.ShowConfirmPopup($"{variable.DisplayName}이(가) 부족합니다.");
+                    UIPopupManager.Instance.ShowNotificationPopup($"{variable.DisplayName}이(가) 부족합니다.");
                 }
             }
         }

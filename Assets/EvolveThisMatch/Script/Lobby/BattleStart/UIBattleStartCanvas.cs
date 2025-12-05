@@ -165,7 +165,7 @@ namespace EvolveThisMatch.Lobby
                 _categoryDropdown.SetValueWithoutNotify(_currentCategory);
 
                 // 경고 띄우기
-                UIPopupManager.Instance.ShowConfirmPopup("해금되지 않은 카테고리입니다.");
+                UIPopupManager.Instance.ShowNotificationPopup("해금되지 않은 카테고리입니다.");
                 return;
             }
 
@@ -225,7 +225,7 @@ namespace EvolveThisMatch.Lobby
         {
             if (_isLackAction)
             {
-                UIPopupManager.Instance.ShowConfirmPopup("봉인된 서약서의 개수가 부족하여 전투를 시작할 수 없습니다.");
+                UIPopupManager.Instance.ShowNotificationPopup("봉인된 서약서의 개수가 부족하여 전투를 시작할 수 없습니다.");
                 return;
             }
 
