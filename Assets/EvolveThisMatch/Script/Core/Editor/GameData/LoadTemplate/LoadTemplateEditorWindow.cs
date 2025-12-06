@@ -87,9 +87,7 @@ namespace EvolveThisMatch.Editor
             for (int i = 1; i < lines.Count; i++)
             {
                 var values = SplitLine(lines[i].Trim());
-
-                if (values.Count != headers.Length) continue;
-
+                
                 for (int j = 0; j < headers.Length; j++)
                 {
                     csvDict[headers[j]].Add(values[j]);

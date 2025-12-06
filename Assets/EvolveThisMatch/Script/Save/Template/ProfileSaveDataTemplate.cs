@@ -322,10 +322,15 @@ namespace EvolveThisMatch.Save
         {
             if (Enum.TryParse<EVariableType>(name, out var type))
             {
-                return _variableDic[type];
+                return GetVariable(type);
             }
 
             return null;
+        }
+
+        public ObscuredIntVariable GetVariable(EVariableType type)
+        {
+            return _variableDic[type];
         }
 
         #region ´Ð³×ÀÓ

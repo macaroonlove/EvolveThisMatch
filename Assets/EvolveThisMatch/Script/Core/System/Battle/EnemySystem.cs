@@ -21,6 +21,7 @@ namespace EvolveThisMatch.Core
         public event UnityAction<Unit> onRegist;
         public event UnityAction<Unit> onDeregist;
         public event UnityAction<int> onDeath;
+        public event UnityAction<EEnemyRarity> onDeathRarity;
         public event UnityAction<int> onReturnCoin;
         public event UnityAction<int> onReturnCrystal;
 
@@ -62,6 +63,7 @@ namespace EvolveThisMatch.Core
         internal void DeathEnemy(EnemyUnit enemy)
         {
             onDeath?.Invoke(enemy.id);
+            onDeathRarity?.Invoke(enemy.enemyData.template.rarity.rarity);
             onReturnCoin?.Invoke(enemy.enemyData.coin);
             onReturnCrystal?.Invoke(enemy.enemyData.crystal);
 

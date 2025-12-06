@@ -41,6 +41,7 @@ namespace EvolveThisMatch.Lobby
         private UIShopCanvas _shopCanvas;
         private UIGachaCanvas _gachaCanvas;
         private UIFormationCanvas _formationCanvas;
+        private UILootCanvas _lootCanvas;
         private UIStagePanel _stagePanel;
         private UIBattleStartCanvas _battleStartCanvas;
 
@@ -61,6 +62,7 @@ namespace EvolveThisMatch.Lobby
             _shopCanvas = transform.parent.GetComponentInChildren<UIShopCanvas>();
             _gachaCanvas = transform.parent.GetComponentInChildren<UIGachaCanvas>();
             _formationCanvas = transform.parent.GetComponentInChildren<UIFormationCanvas>();
+            _lootCanvas = transform.parent.GetComponentInChildren<UILootCanvas>();
             _stagePanel = transform.parent.GetComponentInChildren<UIStagePanel>();
             _battleStartCanvas = transform.parent.GetComponentInChildren<UIBattleStartCanvas>();
 
@@ -167,7 +169,7 @@ namespace EvolveThisMatch.Lobby
         #region Bottom Right
         private void ShowLoot()
         {
-
+            _lootCanvas?.Show();
         }
 
         private void ShowFormation()

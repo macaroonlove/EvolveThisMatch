@@ -6,16 +6,13 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private GlobalEvent _deathGlobalEvent;
 
-        private bool _isIdle;
-
         internal EnemyData enemyData { get; private set; }
 
-        internal void Initialize(EnemyData data, bool isIdle)
+        internal void Initialize(EnemyData data)
         {
             id = data.template.id;
 
             enemyData = data;
-            _isIdle = isIdle;
 
             base.Initialize(this);
         }
@@ -25,20 +22,6 @@ namespace EvolveThisMatch.Core
             base.OnDeath();
 
             var enemySystem = BattleManager.Instance.GetSubSystem<EnemySystem>();
-
-            #region º¸»ó È¹µæ
-            if (_isIdle)
-            {
-                if (enemyData.gold > 0)
-                {
-                    CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Gold, enemyData.gold);
-                }
-                if (enemyData.loot > 0)
-                {
-                    CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Loot, enemyData.loot);
-                }
-            }
-            #endregion
 
             _deathGlobalEvent?.Raise();
 

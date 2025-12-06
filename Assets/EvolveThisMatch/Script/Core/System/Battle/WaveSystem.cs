@@ -52,7 +52,7 @@ namespace EvolveThisMatch.Core
 
         protected abstract IEnumerator CoUpdateWave();
 
-        protected IEnumerator SpawnWave(WaveTemplate wave, bool isIdle)
+        protected IEnumerator SpawnWave(WaveTemplate wave)
         {
             isSpawnEnd = false;
 
@@ -70,7 +70,7 @@ namespace EvolveThisMatch.Core
 
                     var enemyData = wave.GetEnemyData(waveInfo.rarity);
 
-                    _enemySpawnSystem.SpawnUnit(enemyData, spawnPos, isIdle);
+                    _enemySpawnSystem.SpawnUnit(enemyData, spawnPos);
 
                     if (i < waveInfo.spawnCount - 1)
                     {

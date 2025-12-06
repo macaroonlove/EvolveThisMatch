@@ -65,7 +65,14 @@ namespace FrameWork.UIPopup
             newItem.CancelDelay();
 
             // 2√  ¥Î±‚
-            await newItem.Delay(2f);
+            try
+            {
+                await newItem.Delay(2f);
+            }
+            catch
+            {
+                return;
+            }
 
             ReturnToPool(newItem);
         }

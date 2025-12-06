@@ -1,3 +1,4 @@
+using EvolveThisMatch.Save;
 using FrameWork.Editor;
 using System;
 using System.Collections.Generic;
@@ -81,8 +82,7 @@ namespace EvolveThisMatch.Core
         [SerializeField, Label("크리스탈")] private int _crystal;
         
         [Header("방치형 재화")]
-        [SerializeField, Label("골드")] private int _gold;
-        [SerializeField, Label("전리품")] private int _loot;
+        [SerializeField] private List<IdleDropData> _idleDropDatas = new List<IdleDropData>();
 
         #region 프로퍼티
         public EnemyTemplate template => _template;
@@ -90,8 +90,7 @@ namespace EvolveThisMatch.Core
         public int atk => _atk;
         public int coin => _coin;
         public int crystal => _crystal;
-        public int gold => _gold;
-        public int loot => _loot;
+        public IReadOnlyList<IdleDropData> idleDropDatas => _idleDropDatas;
         #endregion
 
         #region 값 변경 메서드
@@ -100,9 +99,24 @@ namespace EvolveThisMatch.Core
         internal void SetATK(int atk) => _atk = atk;
         internal void SetCoin(int coin) => _coin = coin;
         internal void SetCrystal(int crystal) => _crystal = crystal;
-        internal void SetGold(int gold) => _gold = gold;
-        internal void SetLoot(int loot) => _loot = loot;
+        internal void SetIdleData(List<IdleDropData> idleDropDatas) => _idleDropDatas = idleDropDatas;
         #endregion
+
+        [Serializable]
+        public class IdleDropData
+        {
+            [SerializeField] private EVariableType _type;
+            [SerializeField] private int _amount;
+
+            public EVariableType type => _type;
+            public int amount => _amount;
+
+            public IdleDropData(EVariableType type, int amount)
+            {
+                _type = type;
+                _amount = amount;
+            }
+        }
     }
 
     [Serializable]

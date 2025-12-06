@@ -47,7 +47,7 @@ namespace EvolveThisMatch.Battle
                 var currentWave = chapter.waves[currentWaveIndex];
 
                 // 웨이브 시작
-                StartCoroutine(SpawnWave(currentWave, false));
+                StartCoroutine(SpawnWave(currentWave));
 
                 // 현재 웨이브 시간 알림
                 onWaveChanged?.Invoke(totalWaveIndex, currentWave.waveTime);

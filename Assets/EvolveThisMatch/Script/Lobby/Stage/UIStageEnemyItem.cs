@@ -1,7 +1,8 @@
 using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
+using System.Collections.Generic;
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -26,6 +27,12 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _info;
         private TextMeshProUGUI _reward;
 
+        private readonly Dictionary<EVariableType, string> currencyToIcon = new()
+        {
+            { EVariableType.Gold, "gold" },
+            { EVariableType.Loot, "loot" },
+        };
+
         protected override void Initialize()
         {
             BindImage(typeof(Images));
@@ -42,7 +49,15 @@ namespace EvolveThisMatch.Lobby
             _bg.sprite = enemyData.template.rarity.sprite;
             _icon.sprite = enemyData.template.sprite;
             _info.text = $"<sprite name=ATK> {enemyData.atk}\n<sprite name=HP> {enemyData.hp}";
-            _reward.text = $"<sprite name=gold> {enemyData.gold}\n<sprite name=loot> {enemyData.loot}";
+
+            _reward.text = "";
+            foreach (var dropData in enemyData.idleDropDatas)
+            {
+                if (currencyToIcon.TryGetValue(dropData.type, out var icon))
+                {
+                    _reward.text += $"<sprite name={icon}> {dropData.amount}\n";
+                }
+            }
 
             gameObject.SetActive(true);
         }

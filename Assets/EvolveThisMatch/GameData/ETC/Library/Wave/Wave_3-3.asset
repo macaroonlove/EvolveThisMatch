@@ -22,32 +22,36 @@ MonoBehaviour:
     _atk: 73
     _coin: 2
     _crystal: 0
-    _gold: 828
-    _loot: 43
+    _idleDropDatas:
+    - _type: 0
+      _amount: 828
+    - _type: 3
+      _amount: 43
   _common:
     _template: {fileID: 11400000, guid: ac34a7bedc0b50f4281cd2bda8d0c5f5, type: 2}
     _hp: 814
     _atk: 272
     _coin: 4
     _crystal: 0
-    _gold: 1588
-    _loot: 95
+    _idleDropDatas:
+    - _type: 0
+      _amount: 1588
+    - _type: 3
+      _amount: 95
   _elite:
     _template: {fileID: 11400000, guid: 25d1880628d908a43ba328cb921d2058, type: 2}
     _hp: 14520
     _atk: 814
     _coin: 0
     _crystal: 5
-    _gold: 0
-    _loot: 0
+    _idleDropDatas: []
   _boss:
     _template: {fileID: 11400000, guid: 838aee6a0b8d86840b2ade60104da9a1, type: 2}
     _hp: 0
     _atk: 0
     _coin: 0
     _crystal: 0
-    _gold: 0
-    _loot: 0
+    _idleDropDatas: []
   _waveInfo:
   - _rarity: 3
     _delayTime: 0

@@ -25,7 +25,7 @@ namespace EvolveThisMatch.Lobby
                 if (_timeSystem == null) yield break;
 
                 // 웨이브 시작
-                StartCoroutine(SpawnWave(_currentWave, true));
+                StartCoroutine(SpawnWave(_currentWave));
 
                 // 웨이브 유지 시간만큼 대기
                 yield return new WaitForSeconds(_currentWave.waveTime);

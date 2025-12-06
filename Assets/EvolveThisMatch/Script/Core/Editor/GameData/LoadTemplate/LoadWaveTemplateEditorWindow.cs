@@ -1,7 +1,8 @@
 using EvolveThisMatch.Core;
-using System;
+using EvolveThisMatch.Save;
 using System.Collections.Generic;
 using UnityEditor;
+using static EvolveThisMatch.Core.EnemyData;
 
 namespace EvolveThisMatch.Editor
 {
@@ -80,17 +81,21 @@ namespace EvolveThisMatch.Editor
                         minion.SetCoin(coin);
                     }
 
+                    List<IdleDropData> minionDrops = new List<IdleDropData>();
+
                     // 미니언 골드
                     if (int.TryParse(csvDic["미니언 골드"][i], out var gold))
                     {
-                        minion.SetGold(gold);
+                        minionDrops.Add(new IdleDropData(EVariableType.Gold, gold));
                     }
 
                     // 미니언 전리품
                     if (int.TryParse(csvDic["미니언 전리품"][i], out var loot))
                     {
-                        minion.SetLoot(loot);
+                        minionDrops.Add(new IdleDropData(EVariableType.Loot, loot));
                     }
+
+                    minion.SetIdleData(minionDrops);
                     #endregion
 
                     #region 일반
@@ -115,17 +120,21 @@ namespace EvolveThisMatch.Editor
                         common.SetCoin(coin);
                     }
 
+                    List<IdleDropData> commonDrops = new List<IdleDropData>();
+
                     // 일반 골드
                     if (int.TryParse(csvDic["일반 골드"][i], out gold))
                     {
-                        common.SetGold(gold);
+                        commonDrops.Add(new IdleDropData(EVariableType.Gold, gold));
                     }
 
                     // 일반 전리품
                     if (int.TryParse(csvDic["일반 전리품"][i], out loot))
                     {
-                        common.SetLoot(loot);
+                        commonDrops.Add(new IdleDropData(EVariableType.Loot, loot));
                     }
+
+                    common.SetIdleData(commonDrops);
                     #endregion
 
                     #region 엘리트
@@ -149,6 +158,22 @@ namespace EvolveThisMatch.Editor
                     {
                         elite.SetCrystal(crystal);
                     }
+
+                    List<IdleDropData> eliteDrops = new List<IdleDropData>();
+
+                    //// 엘리트 골드
+                    //if (int.TryParse(csvDic["엘리트 골드"][i], out gold))
+                    //{
+                    //    eliteDrops.Add(new IdleDropData(EVariableType.Gold, gold));
+                    //}
+
+                    //// 엘리트 전리품
+                    //if (int.TryParse(csvDic["엘리트 전리품"][i], out loot))
+                    //{
+                    //    eliteDrops.Add(new IdleDropData(EVariableType.Loot, loot));
+                    //}
+
+                    elite.SetIdleData(eliteDrops);
                     #endregion
 
                     #region 보스
@@ -172,6 +197,22 @@ namespace EvolveThisMatch.Editor
                     {
                         boss.SetCrystal(crystal);
                     }
+
+                    List<IdleDropData> bossDrops = new List<IdleDropData>();
+
+                    //// 보스 골드
+                    //if (int.TryParse(csvDic["보스 골드"][i], out gold))
+                    //{
+                    //    bossDrops.Add(new IdleDropData(EVariableType.Gold, gold));
+                    //}
+
+                    //// 보스 전리품
+                    //if (int.TryParse(csvDic["보스 전리품"][i], out loot))
+                    //{
+                    //    bossDrops.Add(new IdleDropData(EVariableType.Loot, loot));
+                    //}
+
+                    boss.SetIdleData(bossDrops);
                     #endregion
 
                     EditorUtility.SetDirty(template);
@@ -225,17 +266,21 @@ namespace EvolveThisMatch.Editor
                         minion.SetCoin(coin);
                     }
 
+                    List<IdleDropData> minionDrops = new List<IdleDropData>();
+
                     // 미니언 골드
                     if (int.TryParse(csvDic["미니언 골드"][i], out var gold))
                     {
-                        minion.SetGold(gold);
+                        minionDrops.Add(new IdleDropData(EVariableType.Gold, gold));
                     }
 
                     // 미니언 전리품
                     if (int.TryParse(csvDic["미니언 전리품"][i], out var loot))
                     {
-                        minion.SetLoot(loot);
+                        minionDrops.Add(new IdleDropData(EVariableType.Loot, loot));
                     }
+
+                    minion.SetIdleData(minionDrops);
                     #endregion
 
                     #region 일반
@@ -260,17 +305,21 @@ namespace EvolveThisMatch.Editor
                         common.SetCoin(coin);
                     }
 
+                    List<IdleDropData> commonDrops = new List<IdleDropData>();
+
                     // 일반 골드
                     if (int.TryParse(csvDic["일반 골드"][i], out gold))
                     {
-                        common.SetGold(gold);
+                        commonDrops.Add(new IdleDropData(EVariableType.Gold, gold));
                     }
 
                     // 일반 전리품
                     if (int.TryParse(csvDic["일반 전리품"][i], out loot))
                     {
-                        common.SetLoot(loot);
+                        commonDrops.Add(new IdleDropData(EVariableType.Loot, loot));
                     }
+
+                    common.SetIdleData(commonDrops);
                     #endregion
 
                     #region 엘리트
@@ -294,6 +343,22 @@ namespace EvolveThisMatch.Editor
                     {
                         elite.SetCrystal(crystal);
                     }
+
+                    List<IdleDropData> eliteDrops = new List<IdleDropData>();
+
+                    //// 엘리트 골드
+                    //if (int.TryParse(csvDic["엘리트 골드"][i], out gold))
+                    //{
+                    //    eliteDrops.Add(new IdleDropData(EVariableType.Gold, gold));
+                    //}
+
+                    //// 엘리트 전리품
+                    //if (int.TryParse(csvDic["엘리트 전리품"][i], out loot))
+                    //{
+                    //    eliteDrops.Add(new IdleDropData(EVariableType.Loot, loot));
+                    //}
+
+                    elite.SetIdleData(eliteDrops);
                     #endregion
 
                     #region 보스
@@ -317,6 +382,22 @@ namespace EvolveThisMatch.Editor
                     {
                         boss.SetCrystal(crystal);
                     }
+
+                    List<IdleDropData> bossDrops = new List<IdleDropData>();
+
+                    //// 보스 골드
+                    //if (int.TryParse(csvDic["보스 골드"][i], out gold))
+                    //{
+                    //    bossDrops.Add(new IdleDropData(EVariableType.Gold, gold));
+                    //}
+
+                    //// 보스 전리품
+                    //if (int.TryParse(csvDic["보스 전리품"][i], out loot))
+                    //{
+                    //    bossDrops.Add(new IdleDropData(EVariableType.Loot, loot));
+                    //}
+
+                    boss.SetIdleData(bossDrops);
                     #endregion
 
                     string path = $"Assets/EvolveThisMatch/GameData/ETC/Library/Wave/Wave_{csvDic["스테이지"][i]}.asset";

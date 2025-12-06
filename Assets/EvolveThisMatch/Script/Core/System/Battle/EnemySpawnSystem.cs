@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Core
             _poolSystem = null;
         }
 
-        public EnemyUnit SpawnUnit(EnemyData data, Vector3 pos, bool isIdle)
+        public EnemyUnit SpawnUnit(EnemyData data, Vector3 pos)
         {
             // À¯´Ö »ý¼ºÇÏ±â
             var obj = _poolSystem.Spawn(data.template.prefab, transform);
@@ -31,7 +31,7 @@ namespace EvolveThisMatch.Core
             if (obj.TryGetComponent(out EnemyUnit unit))
             {
                 // À¯´Ö ÃÊ±âÈ­
-                unit.Initialize(data, isIdle);
+                unit.Initialize(data);
 
                 // À¯´Ö µî·Ï
                 _enemySystem.Regist(unit);

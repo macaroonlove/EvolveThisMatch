@@ -2,6 +2,7 @@ using CodeStage.AntiCheat.ObscuredTypes;
 using EvolveThisMatch.Core;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -9,34 +10,42 @@ namespace EvolveThisMatch.Lobby
     {
         private Dictionary<int, ObscuredInt> _records = new Dictionary<int, ObscuredInt>();
 
+        public Dictionary<int, ObscuredInt> records => _records;
+        public event UnityAction<Dictionary<int, ObscuredInt>> onChangedRecords;
+
         public void Initialize()
         {
             // 이전에 강제종료 등으로 인해 보상 획득을 못했을 경우를 대비하여 우선 로드
             LoadRecords();
-            // 방치 보상 획득 및 잔여 보상 확인 후 획득 (서버로 보내기)
 
             // 기록 시작
-            BattleManager.Instance.GetSubSystem<EnemySystem>().onDeath += AddKill;
+            BattleManager.Instance.GetSubSystem<EnemySystem>().onDeathRarity += AddKill;
         }
 
         public void Deinitialize()
         {
             // 기록 종료
-            BattleManager.Instance.GetSubSystem<EnemySystem>().onDeath -= AddKill;
+            BattleManager.Instance.GetSubSystem<EnemySystem>().onDeathRarity -= AddKill;
         }
 
-        public void AddKill(int enemyId)
+        public void AddKill(EEnemyRarity enemyRarity)
         {
+            var rarity = (int)enemyRarity;
+
             // 서버용 기록 추가
-            if (!_records.ContainsKey(enemyId))
-                _records[enemyId] = 0;
-            _records[enemyId]++;
+            if (!_records.ContainsKey(rarity))
+            {
+                _records[rarity] = 0;
+            }
+            _records[rarity]++;
 
             // 50마리 죽일 때 마다 PlayerPrefs에 저장
-            if (_records[enemyId] % 50 == 0)
+            if (_records[rarity] % 50 == 0)
             {
                 SaveRecords();
             }
+
+            onChangedRecords?.Invoke(_records);
         }
 
         #region Records

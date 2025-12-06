@@ -1,11 +1,14 @@
 using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.PlayFabExtensions;
 using FrameWork.UIPopup;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.Json;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace EvolveThisMatch.Lobby
@@ -17,6 +20,8 @@ namespace EvolveThisMatch.Lobby
         private UIIdleCanvas _idleCanvas;
         private bool _isRunning = true;
         private bool _isInitialize = false;
+
+        public static UnityAction onForceOnlineIdleReward;
 
 #if !UNITY_EDITOR
         private void Start()
@@ -32,30 +37,18 @@ namespace EvolveThisMatch.Lobby
             _waveSystem = BattleManager.Instance.GetSubSystem<LobbyWaveSystem>();
             _idleCanvas = GetComponentInChildren<UIIdleCanvas>();
             BattleManager.Instance.onBattleInitialize += OnBattleInitialize;
+            onForceOnlineIdleReward += ForceOnlineIdleReward;
 
             RequestOfflineIdleReward().Forget();
-            SendDataTimer().Forget();
         }
 
         private void OnDestroy()
         {
             BattleManager.Instance.onBattleInitialize -= OnBattleInitialize;
+            onForceOnlineIdleReward -= ForceOnlineIdleReward;
         }
 
         #region 서버에 검증 요청을 보낼 조건
-        /// <summary>
-        /// 5분마다, 서버에 검증을 요청하여 획득
-        /// </summary>
-        private async UniTaskVoid SendDataTimer()
-        {
-            while (_isRunning)
-            {
-                await UniTask.Delay(TimeSpan.FromMinutes(5), ignoreTimeScale: true);
-
-                await RequestOnlineIdleReward();
-            }
-        }
-
         /// <summary>
         /// 전투 시작 시, 서버에 검증을 요청하여 획득
         /// </summary>
@@ -77,6 +70,14 @@ namespace EvolveThisMatch.Lobby
             RequestOnlineIdleReward().Forget();
 
             _isRunning = false;
+        }
+
+        /// <summary>
+        /// 강제로 서버에 검증을 요청하여 획득
+        /// </summary>
+        private void ForceOnlineIdleReward()
+        {
+            RequestOnlineIdleReward().Forget();
         }
         #endregion
 #endif
