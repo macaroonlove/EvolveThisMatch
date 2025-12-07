@@ -1,7 +1,9 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 using static EvolveThisMatch.Core.EnemyData;
 
 namespace EvolveThisMatch.Editor
@@ -215,6 +217,9 @@ namespace EvolveThisMatch.Editor
                     boss.SetIdleData(bossDrops);
                     #endregion
 
+                    var waveInfo = ParseWaveInfoList(csvDic["웨이브 조정"][i]);
+                    template.SetWaveInfo(waveInfo);
+
                     EditorUtility.SetDirty(template);
                 }
                 // 템플릿이 존재하지 않는다면 생성
@@ -400,6 +405,9 @@ namespace EvolveThisMatch.Editor
                     boss.SetIdleData(bossDrops);
                     #endregion
 
+                    var waveInfo = ParseWaveInfoList(csvDic["웨이브 조정"][i]);
+                    newTemplate.SetWaveInfo(waveInfo);
+
                     string path = $"Assets/EvolveThisMatch/GameData/ETC/Library/Wave/Wave_{csvDic["스테이지"][i]}.asset";
                     AssetDatabase.CreateAsset(newTemplate, path);
                 }
@@ -423,6 +431,50 @@ namespace EvolveThisMatch.Editor
             }
         }
         #endregion
+
+        private List<WaveInfo> ParseWaveInfoList(string json)
+        {
+            string wrapperJson = "{ \"list\": " + json + " }";
+
+            WaveInfoJsonWrapper wrapper = JsonUtility.FromJson<WaveInfoJsonWrapper>(wrapperJson);
+            var result = new List<WaveInfo>();
+
+            foreach (var item in wrapper.list)
+            {
+                EEnemyRarity rarity = item.Type switch
+                {
+                    "Minion" => EEnemyRarity.Minion,
+                    "Common" => EEnemyRarity.Common,
+                    "Elite" => EEnemyRarity.Elite,
+                    "Boss" => EEnemyRarity.Boss,
+                    _ => EEnemyRarity.Minion
+                };
+
+                result.Add(new WaveInfo(
+                    rarity,
+                    item.Delay,
+                    item.Count,
+                    item.Interval
+                ));
+            }
+
+            return result;
+        }
+    }
+
+    [Serializable]
+    public class WaveInfoJsonWrapper
+    {
+        public List<WaveInfoJson> list;
+    }
+
+    [Serializable]
+    public class WaveInfoJson
+    {
+        public string Type;
+        public float Delay;
+        public int Count;
+        public float Interval;
     }
 #endif
 }

@@ -87,7 +87,7 @@ namespace EvolveThisMatch.Editor
             for (int i = 1; i < lines.Count; i++)
             {
                 var values = SplitLine(lines[i].Trim());
-                
+
                 for (int j = 0; j < headers.Length; j++)
                 {
                     csvDict[headers[j]].Add(values[j]);
@@ -155,15 +155,54 @@ namespace EvolveThisMatch.Editor
             return count;
         }
 
+        //private List<string> SplitLine(string line)
+        //{
+        //    var matches = Regex.Matches(line, @"(?:^|,)(?:""(?<val>[^""]*)""|(?<val>[^,""]*))");
+
+        //    var result = new List<string>();
+        //    foreach (Match match in matches)
+        //    {
+        //        result.Add(match.Groups["val"].Value);
+        //    }
+        //    return result;
+        //}
+
         private List<string> SplitLine(string line)
         {
-            var matches = Regex.Matches(line, @"(?:^|,)(?:""(?<val>[^""]*)""|(?<val>[^,""]*))");
-
             var result = new List<string>();
-            foreach (Match match in matches)
+            bool inQuotes = false;
+            string current = "";
+
+            for (int i = 0; i < line.Length; i++)
             {
-                result.Add(match.Groups["val"].Value);
+                char c = line[i];
+
+                if (c == '"')
+                {
+                    // 이스케이프 처리 ("")
+                    if (inQuotes && i + 1 < line.Length && line[i + 1] == '"')
+                    {
+                        current += '"';
+                        i++;
+                    }
+                    else
+                    {
+                        inQuotes = !inQuotes;
+                    }
+                }
+                else if (c == ',' && !inQuotes)
+                {
+                    // 셀 종료
+                    result.Add(current);
+                    current = "";
+                }
+                else
+                {
+                    current += c;
+                }
             }
+
+            result.Add(current);
             return result;
         }
 

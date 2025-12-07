@@ -50,6 +50,7 @@ namespace EvolveThisMatch.Core
         public void SetStage(string stage) => _stage = stage;
         public void SetDisplayName(string name) => _displayName = name;
         public void SetWaveTime(int waveTime) => _waveTime = waveTime;
+        public void SetWaveInfo(List<WaveInfo> waveInfo) => _waveInfo = waveInfo;
         #endregion
 
         public EnemyData GetEnemyData(EEnemyRarity rarity)
@@ -135,5 +136,13 @@ namespace EvolveThisMatch.Core
         public int spawnCount => _spawnCount;
         public float spawnInterval => _spawnInterval;
         #endregion
+
+        public WaveInfo(EEnemyRarity rarity, float delayTime, int spawnCount, float spawnInteraval)
+        {
+            _rarity = rarity;
+            _delayTime = delayTime;
+            _spawnCount = spawnCount;
+            _spawnInterval = spawnInteraval;
+        }
     }
 }

@@ -53,11 +53,11 @@ MonoBehaviour:
     _crystal: 0
     _idleDropDatas: []
   _waveInfo:
-  - _rarity: 3
+  - _rarity: 0
     _delayTime: 0
     _spawnCount: 16
     _spawnInterval: 0.85
-  - _rarity: 2
+  - _rarity: 1
     _delayTime: 3.5
     _spawnCount: 4
     _spawnInterval: 3.5

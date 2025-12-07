@@ -114,10 +114,10 @@ namespace EvolveThisMatch.Core
     /// </summary>
     public enum EEnemyRarity
     {
-        Boss,
-        Elite,
-        Common,
         Minion,
+        Common,
+        Elite,
+        Boss,
     }
 
     /// <summary>
