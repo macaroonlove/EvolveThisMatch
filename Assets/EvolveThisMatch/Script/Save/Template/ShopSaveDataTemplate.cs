@@ -126,6 +126,13 @@ namespace EvolveThisMatch.Save
         {
             var shopCatalog = _data.ShopCatalogs.Find(x => x.CatalogId == id);
 
+            if (shopCatalog == null)
+            {
+                shopCatalog = new ShopSaveData.ShopCatalog();
+                shopCatalog.CatalogId = id;
+                _data.ShopCatalogs.Add(shopCatalog);
+            }
+
             return shopCatalog;
         }
 

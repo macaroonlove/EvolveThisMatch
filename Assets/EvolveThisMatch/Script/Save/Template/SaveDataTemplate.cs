@@ -13,5 +13,10 @@ namespace EvolveThisMatch.Save
         public abstract string ToJson();
 
         public abstract void Clear();
+
+        public void Initialize()
+        {
+            isLoaded = false;
+        }
     }
 }

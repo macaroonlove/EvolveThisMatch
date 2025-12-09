@@ -67,9 +67,9 @@ namespace EvolveThisMatch.Save
         #region Formation Data
         public bool Load_FormationData()
         {
-            bool isSuccess;            
+            bool isSuccess;
             isSuccess = LoadPlayerPrefs(_formationData, $"FormationData");
-            
+
             if (isSuccess == false)
             {
                 _formationData.SetDefaultValues();
@@ -99,26 +99,19 @@ namespace EvolveThisMatch.Save
                 {
                     var (saveName, saveData) = _saveDataKeys[saveKey];
                     datas.Add(saveName, saveData);
+                    saveData.Initialize();
                 }
 
                 var isSuccess = await LoadPlayFab(datas);
 
                 if (!isSuccess)
                 {
-                    var missingData = new Dictionary<string, SaveDataTemplate>();
-
                     foreach (var data in datas)
                     {
                         if (data.Value.isLoaded == false)
                         {
                             data.Value.SetDefaultValues();
-                            missingData.Add(data.Key, data.Value);
                         }
-                    }
-
-                    if (missingData.Count > 0)
-                    {
-                        //await SavePlayFab(missingData);
                     }
                 }
             }
@@ -142,58 +135,6 @@ namespace EvolveThisMatch.Save
             return true;
         }
 
-        public async UniTask<bool> SaveData(params SaveKey[] saveKeys)
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                var datas = new Dictionary<string, SaveDataTemplate>();
-
-                foreach (var saveKey in saveKeys)
-                {
-                    var (saveName, saveData) = _saveDataKeys[saveKey];
-                    datas.Add(saveName, saveData);
-                }
-
-                return await SavePlayFab(datas);
-            }
-            else
-            {
-                foreach (var saveKey in saveKeys)
-                {
-                    var (saveName, saveData) = _saveDataKeys[saveKey];
-                    SavePlayerPrefs(saveData, saveName);
-                }
-
-                return true;
-            }
-        }
-
-        public async UniTask<bool> ClearData(params SaveKey[] saveKeys)
-        {
-            if (PlayFabAuthService.IsLoginState)
-            {
-                var keys = new List<string>();
-
-                foreach (var saveKey in saveKeys)
-                {
-                    var key = _saveDataKeys[saveKey].key;
-                    keys.Add(key);
-                }
-
-                return await ClearPlayFab(keys);
-            }
-            else
-            {
-                foreach (var saveKey in saveKeys)
-                {
-                    var key = _saveDataKeys[saveKey].key;
-                    ClearPlayerPrefs(key);
-                }
-
-                return true;
-            }
-        }
-
         #region Load
         private async UniTask<bool> LoadPlayFab(Dictionary<string, SaveDataTemplate> datas)
         {
@@ -203,7 +144,7 @@ namespace EvolveThisMatch.Save
 
             await _profileData.LoadDisplayName();
 
-            PlayFabClientAPI.GetUserData(new GetUserDataRequest
+            PlayFabClientAPI.GetUserReadOnlyData(new GetUserDataRequest
             {
                 PlayFabId = PlayFabAuthService.PlayFabId,
                 Keys = keys
@@ -246,30 +187,6 @@ namespace EvolveThisMatch.Save
         #endregion
 
         #region Save
-        private async UniTask<bool> SavePlayFab(Dictionary<string, SaveDataTemplate> datas)
-        {
-            var tcs = new UniTaskCompletionSource<bool>();
-
-            var jsonDatas = new Dictionary<string, string>();
-            foreach (var data in datas)
-            {
-                jsonDatas[data.Key] = data.Value.ToJson();
-            }
-
-            var request = new UpdateUserDataRequest { Data = jsonDatas };
-
-            PlayFabClientAPI.UpdateUserData(request,
-                result =>
-                {
-                    tcs.TrySetResult(true);
-                }, error =>
-                {
-                    tcs.TrySetResult(false);
-                });
-
-            return await tcs.Task;
-        }
-
         private bool SavePlayerPrefs(SaveDataTemplate data, string key)
         {
             string jsonData = data.ToJson();
@@ -282,24 +199,6 @@ namespace EvolveThisMatch.Save
         #endregion
 
         #region Clear
-        private async UniTask<bool> ClearPlayFab(List<string> keys)
-        {
-            var tcs = new UniTaskCompletionSource<bool>();
-
-            var request = new UpdateUserDataRequest { KeysToRemove = keys };
-
-            PlayFabClientAPI.UpdateUserData(request,
-                result =>
-                {
-                    tcs.TrySetResult(true);
-                }, error =>
-                {
-                    tcs.TrySetResult(false);
-                });
-
-            return await tcs.Task;
-        }
-
         private bool ClearPlayerPrefs(string key)
         {
             PlayerPrefs.DeleteKey(key);

@@ -159,12 +159,11 @@ namespace EvolveThisMatch.Save
         public override bool Load(string json)
         {
             _data = PlayFabSimpleJson.DeserializeObject<ProfileSaveData>(json);
+            _variableDic = _variables.ToDictionary(v => v.key, v => v.variable);
 
             if (_data != null)
             {
                 isLoaded = true;
-
-                _variableDic = _variables.ToDictionary(v => v.key, v => v.variable);
 
                 // 기본
                 _variableDic[EVariableType.Gold].Value = _data.Gold;
@@ -203,6 +202,46 @@ namespace EvolveThisMatch.Save
                 _variableDic[EVariableType.DefaultUnitBookmark].Value = _data.DefaultUnitBookmark;
                 _variableDic[EVariableType.BookFragments].Value = _data.BookFragments;
                 _variableDic[EVariableType.Magnifier].Value = _data.Magnifier;
+            }
+            else
+            {
+                // 기본
+                _variableDic[EVariableType.Gold].Value = 0;
+                _variableDic[EVariableType.Essence].Value = 0;
+                _variableDic[EVariableType.Action].Value = 0;
+                _variableDic[EVariableType.Loot].Value = 0;
+
+                // 식품부
+                _variableDic[EVariableType.ChunkMeat].Value = 0;
+                _variableDic[EVariableType.SmoothButter].Value = 0;
+                _variableDic[EVariableType.RibSkewers].Value = 0;
+                _variableDic[EVariableType.BoneStew].Value = 0;
+                _variableDic[EVariableType.HeartSteak].Value = 0;
+
+                // 연금부
+                _variableDic[EVariableType.Causality].Value = 0;
+                _variableDic[EVariableType.Powder].Value = 0;
+                _variableDic[EVariableType.GenesisCoin].Value = 0;
+                _variableDic[EVariableType.OriginCrystal].Value = 0;
+                _variableDic[EVariableType.FateRoneStone].Value = 0;
+                _variableDic[EVariableType.HeroSeal].Value = 0;
+
+                // 건축부
+                _variableDic[EVariableType.MuscleStem].Value = 0;
+                _variableDic[EVariableType.RawMuscleFiber].Value = 0;
+                _variableDic[EVariableType.PurifiedMuscleFiber].Value = 0;
+                _variableDic[EVariableType.BoundMuscleStrand].Value = 0;
+                _variableDic[EVariableType.HardenedMuscleBlock].Value = 0;
+                _variableDic[EVariableType.ReinforcedBarrier].Value = 0;
+
+                // 연구부
+                _variableDic[EVariableType.BrokenChronicle].Value = 0;
+
+                // 뽑기
+                _variableDic[EVariableType.PickUpUnitBookmark].Value = 0;
+                _variableDic[EVariableType.DefaultUnitBookmark].Value = 0;
+                _variableDic[EVariableType.BookFragments].Value = 0;
+                _variableDic[EVariableType.Magnifier].Value = 0;
             }
 
             return isLoaded;
