@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.UI;
 using FrameWork.UIBinding;
@@ -88,10 +89,10 @@ namespace EvolveThisMatch.Lobby
 
             VariableDisplayManager.Instance.HideAll();
 
-            var gold = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Gold");
-            var essence = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Essence");
-            var loot = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Loot");
-            var action = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Action");
+            var gold = SaveManager.Instance.profileData.GetVariable(EVariableType.Gold);
+            var essence = SaveManager.Instance.profileData.GetVariable(EVariableType.Essence);
+            var loot = SaveManager.Instance.profileData.GetVariable(EVariableType.Loot);
+            var action = SaveManager.Instance.profileData.GetVariable(EVariableType.Action);
 
             if (gold != null) VariableDisplayManager.Instance.Show(gold);
             if (essence != null) VariableDisplayManager.Instance.Show(essence);

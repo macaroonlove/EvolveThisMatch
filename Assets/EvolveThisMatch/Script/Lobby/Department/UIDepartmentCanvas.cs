@@ -6,7 +6,6 @@ using FrameWork.NetworkTime;
 using FrameWork.PlayFabExtensions;
 using FrameWork.UI;
 using FrameWork.UIBinding;
-using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -166,10 +165,10 @@ namespace EvolveThisMatch.Lobby
 
             // 부서 정보창 최신화
             _departmentInfoPanel.Initialize(this, _totalWeight, ControlInfoPanelState);
-            
+
             // 배치창 최신화
-            _disposePanel.Initialize(this, craftResults, _totalWeight, 
-                () => ShowDepartment(userData, titleData, localData), 
+            _disposePanel.Initialize(this, craftResults, _totalWeight,
+                () => ShowDepartment(userData, titleData, localData),
                 (int newWeight) => ChangeItemWeight(craftResults, newWeight));
 
             // 제작 재료 Variable 로 보여주기
@@ -212,7 +211,7 @@ namespace EvolveThisMatch.Lobby
                 // 재료를 기준으로 생산한 계수 계산하기
                 foreach (var required in item.RequiredItems)
                 {
-                    var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(required.Variable);
+                    var variable = SaveManager.Instance.profileData.GetVariable(required.Variable);
                     int craftableCount = variable.Value / required.Amount;
 
                     craftCount = Mathf.Min(craftCount, craftableCount);
@@ -311,13 +310,13 @@ namespace EvolveThisMatch.Lobby
         /// <summary>
         /// 제작 재료 Variable 로 보여주기
         /// </summary>
-        private async void RefreshVariableDisplay(DepartmentData titleData)
+        private void RefreshVariableDisplay(DepartmentData titleData)
         {
             VariableDisplayManager.Instance.HideAll();
 
             foreach (var showVariable in titleData.ShowVariables)
             {
-                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(showVariable);
+                var variable = SaveManager.Instance.profileData.GetVariable(showVariable);
                 VariableDisplayManager.Instance.Show(variable);
             }
         }

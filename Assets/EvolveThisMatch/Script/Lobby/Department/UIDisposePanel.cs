@@ -133,7 +133,7 @@ namespace EvolveThisMatch.Lobby
         /// <summary>
         /// 같은 부서의 다른 아이템이 완성되었다면, 조건부로 작업을 멈춰주는 역할
         /// </summary>
-        internal async void UpdateDisposePanel(UIDepartmentCanvas departmentCanvas, int totalWeight)
+        internal void UpdateDisposePanel(UIDepartmentCanvas departmentCanvas, int totalWeight)
         {
             // 레벨 정보 받아오기
             var levelData = departmentCanvas.GetDepartmentLevelData();
@@ -158,7 +158,7 @@ namespace EvolveThisMatch.Lobby
                         // 필요한 재료가 충분한지 검사
                         foreach (var required in craftItem.RequiredItems)
                         {
-                            var requiredItem = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(required.Variable);
+                            var requiredItem = SaveManager.Instance.profileData.GetVariable(required.Variable);
                             if (requiredItem.Value < required.Amount)
                             {
                                 // 재료가 충분하지 않다면

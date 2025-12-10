@@ -17,9 +17,9 @@ namespace EvolveThisMatch.Core
         private Dictionary<GoldGainMultiplierDataEffect, int> _goldGainMultiplierDataEffects = new Dictionary<GoldGainMultiplierDataEffect, int>();
 
         #region 프로퍼티
-        internal IReadOnlyDictionary<GoldGainAdditionalDataEffect, int> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
-        internal IReadOnlyDictionary<GoldGainIncreaseDataEffect, int> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
-        internal IReadOnlyDictionary<GoldGainMultiplierDataEffect, int> GoldGainMultiplierDataEffects => _goldGainMultiplierDataEffects;
+        public IReadOnlyDictionary<GoldGainAdditionalDataEffect, int> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
+        public IReadOnlyDictionary<GoldGainIncreaseDataEffect, int> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
+        public IReadOnlyDictionary<GoldGainMultiplierDataEffect, int> GoldGainMultiplierDataEffects => _goldGainMultiplierDataEffects;
         #endregion
         #endregion
 

@@ -1,4 +1,5 @@
 using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
@@ -55,9 +56,9 @@ namespace EvolveThisMatch.Lobby
             base.Show(true);
         }
 
-        private async void ShowVariableItemData(Reward reward)
+        private void ShowVariableItemData(Reward reward)
         {
-            var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(reward.key);
+            var variable = SaveManager.Instance.profileData.GetVariable(reward.key);
 
             if (variable != null)
             {

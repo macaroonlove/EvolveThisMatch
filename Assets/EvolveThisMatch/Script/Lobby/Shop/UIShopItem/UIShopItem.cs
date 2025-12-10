@@ -37,14 +37,11 @@ namespace EvolveThisMatch.Lobby
         protected CanvasGroupController _purchaseLimit;
         protected CanvasGroupController _buyComplete;
 
-        protected CurrencySystem _currencySystem;
         protected ShopSaveData.ShopItem _shopItem;
         protected bool _isBuyAble;
 
         protected override void Initialize()
         {
-            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
-
             BindImage(typeof(Images));
             BindText(typeof(Texts));
             BindCanvasGroupController(typeof(CanvasGroups));
@@ -126,9 +123,10 @@ namespace EvolveThisMatch.Lobby
 
             if (itemData.currency != "RM" && itemData.price != 0)
             {
-                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
+                if (Enum.TryParse<EVariableType>(itemData.currency, true, out var currency))
                 {
-                    var value = _currencySystem.GetAmount(currency);
+                    var variable = SaveManager.Instance.profileData.GetVariable(currency);
+                    int value = variable == null ? 0 : variable.Value;
                     int maxValue = value / itemData.price;
 
                     if (maxValue <= 0)

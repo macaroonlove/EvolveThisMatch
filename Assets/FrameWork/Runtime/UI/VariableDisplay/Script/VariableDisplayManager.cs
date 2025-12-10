@@ -1,4 +1,4 @@
-using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
 using ScriptableObjectArchitecture;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,7 +7,6 @@ namespace FrameWork.UI
 {
     public class VariableDisplayManager : Singleton<VariableDisplayManager>
     {
-        private CurrencySystem _currencySystem;
         private UIIntVariableTextEffect[] _intVariables;
         private UIVariableInfoCanvas _variableInfoCanvas;
 
@@ -17,14 +16,9 @@ namespace FrameWork.UI
             _variableInfoCanvas = GetComponentInChildren<UIVariableInfoCanvas>();
         }
 
-        public void Show(CurrencyType currencyType)
+        public void Show(EVariableType variableType)
         {
-            if (_currencySystem == null)
-            {
-                _currencySystem = CoreManager.instance.GetSubSystem<CurrencySystem>();
-            }
-            
-            var intVariable = _currencySystem.GetIntVariable(currencyType);
+            var intVariable = SaveManager.Instance.profileData.GetVariable(variableType);
 
             Show(intVariable);
         }

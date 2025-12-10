@@ -1,6 +1,7 @@
+using EvolveThisMatch.Core;
+using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.VisualNovel;
-using EvolveThisMatch.Core;
 using UnityEngine;
 
 namespace EvolveThisMatch.Tutorial
@@ -26,7 +27,8 @@ namespace EvolveThisMatch.Tutorial
             switch (itemType)
             {
                 case ItemType.Gold:
-                    CoreManager.Instance.GetSubSystem<CurrencySystem>().AddCurrency(CurrencyType.Gold, amount);
+                    var variable = SaveManager.Instance.profileData.GetVariable(EVariableType.Gold);
+                    if (variable != null) variable.AddValue(amount);
                     break;
                 case ItemType.ActiveItem:
                     AddressableAssetManager.Instance.GetScriptableObject<TomeTemplate>(name, (template) =>

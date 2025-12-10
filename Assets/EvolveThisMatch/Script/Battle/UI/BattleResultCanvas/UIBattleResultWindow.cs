@@ -1,10 +1,6 @@
-using Cysharp.Threading.Tasks;
-using EvolveThisMatch.Core;
-using FrameWork;
+using EvolveThisMatch.Save;
 using FrameWork.Loading;
 using FrameWork.UIBinding;
-using ScriptableObjectArchitecture;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -54,7 +50,7 @@ namespace EvolveThisMatch.Battle
             GetButton((int)Buttons.GoLobby).onClick.AddListener(GoLobby);
         }
 
-        internal async void Show(BattleResultData data)
+        internal void Show(BattleResultData data)
         {
             base.Show();
             _data = data;
@@ -63,21 +59,20 @@ namespace EvolveThisMatch.Battle
             _chapterText.text = data.chapter;
             _finalPageText.text = data.finalPage;
 
-            await ShowReward(0);
+            ShowReward(0);
 
-            async UniTask ShowReward(int index)
+            void ShowReward(int index)
             {
-                if (index >= data.rewardData.Count)
-                    return;
+                if (index >= data.rewardData.Count) return;
 
                 var rewardData = data.rewardData[index];
+                var variable = SaveManager.Instance.profileData.GetVariable(rewardData.Item1);
 
                 var item = Instantiate(_rewardItemPrefab, _rewardGroup).GetComponent<UIRewardItem>();
-                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(rewardData.Item1);
 
-                item.Show(variable, rewardData.Item2, async () =>
+                item.Show(variable, rewardData.Item2, () =>
                 {
-                    await ShowReward(index + 1);
+                    ShowReward(index + 1);
                 });
             }
         }

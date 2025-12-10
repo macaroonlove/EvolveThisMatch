@@ -47,8 +47,6 @@ namespace EvolveThisMatch.Lobby
 
         protected override void Initialize()
         {
-            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
-
             BindButton(typeof(Buttons));
             BindImage(typeof(Images));
             BindText(typeof(Texts));
@@ -86,9 +84,10 @@ namespace EvolveThisMatch.Lobby
             {
                 _counterText.transform.parent.gameObject.SetActive(true);
 
-                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
+                if (Enum.TryParse<EVariableType>(itemData.currency, true, out var currency))
                 {
-                    var value = _currencySystem.GetAmount(currency);
+                    var variable = SaveManager.Instance.profileData.GetVariable(currency);
+                    int value = variable == null ? 0 : variable.Value;
                     int maxValue = value / itemData.price;
                     if (itemData.buyAbleCount != 0)
                         maxValue = Mathf.Min(maxValue, itemData.buyAbleCount);

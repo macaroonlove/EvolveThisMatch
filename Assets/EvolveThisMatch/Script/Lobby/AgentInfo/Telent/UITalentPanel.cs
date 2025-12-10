@@ -3,6 +3,8 @@ using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.UIBinding;
+using FrameWork.UIPopup;
+using ScriptableObjectArchitecture;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.Events;
@@ -35,7 +37,6 @@ namespace EvolveThisMatch.Lobby
         private CanvasGroupController _dim;
         private UITalentItem[] _items;
 
-        private CurrencySystem _currencySystem;
         private AgentSaveData.Agent _owned;
         private TalentSaveData _talentSaveData;
         private UnityAction _action;
@@ -44,6 +45,7 @@ namespace EvolveThisMatch.Lobby
         private bool _isStopResetting;
         private int _cachedPowderCount;
         private float[] _rarityProbabilities;
+        private ObscuredIntVariable _powderVariable;
 
         private Dictionary<int, Random> _rngs = new Dictionary<int, Random>();
 
@@ -80,6 +82,8 @@ namespace EvolveThisMatch.Lobby
             _rarityProbabilities[2] = data.epicRarity;
             _rarityProbabilities[3] = data.rareRarity;
             _rarityProbabilities[4] = data.commonRarity;
+
+            _powderVariable = SaveManager.Instance.profileData.GetVariable(EVariableType.Powder);
         }
         #endregion
 
@@ -220,9 +224,13 @@ namespace EvolveThisMatch.Lobby
         #region Powder 계산
         private void CheckEnoughPowder()
         {
-            if (_currencySystem == null) _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
+            if (_powderVariable == null)
+            {
+                UIPopupManager.Instance.ShowNotificationPopup($"세계의 흔적을 찾을 수 없습니다.\n게임을 다시 실행해주세요.");
+                return;
+            }
 
-            bool isEnough = _currencySystem.CheckCurrency(CurrencyType.Powder, _cachedPowderCount);
+            bool isEnough = _powderVariable.Value >= _cachedPowderCount;
 
             _changeTalentButton.interactable = isEnough;
             _openTalentFilterButton.interactable = isEnough;
@@ -230,7 +238,7 @@ namespace EvolveThisMatch.Lobby
 
         private bool PayPowder()
         {
-            bool isEnough = _currencySystem.CheckCurrency(CurrencyType.Powder, _cachedPowderCount);
+            bool isEnough = _powderVariable.Value >= _cachedPowderCount;
 
             if (isEnough == false)
             {

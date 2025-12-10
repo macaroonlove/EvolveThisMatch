@@ -1,7 +1,6 @@
-using FrameWork;
+using EvolveThisMatch.Save;
 using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
-using ScriptableObjectArchitecture;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -55,14 +54,14 @@ namespace EvolveThisMatch.Lobby
             _craftWeight = GetText((int)Texts.CraftWeight);
         }
 
-        internal async void Show(DepartmentCraftData itemData, int index)
+        internal void Show(DepartmentCraftData itemData, int index)
         {
             this.index = index;
 
             int minutes = itemData.CraftTime / 60;
             int seconds = itemData.CraftTime % 60;
 
-            var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(itemData.Variable);
+            var variable = SaveManager.Instance.profileData.GetVariable(itemData.Variable);
 
             _craftBackground.sprite = variable.IconBG;
             _craftIcon.sprite = variable.Icon;

@@ -2,10 +2,8 @@ using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.NetworkTime;
-using FrameWork.Service;
 using FrameWork.UI;
 using FrameWork.UIBinding;
-using ScriptableObjectArchitecture;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -196,13 +194,13 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        private async void RefreshVariableDisplay(UIGachaTab tab)
+        private void RefreshVariableDisplay(UIGachaTab tab)
         {
             VariableDisplayManager.Instance.HideAll();
 
             if (tab.gachaData.additionalVariable != null)
             {
-                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(tab.gachaData.additionalVariable);
+                var currency = SaveManager.Instance.profileData.GetVariable(tab.gachaData.additionalVariable);
                 if (currency != null)
                 {
                     VariableDisplayManager.Instance.Show(currency);
@@ -210,7 +208,7 @@ namespace EvolveThisMatch.Lobby
             }
             foreach (var cost in tab.gachaData.costs)
             {
-                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.costVariable);
+                var currency = SaveManager.Instance.profileData.GetVariable(cost.costVariable);
                 if (currency != null)
                 {
                     VariableDisplayManager.Instance.Show(currency);
@@ -277,12 +275,12 @@ namespace EvolveThisMatch.Lobby
         #region 뽑기
         private void PickUp(int gachaCount)
         {
-            SaveManager.Instance.gachaData.PickUp(_currentTab.gachaTitle, gachaCount, async (payCost, rewards) =>
+            SaveManager.Instance.gachaData.PickUp(_currentTab.gachaTitle, gachaCount, (payCost, rewards) =>
             {
                 // 비용 지불
                 foreach (var cost in payCost)
                 {
-                    var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.Key);
+                    var variable = SaveManager.Instance.profileData.GetVariable(cost.Key);
                     variable.AddValue(-cost.Value);
                 }
 
@@ -292,7 +290,7 @@ namespace EvolveThisMatch.Lobby
 
         private void AdPickUp(int gachaCount, int itemIndex, string catalogId)
         {
-            #if !UNITY_EDITOR
+#if !UNITY_EDITOR
             AdmobManager.Instance.ShowRewardAd((isSuccess) =>
             {
                 SaveManager.Instance.gachaData.AdPickUp(_currentTab.gachaTitle, gachaCount, itemIndex, (rewards) =>
@@ -303,7 +301,7 @@ namespace EvolveThisMatch.Lobby
                     PickUpAfter(rewards);
                 });
             });
-            #endif
+#endif
         }
 
         private void PickUpAfter(string[] rewards)
@@ -328,10 +326,8 @@ namespace EvolveThisMatch.Lobby
                 }
                 else
                 {
-                    AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(type, (variable) =>
-                    {
-                        variable.AddValue(id);
-                    });
+                    var variable = SaveManager.Instance.profileData.GetVariable(type);
+                    if (variable != null) variable.AddValue(id);
                 }
             }
 

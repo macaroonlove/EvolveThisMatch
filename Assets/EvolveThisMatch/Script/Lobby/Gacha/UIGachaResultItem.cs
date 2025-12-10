@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using FrameWork;
 using ScriptableObjectArchitecture;
 using UnityEngine;
+using EvolveThisMatch.Save;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -71,12 +72,14 @@ namespace EvolveThisMatch.Lobby
             else
             {
                 int value = int.Parse(parts[1]);
+                var variable = SaveManager.Instance.profileData.GetVariable(type);
 
-                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(result);
-
-                _icon.sprite = variable.Icon;
-                _background.sprite = variable.IconBG;
-                _displayName.text = $"{variable.DisplayName} x{value}";
+                if (variable != null)
+                {
+                    _icon.sprite = variable.Icon;
+                    _background.sprite = variable.IconBG;
+                    _displayName.text = $"{variable.DisplayName} x{value}";
+                }
             }
         }
     }

@@ -1,8 +1,7 @@
-using FrameWork;
+using EvolveThisMatch.Save;
 using FrameWork.PlayFabExtensions;
 using FrameWork.UIBinding;
 using FrameWork.UIPopup;
-using ScriptableObjectArchitecture;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
@@ -51,7 +50,7 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        internal async void Show(int gachaCount, List<GachaCost> costs, string colorString, UnityAction<int> action)
+        internal void Show(int gachaCount, List<GachaCost> costs, string colorString, UnityAction<int> action)
         {
             _costs = costs;
             _gachaCount = gachaCount;
@@ -73,7 +72,7 @@ namespace EvolveThisMatch.Lobby
             {
                 var cost = costs[i];
 
-                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.costVariable);
+                var variable = SaveManager.Instance.profileData.GetVariable(cost.costVariable);
 
                 if (variable != null)
                 {
@@ -104,7 +103,7 @@ namespace EvolveThisMatch.Lobby
                 var cost = costs[costs.Count - 1];
                 sb.Clear();
 
-                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(cost.costVariable);
+                var variable = SaveManager.Instance.profileData.GetVariable(cost.costVariable);
 
                 if (variable != null)
                 {
@@ -127,7 +126,7 @@ namespace EvolveThisMatch.Lobby
             gameObject.SetActive(false);
         }
 
-        private async void OnClick()
+        private void OnClick()
         {
             if (_isGachaAble)
             {
@@ -135,8 +134,8 @@ namespace EvolveThisMatch.Lobby
             }
             else
             {
-                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(_costs[_costs.Count - 1].costVariable);
-                // 해당 ObscuredIntVariable을 찾을 수 있다면
+                var variable = SaveManager.Instance.profileData.GetVariable(_costs[_costs.Count - 1].costVariable);
+
                 if (variable != null)
                 {
                     UIPopupManager.Instance.ShowNotificationPopup($"{variable.DisplayName}이(가) 부족합니다.");

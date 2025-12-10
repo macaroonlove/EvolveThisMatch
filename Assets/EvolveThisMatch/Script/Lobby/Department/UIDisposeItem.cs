@@ -152,7 +152,7 @@ namespace EvolveThisMatch.Lobby
         /// <param name="job">작업대 사용정보</param>
         /// <param name="craftItem">생산중이던 아이템</param>
         /// <param name="craftResult">현재까지 생산 정보</param>
-        internal async void Initialize(DepartmentLocalSaveData.CraftingJob job, DepartmentCraftData craftItem, CraftResult craftResult, float craftSpeed, UnityAction showDisposeSettingPanel, UnityAction<int> completeCraft, UnityAction<int, float> gainCraftItem, UnityAction removeJob)
+        internal void Initialize(DepartmentLocalSaveData.CraftingJob job, DepartmentCraftData craftItem, CraftResult craftResult, float craftSpeed, UnityAction showDisposeSettingPanel, UnityAction<int> completeCraft, UnityAction<int, float> gainCraftItem, UnityAction removeJob)
         {
             // 잠금 이미지 끄기
             _lock.Hide(true);
@@ -169,8 +169,8 @@ namespace EvolveThisMatch.Lobby
 
             // 대기 개수
             int waitCount = job.maxAmount - productionCount;
-            
-            var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(craftItem.Variable);
+
+            var variable = SaveManager.Instance.profileData.GetVariable(craftItem.Variable);
 
             _agentBG.color = Color.white;
             _agentBG.sprite = agentTemplate.rarity.agentInfoSprite;

@@ -60,7 +60,6 @@ namespace EvolveThisMatch.Lobby
         private UIDefaultPayPanel _defaultPayPanel;
 
         private PoolSystem _poolSystem;
-        private CurrencySystem _currencySystem;
 
         private List<UIShopMainTab> _shopMainTabs = new List<UIShopMainTab>();
         private List<UIShopSubTab> _shopSubTabs = new List<UIShopSubTab>();
@@ -77,7 +76,6 @@ namespace EvolveThisMatch.Lobby
         protected async override void Initialize()
         {
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
-            _currencySystem = CoreManager.Instance.GetSubSystem<CurrencySystem>();
             _packagePayPanel = GetComponentInChildren<UIPackagePayPanel>();
             _defaultPayPanel = GetComponentInChildren<UIDefaultPayPanel>();
 
@@ -285,13 +283,13 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        private async void RefreshVariableDisplay(ShopSubTab subTabData)
+        private void RefreshVariableDisplay(ShopSubTab subTabData)
         {
             VariableDisplayManager.Instance.HideAll();
 
             foreach (var showVariable in subTabData.showVariable)
             {
-                var currency = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(showVariable);
+                var currency = SaveManager.Instance.profileData.GetVariable(showVariable);
                 VariableDisplayManager.Instance.Show(currency);
             }
         }
@@ -448,9 +446,10 @@ namespace EvolveThisMatch.Lobby
         {
             if (itemData.currency != "RM" && itemData.price != 0)
             {
-                if (Enum.TryParse<CurrencyType>(itemData.currency, true, out var currency))
+                if (Enum.TryParse<EVariableType>(itemData.currency, true, out var currency))
                 {
-                    var value = _currencySystem.GetAmount(currency);
+                    var variable = SaveManager.Instance.profileData.GetVariable(currency);
+                    int value = variable == null ? 0 : variable.Value;
                     int maxValue = value / itemData.price;
 
                     if (maxValue <= 0)

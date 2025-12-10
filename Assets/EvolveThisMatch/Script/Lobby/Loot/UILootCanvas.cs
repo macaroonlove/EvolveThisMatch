@@ -38,6 +38,7 @@ namespace EvolveThisMatch.Lobby
 
         private EnemyRecordSystem _enemyRecordSystem;
         private LobbyWaveSystem _waveSystem;
+        private GlobalStatusSystem _globalStatusSystem;
 
         private int _elapsedSeconds;
         private StringBuilder _stringBuilder = new StringBuilder();
@@ -51,6 +52,7 @@ namespace EvolveThisMatch.Lobby
         {
             _enemyRecordSystem = BattleManager.Instance.GetSubSystem<EnemyRecordSystem>();
             _waveSystem = BattleManager.Instance.GetSubSystem<LobbyWaveSystem>();
+            _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
 
             BindText(typeof(Texts));
             BindButton(typeof(Buttons));
@@ -187,6 +189,33 @@ namespace EvolveThisMatch.Lobby
             {
                 _items[index].Hide(true);
             }
+        }
+
+        private int CalculateGoldAmount(int amount)
+        {
+            float result = amount;
+
+            // 추가·차감
+            foreach (var effect in _globalStatusSystem.GoldGainAdditionalDataEffects)
+            {
+                result += effect.Key.GetValue(effect.Value);
+            }
+
+            // 증가·감소
+            float increase = 1;
+            foreach (var effect in _globalStatusSystem.GoldGainIncreaseDataEffects)
+            {
+                increase += effect.Key.GetValue(effect.Value);
+            }
+            result *= increase;
+
+            // 상승·하락
+            foreach (var effect in _globalStatusSystem.GoldGainMultiplierDataEffects)
+            {
+                result *= effect.Key.GetValue(effect.Value);
+            }
+
+            return (int)result;
         }
     }
 }

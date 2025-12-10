@@ -165,8 +165,8 @@ namespace EvolveThisMatch.Lobby
 
             VariableDisplayManager.Instance.HideAll();
 
-            if (i == 4) VariableDisplayManager.Instance.Show(CurrencyType.Essence);
-            else if (i == 5) VariableDisplayManager.Instance.Show(CurrencyType.Powder);
+            if (i == 4) VariableDisplayManager.Instance.Show(EVariableType.Essence);
+            else if (i == 5) VariableDisplayManager.Instance.Show(EVariableType.Powder);
 
             for (int j = 0; j < _panels.Length; j++)
             {

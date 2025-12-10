@@ -70,17 +70,12 @@ namespace EvolveThisMatch.Lobby
 
             _chapterItems = GetComponentsInChildren<UIChapterItem>();
 
-            AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("GenesisCoin", (variable) => { _variables[0] = variable; });
-            AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("OriginCrystal", (variable) => { _variables[1] = variable; });
-            AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("FateRoneStone", (variable) => { _variables[2] = variable; });
-            AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("HeroSeal", (variable) => { _variables[3] = variable; });
-
-            AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>("Action", (variable) =>
-            {
-                _variables[4] = variable;
-
-                MultipleReward(1);
-            });
+            var profileData = SaveManager.Instance.profileData;
+            _variables[0] = profileData.GetVariable(EVariableType.GenesisCoin);
+            _variables[1] = profileData.GetVariable(EVariableType.OriginCrystal);
+            _variables[2] = profileData.GetVariable(EVariableType.FateRoneStone);
+            _variables[3] = profileData.GetVariable(EVariableType.HeroSeal);
+            _variables[4] = profileData.GetVariable(EVariableType.Action);
 
             BindButton(typeof(Buttons));
             BindToggle(typeof(Toggles));
@@ -91,6 +86,8 @@ namespace EvolveThisMatch.Lobby
             _description = GetText((int)Texts.Description);
             _rewardText = GetText((int)Texts.RewardText);
             _battleStartText = GetText((int)Texts.BattleStartText);
+
+            MultipleReward(1);
         }
 
         private void Start()

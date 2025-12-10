@@ -1,8 +1,6 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
-using FrameWork;
 using FrameWork.UIBinding;
-using ScriptableObjectArchitecture;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -62,8 +60,8 @@ namespace EvolveThisMatch.Lobby
             _maxCountText = GetText((int)Texts.MaxCountText);
             _counterText = GetText((int)Texts.CounterText);
             _counterSlider = GetSlider((int)Sliders.CounterSlider);
-            _confilmButton = GetButton((int)Buttons.ConfilmButton); 
-            
+            _confilmButton = GetButton((int)Buttons.ConfilmButton);
+
             _confilmButton.onClick.AddListener(Confilm);
             GetButton((int)Buttons.CloseButton).onClick.AddListener(() => Hide(true));
             GetButton((int)Buttons.MinusButton).onClick.AddListener(() => _counterSlider.value--);
@@ -112,7 +110,7 @@ namespace EvolveThisMatch.Lobby
         /// <summary>
         /// 생산품 변경 시
         /// </summary>
-        private async void ChangeCraft(int index)
+        private void ChangeCraft(int index)
         {
             if (_departmentCanvas == null) return;
 
@@ -122,7 +120,7 @@ namespace EvolveThisMatch.Lobby
 
             foreach (var required in requiredItems)
             {
-                var variable = await AddressableAssetManager.Instance.GetScriptableObject<ObscuredIntVariable>(required.Variable);
+                var variable = SaveManager.Instance.profileData.GetVariable(required.Variable);
                 int ownedCount = variable.Value;
                 int craftableCount = ownedCount / required.Amount;
 
