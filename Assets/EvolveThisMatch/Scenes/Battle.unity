@@ -5029,7 +5029,7 @@ Transform:
   m_GameObject: {fileID: 273883586}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 2.5, y: 3.95, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6717,6 +6717,18 @@ PrefabInstance:
     - target: {fileID: 1316142636673507910, guid: 5f303b8762aa0b4409635f73a68c8d0e, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139675298447540347, guid: 5f303b8762aa0b4409635f73a68c8d0e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139675298447540347, guid: 5f303b8762aa0b4409635f73a68c8d0e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139675298447540347, guid: 5f303b8762aa0b4409635f73a68c8d0e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2859476244986397018, guid: 5f303b8762aa0b4409635f73a68c8d0e, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
@@ -16728,7 +16740,7 @@ SpriteRenderer:
   m_Size: {x: 28.8, y: 10.799999}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1288411923
@@ -25447,11 +25459,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3922504144110307591, guid: a112644fdc1c51f458af928f11df6a94, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 3922504144110307591, guid: a112644fdc1c51f458af928f11df6a94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 3.95
       objectReference: {fileID: 0}
     - target: {fileID: 3922504144110307591, guid: a112644fdc1c51f458af928f11df6a94, type: 3}
       propertyPath: m_LocalPosition.z

@@ -66,7 +66,7 @@ namespace EvolveThisMatch.Core
                 for (int i = 0; i < waveInfo.spawnCount; i++)
                 {
                     Vector3 spawnPos = spawnPoint.position;
-                    spawnPos.y = Random.Range(-4f, 4f);
+                    spawnPos.y = Random.Range(0, 6.3f);
 
                     var enemyData = wave.GetEnemyData(waveInfo.rarity);
 

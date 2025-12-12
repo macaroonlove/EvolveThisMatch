@@ -95,9 +95,11 @@ namespace EvolveThisMatch.Core
                 // 타일 위치 가져오기
                 tile = _tileSystem.GetPlaceAbleTile();
 
-                UIPopupManager.Instance.ShowNotificationPopup("더 이상 인물을 투영시키기 힘들어..");
-
-                if (tile == null) return false;
+                if (tile == null)
+                {
+                    UIPopupManager.Instance.ShowNotificationPopup("더 이상 인물을 투영시키기 힘들어..");
+                    return false;
+                }
             }
 
             // 유닛 생성하기

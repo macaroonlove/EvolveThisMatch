@@ -31,6 +31,7 @@ namespace EvolveThisMatch.Core
         public int id { get; protected set; }
         internal HealthAbility healthAbility { get; private set; }
         internal Vector2 cellPos => new Vector2(transform.position.x, transform.position.y);
+        internal Vector2Int cellIntPos => new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         internal bool isDie => !healthAbility.isAlive;
 
         private Dictionary<Type, AlwaysAbility> _alwaysAbilities = new Dictionary<Type, AlwaysAbility>();

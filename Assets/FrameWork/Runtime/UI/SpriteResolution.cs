@@ -22,6 +22,7 @@ namespace FrameWork.UI
             }
         }
 
+        [ContextMenu("Force Refresh")]
         private void OnResolutionChange()
         {
             Rect safeArea = Screen.safeArea;

@@ -151,23 +151,13 @@ namespace EvolveThisMatch.Core
         {
             var attackRangeRenderer = BattleManager.Instance.GetSubSystem<AttackRangeRenderer>();
 
-            var lines = attackRangeRenderer.lines;
-            var line = lines[Random.Range(0, lines.Count)];
-            var randomOffset = line[Random.Range(0, line.Count)];
+            var tiles = attackRangeRenderer.tiles;
+            var line = tiles[Random.Range(0, tiles.Count)];
 
-            Vector2 offset = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+            Vector2 randomTile = line[Random.Range(0, line.Count)].transform.position;
+            Vector2 offset = new Vector2(Random.Range(-0.65f, 0.65f), Random.Range(-0.65f, 0.65f));
+            Vector2 final = randomTile + offset;
 
-            // -17.5도 회전
-            float angle = -17.5f * Mathf.Deg2Rad;
-            float cos = Mathf.Cos(angle);
-            float sin = Mathf.Sin(angle);
-
-            Vector2 rotatedOffset = new Vector2(
-                offset.x * cos - offset.y * sin,
-                offset.x * sin + offset.y * cos
-            );
-
-            Vector2 final = randomOffset + rotatedOffset;
             return new Vector3(final.x, final.y, 0f);
         }
 
@@ -176,30 +166,34 @@ namespace EvolveThisMatch.Core
             Vector3 direction = (targetVector - casterUnit.transform.position).normalized;
 
             var attackRangeRenderer = BattleManager.Instance.GetSubSystem<AttackRangeRenderer>();
-            var line = attackRangeRenderer.lines[3];
+            var tiles = attackRangeRenderer.tiles;
 
             Vector2 bestTile = Vector2.zero;
             float bestDot = float.MinValue;
             float bestDistance = float.MinValue;
 
-            foreach (var tile in line)
+            foreach (var lines in tiles)
             {
-                Vector3 worldPos = new Vector3(tile.x, tile.y, 0f);
-                float distance = worldPos.magnitude;
-                float dot = Vector3.Dot(worldPos.normalized, direction);
+                foreach (var tile in lines)
+                {
+                    Vector2 tilePos = tile.transform.position;
+                    Vector3 worldPos = new Vector3(tilePos.x, tilePos.y, 0f);
+                    float distance = worldPos.magnitude;
+                    float dot = Vector3.Dot(worldPos.normalized, direction);
 
-                // 방향이 더 잘 맞는 경우 우선
-                if (dot > bestDot)
-                {
-                    bestDot = dot;
-                    bestDistance = distance;
-                    bestTile = tile;
-                }
-                // 방향이 같다면 더 먼 걸 선택
-                else if (Mathf.Approximately(dot, bestDot) && distance > bestDistance)
-                {
-                    bestDistance = distance;
-                    bestTile = tile;
+                    // 방향이 더 잘 맞는 경우 우선
+                    if (dot > bestDot)
+                    {
+                        bestDot = dot;
+                        bestDistance = distance;
+                        bestTile = tilePos;
+                    }
+                    // 방향이 같다면 더 먼 걸 선택
+                    else if (Mathf.Approximately(dot, bestDot) && distance > bestDistance)
+                    {
+                        bestDistance = distance;
+                        bestTile = tilePos;
+                    }
                 }
             }
 

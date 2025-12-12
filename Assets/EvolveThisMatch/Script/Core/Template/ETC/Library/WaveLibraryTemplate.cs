@@ -31,9 +31,13 @@ namespace EvolveThisMatch.Core
     public class WaveChapter
     {
         [SerializeField, Label("√©≈Õ ¿Ã∏ß")] private string _chapterName;
+        [SerializeField, Label("√©≈Õ µﬁ πË∞Ê")] private Sprite _chapterBackgroundBack;
+        [SerializeField, Label("√©≈Õ æ’ πË∞Ê")] private Sprite _chapterBackgroundFront;
         [SerializeField] private List<WaveTemplate> _waves = new List<WaveTemplate>();
 
         public string chapterName => _chapterName;
+        public Sprite chapterBackgroundBack => _chapterBackgroundBack;
+        public Sprite chapterBackgroundFront => _chapterBackgroundFront;
         public IReadOnlyList<WaveTemplate> waves => _waves;
     }
 }

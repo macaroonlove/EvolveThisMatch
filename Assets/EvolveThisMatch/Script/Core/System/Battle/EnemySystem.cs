@@ -435,7 +435,7 @@ namespace EvolveThisMatch.Core
 
         #region 라인 범위 안쪽의 적군 유닛을 반환
         /// <summary>
-        /// 원 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
+        /// 라인 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
         /// </summary>
         internal List<EnemyUnit> GetEnemiesInLine(Vector2 unitPos, float range, int maxCount = int.MaxValue)
         {
@@ -464,8 +464,9 @@ namespace EvolveThisMatch.Core
 
                 for (int i = 0; i < range; i++)
                 {
-                    foreach (var point in _attackRangeRenderer.lines[i])
+                    foreach (var tile in _attackRangeRenderer.tiles[i])
                     {
+                        Vector2 point = tile.transform.position;
                         if ((enemyPos - point).sqrMagnitude <= sqrRange)
                         {
                             enemies.Add(enemy);
@@ -495,8 +496,9 @@ namespace EvolveThisMatch.Core
 
                 for (int i = 0; i < range; i++)
                 {
-                    foreach (var point in _attackRangeRenderer.lines[i])
+                    foreach (var tile in _attackRangeRenderer.tiles[i])
                     {
+                        Vector2 point = tile.transform.position;
                         if ((enemyPos - point).sqrMagnitude <= sqrRange)
                         {
                             var distance = (enemyPos - unitPos).sqrMagnitude;
@@ -535,8 +537,9 @@ namespace EvolveThisMatch.Core
 
                 for (int i = 0; i < range; i++)
                 {
-                    foreach (var point in _attackRangeRenderer.lines[i])
+                    foreach (var tile in _attackRangeRenderer.tiles[i])
                     {
+                        Vector2 point = tile.transform.position;
                         if ((enemyPos - point).sqrMagnitude <= sqrRange)
                         {
                             var distance = (enemyPos - unitPos).sqrMagnitude;
@@ -554,6 +557,97 @@ namespace EvolveThisMatch.Core
                 }
 
                 NextEnemy:;
+            }
+
+            List<EnemyUnit> enemies = new List<EnemyUnit>(priorityQueue.Count);
+
+            while (priorityQueue.Count > 0)
+            {
+                enemies.Add(priorityQueue.Dequeue());
+            }
+
+            return enemies;
+        }
+        #endregion
+
+        #region 타일 템플릿 범위 안쪽의 적군 유닛을 반환
+        /// <summary>
+        /// 타일 템플릿 범위 안쪽의 아군 유닛을 반환 (unitPos와 가까운 유닛부터 반환)
+        /// </summary>
+        internal List<EnemyUnit> GetEnemiesInTileTemplate(Vector2Int unitPos, TileRangeTemplate tileRangeTemplate, int maxCount = int.MaxValue)
+        {
+            if (maxCount == int.MaxValue)
+            {
+                return GetAllEnemiesInTileTemplate(unitPos, tileRangeTemplate);
+            }
+            else
+            {
+                return GetSortedEnemiesInTileTemplate(unitPos, tileRangeTemplate, maxCount);
+            }
+        }
+
+        private List<EnemyUnit> GetAllEnemiesInTileTemplate(Vector2Int unitPos, TileRangeTemplate tileRangeTemplate)
+        {
+            List<EnemyUnit> enemies = new List<EnemyUnit>();
+
+            foreach (EnemyUnit enemy in _enemies)
+            {
+                if (enemy == null || !enemy.isActiveAndEnabled) continue;
+
+                if (tileRangeTemplate.IsContains(enemy.cellIntPos + unitPos))
+                {
+                    enemies.Add(enemy);
+                }
+            }
+
+            return enemies;
+        }
+
+        private List<EnemyUnit> GetSortedEnemiesInTileTemplate(Vector2Int unitPos, TileRangeTemplate tileRangeTemplate)
+        {
+            PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
+
+            foreach (EnemyUnit enemy in _enemies)
+            {
+                if (enemy == null || !enemy.isActiveAndEnabled) continue;
+
+                if (tileRangeTemplate.IsContains(enemy.cellIntPos + unitPos))
+                {
+                    var distance = (enemy.cellPos - unitPos).sqrMagnitude;
+
+                    priorityQueue.Enqueue(enemy, distance);
+                }
+            }
+
+            List<EnemyUnit> enemies = new List<EnemyUnit>(priorityQueue.Count);
+
+            while (priorityQueue.Count > 0)
+            {
+                enemies.Add(priorityQueue.Dequeue());
+            }
+
+            return enemies;
+        }
+
+        private List<EnemyUnit> GetSortedEnemiesInTileTemplate(Vector2Int unitPos, TileRangeTemplate tileRangeTemplate, int maxCount)
+        {
+            PriorityQueue<EnemyUnit> priorityQueue = new PriorityQueue<EnemyUnit>();
+
+            foreach (EnemyUnit enemy in _enemies)
+            {
+                if (enemy == null || !enemy.isActiveAndEnabled) continue;
+
+                if (tileRangeTemplate.IsContains(enemy.cellIntPos + unitPos))
+                {
+                    var distance = (enemy.cellPos - unitPos).sqrMagnitude;
+
+                    priorityQueue.Enqueue(enemy, distance);
+
+                    if (priorityQueue.Count > maxCount)
+                    {
+                        priorityQueue.Dequeue();
+                    }
+                }
             }
 
             List<EnemyUnit> enemies = new List<EnemyUnit>(priorityQueue.Count);
@@ -592,6 +686,13 @@ namespace EvolveThisMatch.Core
         internal List<EnemyUnit> GetAttackableEnemies(Vector2 unitPos, int range, EAttackType attackType, int maxCount = int.MaxValue)
         {
             var enemies = GetSortedEnemiesInLine(unitPos, range);
+
+            return CheckAttackable(enemies, attackType, maxCount);
+        }
+        
+        internal List<EnemyUnit> GetAttackableEnemies(Vector2Int unitPos, TileRangeTemplate tileRangeTemplate, EAttackType attackType, int maxCount = int.MaxValue)
+        {
+            var enemies = GetSortedEnemiesInTileTemplate(unitPos, tileRangeTemplate);
 
             return CheckAttackable(enemies, attackType, maxCount);
         }

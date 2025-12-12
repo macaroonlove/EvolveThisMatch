@@ -1,5 +1,3 @@
-using Cysharp.Threading.Tasks;
-using EvolveThisMatch.Save;
 using FrameWork;
 using System;
 using System.Collections.Generic;
@@ -16,6 +14,8 @@ namespace EvolveThisMatch.Core
         private Dictionary<Type, IBattleSystem> _subSystems = new Dictionary<Type, IBattleSystem>();
 
         internal Transform canvas { get; private set; }
+        public SpriteRenderer backBackground { get; private set; }
+        public SpriteRenderer frontBackground { get; private set; }
 
         public event UnityAction onBattleInitialize;
         public event UnityAction onBattleDeinitialize;
@@ -45,6 +45,8 @@ namespace EvolveThisMatch.Core
             }
 
             canvas = GetComponentInChildren<Canvas>().transform;
+            backBackground = transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
+            frontBackground = transform.GetChild(0).GetChild(1).GetComponent<SpriteRenderer>();
         }
 
         private void OnDestroy()

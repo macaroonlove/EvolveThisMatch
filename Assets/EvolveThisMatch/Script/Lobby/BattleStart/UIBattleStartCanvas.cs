@@ -86,8 +86,6 @@ namespace EvolveThisMatch.Lobby
             _description = GetText((int)Texts.Description);
             _rewardText = GetText((int)Texts.RewardText);
             _battleStartText = GetText((int)Texts.BattleStartText);
-
-            MultipleReward(1);
         }
 
         private void Start()
@@ -118,6 +116,7 @@ namespace EvolveThisMatch.Lobby
 
             SaveManager.Instance.profileData.categories.TryGetValue($"{_currentCategory}", out var info);
             ShowCategory(info);
+            MultipleReward(1);
 
             base.Show(true);
         }

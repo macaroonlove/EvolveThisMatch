@@ -26,11 +26,18 @@ namespace EvolveThisMatch.Lobby
         {
             StageName,
         }
+        enum Images
+        {
+            StageBackgroundBack,
+            StageBackgroundFront,
+        }
         #endregion
 
         private TMP_Dropdown _categoryDropdown;
         private TextMeshProUGUI _stageName;
         private Button _enterStageButton;
+        private Image _stageBackgroundBack;
+        private Image _stageBackgroundFront;
 
         [SerializeField] private WaveLibraryTemplate _waveLibraryTemplates;
 
@@ -58,10 +65,13 @@ namespace EvolveThisMatch.Lobby
             BindDropdown(typeof(Dropdowns));
             BindButton(typeof(Buttons));
             BindText(typeof(Texts));
+            BindImage(typeof(Images));
 
             _stageName = GetText((int)Texts.StageName);
             _categoryDropdown = GetDropdown((int)Dropdowns.CategoryDropdown);
             _enterStageButton = GetButton((int)Buttons.EnterStageButton);
+            _stageBackgroundBack = GetImage((int)Images.StageBackgroundBack);
+            _stageBackgroundFront = GetImage((int)Images.StageBackgroundFront);
             InitializeCategory();
 
             for (int i = 0; i < _chapterItems.Length; i++)
@@ -86,6 +96,8 @@ namespace EvolveThisMatch.Lobby
             _stageData = LoadStageData();
 
             SyncStageData();
+
+            ChangeBackground();
 
             var waveTemplate = _waveLibraryTemplates.categorys[_currentCategory].chapters[_currentChapter].waves[_currentStage];
             _lobbyWaveSystem.ChangeWave(waveTemplate);
@@ -184,12 +196,19 @@ namespace EvolveThisMatch.Lobby
         {
             SaveManager.Instance.profileData.categories.TryGetValue($"{_currentCategory}", out var info);
 
+            var waveChapter = _chapterItems[_currentChapter].waveChapter;
+            _stageBackgroundBack.sprite = waveChapter.chapterBackgroundBack;
+            _stageBackgroundFront.sprite = waveChapter.chapterBackgroundFront;
+
+            _stageBackgroundBack.enabled = waveChapter.chapterBackgroundBack != null;
+            _stageBackgroundFront.enabled = waveChapter.chapterBackgroundFront != null;
+
             for (int i = 0; i < _stageItems.Length; i++)
             {
                 bool isActiveStage = MatchStageData(_currentCategory, _currentChapter, i);
                 bool isClear = info != null && _currentChapter * 10 + i <= info.MaxStage;
 
-                _stageItems[i].Show(_chapterItems[_currentChapter].waveChapter.waves[i], isActiveStage, isClear);
+                _stageItems[i].Show(waveChapter.waves[i], isActiveStage, isClear);
             }
         }
 
@@ -217,7 +236,7 @@ namespace EvolveThisMatch.Lobby
         private void ShowStageInfo(WaveTemplate waveTemplate)
         {
             _stageName.text = $"<size=32>{waveTemplate.stage}</size>\n{waveTemplate.displayName}";
-
+            
             foreach (var item in _stageEnemyItems)
             {
                 item.Hide();
@@ -255,10 +274,24 @@ namespace EvolveThisMatch.Lobby
 
         private void EnterStage()
         {
+            // 배경 변경
+            ChangeBackground();            
+
             _lobbyWaveSystem.ChangeWave(_currentStageItem.waveTemplate);
             SaveStageData();
 
             Hide();
+        }
+
+        private void ChangeBackground()
+        {
+            var waveChapter = _waveLibraryTemplates.categorys[_currentCategory].chapters[_currentChapter];
+            Debug.Log(waveChapter);
+            BattleManager.Instance.backBackground.sprite = waveChapter.chapterBackgroundBack;
+            BattleManager.Instance.frontBackground.sprite = waveChapter.chapterBackgroundFront;
+
+            BattleManager.Instance.backBackground.enabled = waveChapter.chapterBackgroundBack != null;
+            BattleManager.Instance.frontBackground.enabled = waveChapter.chapterBackgroundFront != null;
         }
         #endregion
 

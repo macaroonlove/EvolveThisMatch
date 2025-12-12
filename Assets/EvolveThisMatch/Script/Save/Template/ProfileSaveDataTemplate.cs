@@ -139,7 +139,7 @@ namespace EvolveThisMatch.Save
         [SerializeField, ReadOnly] private ProfileSaveData _data;
 
         [SerializeField] private List<VariableEntry> _variables = new List<VariableEntry>();
-        private Dictionary<EVariableType, ObscuredIntVariable> _variableDic;
+        private Dictionary<EVariableType, ObscuredIntVariable> _variableDic = new Dictionary<EVariableType, ObscuredIntVariable>();
 
         private string _displayName;
         public string displayName => _displayName;

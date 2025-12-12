@@ -1,3 +1,4 @@
+using FrameWork;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,17 +6,17 @@ namespace EvolveThisMatch.Core
 {
     public class AttackRangeRenderer : MonoBehaviour, IBattleSystem
     {
-        private LineRangeRenderer _lineRangeRenderer;
+        private TileRangeRenderer _tileRangeRenderer;
         private CircleRangeRenderer _circleRangeRenderer;
 
-        internal IReadOnlyList<IReadOnlyList<Vector2>> lines => _lineRangeRenderer.lines;
+        public IReadOnlyList<IReadOnlyList<GameObject>> tiles => _tileRangeRenderer.tiles;
 
         private void Awake()
         {
-            _lineRangeRenderer = GetComponentInChildren<LineRangeRenderer>();
+            _tileRangeRenderer = GetComponentInChildren<TileRangeRenderer>();
             _circleRangeRenderer = GetComponentInChildren<CircleRangeRenderer>();
 
-            _lineRangeRenderer.Initialize();
+            _tileRangeRenderer.Initialize();
             _circleRangeRenderer.Initialize();
         }
 
@@ -31,7 +32,12 @@ namespace EvolveThisMatch.Core
 
         public void Show(int lineCount)
         {
-            _lineRangeRenderer.Show(lineCount);
+            _tileRangeRenderer.Show(lineCount);
+        }
+
+        public void Show(Unit unit, TileRangeTemplate tileRangeTemplate)
+        {
+            _tileRangeRenderer.Show(unit, tileRangeTemplate);
         }
 
         public void Show(Unit unit, float range)
@@ -41,7 +47,7 @@ namespace EvolveThisMatch.Core
 
         public void Hide()
         {
-            _lineRangeRenderer.Hide();
+            _tileRangeRenderer.Hide();
             _circleRangeRenderer.Hide();
         }
     }

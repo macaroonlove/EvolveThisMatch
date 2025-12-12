@@ -32,7 +32,10 @@ namespace EvolveThisMatch.Lobby
 
         private void OnDestroy()
         {
-            SaveManager.Instance.profileData.changedDisplayName -= ShowPlayerName;
+            if (SaveManager.Instance.profileData != null)
+            {
+                SaveManager.Instance.profileData.changedDisplayName -= ShowPlayerName;
+            }
         }
 
         private void ShowPlayerName()

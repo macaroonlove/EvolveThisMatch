@@ -18,6 +18,8 @@ MonoBehaviour:
     _startCrystal: 0
     _chapters:
     - _chapterName: "\uCD5C\uD6C4\uC758 \uB9C8\uC744"
+      _chapterBackgroundBack: {fileID: 21300000, guid: 0223a7ba9b127b64383e757e8f79ea6f, type: 3}
+      _chapterBackgroundFront: {fileID: 21300000, guid: b17032da14ba1ca4886e855552bdcc5b, type: 3}
       _waves:
       - {fileID: 11400000, guid: 4810ec41e4bbf094b8e496e704a402f1, type: 2}
       - {fileID: 11400000, guid: ee99ae91d34a7504f8a21c176a579fcf, type: 2}
@@ -30,6 +32,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 7f09ba32aeba8fa468968beaeca33eeb, type: 2}
       - {fileID: 11400000, guid: ed03766f36506e24ea95a0307ad47775, type: 2}
     - _chapterName: "\uC78A\uD600\uC9C4 \uC232"
+      _chapterBackgroundBack: {fileID: 0}
+      _chapterBackgroundFront: {fileID: 0}
       _waves:
       - {fileID: 11400000, guid: 79dcd3be5671cf546906d3036620e64f, type: 2}
       - {fileID: 11400000, guid: dcf8f32797a64e34b9b752a52e8bc986, type: 2}
@@ -42,6 +46,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: a642154ca4cf1fa4ba950aaf0932f298, type: 2}
       - {fileID: 11400000, guid: 227ae9b009c5dee44b4ea3a43d5a58c2, type: 2}
     - _chapterName: "\uBC84\uB824\uC9C4 \uC655\uAD6D"
+      _chapterBackgroundBack: {fileID: 0}
+      _chapterBackgroundFront: {fileID: 0}
       _waves:
       - {fileID: 11400000, guid: 316b979215d69784ba7ebe57d8700b70, type: 2}
       - {fileID: 11400000, guid: 68423d0debdba7246ae9ac68c6834376, type: 2}
@@ -54,6 +60,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 52f9da68e70068f4da6dbcad2960f22e, type: 2}
       - {fileID: 11400000, guid: 74d63226b0930314398c25d8f42a7d3f, type: 2}
     - _chapterName: "\uC6A9\uC758 \uD611\uACE1"
+      _chapterBackgroundBack: {fileID: 0}
+      _chapterBackgroundFront: {fileID: 0}
       _waves:
       - {fileID: 11400000, guid: 99eaeee8186d8964f9fd7a85bbb68feb, type: 2}
       - {fileID: 11400000, guid: 16ce89a0d014e754dbaf641b927d1264, type: 2}
@@ -66,6 +74,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 3540f46122a748b47924fded5fa01fb3, type: 2}
       - {fileID: 11400000, guid: e7956d75aebfabf40a433cd83844af90, type: 2}
     - _chapterName: "\uB9C8\uC655\uC131"
+      _chapterBackgroundBack: {fileID: 0}
+      _chapterBackgroundFront: {fileID: 0}
       _waves:
       - {fileID: 11400000, guid: 21966fba516af4d47856db0587708438, type: 2}
       - {fileID: 11400000, guid: 95715a8edd060f64ab7c96ab56706086, type: 2}
