@@ -286,7 +286,7 @@ namespace EvolveThisMatch.Lobby
         private void ChangeBackground()
         {
             var waveChapter = _waveLibraryTemplates.categorys[_currentCategory].chapters[_currentChapter];
-            Debug.Log(waveChapter);
+
             BattleManager.Instance.backBackground.sprite = waveChapter.chapterBackgroundBack;
             BattleManager.Instance.frontBackground.sprite = waveChapter.chapterBackgroundFront;
 

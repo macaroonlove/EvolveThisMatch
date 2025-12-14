@@ -1025,57 +1025,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 525149280}
   m_CullTransparentMesh: 1
---- !u!1 &546290779
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 546290781}
-  - component: {fileID: 546290780}
-  m_Layer: 0
-  m_Name: SaveManager(Clone)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &546290780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 546290779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e41d44bc743c16409e7510db5a44759, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _profileData: {fileID: 11400000, guid: 778655154cf61e7479cef77ac17d8de0, type: 2}
-  _agentData: {fileID: 11400000, guid: d00a8fb403766034fb2a13774772988f, type: 2}
-  _itemData: {fileID: 11400000, guid: b8b72256c03598f41a713ec49453469a, type: 2}
-  _formationData: {fileID: 11400000, guid: 6a0a8762cf3dd484bab3c8397df21e11, type: 2}
-  _departmentData: {fileID: 11400000, guid: 69d4629cd75811644a0fec7f21fb663f, type: 2}
-  _shopData: {fileID: 11400000, guid: b6d00b94dc7a9b246840e97eec477fc8, type: 2}
-  _gachaData: {fileID: 11400000, guid: acd2d828be92ae5428e0302d4f34fbf2, type: 2}
---- !u!4 &546290781
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 546290779}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &576029083
 GameObject:
   m_ObjectHideFlags: 0
@@ -8369,4 +8318,3 @@ SceneRoots:
   - {fileID: 122455203612116179}
   - {fileID: 1790732632}
   - {fileID: 34256912}
-  - {fileID: 546290781}

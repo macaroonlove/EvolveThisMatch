@@ -244,7 +244,7 @@ MonoBehaviour:
     - LobbyResource
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e3fa45617cf831748af227fe24a2d4f7
-    m_Address: RawMuscleFiber
+    m_Address: RawMuscleFiberIcon
     m_ReadOnly: 0
     m_SerializedLabels:
     - LobbyResource

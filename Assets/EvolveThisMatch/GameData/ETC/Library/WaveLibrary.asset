@@ -32,8 +32,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 7f09ba32aeba8fa468968beaeca33eeb, type: 2}
       - {fileID: 11400000, guid: ed03766f36506e24ea95a0307ad47775, type: 2}
     - _chapterName: "\uC78A\uD600\uC9C4 \uC232"
-      _chapterBackgroundBack: {fileID: 0}
-      _chapterBackgroundFront: {fileID: 0}
+      _chapterBackgroundBack: {fileID: 21300000, guid: 0fb07691e76b81f4b935e4e3abacce63, type: 3}
+      _chapterBackgroundFront: {fileID: 21300000, guid: 1c68ebde365aacd4999fde1abcea75f4, type: 3}
       _waves:
       - {fileID: 11400000, guid: 79dcd3be5671cf546906d3036620e64f, type: 2}
       - {fileID: 11400000, guid: dcf8f32797a64e34b9b752a52e8bc986, type: 2}
@@ -46,8 +46,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: a642154ca4cf1fa4ba950aaf0932f298, type: 2}
       - {fileID: 11400000, guid: 227ae9b009c5dee44b4ea3a43d5a58c2, type: 2}
     - _chapterName: "\uBC84\uB824\uC9C4 \uC655\uAD6D"
-      _chapterBackgroundBack: {fileID: 0}
-      _chapterBackgroundFront: {fileID: 0}
+      _chapterBackgroundBack: {fileID: 21300000, guid: 09d82283e1c223841a50758683238dd0, type: 3}
+      _chapterBackgroundFront: {fileID: 21300000, guid: b25c79a65596a1446ae89f7d4d607b3e, type: 3}
       _waves:
       - {fileID: 11400000, guid: 316b979215d69784ba7ebe57d8700b70, type: 2}
       - {fileID: 11400000, guid: 68423d0debdba7246ae9ac68c6834376, type: 2}
@@ -59,8 +59,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: c22c7d12986755641894b6bb941d4676, type: 2}
       - {fileID: 11400000, guid: 52f9da68e70068f4da6dbcad2960f22e, type: 2}
       - {fileID: 11400000, guid: 74d63226b0930314398c25d8f42a7d3f, type: 2}
-    - _chapterName: "\uC6A9\uC758 \uD611\uACE1"
-      _chapterBackgroundBack: {fileID: 0}
+    - _chapterName: "\uC7A0\uB4E0 \uC6A9\uC758 \uD611\uACE1"
+      _chapterBackgroundBack: {fileID: 21300000, guid: 4dc63026f71e8fd4a889b2380b80cb9f, type: 3}
       _chapterBackgroundFront: {fileID: 0}
       _waves:
       - {fileID: 11400000, guid: 99eaeee8186d8964f9fd7a85bbb68feb, type: 2}
@@ -73,9 +73,9 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 723e485dd44a9f64ebb42b135dc1b0af, type: 2}
       - {fileID: 11400000, guid: 3540f46122a748b47924fded5fa01fb3, type: 2}
       - {fileID: 11400000, guid: e7956d75aebfabf40a433cd83844af90, type: 2}
-    - _chapterName: "\uB9C8\uC655\uC131"
-      _chapterBackgroundBack: {fileID: 0}
-      _chapterBackgroundFront: {fileID: 0}
+    - _chapterName: "\uC18C\uBA78\uC758 \uC131\uCC44"
+      _chapterBackgroundBack: {fileID: 21300000, guid: b7b615311aef4b34ca1c42333885d6cb, type: 3}
+      _chapterBackgroundFront: {fileID: 21300000, guid: ccdf7b507c86e6045a70bcb4a0452c16, type: 3}
       _waves:
       - {fileID: 11400000, guid: 21966fba516af4d47856db0587708438, type: 2}
       - {fileID: 11400000, guid: 95715a8edd060f64ab7c96ab56706086, type: 2}

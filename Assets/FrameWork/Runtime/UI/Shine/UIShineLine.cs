@@ -1,4 +1,5 @@
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 namespace FrameWork.UI
@@ -10,6 +11,7 @@ namespace FrameWork.UI
         [SerializeField] private float _rotate;
         [SerializeField] private float _delay;
 
+        private TextMeshProUGUI _text;
         private RectTransform _shineRect;
         private RectTransform _textRect;
         private Sequence _seq;
@@ -18,6 +20,7 @@ namespace FrameWork.UI
         {
             _shineRect = GetComponent<RectTransform>();
             _textRect = GetComponentInParent<RectTransform>();
+            _text = GetComponentInParent<TextMeshProUGUI>();
 
             // 각도 적용
             _shineRect.localRotation = Quaternion.Euler(0, 0, _rotate);
@@ -26,6 +29,8 @@ namespace FrameWork.UI
         private void OnEnable()
         {
             StartShine();
+            _text.SetMaterialDirty();
+            _text.SetVerticesDirty();
         }
 
         private void OnDisable()
