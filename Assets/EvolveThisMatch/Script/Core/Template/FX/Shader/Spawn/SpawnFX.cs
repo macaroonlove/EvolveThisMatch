@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
-    [CreateAssetMenu(menuName = "Templates/FX/Shader/Spawn", fileName = "Spawn", order = 0)]
+    [CreateAssetMenu(menuName = "Templates/FX/Shader/Spawn/Spawn", fileName = "Spawn", order = 0)]
     public class SpawnFX : ShaderFX
     {
         public override async void Play(Unit target)

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f54bbad9e7f4b44890178127cf6cb03, type: 3}
   m_Name: Release FullDistortionFade
   m_EditorClassIdentifier: 
-  _startDelay: 500
-  _fadeTime: 0.5
-  _offDelay: 500
+  _startDelay: 0
+  _fadeTime: 0
+  _offDelay: 0

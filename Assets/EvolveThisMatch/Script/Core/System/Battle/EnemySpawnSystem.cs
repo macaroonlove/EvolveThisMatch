@@ -6,6 +6,8 @@ namespace EvolveThisMatch.Core
 {
     public class EnemySpawnSystem : MonoBehaviour, IBattleSystem
     {
+        [SerializeField] private FX _spawnFX;
+
         private EnemySystem _enemySystem;
         private PoolSystem _poolSystem;
 
@@ -35,6 +37,9 @@ namespace EvolveThisMatch.Core
 
                 // À¯´Ö µî·Ï
                 _enemySystem.Regist(unit);
+
+                // ½ºÆù ÀÌÆåÆ®
+                _spawnFX.Play(unit);
 
                 return unit;
             }
