@@ -26,8 +26,6 @@ namespace EvolveThisMatch.Battle
             int totalWaveIndex = 1;
             while (!isWaveEnd)
             {
-                if (_timeSystem == null) yield break;
-
                 if (_currentChapterIndex >= waveCategory.chapters.Count)
                 {
                     isWaveEnd = true;

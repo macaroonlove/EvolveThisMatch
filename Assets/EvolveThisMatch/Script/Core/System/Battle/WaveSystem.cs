@@ -8,7 +8,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] protected WaveLibraryTemplate _waveLibrary;
 
         protected EnemySpawnSystem _enemySpawnSystem;
-        protected TimeSystem _timeSystem;
 
         public WaveLibraryTemplate waveLibrary => _waveLibrary;
         public int currentWaveIndex { get; protected set; }
@@ -17,10 +16,9 @@ namespace EvolveThisMatch.Core
         public Transform spawnPoint { get; protected set; }
         public Transform boundaryPoint { get; protected set; }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             _enemySpawnSystem = BattleManager.Instance.GetSubSystem<EnemySpawnSystem>();
-            _timeSystem = BattleManager.Instance.GetSubSystem<TimeSystem>();
 
             spawnPoint = transform.GetChild(0);
             boundaryPoint = transform.GetChild(1);
@@ -40,7 +38,6 @@ namespace EvolveThisMatch.Core
             }
 
             _enemySpawnSystem = null;
-            _timeSystem = null;
 
             isWaveEnd = true;
         }

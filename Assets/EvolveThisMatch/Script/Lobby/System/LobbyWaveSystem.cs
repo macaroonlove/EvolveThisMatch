@@ -8,27 +8,33 @@ namespace EvolveThisMatch.Lobby
     public class LobbyWaveSystem : WaveSystem
     {
         private WaveTemplate _currentWave;
+        private BlockSystem _blockSystem;
 
         public WaveTemplate currentWave => _currentWave;
 
         public event UnityAction onChangeWave;
 
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            _blockSystem = BattleManager.Instance.GetSubSystem<BlockSystem>();
+        }
+
         protected override IEnumerator CoUpdateWave()
         {
-            if (_currentWave == null)
-            {
-                yield break;
-            }
+            if (_currentWave == null) yield break;
 
             while (true)
             {
-                if (_timeSystem == null) yield break;
-
                 // 웨이브 시작
                 StartCoroutine(SpawnWave(_currentWave));
 
                 // 웨이브 유지 시간만큼 대기
                 yield return new WaitForSeconds(_currentWave.waveTime);
+
+                // 100마리 이상 스폰되면 더 이상 스폰되지 않도록 대기
+                yield return new WaitUntil(() => _blockSystem == null || _blockSystem.blockCount <= 100);
             }
         }
 

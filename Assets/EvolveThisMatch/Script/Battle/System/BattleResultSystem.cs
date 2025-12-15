@@ -15,6 +15,7 @@ namespace EvolveThisMatch.Battle
     public class BattleResultSystem : MonoBehaviour, IBattleSystem
     {
         private EnemySystem _enemySystem;
+        private BlockSystem _blockSystem;
         private BattleWaveSystem _waveSystem;
         private bool _isEnd = false;
 
@@ -25,16 +26,17 @@ namespace EvolveThisMatch.Battle
         public void Initialize()
         {
             _enemySystem = BattleManager.Instance.GetSubSystem<EnemySystem>();
+            _blockSystem = BattleManager.Instance.GetSubSystem<BlockSystem>();
             _waveSystem = BattleManager.Instance.GetSubSystem<BattleWaveSystem>();
 
             _enemySystem.onDeregist += OnEnemyKilled;
-            _enemySystem.onRegist += OnEnemySpawned;
+            _blockSystem.onChangedBlockCount += OnChangedBlockCount;
         }
 
         public void Deinitialize()
         {
             _enemySystem.onDeregist -= OnEnemyKilled;
-            _enemySystem.onRegist -= OnEnemySpawned;
+            _blockSystem.onChangedBlockCount -= OnChangedBlockCount;
         }
 
         /// <summary>
@@ -51,15 +53,16 @@ namespace EvolveThisMatch.Battle
         }
 
         /// <summary>
-        /// 적이 100마리 이상 소환되면, 승리
+        /// 적이 바리케이드에 닿아 허용범위를 초과하면, 패배
         /// </summary>
-        private void OnEnemySpawned(Unit unit)
+        private void OnChangedBlockCount(int count)
         {
             if (_isEnd) return;
 
-            if (_enemySystem.enemyCount > 100)
+            if (count > 100)
             {
                 EndBattle(false);
+                _blockSystem.BattleEnd();
             }
         }
 

@@ -21,7 +21,7 @@ namespace EvolveThisMatch.Battle
         private Image _slider;
         private TextMeshProUGUI _counter;
 
-        private EnemySystem _enemySystem;
+        private BlockSystem _blockSystem;
 
         protected override void Initialize()
         {
@@ -37,22 +37,18 @@ namespace EvolveThisMatch.Battle
 
         internal void InitializeBattle()
         {
-            _enemySystem = BattleManager.Instance.GetSubSystem<EnemySystem>();
+            _blockSystem = BattleManager.Instance.GetSubSystem<BlockSystem>();
 
-            _enemySystem.onRegist += OnChangeEnemyCount;
-            _enemySystem.onDeregist += OnChangeEnemyCount;
+            _blockSystem.onChangedBlockCount += OnChangedBlockCount;
         }
 
         internal void DeinitializeBattle()
         {
-            _enemySystem.onRegist -= OnChangeEnemyCount;
-            _enemySystem.onDeregist -= OnChangeEnemyCount;
+            _blockSystem.onChangedBlockCount -= OnChangedBlockCount;
         }
 
-        private void OnChangeEnemyCount(Unit unit)
+        private void OnChangedBlockCount(int count)
         {
-            int count = _enemySystem.enemyCount;
-
             _slider.fillAmount = count * 0.01f;
             _counter.text = $"{count}/100";
         }

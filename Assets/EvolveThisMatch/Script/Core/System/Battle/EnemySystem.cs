@@ -15,6 +15,7 @@ namespace EvolveThisMatch.Core
         [SerializeField, ReadOnly] private List<EnemyUnit> _enemies = new List<EnemyUnit>();
 
         private AttackRangeRenderer _attackRangeRenderer;
+        private BlockSystem _blockSystem;
 
         public int enemyCount => _enemies.Count;
 
@@ -27,6 +28,7 @@ namespace EvolveThisMatch.Core
 
         public void Initialize()
         {
+            _blockSystem = BattleManager.Instance.GetSubSystem<BlockSystem>();
             _attackRangeRenderer = BattleManager.Instance.GetSubSystem<AttackRangeRenderer>();
         }
 
@@ -62,6 +64,8 @@ namespace EvolveThisMatch.Core
 
         internal void DeathEnemy(EnemyUnit enemy)
         {
+            _blockSystem.Deregist(enemy);
+
             onDeath?.Invoke(enemy.id);
             onDeathRarity?.Invoke(enemy.enemyData.template.rarity.rarity);
             onReturnCoin?.Invoke(enemy.enemyData.coin);
