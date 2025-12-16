@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Core
             {
                 _activeSkillAbility = animator.GetComponentInParent<ActiveSkillAbility>();
             }
-
+            
             _hasTriggered = false;
         }
 

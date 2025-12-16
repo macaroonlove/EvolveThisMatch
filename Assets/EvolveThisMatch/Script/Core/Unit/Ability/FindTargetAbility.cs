@@ -129,6 +129,26 @@ namespace EvolveThisMatch.Core
 
             return targets;
         }
+
+        /// <summary>
+        /// 라인 범위 내에 존재하는 유닛 반환 (적 전용)
+        /// </summary>
+        internal List<Unit> FindTargetInLine(int lineCount, EUnitType unitType, int maxCount)
+        {
+            List<Unit> targets = (maxCount == int.MaxValue) ? new List<Unit>() : new List<Unit>(maxCount);
+
+            if ((unitType & EUnitType.Enemy) != 0)
+            {
+                targets.AddRange(_enemySystem.GetEnemiesInLine(unit.cellPos, lineCount, maxCount));
+            }
+
+            if (maxCount != int.MaxValue)
+            {
+                GetSortedUnits(targets, unit.cellPos, maxCount);
+            }
+
+            return targets;
+        }
         #endregion
 
         #region 범위 타입에 따른 공격 가능한 유닛 반환 로직
@@ -376,6 +396,23 @@ namespace EvolveThisMatch.Core
             if ((unitType & EUnitType.Enemy) != 0)
             {
                 targets.AddRange(_enemySystem.GetHealableEnemies(unit.cellPos, direction, range, angle, maxCount));
+            }
+
+            if (maxCount != int.MaxValue)
+            {
+                GetSortedUnits(targets, unit.cellPos, maxCount);
+            }
+
+            return targets;
+        }
+
+        internal List<Unit> FindHealableTargetInLine(int range, EUnitType unitType, int maxCount)
+        {
+            List<Unit> targets = (maxCount == int.MaxValue) ? new List<Unit>() : new List<Unit>(maxCount);
+
+            if ((unitType & EUnitType.Enemy) != 0)
+            {
+                targets.AddRange(_enemySystem.GetHealableEnemies(unit.cellPos, range, maxCount));
             }
 
             if (maxCount != int.MaxValue)

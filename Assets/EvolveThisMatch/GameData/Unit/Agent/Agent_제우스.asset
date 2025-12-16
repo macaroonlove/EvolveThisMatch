@@ -27,9 +27,9 @@ MonoBehaviour:
   _atk: 200
   _attackTerm: 1.2
   _attackRange: 3
-  _isProjectileAttack: 0
-  _projectilePrefab: {fileID: 0}
-  _spawnPoint: 0
+  _isProjectileAttack: 1
+  _projectilePrefab: {fileID: 9214699220727189353, guid: 23b771533308cc24a9d4452ed5f87c18, type: 3}
+  _spawnPoint: 3
   _physicalPenetration: 10
   _magicPenetration: 10
   _criticalHitChance: 0

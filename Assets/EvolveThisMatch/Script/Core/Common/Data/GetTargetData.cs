@@ -95,7 +95,7 @@ namespace EvolveThisMatch.Core
                 case ERangeType.Cone:
                     return findTargetAbility.FindTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, maxCount);
                 case ERangeType.Line:
-                    return null;
+                    return findTargetAbility.FindTargetInLine((int)_range, _unitType, maxCount);
                 default:
                     return findTargetAbility.FindAllTarget(_unitType);
             }
@@ -112,7 +112,7 @@ namespace EvolveThisMatch.Core
                 case ERangeType.Cone:
                     return findTargetAbility.FindAttackableTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, _attackType, maxCount);
                 case ERangeType.Line:
-                    return null;
+                    return findTargetAbility.FindAttackableTargetInLine((int)_range, _unitType, _attackType, maxCount);
                 default:
                     return findTargetAbility.FindAllAttackableTarget(_unitType, _attackType);
             }
@@ -129,6 +129,7 @@ namespace EvolveThisMatch.Core
                 case ERangeType.Cone:
                     return findTargetAbility.FindHealableTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, maxCount);
                 case ERangeType.Line:
+                    return findTargetAbility.FindHealableTargetInLine((int)_range, _unitType, maxCount);
                     return null;
                 default:
                     return findTargetAbility.FindAllHealableTarget(_unitType);

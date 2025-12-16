@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b9e879cde921eb241bbc716410ae2b8e
+timeCreated: 1453493917
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 0
+  packageName: Magic Arsenal (URP Upgrade)
+  packageVersion: 2.74
+  assetPath: Assets/ImportAssets/VFX Assets/MagicArsenal/Effects/Materials/Modular/modular_aura06(Modular).mat
+  uploadId: 715034

@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5093661109052b9438d278789d9e23d4, type: 3}
   m_Name: "ActiveSkill_\uBCBC\uB77D"
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: ee4840b181f6f8a40aa169bc6a6d3c5d, type: 3}
   _id: 0
   _displayName: "\uBCBC\uB77D"
   _description: "\uC801\uC774 \uAC00\uC7A5 \uB9CE\uC740 \uC704\uCE58\uC5D0 \uC804\uD22C\uB825\uC758
@@ -145,8 +145,8 @@ MonoBehaviour:
     _range: 100
     _assistantRange: 0
     _numberOfTarget: 0
-  _prefab: {fileID: 9214699220727189353, guid: b0cc03911d9a03248ae6b4513d56124e, type: 3}
-  _spawnPoint: 5
+  _prefab: {fileID: 9214699220727189353, guid: bd1ab1616b6f65d478430e6f2053fea9, type: 3}
+  _spawnPoint: 2
 --- !u!114 &6215412298646126786
 MonoBehaviour:
   m_ObjectHideFlags: 1

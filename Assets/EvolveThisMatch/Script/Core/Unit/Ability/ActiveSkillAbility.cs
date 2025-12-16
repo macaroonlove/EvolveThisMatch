@@ -36,7 +36,7 @@ namespace EvolveThisMatch.Core
 
             _unitAnimationAbility = unit.GetAbility<UnitAnimationAbility>();
             _abnormalStatusAbility = unit.GetAbility<AbnormalStatusAbility>();
-            
+
             _isExecuteSkill = false;
 
             InitializeActiveSkillInstance();
@@ -107,7 +107,7 @@ namespace EvolveThisMatch.Core
         private void ActiveSkillCooldown()
         {
             var deltaTime = Time.deltaTime;
-            
+
             foreach (var skill in _skills.Values)
             {
                 skill.Update(deltaTime);

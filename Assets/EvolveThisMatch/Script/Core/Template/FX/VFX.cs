@@ -11,7 +11,7 @@ namespace EvolveThisMatch.Core
         [SerializeField, Label("파티클인가?")] private bool _isParticle = true;
         [SerializeField, Label("VFX")] private GameObject _vfxObj;
         [SerializeField, Label("생성 위치")] private ESpawnPoint _spawnPoint;
-        
+
         [Space(10)]
         [SerializeField, Label("무한지속 여부")] private bool _isInfinity;
         [HideIf("_isInfinity")]
@@ -28,6 +28,9 @@ namespace EvolveThisMatch.Core
         [Space(10)]
         [SerializeField, Label("위치 오프셋")] private Vector3 _posOffset;
         [SerializeField, Label("회전 오프셋")] private Vector3 _rotOffset;
+
+        [Space(10)]
+        [SerializeField, Label("적 사망 시, 반환 여부")] private bool _isRegistFxAbility = true;
 
         [Space(10)]
         [Tooltip("타겟 방식으로 보내야만 사용 가능")]
@@ -47,7 +50,7 @@ namespace EvolveThisMatch.Core
             else
             {
                 DoPlay(target, fxAbility);
-            }            
+            }
         }
 
         private IEnumerator CoPlay(Unit target, FXAbility fxAbility)
@@ -82,7 +85,7 @@ namespace EvolveThisMatch.Core
                 follow.SetTarget(point, _posOffset);
             }
 
-            fxAbility.AddFX(obj);
+            if (_isRegistFxAbility) fxAbility.AddFX(obj);
         }
 
         public override void Play(Vector3 pos)
@@ -95,7 +98,7 @@ namespace EvolveThisMatch.Core
         private GameObject Play(Vector3 pos, Quaternion rot)
         {
             var poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
-            
+
             GameObject obj;
             if (_isInfinity)
             {

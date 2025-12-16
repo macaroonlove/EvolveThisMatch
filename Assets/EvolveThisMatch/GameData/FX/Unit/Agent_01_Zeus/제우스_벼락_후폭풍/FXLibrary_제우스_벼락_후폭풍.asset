@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b9dbbfc6376f94499dcb99538907518, type: 3}
+  m_Name: "FXLibrary_\uC81C\uC6B0\uC2A4_\uBCBC\uB77D_\uD6C4\uD3ED\uD48D"
+  m_EditorClassIdentifier: 
+  _fxList:
+  - {fileID: 11400000, guid: ae415f1e52934ed4cbdc16a8ca53ed33, type: 2}
+  - {fileID: 11400000, guid: d08dd49301b90f8418701e59bebbf34e, type: 2}
