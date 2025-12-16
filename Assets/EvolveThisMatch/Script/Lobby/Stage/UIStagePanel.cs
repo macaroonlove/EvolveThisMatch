@@ -100,7 +100,7 @@ namespace EvolveThisMatch.Lobby
             ChangeBackground();
 
             var waveTemplate = _waveLibraryTemplates.categorys[_currentCategory].chapters[_currentChapter].waves[_currentStage];
-            _lobbyWaveSystem.ChangeWave(waveTemplate);
+            _lobbyWaveSystem.ChangeWave(_currentCategory, waveTemplate);
         }
 
         #region 스테이지 데이터
@@ -277,7 +277,7 @@ namespace EvolveThisMatch.Lobby
             // 배경 변경
             ChangeBackground();            
 
-            _lobbyWaveSystem.ChangeWave(_currentStageItem.waveTemplate);
+            _lobbyWaveSystem.ChangeWave(_currentCategory, _currentStageItem.waveTemplate);
             SaveStageData();
 
             Hide();

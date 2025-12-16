@@ -145,6 +145,7 @@ namespace EvolveThisMatch.Save
         public string displayName => _displayName;
         public bool isClearTutorial => _data.isClearTutorial;
         public Dictionary<string, ProfileSaveData.CategoryInfo> categories => _data.Categories;
+        public KeyValuePair<string, ProfileSaveData.CategoryInfo> maxCategory => _data.Categories.OrderByDescending(category => int.Parse(category.Key)).First();
 
         public event UnityAction changedDisplayName;
 

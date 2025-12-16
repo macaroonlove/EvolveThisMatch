@@ -1,4 +1,6 @@
+using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork;
 using FrameWork.Service;
 using FrameWork.UIBinding;
 using TMPro;
@@ -29,6 +31,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _goldCount;
         private TextMeshProUGUI _lootCount;
 
+        private LobbyWaveSystem _waveSystem;
         private int _offlineGold;
         private int _offlineLoot;
         private UnityAction<bool> _onGainReward;
@@ -43,22 +46,29 @@ namespace EvolveThisMatch.Lobby
             _goldCount = GetText((int)Texts.GoldCount);
             _lootCount = GetText((int)Texts.LootCount);
 
+            _waveSystem = BattleManager.Instance.GetSubSystem<LobbyWaveSystem>();
+
             GetButton((int)Buttons.GainReward).onClick.AddListener(GainReward);
             GetButton((int)Buttons.AdGainReward).onClick.AddListener(AdGainReward);
         }
 
         internal void Show(int minute, int offlineGold, int offlineLoot, UnityAction<bool> onGainReward)
         {
-            // TODO: 최고 스테이지로 변경
-            //_maxStageText.text = SaveManager.Instance.profileData.maxStage;
+            var maxCategory = SaveManager.Instance.profileData.maxCategory;
+            var category = _waveSystem.waveLibrary.categorys[int.Parse(maxCategory.Key)];
+            int maxChapterIndex = (maxCategory.Value.MaxStage - 1) / 10;
+            int maxStageIndex = (maxCategory.Value.MaxStage - 1) % 10;
+            var waveTemplate = category.chapters[maxChapterIndex].waves[maxStageIndex];
+
+            _maxStageText.text = $"<color=#FBE698>{category.title} {waveTemplate.stage}</color> {waveTemplate.displayName}";
 
             _offlineGold = offlineGold;
             _offlineLoot = offlineLoot;
             _onGainReward = onGainReward;
 
             _timerText.text = $"<sprite name=timer> {minute}분";
-            _goldCount.text = $"{offlineGold}";
-            _lootCount.text = $"{offlineLoot}";
+            _goldCount.text = $"{offlineGold.Format(4)}";
+            _lootCount.text = $"{offlineLoot.Format(4)}";
 
             base.Show(true);
         }

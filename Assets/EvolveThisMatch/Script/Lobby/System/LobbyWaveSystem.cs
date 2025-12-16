@@ -7,9 +7,11 @@ namespace EvolveThisMatch.Lobby
 {
     public class LobbyWaveSystem : WaveSystem
     {
+        private int _currentCategory;
         private WaveTemplate _currentWave;
         private BlockSystem _blockSystem;
 
+        public int currentCategory => _currentCategory;
         public WaveTemplate currentWave => _currentWave;
 
         public event UnityAction onChangeWave;
@@ -38,7 +40,7 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        public void ChangeWave(WaveTemplate template)
+        public void ChangeWave(int category, WaveTemplate template)
         {
             // 전투 중단
             BattleManager.Instance.DeinitializeBattle();
@@ -47,6 +49,7 @@ namespace EvolveThisMatch.Lobby
             CoreManager.Instance.GetSubSystem<PoolSystem>().Deinitialize();
 
             // 웨이브 변경
+            _currentCategory = category;
             _currentWave = template;
 
             onChangeWave?.Invoke();

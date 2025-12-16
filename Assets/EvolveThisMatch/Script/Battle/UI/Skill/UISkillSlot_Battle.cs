@@ -67,11 +67,13 @@ namespace EvolveThisMatch.Battle
                 {
                     _autoSkillToggle.isOn = false;
                 }
+                _skillExecuteButton.gameObject.SetActive(true);
             }
             else
             {
                 _typeTag.gameObject.SetActive(false);
                 _autoSkillToggle.gameObject.SetActive(false);
+                _skillExecuteButton.gameObject.SetActive(false);
             }
 
             base.Show(true);
