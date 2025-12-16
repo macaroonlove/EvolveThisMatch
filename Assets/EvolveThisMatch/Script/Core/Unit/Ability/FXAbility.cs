@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Core
         #region 파티클
         private PoolSystem _poolSystem;
 
-        private List<GameObject> _fxObjectList = new List<GameObject>();
+        private List<FXEntry> _fxObjectList = new List<FXEntry>();
         private Dictionary<string, Coroutine> _activeCoroutines = new Dictionary<string, Coroutine>();
 
         private void InitializeParticleFX()
@@ -55,12 +55,14 @@ namespace EvolveThisMatch.Core
             _poolSystem = null;
         }
 
-        internal void AddFX(GameObject fxObj)
+        internal void AddFX(GameObject fxObj, Follow follow, bool isDeathDespawn)
         {
-            if (!_fxObjectList.Contains(fxObj))
+            for (int i = 0; i < _fxObjectList.Count; i++)
             {
-                _fxObjectList.Add(fxObj);
+                if (_fxObjectList[i].fxObj == fxObj) return;
             }
+
+            _fxObjectList.Add(new FXEntry { fxObj = fxObj, follow = follow, isDeathDespawn = isDeathDespawn });
         }
 
         internal void AddCoroutineFX(GameObject fxObj, Coroutine coroutine)
@@ -80,17 +82,19 @@ namespace EvolveThisMatch.Core
             // 파티클 제거
             for (int i = _fxObjectList.Count - 1; i >= 0; i--)
             {
-                if (_fxObjectList[i] == null || _fxObjectList[i].activeSelf == false)
+                var entry = _fxObjectList[i];
+
+                if (entry.fxObj == null)
                 {
                     _fxObjectList.RemoveAt(i);
                     continue;
                 }
 
-                if (_fxObjectList[i].name == fxName)
-                {
-                    _poolSystem.DeSpawn(_fxObjectList[i]);
-                    _fxObjectList.RemoveAt(i);
-                }                
+                if (entry.fxObj != fxObj) continue;
+
+                _poolSystem.DeSpawn(entry.fxObj);
+                _fxObjectList.RemoveAt(i);
+                break;
             }
 
             // 코루틴 중지
@@ -106,12 +110,16 @@ namespace EvolveThisMatch.Core
             // 파티클 제거
             for (int i = _fxObjectList.Count - 1; i >= 0; i--)
             {
-                if (_fxObjectList[i] == null || _fxObjectList[i].activeSelf == false)
-                {
-                    continue;
-                }
+                var entry = _fxObjectList[i];
+                var follow = entry.follow;
+                if (follow != null) follow.enabled = false;
 
-                _poolSystem.DeSpawn(_fxObjectList[i]);
+                if (!entry.isDeathDespawn) continue;
+
+                var fx = entry.fxObj;
+                if (fx == null || !fx.activeSelf) continue;
+
+                _poolSystem.DeSpawn(fx);
             }
             _fxObjectList.Clear();
 
@@ -121,6 +129,13 @@ namespace EvolveThisMatch.Core
                 StopCoroutine(coroutine);
             }
             _activeCoroutines.Clear();
+        }
+
+        public struct FXEntry
+        {
+            public GameObject fxObj;
+            public Follow follow;
+            public bool isDeathDespawn;
         }
         #endregion
 

@@ -16,10 +16,10 @@ MonoBehaviour:
   _vfxObj: {fileID: 6429848800526165980, guid: 6148e8aa77c63c54eb2a7a912ffa7d78, type: 3}
   _spawnPoint: 4
   _isInfinity: 0
-  _duration: 1
+  _duration: 2
   _isRepeat: 0
   _cycle: 0
   _posOffset: {x: 0, y: 0, z: 0}
   _rotOffset: {x: 40, y: 0, z: 0}
-  _isRegistFxAbility: 0
+  _isDeathDespawn: 0
   _isFollowTarget: 1

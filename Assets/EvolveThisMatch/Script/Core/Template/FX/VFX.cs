@@ -30,7 +30,7 @@ namespace EvolveThisMatch.Core
         [SerializeField, Label("회전 오프셋")] private Vector3 _rotOffset;
 
         [Space(10)]
-        [SerializeField, Label("적 사망 시, 반환 여부")] private bool _isRegistFxAbility = true;
+        [SerializeField, Label("적 사망 시, 반환 여부")] private bool _isDeathDespawn = true;
 
         [Space(10)]
         [Tooltip("타겟 방식으로 보내야만 사용 가능")]
@@ -75,17 +75,20 @@ namespace EvolveThisMatch.Core
 
             var obj = Play(pos, rot);
 
+            Follow follow = null;
+
             if (_isFollowTarget)
             {
-                Follow follow = obj.gameObject.GetComponent<Follow>();
+                follow = obj.gameObject.GetComponent<Follow>();
                 if (follow == null)
                 {
                     follow = obj.gameObject.AddComponent<Follow>();
                 }
+                follow.enabled = true;
                 follow.SetTarget(point, _posOffset);
             }
 
-            if (_isRegistFxAbility) fxAbility.AddFX(obj);
+            fxAbility.AddFX(obj, follow, _isDeathDespawn);
         }
 
         public override void Play(Vector3 pos)
