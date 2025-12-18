@@ -80,11 +80,6 @@ namespace EvolveThisMatch.Core
             return _agentRarityLibrary.GetRandomAgentRarityTemplate();
         }
 
-        public AgentRarityTemplate GetUpgradeLimitRarity(AgentRarityTemplate currentAgentRarity)
-        {
-            return _agentRarityLibrary.GetUpgradeAgentRarityTemplate(currentAgentRarity);
-        }
-
         public AgentRarityProbabilityData GetProbabilityList()
         {
             return _agentRarityLibrary.GetProbabilityList();

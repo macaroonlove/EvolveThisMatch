@@ -48,20 +48,6 @@ namespace EvolveThisMatch.Core
             return _agentRarityTemplates[index];
         }
 
-        public AgentRarityTemplate GetUpgradeAgentRarityTemplate(AgentRarityTemplate currentAgentRarity)
-        {
-            float rand = Random.Range(0, 100);
-            if (currentAgentRarity.successProbability > rand)
-            {
-                int currentIndex = _agentRarityTemplates.IndexOf(currentAgentRarity);
-                return _agentRarityTemplates[currentIndex - 1];
-            }
-            else
-            {
-                return currentAgentRarity;
-            }
-        }
-
         public AgentRarityProbabilityData GetProbabilityList()
         {
             return _probabilityList[probabilityLevel];

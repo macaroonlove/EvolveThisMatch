@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
@@ -7,10 +8,13 @@ namespace EvolveThisMatch.Core
     {
         private AgentChangeSystem _agentChangeSystem;
 
+        private int _antiCheatToken;
+        private int _antiCheatFrame;
+
         public AgentTemplate agentTemplate { get; private set; }
         public AgentUnit agentUnit { get; private set; }
         public SignBoard signBoard { get; private set; }
-        public int level { get; private set; }
+        public int sync { get; private set; }
         public AgentRarityTemplate limit { get; private set; }
         public TileController mountTile { get; private set; }
 
@@ -19,7 +23,7 @@ namespace EvolveThisMatch.Core
             this.agentUnit = agentUnit;
             this.agentTemplate = agentTemplate;
 
-            this.level = 1;
+            this.sync = 1;
             this.limit = GameDataManager.Instance.GetAgentRandomRarity();
 
             _agentChangeSystem = BattleManager.Instance.GetSubSystem<AgentChangeSystem>();
@@ -44,26 +48,47 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        #region 레벨업
-        internal int GetNeedCoinToLevelUp()
+        #region 동기화
+        public void PrepareSyncIncrease(int token)
         {
-            var data = agentTemplate.rarity.agentLevelLibrary.GetLevelData(level);
-
-            if (data == null) return -1;
-
-            return data.needCoin;
+            _antiCheatToken = token;
+            _antiCheatFrame = Time.frameCount;
         }
 
-        internal void LevelUp()
+        /// <returns>-1: 비정상적인 접근 | 1: 성공</returns>
+        public int ApplySyncIncrease(int token)
         {
-            level++;
+            if (token != _antiCheatToken) return -1;
+            if (Time.frameCount != _antiCheatFrame) return -1;
+
+            sync++;
+            _antiCheatToken = 0;
+
+            return 1;
         }
         #endregion
 
-        #region 재능 제한
-        internal void UpgradeLimit()
+        #region 승격 제한 업그레이드
+        public void PrepareUpgradeLimit(int token)
         {
-            limit = GameDataManager.Instance.GetUpgradeLimitRarity(limit);
+            _antiCheatToken = token;
+            _antiCheatFrame = Time.frameCount;
+        }
+
+        /// <returns>-1: 비정상적인 접근 | 0: 실패 | 1: 성공 | 2: 대성공 | 3: 승화 | 4: 초월</returns>
+        public int ApplyUpgradeLimit(int token)
+        {
+            if (token != _antiCheatToken) return -1;
+            if (Time.frameCount != _antiCheatFrame) return -1;
+
+            var newLimit = limit.agentLimitData.GetUpgradeLimitResult();
+            if (newLimit == null) return 0;
+
+            int result = newLimit.rarity - limit.rarity;
+            limit = newLimit;
+            _antiCheatToken = 0;
+
+            return result;
         }
         #endregion
 

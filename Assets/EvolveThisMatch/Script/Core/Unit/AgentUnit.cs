@@ -9,7 +9,7 @@ namespace EvolveThisMatch.Core
         internal DeployAbility deployAbility { get; private set; }
 
         public AgentTemplate template => agentData.agentTemplate;
-        public int level => agentData.level;
+        public int sync => agentData.sync;
         public AgentRarityTemplate limit => agentData.limit;
 
         public void Initialize(AgentBattleData agentData)
@@ -24,21 +24,6 @@ namespace EvolveThisMatch.Core
         internal override void OnDeath()
         {
             deployAbility.ReturnSortie().Forget();
-        }
-
-        public int GetNeedCoinToLevelUp()
-        {
-            return agentData.GetNeedCoinToLevelUp();
-        }
-
-        public void LevelUp()
-        {
-            agentData.LevelUp();
-        }
-
-        public void UpgradeLimit()
-        {
-            agentData.UpgradeLimit();
         }
 
         public void DestinyRecast()

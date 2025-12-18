@@ -34,7 +34,7 @@ namespace EvolveThisMatch.Battle
         private UIAllySelectCanvas _allySelectCanvas;
         private UIRarityTag _rarityTag;
         private UIJobTag _jobTag;
-        private UIBattleLevelButton _levelButton;
+        private UIBattleSyncButton _syncButton;
         private UIBattleLimitButton _limitButton;
         private UIBattleStatCanvas _battleStatCanvas;
         private UISkillCanvas_Battle _skillCanvas;
@@ -44,7 +44,7 @@ namespace EvolveThisMatch.Battle
             _allySelectCanvas = GetComponentInParent<UIAllySelectCanvas>();
             _rarityTag = GetComponentInChildren<UIRarityTag>();
             _jobTag = GetComponentInChildren<UIJobTag>();
-            _levelButton = GetComponentInChildren<UIBattleLevelButton>();
+            _syncButton = GetComponentInChildren<UIBattleSyncButton>();
             _limitButton = GetComponentInChildren<UIBattleLimitButton>();
             _battleStatCanvas = GetComponentInChildren<UIBattleStatCanvas>();
             _skillCanvas = GetComponentInChildren<UISkillCanvas_Battle>();
@@ -77,7 +77,7 @@ namespace EvolveThisMatch.Battle
             _jobTag.Show(agentUnit.template.job);
 
             // 레벨 버튼
-            _levelButton.Show(agentUnit);
+            _syncButton.Show(agentUnit);
 
             // 재능 한계 버튼
             _limitButton.Show(agentUnit);
@@ -114,7 +114,7 @@ namespace EvolveThisMatch.Battle
 
         private void ResetCanvas()
         {
-            _levelButton.Hide();
+            _syncButton.Hide();
             _limitButton.Hide();
         }
 

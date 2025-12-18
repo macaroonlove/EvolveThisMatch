@@ -18,5 +18,38 @@ MonoBehaviour:
   _backgroundColor: {r: 0.5019608, g: 0, b: 0.5019608, a: 1}
   _textColor: {r: 0.9019608, g: 0.8, b: 1, a: 1}
   _agentInfoSprite: {fileID: 21300000, guid: 4567e62b8753c35438d1c08617e1896a, type: 3}
-  _agentLevelLibrary: {fileID: 11400000, guid: ee931d09bb0223f42a52699c22a0233a, type: 2}
-  _successProbability: 30
+  _agentSyncData:
+    _baseCoin:
+      currentCryptoKey: 1321306978
+      hiddenValue: 1321307004
+      fakeValue: 30
+      fakeValueActive: 1
+      inited: 1
+    _growthFactor:
+      migratedVersion: 
+      currentCryptoKey: 2147181582
+      hiddenValue: 1073905000
+      hiddenValueOldByte4:
+        b1: 0
+        b2: 0
+        b3: 0
+        b4: 0
+      fakeValue: 1.05
+      fakeValueActive: 1
+      inited: 1
+  _agentLimitData:
+    _upgradeTable:
+    - probability:
+        currentCryptoKey: 1667270474
+        hiddenValue: 1667270484
+        fakeValue: 30
+        fakeValueActive: 1
+        inited: 1
+      resultRarity: {fileID: 11400000, guid: e2abef2d73980a943aa1a2f6a18c9ed1, type: 2}
+    - probability:
+        currentCryptoKey: 1470395371
+        hiddenValue: 1470395374
+        fakeValue: 5
+        fakeValueActive: 1
+        inited: 1
+      resultRarity: {fileID: 11400000, guid: 3f5b5c01cbd48654eb24dcb18e2dad86, type: 2}
