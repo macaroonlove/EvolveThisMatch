@@ -85,7 +85,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.MaxHPAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
                 #endregion
 
@@ -94,7 +94,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.MaxHPIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value);
+                    increase += effect.value;
                 }
 
                 result *= increase;
@@ -103,7 +103,7 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.MaxHPMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
                 #endregion
 
@@ -138,13 +138,13 @@ namespace EvolveThisMatch.Core
                 // 최대 체력의 % 만큼 초당 회복력 추가
                 foreach (var effect in _buffAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
                 {
-                    result += (int)(effect.Key.GetValue(effect.Value) * finalMaxHP);
+                    result += (int)(effect.value * finalMaxHP);
                 }
 
                 // 최대 체력의 % 만큼 초당 회복력 추가
                 foreach (var effect in _abnormalStatusAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
                 {
-                    result += (int)(effect.Key.GetValue(effect.Value) * finalMaxHP);
+                    result += (int)(effect.value * finalMaxHP);
                 }
 
                 return result;
@@ -160,7 +160,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.HealingAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
 
                 return result;
@@ -175,7 +175,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.HealingIncreaseDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
 
                 return result;
@@ -190,7 +190,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.HealingMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
 
                 return result;
@@ -330,7 +330,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.healEventEffects)
             {
-                effect.Execute(unit, casterUnit, 1);
+                effect.Execute(unit, casterUnit);
             }
         }
 

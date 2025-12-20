@@ -16,7 +16,7 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField, ReadOnly] private List<ArtifactTemplate> _items = new List<ArtifactTemplate>();
 
-        private Dictionary<AlwaysEffect, int> _alwaysEffects = new Dictionary<AlwaysEffect, int>();
+        private List<AlwaysEffect> _alwaysEffects = new List<AlwaysEffect>();
         private List<GlobalEvent> _globalEvents = new List<GlobalEvent>();
         private List<UnitEvent> _unitEvents = new List<UnitEvent>();
 
@@ -93,7 +93,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _alwaysEffects)
             {
-                effect.Key.Execute(unit, effect.Value);
+                effect.Execute(unit);
             }
         }
 
@@ -113,8 +113,6 @@ namespace EvolveThisMatch.Core
 
             _items.Add(template);
 
-            var level = _ownedArtifactDic[template.id].level;
-
             foreach (var trigger in template.triggers)
             {
                 if (trigger is GetGameTrigger getTrigger)
@@ -123,7 +121,7 @@ namespace EvolveThisMatch.Core
                     {
                         if (effect is GlobalEffect globalEffect)
                         {
-                            globalEffect.Execute(level);
+                            globalEffect.Execute();
                         }
                     }
                 }
@@ -133,7 +131,7 @@ namespace EvolveThisMatch.Core
                     {
                         if (effect is AlwaysEffect alwaysEffect)
                         {
-                            _alwaysEffects.Add(alwaysEffect, level);
+                            _alwaysEffects.Add(alwaysEffect);
                         }
                     }
                 }
@@ -145,7 +143,7 @@ namespace EvolveThisMatch.Core
                         {
                             if (effect is GlobalEffect globalEffect)
                             {
-                                globalEffect.Execute(level);
+                                globalEffect.Execute();
                             }
                         }
                     };
@@ -162,11 +160,11 @@ namespace EvolveThisMatch.Core
                         {
                             if (effect is GlobalEffect globalEffect)
                             {
-                                globalEffect.Execute(level);
+                                globalEffect.Execute();
                             }
                             else if (effect is UnitEffect unitEffect)
                             {
-                                unitEffect.Execute(casterUnit, targetUnit, level);
+                                unitEffect.Execute(casterUnit, targetUnit);
                             }
                         }
 

@@ -56,9 +56,6 @@ namespace EvolveThisMatch.Core
                     case EApplyType.Basic:
                         typeValue = 1;
                         break;
-                    case EApplyType.ATK:
-                        typeValue = casterUnit.GetAbility<AttackAbility>().baseATK;
-                        break;
                     case EApplyType.FinalATK:
                         typeValue = casterUnit.GetAbility<AttackAbility>().finalATK;
                         break;
@@ -75,8 +72,8 @@ namespace EvolveThisMatch.Core
                         typeValue = targetUnit.GetAbility<HealthAbility>().finalMaxHP;
                         break;
                 }
-
-                totalAmount += typeValue * applyTypeByAmountData.amount;
+                
+                totalAmount += (typeValue * applyTypeByAmountData.amount);
             }
 
             return GetEngraveAmount(totalAmount);

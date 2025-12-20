@@ -20,7 +20,7 @@ namespace EvolveThisMatch.Core
             return "고서 대상 유닛들에게 데미지 적용";
         }
 
-        public int GetAmount(Unit targetUnit, int level)
+        public int GetAmount(Unit targetUnit)
         {
             float totalAmount = 0;
 
@@ -41,19 +41,19 @@ namespace EvolveThisMatch.Core
                 }
 
                 // TODO: 일단은 모든 데미지 방식에 레벨 만큼 보정, 추후 수정
-                totalAmount += typeValue * (applyTypeByAmountData.amount + level);
+                totalAmount += typeValue * (applyTypeByAmountData.amount);
             }
 
             return (int)totalAmount;
         }
 
-        public override void Execute(List<Unit> targetUnits, int level)
+        public override void Execute(List<Unit> targetUnits)
         {
             foreach (var targetUnit in targetUnits)
             {
                 if (targetUnit == null || targetUnit.isDie) continue;
 
-                int damage = GetAmount(targetUnit, level);
+                int damage = GetAmount(targetUnit);
 
                 Execute_RepeatCount(targetUnit, damage);
             }

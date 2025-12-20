@@ -28,7 +28,7 @@ namespace EvolveThisMatch.Core
                 }
                 else if (effect is UnitEffect unitEffect)
                 {
-                    unitEffect.Execute(casterUnit, targetUnit, 1);
+                    unitEffect.Execute(casterUnit, targetUnit);
                 }
             }
         }

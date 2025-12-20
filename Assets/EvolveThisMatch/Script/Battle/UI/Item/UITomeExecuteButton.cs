@@ -535,7 +535,7 @@ namespace EvolveThisMatch.Battle
             {
                 if (effect is GlobalEffect globalEffect)
                 {
-                    globalEffect.Execute(_owned.level);
+                    globalEffect.Execute();
                 }
             }
         }
@@ -546,7 +546,7 @@ namespace EvolveThisMatch.Battle
             {
                 if (effect is TomeEffect activeItemEffect)
                 {
-                    activeItemEffect.Execute(units, _owned.level);
+                    activeItemEffect.Execute(units);
                 }
             }
         }

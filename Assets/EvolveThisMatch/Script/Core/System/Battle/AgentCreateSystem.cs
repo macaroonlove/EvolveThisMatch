@@ -108,9 +108,10 @@ namespace EvolveThisMatch.Core
             if (obj.TryGetComponent(out AgentUnit unit))
             {
                 var agentData = tile.PlaceUnit(unit, template);
+                var agentSaveData = SaveManager.Instance.agentData.GetAgent(template.id);
 
                 // 유닛 초기화
-                unit.Initialize(agentData);
+                unit.Initialize(agentData, agentSaveData);
 
                 // 스폰 이펙트
                 _spawnFX.Play(unit);
@@ -150,7 +151,9 @@ namespace EvolveThisMatch.Core
         {
             var agentUnit = agentData.agentUnit;
             agentUnit.transform.position = agentData.mountTile.transform.position;
-            agentUnit.Initialize(agentData);
+
+            var agentSaveData = SaveManager.Instance.agentData.GetAgent(agentData.agentTemplate.id);
+            agentUnit.Initialize(agentData, agentSaveData);
 
             // 스폰 이펙트
             _spawnFX.Play(agentUnit);

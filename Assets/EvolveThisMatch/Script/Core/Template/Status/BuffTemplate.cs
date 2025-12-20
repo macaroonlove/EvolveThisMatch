@@ -148,6 +148,7 @@ namespace EvolveThisMatch.Editor
         {
             var menu = new GenericMenu();
 
+            #region Immutable
             menu.AddItem(new GUIContent("이동속도 증감"), false, CreateEffectCallback, typeof(MoveIncreaseDataEffect));
             menu.AddItem(new GUIContent("이동속도 상승·하락"), false, CreateEffectCallback, typeof(MoveMultiplierDataEffect));
 
@@ -203,12 +204,21 @@ namespace EvolveThisMatch.Editor
             menu.AddItem(new GUIContent("상태이상 저항력 추가"), false, CreateEffectCallback, typeof(AbnormalStatusResistanceAdditionalDataEffect));
 
             menu.AddItem(new GUIContent("스킬 가속도 증감"), false, CreateEffectCallback, typeof(SkillCooldownIncreaseDataEffect));
+            #endregion
 
+            #region Mutable
+            
+            #endregion
+
+            #region Set
             menu.AddItem(new GUIContent("최소 체력 설정"), false, CreateEffectCallback, typeof(SetMinHPEffect));
             menu.AddItem(new GUIContent("공격 방식 설정"), false, CreateEffectCallback, typeof(SetAttackTypeEffect));
             menu.AddItem(new GUIContent("피해량 적용 방식 설정"), false, CreateEffectCallback, typeof(SetDamageTypeEffect));
+            #endregion
 
+            #region Unable
             menu.AddItem(new GUIContent("공격 대상이 되지 않습니다."), false, CreateEffectCallback, typeof(UnableToTargetOfAttackEffect));
+            #endregion
 
             menu.ShowAsContext();
         }

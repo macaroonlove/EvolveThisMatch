@@ -35,7 +35,7 @@ namespace EvolveThisMatch.Core
             if (UnitCondition(casterUnit) == false) return;
             // 조건 추가
             
-            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue, level);
+            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue);
         }
 
         private bool UnitCondition(Unit unit)

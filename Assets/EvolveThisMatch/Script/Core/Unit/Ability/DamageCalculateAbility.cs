@@ -47,7 +47,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.DamageAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
 
                 return result;
@@ -60,9 +60,9 @@ namespace EvolveThisMatch.Core
             {
                 float result = 1;
 
-                foreach(var effect in _buffAbility.DamageIncreaseDataEffects)
+                foreach (var effect in _buffAbility.DamageIncreaseDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
 
                 return result;
@@ -77,7 +77,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.DamageMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
 
                 return result;
@@ -94,7 +94,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.ReceiveDamageAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
 
                 return result;
@@ -109,11 +109,11 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.ReceiveDamageIncreaseDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
                 foreach (var effect in _abnormalStatusAbility.ReceiveDamageIncreaseDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
 
                 return result;
@@ -128,7 +128,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.ReceiveDamageMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
 
                 return result;
@@ -146,7 +146,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.PhysicalResistanceAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value.level);
+                    result += effect.Key.value;
                 }
                 #endregion
 
@@ -155,11 +155,11 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.PhysicalResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value.level);
+                    increase += effect.Key.value;
                 }
                 foreach (var effect in _abnormalStatusAbility.PhysicalResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value.level);
+                    increase += effect.Key.value;
                 }
 
                 result *= increase;
@@ -168,7 +168,7 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.PhysicalResistanceMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value.level);
+                    result *= (1 + effect.Key.value);
                 }
                 #endregion
 
@@ -185,7 +185,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.MagicResistanceAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value.level);
+                    result += effect.Key.value;
                 }
                 #endregion
 
@@ -194,11 +194,11 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.MagicResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value.level);
+                    increase += effect.Key.value;
                 }
                 foreach (var effect in _abnormalStatusAbility.MagicResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value.level);
+                    increase += effect.Key.value;
                 }
 
                 result *= increase;
@@ -207,7 +207,7 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.MagicResistanceMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value.level);
+                    result *= (1 + effect.Key.value);
                 }
                 #endregion
 
@@ -226,7 +226,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.PhysicalPenetrationAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
                 #endregion
 
@@ -235,7 +235,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.PhysicalPenetrationIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value);
+                    increase += effect.value;
                 }
 
                 result *= increase;
@@ -244,7 +244,7 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.PhysicalPenetrationMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
                 #endregion
 
@@ -261,7 +261,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.MagicPenetrationAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
                 #endregion
 
@@ -270,7 +270,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.MagicPenetrationIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value);
+                    increase += effect.value;
                 }
 
                 result *= increase;
@@ -279,7 +279,7 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.MagicPenetrationMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
                 #endregion
 
@@ -297,7 +297,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.CriticalHitChanceAdditionalDataEffects)
                 {
-                    chance += effect.Key.GetValue(effect.Value);
+                    chance += effect.value;
                 }
 
                 if (chance > 0)
@@ -320,7 +320,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.CriticalHitDamageAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
                 #endregion
 
@@ -329,7 +329,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.CriticalHitDamageIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value);
+                    increase += effect.value;
                 }
 
                 result *= increase;
@@ -338,7 +338,7 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.CriticalHitDamageMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
                 #endregion
 

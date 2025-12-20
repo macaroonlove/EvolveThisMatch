@@ -16,15 +16,15 @@ namespace EvolveThisMatch.Core
             return "전역 상태 적용";
         }
 
-        public override void Execute(int level)
+        public override void Execute()
         {
             if (_isInfinity)
             {
-                CoreManager.Instance.GetSubSystem<GlobalStatusSystem>().ApplyGlobalStatus(_globalStatus, int.MaxValue, level);
+                CoreManager.Instance.GetSubSystem<GlobalStatusSystem>().ApplyGlobalStatus(_globalStatus, int.MaxValue);
             }
             else
             {
-                CoreManager.Instance.GetSubSystem<GlobalStatusSystem>().ApplyGlobalStatus(_globalStatus, _duration, level);
+                CoreManager.Instance.GetSubSystem<GlobalStatusSystem>().ApplyGlobalStatus(_globalStatus, _duration);
             }
         }
 

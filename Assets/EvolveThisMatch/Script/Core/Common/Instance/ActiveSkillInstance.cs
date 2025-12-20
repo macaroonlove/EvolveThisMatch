@@ -25,7 +25,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.SkillCooldownIncreaseDataEffects)
                 {
-                    increase -= effect.Key.GetValue(effect.Value.level);
+                    increase -= effect.Key.value;
                 }
 
                 result *= increase;

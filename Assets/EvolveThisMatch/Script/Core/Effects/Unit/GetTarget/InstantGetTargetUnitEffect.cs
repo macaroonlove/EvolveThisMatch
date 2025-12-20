@@ -15,7 +15,7 @@ namespace EvolveThisMatch.Core
             return "Áï½Ã (Å½»ö Å¸°ÙÆÃ)";
         }
 
-        public override async void Execute(Unit casterUnit, Unit targetUnit, int level)
+        public override async void Execute(Unit casterUnit, Unit targetUnit)
         {
             if (casterUnit == null || targetUnit == null) return;
             if (targetUnit.isDie) return;
@@ -24,7 +24,7 @@ namespace EvolveThisMatch.Core
 
             await UniTask.Delay(TimeSpan.FromSeconds(_impactDelay));
 
-            SkillImpact(casterUnit, targetUnit, level);
+            SkillImpact(casterUnit, targetUnit);
         }
 
         #region FX

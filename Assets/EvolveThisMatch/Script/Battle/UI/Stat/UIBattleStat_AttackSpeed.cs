@@ -45,12 +45,12 @@ namespace EvolveThisMatch.Battle
 
             foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Increase)}");
+                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
             }
 
             foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects)
             {
-                result.AppendLine($"{effect.Value.displayName} {ValueFormat(effect.Key.GetValue(effect.Value.level), EDataType.Multiplier)}");
+                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Multiplier)}");
             }
 
             return result.ToString();

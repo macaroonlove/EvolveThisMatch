@@ -78,7 +78,6 @@ namespace EvolveThisMatch.Core
     public enum EApplyType
     {
         Basic,
-        ATK,
         FinalATK,
         CurrentHP,
         MAXHP,

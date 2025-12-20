@@ -13,9 +13,9 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private List<Effect> _effects = new List<Effect>();
 
-        public abstract void Execute(Unit casterUnit, Unit targetUnit, int level);
+        public abstract void Execute(Unit casterUnit, Unit targetUnit);
 
-        protected void SkillImpact(Unit casterUnit, Unit targetUnit, int level)
+        protected void SkillImpact(Unit casterUnit, Unit targetUnit)
         {
             foreach (var effect in _effects)
             {
@@ -25,7 +25,7 @@ namespace EvolveThisMatch.Core
                 }
                 else if (effect is UnitEffect unitEffect)
                 {
-                    unitEffect.Execute(casterUnit, targetUnit, level);
+                    unitEffect.Execute(casterUnit, targetUnit);
                 }
             }
         }

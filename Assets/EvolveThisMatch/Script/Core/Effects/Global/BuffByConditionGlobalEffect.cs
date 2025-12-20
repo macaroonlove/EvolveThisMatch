@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Core
             return $"{unitLabel} 유닛에게 무한 지속 버프 적용";
         }
 
-        public override void Execute(int level)
+        public override void Execute()
         {
             List<Unit> units = new List<Unit>();
 
@@ -51,14 +51,14 @@ namespace EvolveThisMatch.Core
             {
                 foreach(var unit in units)
                 {
-                    unit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue, level);
+                    unit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue);
                 }
             }
             else
             {
                 foreach (var unit in units)
                 {
-                    unit.GetAbility<BuffAbility>().ApplyBuff(_buff, _duration, level);
+                    unit.GetAbility<BuffAbility>().ApplyBuff(_buff, _duration);
                 }
             }
         }

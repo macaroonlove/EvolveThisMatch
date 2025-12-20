@@ -77,5 +77,5 @@ MonoBehaviour:
   _damageType: 1
   _skillType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
   _applyTypeByAmountDatas:
-  - applyType: 2
+  - applyType: 1
     amount: 200

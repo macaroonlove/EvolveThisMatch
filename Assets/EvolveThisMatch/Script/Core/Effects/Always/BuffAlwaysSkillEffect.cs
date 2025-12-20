@@ -16,7 +16,7 @@ namespace EvolveThisMatch.Core
         {
             if (casterUnit == null) return;
 
-            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue, level);
+            casterUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue);
         }
 
 #if UNITY_EDITOR

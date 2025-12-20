@@ -11,146 +11,159 @@ namespace EvolveThisMatch.Core
     public class BuffAbility : AlwaysAbility
     {
         #region Effect List
+        #region ImmutableData
         // Move
-        private Dictionary<MoveIncreaseDataEffect, int> _moveIncreaseDataEffects = new Dictionary<MoveIncreaseDataEffect, int>();
-        private Dictionary<MoveMultiplierDataEffect, int> _moveMultiplierDataEffects = new Dictionary<MoveMultiplierDataEffect, int>();
+        private List<MoveIncreaseDataEffect> _moveIncreaseDataEffects = new List<MoveIncreaseDataEffect>();
+        private List<MoveMultiplierDataEffect> _moveMultiplierDataEffects = new List<MoveMultiplierDataEffect>();
 
         // Attack
-        private Dictionary<ATKAdditionalDataEffect, (int level, string displayName)> _atkAdditionalDataEffects = new Dictionary<ATKAdditionalDataEffect, (int, string)>();
-        private Dictionary<ATKIncreaseDataEffect, (int level, string displayName)> _atkIncreaseDataEffects = new Dictionary<ATKIncreaseDataEffect, (int, string)>();
-        private Dictionary<ATKMultiplierDataEffect, (int level, string displayName)> _atkMultiplierDataEffects = new Dictionary<ATKMultiplierDataEffect, (int, string)>();
+        private Dictionary<ATKAdditionalDataEffect, string> _atkAdditionalDataEffects = new Dictionary<ATKAdditionalDataEffect, string>();
+        private Dictionary<ATKIncreaseDataEffect, string> _atkIncreaseDataEffects = new Dictionary<ATKIncreaseDataEffect, string>();
+        private Dictionary<ATKMultiplierDataEffect, string> _atkMultiplierDataEffects = new Dictionary<ATKMultiplierDataEffect, string>();
 
-        private Dictionary<AttackCountAdditionalDataEffect, int> _attackCountAdditionalDataEffects = new Dictionary<AttackCountAdditionalDataEffect, int>();
+        private List<AttackCountAdditionalDataEffect> _attackCountAdditionalDataEffects = new List<AttackCountAdditionalDataEffect>();
 
-        private Dictionary<AttackSpeedIncreaseDataEffect, (int level, string displayName)> _attackSpeedIncreaseDataEffects = new Dictionary<AttackSpeedIncreaseDataEffect, (int, string)>();
-        private Dictionary<AttackSpeedMultiplierDataEffect, (int level, string displayName)> _attackSpeedMultiplierDataEffects = new Dictionary<AttackSpeedMultiplierDataEffect, (int, string)>();
+        private Dictionary<AttackSpeedIncreaseDataEffect, string> _attackSpeedIncreaseDataEffects = new Dictionary<AttackSpeedIncreaseDataEffect, string>();
+        private Dictionary<AttackSpeedMultiplierDataEffect, string> _attackSpeedMultiplierDataEffects = new Dictionary<AttackSpeedMultiplierDataEffect, string>();
 
         // Avoidance
-        private Dictionary<AvoidanceAdditionalDataEffect, int> _avoidanceAdditionalDataEffects = new Dictionary<AvoidanceAdditionalDataEffect, int>();
+        private List<AvoidanceAdditionalDataEffect> _avoidanceAdditionalDataEffects = new List<AvoidanceAdditionalDataEffect>();
 
         // Physical Penetration
-        private Dictionary<PhysicalPenetrationAdditionalDataEffect, int> _physicalPenetrationAdditionalDataEffects = new Dictionary<PhysicalPenetrationAdditionalDataEffect, int>();
-        private Dictionary<PhysicalPenetrationIncreaseDataEffect, int> _physicalPenetrationIncreaseDataEffects = new Dictionary<PhysicalPenetrationIncreaseDataEffect, int>();
-        private Dictionary<PhysicalPenetrationMultiplierDataEffect, int> _physicalPenetrationMultiplierDataEffects = new Dictionary<PhysicalPenetrationMultiplierDataEffect, int>();
+        private List<PhysicalPenetrationAdditionalDataEffect> _physicalPenetrationAdditionalDataEffects = new List<PhysicalPenetrationAdditionalDataEffect>();
+        private List<PhysicalPenetrationIncreaseDataEffect> _physicalPenetrationIncreaseDataEffects = new List<PhysicalPenetrationIncreaseDataEffect>();
+        private List<PhysicalPenetrationMultiplierDataEffect> _physicalPenetrationMultiplierDataEffects = new List<PhysicalPenetrationMultiplierDataEffect>();
 
         // Physical Resistance
-        private Dictionary<PhysicalResistanceAdditionalDataEffect, (int level, string displayName)> _physicalResistanceAdditionalDataEffects = new Dictionary<PhysicalResistanceAdditionalDataEffect, (int, string)>();
-        private Dictionary<PhysicalResistanceIncreaseDataEffect, (int level, string displayName)> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, (int, string)>();
-        private Dictionary<PhysicalResistanceMultiplierDataEffect, (int level, string displayName)> _physicalResistanceMultiplierDataEffects = new Dictionary<PhysicalResistanceMultiplierDataEffect, (int, string)>();
+        private Dictionary<PhysicalResistanceAdditionalDataEffect, string> _physicalResistanceAdditionalDataEffects = new Dictionary<PhysicalResistanceAdditionalDataEffect, string>();
+        private Dictionary<PhysicalResistanceIncreaseDataEffect, string> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, string>();
+        private Dictionary<PhysicalResistanceMultiplierDataEffect, string> _physicalResistanceMultiplierDataEffects = new Dictionary<PhysicalResistanceMultiplierDataEffect, string>();
 
         // Magic Penetration
-        private Dictionary<MagicPenetrationAdditionalDataEffect, int> _magicPenetrationAdditionalDataEffects = new Dictionary<MagicPenetrationAdditionalDataEffect, int>();
-        private Dictionary<MagicPenetrationIncreaseDataEffect, int> _magicPenetrationIncreaseDataEffects = new Dictionary<MagicPenetrationIncreaseDataEffect, int>();
-        private Dictionary<MagicPenetrationMultiplierDataEffect, int> _magicPenetrationMultiplierDataEffects = new Dictionary<MagicPenetrationMultiplierDataEffect, int>();
+        private List<MagicPenetrationAdditionalDataEffect> _magicPenetrationAdditionalDataEffects = new List<MagicPenetrationAdditionalDataEffect>();
+        private List<MagicPenetrationIncreaseDataEffect> _magicPenetrationIncreaseDataEffects = new List<MagicPenetrationIncreaseDataEffect>();
+        private List<MagicPenetrationMultiplierDataEffect> _magicPenetrationMultiplierDataEffects = new List<MagicPenetrationMultiplierDataEffect>();
 
         // Magic Resistance
-        private Dictionary<MagicResistanceAdditionalDataEffect, (int level, string displayName)> _magicResistanceAdditionalDataEffects = new Dictionary<MagicResistanceAdditionalDataEffect, (int, string)>();
-        private Dictionary<MagicResistanceIncreaseDataEffect, (int level, string displayName)> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, (int, string)>();
-        private Dictionary<MagicResistanceMultiplierDataEffect, (int level, string displayName)> _magicResistanceMultiplierDataEffects = new Dictionary<MagicResistanceMultiplierDataEffect, (int, string)>();
+        private Dictionary<MagicResistanceAdditionalDataEffect, string> _magicResistanceAdditionalDataEffects = new Dictionary<MagicResistanceAdditionalDataEffect, string>();
+        private Dictionary<MagicResistanceIncreaseDataEffect, string> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, string>();
+        private Dictionary<MagicResistanceMultiplierDataEffect, string> _magicResistanceMultiplierDataEffects = new Dictionary<MagicResistanceMultiplierDataEffect, string>();
 
         // Damage
-        private Dictionary<DamageAdditionalDataEffect, int> _damageAdditionalDataEffects = new Dictionary<DamageAdditionalDataEffect, int>();
-        private Dictionary<DamageIncreaseDataEffect, int> _damageIncreaseDataEffects = new Dictionary<DamageIncreaseDataEffect, int>();
-        private Dictionary<DamageMultiplierDataEffect, int> _damageMultiplierDataEffects = new Dictionary<DamageMultiplierDataEffect, int>();
+        private List<DamageAdditionalDataEffect> _damageAdditionalDataEffects = new List<DamageAdditionalDataEffect>();
+        private List<DamageIncreaseDataEffect> _damageIncreaseDataEffects = new List<DamageIncreaseDataEffect>();
+        private List<DamageMultiplierDataEffect> _damageMultiplierDataEffects = new List<DamageMultiplierDataEffect>();
 
         // Receive Damage
-        private Dictionary<ReceiveDamageAdditionalDataEffect, int> _receiveDamageAdditionalDataEffects = new Dictionary<ReceiveDamageAdditionalDataEffect, int>();
-        private Dictionary<ReceiveDamageIncreaseDataEffect, int> _receiveDamageIncreaseDataEffects = new Dictionary<ReceiveDamageIncreaseDataEffect, int>();
-        private Dictionary<ReceiveDamageMultiplierDataEffect, int> _receiveDamageMultiplierDataEffects = new Dictionary<ReceiveDamageMultiplierDataEffect, int>();
+        private List<ReceiveDamageAdditionalDataEffect> _receiveDamageAdditionalDataEffects = new List<ReceiveDamageAdditionalDataEffect>();
+        private List<ReceiveDamageIncreaseDataEffect> _receiveDamageIncreaseDataEffects = new List<ReceiveDamageIncreaseDataEffect>();
+        private List<ReceiveDamageMultiplierDataEffect> _receiveDamageMultiplierDataEffects = new List<ReceiveDamageMultiplierDataEffect>();
 
         // Critical
-        private Dictionary<CriticalHitChanceAdditionalDataEffect, int> _criticalHitChanceAdditionalDataEffects = new Dictionary<CriticalHitChanceAdditionalDataEffect, int>();
-        private Dictionary<CriticalHitDamageAdditionalDataEffect, int> _criticalHitDamageAdditionalDataEffects = new Dictionary<CriticalHitDamageAdditionalDataEffect, int>();
-        private Dictionary<CriticalHitDamageIncreaseDataEffect, int> _criticalHitDamageIncreaseDataEffects = new Dictionary<CriticalHitDamageIncreaseDataEffect, int>();
-        private Dictionary<CriticalHitDamageMultiplierDataEffect, int> _criticalHitDamageMultiplierDataEffects = new Dictionary<CriticalHitDamageMultiplierDataEffect, int>();
+        private List<CriticalHitChanceAdditionalDataEffect> _criticalHitChanceAdditionalDataEffects = new List<CriticalHitChanceAdditionalDataEffect>();
+        private List<CriticalHitDamageAdditionalDataEffect> _criticalHitDamageAdditionalDataEffects = new List<CriticalHitDamageAdditionalDataEffect>();
+        private List<CriticalHitDamageIncreaseDataEffect> _criticalHitDamageIncreaseDataEffects = new List<CriticalHitDamageIncreaseDataEffect>();
+        private List<CriticalHitDamageMultiplierDataEffect> _criticalHitDamageMultiplierDataEffects = new List<CriticalHitDamageMultiplierDataEffect>();
 
         // Max HP
-        private Dictionary<MaxHPAdditionalDataEffect, int> _maxHPAdditionalDataEffects = new Dictionary<MaxHPAdditionalDataEffect, int>();
-        private Dictionary<MaxHPIncreaseDataEffect, int> _maxHPIncreaseDataEffects = new Dictionary<MaxHPIncreaseDataEffect, int>();
-        private Dictionary<MaxHPMultiplierDataEffect, int> _maxHPMultiplierDataEffects = new Dictionary<MaxHPMultiplierDataEffect, int>();
+        private List<MaxHPAdditionalDataEffect> _maxHPAdditionalDataEffects = new List<MaxHPAdditionalDataEffect>();
+        private List<MaxHPIncreaseDataEffect> _maxHPIncreaseDataEffects = new List<MaxHPIncreaseDataEffect>();
+        private List<MaxHPMultiplierDataEffect> _maxHPMultiplierDataEffects = new List<MaxHPMultiplierDataEffect>();
 
         // Healing
-        private Dictionary<HealingAdditionalDataEffect, int> _healingAdditionalDataEffects = new Dictionary<HealingAdditionalDataEffect, int>();
-        private Dictionary<HealingIncreaseDataEffect, int> _healingIncreaseDataEffects = new Dictionary<HealingIncreaseDataEffect, int>();
-        private Dictionary<HealingMultiplierDataEffect, int> _healingMultiplierDataEffects = new Dictionary<HealingMultiplierDataEffect, int>();
+        private List<HealingAdditionalDataEffect> _healingAdditionalDataEffects = new List<HealingAdditionalDataEffect>();
+        private List<HealingIncreaseDataEffect> _healingIncreaseDataEffects = new List<HealingIncreaseDataEffect>();
+        private List<HealingMultiplierDataEffect> _healingMultiplierDataEffects = new List<HealingMultiplierDataEffect>();
 
         // HP Recovery / Abnormal Status
-        private Dictionary<HPRecoveryPerSecByMaxHPIncreaseDataEffect, int> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new Dictionary<HPRecoveryPerSecByMaxHPIncreaseDataEffect, int>();
-        private Dictionary<AbnormalStatusResistanceAdditionalDataEffect, int> _abnormalStatusResistanceAdditionalDataEffects = new Dictionary<AbnormalStatusResistanceAdditionalDataEffect, int>();
+        private List<HPRecoveryPerSecByMaxHPIncreaseDataEffect> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<HPRecoveryPerSecByMaxHPIncreaseDataEffect>();
+        private List<AbnormalStatusResistanceAdditionalDataEffect> _abnormalStatusResistanceAdditionalDataEffects = new List<AbnormalStatusResistanceAdditionalDataEffect>();
 
         // Skill Cooldown
-        private Dictionary<SkillCooldownIncreaseDataEffect, (int level, string displayName)> _skillCooldownIncreaseDataEffects = new Dictionary<SkillCooldownIncreaseDataEffect, (int, string)>();
+        private Dictionary<SkillCooldownIncreaseDataEffect, string> _skillCooldownIncreaseDataEffects = new Dictionary<SkillCooldownIncreaseDataEffect, string>();
+        #endregion
 
+        #region Set
         private List<SetMinHPEffect> _setMinHPEffects = new List<SetMinHPEffect>();
         private List<SetAttackTypeEffect> _setAttackTypeEffects = new List<SetAttackTypeEffect>();
         private List<SetDamageTypeEffect> _setDamageTypeEffects = new List<SetDamageTypeEffect>();
+        #endregion
 
+        #region Unable
         private List<UnableToTargetOfAttackEffect> _unableToTargetOfAttackEffects = new List<UnableToTargetOfAttackEffect>();
+        #endregion
+
+        #endregion
 
         #region 프로퍼티
-        internal IReadOnlyDictionary<MoveIncreaseDataEffect, int> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
-        internal IReadOnlyDictionary<MoveMultiplierDataEffect, int> MoveMultiplierDataEffects => _moveMultiplierDataEffects;
+        #region ImmutableData
+        internal IReadOnlyList<MoveIncreaseDataEffect> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
+        internal IReadOnlyList<MoveMultiplierDataEffect> MoveMultiplierDataEffects => _moveMultiplierDataEffects;
 
-        public IReadOnlyDictionary<ATKAdditionalDataEffect, (int level, string displayName)> ATKAdditionalDataEffects => _atkAdditionalDataEffects;
-        public IReadOnlyDictionary<ATKIncreaseDataEffect, (int level, string displayName)> ATKIncreaseDataEffects => _atkIncreaseDataEffects;
-        public IReadOnlyDictionary<ATKMultiplierDataEffect, (int level, string displayName)> ATKMultiplierDataEffects => _atkMultiplierDataEffects;
+        public IReadOnlyDictionary<ATKAdditionalDataEffect, string> ATKAdditionalDataEffects => _atkAdditionalDataEffects;
+        public IReadOnlyDictionary<ATKIncreaseDataEffect, string> ATKIncreaseDataEffects => _atkIncreaseDataEffects;
+        public IReadOnlyDictionary<ATKMultiplierDataEffect, string> ATKMultiplierDataEffects => _atkMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<AttackCountAdditionalDataEffect, int> AttackCountAdditionalDataEffects => _attackCountAdditionalDataEffects;
+        internal IReadOnlyList<AttackCountAdditionalDataEffect> AttackCountAdditionalDataEffects => _attackCountAdditionalDataEffects;
 
-        public IReadOnlyDictionary<AttackSpeedIncreaseDataEffect, (int level, string displayName)> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
-        public IReadOnlyDictionary<AttackSpeedMultiplierDataEffect, (int level, string displayName)> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
+        public IReadOnlyDictionary<AttackSpeedIncreaseDataEffect, string> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
+        public IReadOnlyDictionary<AttackSpeedMultiplierDataEffect, string> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<AvoidanceAdditionalDataEffect, int> AvoidanceAdditionalDataEffects => _avoidanceAdditionalDataEffects;
+        internal IReadOnlyList<AvoidanceAdditionalDataEffect> AvoidanceAdditionalDataEffects => _avoidanceAdditionalDataEffects;
 
-        internal IReadOnlyDictionary<PhysicalPenetrationAdditionalDataEffect, int> PhysicalPenetrationAdditionalDataEffects => _physicalPenetrationAdditionalDataEffects;
-        internal IReadOnlyDictionary<PhysicalPenetrationIncreaseDataEffect, int> PhysicalPenetrationIncreaseDataEffects => _physicalPenetrationIncreaseDataEffects;
-        internal IReadOnlyDictionary<PhysicalPenetrationMultiplierDataEffect, int> PhysicalPenetrationMultiplierDataEffects => _physicalPenetrationMultiplierDataEffects;
+        internal IReadOnlyList<PhysicalPenetrationAdditionalDataEffect> PhysicalPenetrationAdditionalDataEffects => _physicalPenetrationAdditionalDataEffects;
+        internal IReadOnlyList<PhysicalPenetrationIncreaseDataEffect> PhysicalPenetrationIncreaseDataEffects => _physicalPenetrationIncreaseDataEffects;
+        internal IReadOnlyList<PhysicalPenetrationMultiplierDataEffect> PhysicalPenetrationMultiplierDataEffects => _physicalPenetrationMultiplierDataEffects;
 
-        public IReadOnlyDictionary<PhysicalResistanceAdditionalDataEffect, (int level, string displayName)> PhysicalResistanceAdditionalDataEffects => _physicalResistanceAdditionalDataEffects;
-        public IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, (int level, string displayName)> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
-        public IReadOnlyDictionary<PhysicalResistanceMultiplierDataEffect, (int level, string displayName)> PhysicalResistanceMultiplierDataEffects => _physicalResistanceMultiplierDataEffects;
+        public IReadOnlyDictionary<PhysicalResistanceAdditionalDataEffect, string> PhysicalResistanceAdditionalDataEffects => _physicalResistanceAdditionalDataEffects;
+        public IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, string> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
+        public IReadOnlyDictionary<PhysicalResistanceMultiplierDataEffect, string> PhysicalResistanceMultiplierDataEffects => _physicalResistanceMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<MagicPenetrationAdditionalDataEffect, int> MagicPenetrationAdditionalDataEffects => _magicPenetrationAdditionalDataEffects;
-        internal IReadOnlyDictionary<MagicPenetrationIncreaseDataEffect, int> MagicPenetrationIncreaseDataEffects => _magicPenetrationIncreaseDataEffects;
-        internal IReadOnlyDictionary<MagicPenetrationMultiplierDataEffect, int> MagicPenetrationMultiplierDataEffects => _magicPenetrationMultiplierDataEffects;
+        internal IReadOnlyList<MagicPenetrationAdditionalDataEffect> MagicPenetrationAdditionalDataEffects => _magicPenetrationAdditionalDataEffects;
+        internal IReadOnlyList<MagicPenetrationIncreaseDataEffect> MagicPenetrationIncreaseDataEffects => _magicPenetrationIncreaseDataEffects;
+        internal IReadOnlyList<MagicPenetrationMultiplierDataEffect> MagicPenetrationMultiplierDataEffects => _magicPenetrationMultiplierDataEffects;
 
-        public IReadOnlyDictionary<MagicResistanceAdditionalDataEffect, (int level, string displayName)> MagicResistanceAdditionalDataEffects => _magicResistanceAdditionalDataEffects;
-        public IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, (int level, string displayName)> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
-        public IReadOnlyDictionary<MagicResistanceMultiplierDataEffect, (int level, string displayName)> MagicResistanceMultiplierDataEffects => _magicResistanceMultiplierDataEffects;
+        public IReadOnlyDictionary<MagicResistanceAdditionalDataEffect, string> MagicResistanceAdditionalDataEffects => _magicResistanceAdditionalDataEffects;
+        public IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, string> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
+        public IReadOnlyDictionary<MagicResistanceMultiplierDataEffect, string> MagicResistanceMultiplierDataEffects => _magicResistanceMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<DamageAdditionalDataEffect, int> DamageAdditionalDataEffects => _damageAdditionalDataEffects;
-        internal IReadOnlyDictionary<DamageIncreaseDataEffect, int> DamageIncreaseDataEffects => _damageIncreaseDataEffects;
-        internal IReadOnlyDictionary<DamageMultiplierDataEffect, int> DamageMultiplierDataEffects => _damageMultiplierDataEffects;
+        internal IReadOnlyList<DamageAdditionalDataEffect> DamageAdditionalDataEffects => _damageAdditionalDataEffects;
+        internal IReadOnlyList<DamageIncreaseDataEffect> DamageIncreaseDataEffects => _damageIncreaseDataEffects;
+        internal IReadOnlyList<DamageMultiplierDataEffect> DamageMultiplierDataEffects => _damageMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<ReceiveDamageAdditionalDataEffect, int> ReceiveDamageAdditionalDataEffects => _receiveDamageAdditionalDataEffects;
-        internal IReadOnlyDictionary<ReceiveDamageIncreaseDataEffect, int> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
-        internal IReadOnlyDictionary<ReceiveDamageMultiplierDataEffect, int> ReceiveDamageMultiplierDataEffects => _receiveDamageMultiplierDataEffects;
+        internal IReadOnlyList<ReceiveDamageAdditionalDataEffect> ReceiveDamageAdditionalDataEffects => _receiveDamageAdditionalDataEffects;
+        internal IReadOnlyList<ReceiveDamageIncreaseDataEffect> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
+        internal IReadOnlyList<ReceiveDamageMultiplierDataEffect> ReceiveDamageMultiplierDataEffects => _receiveDamageMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<CriticalHitChanceAdditionalDataEffect, int> CriticalHitChanceAdditionalDataEffects => _criticalHitChanceAdditionalDataEffects;
-        internal IReadOnlyDictionary<CriticalHitDamageAdditionalDataEffect, int> CriticalHitDamageAdditionalDataEffects => _criticalHitDamageAdditionalDataEffects;
-        internal IReadOnlyDictionary<CriticalHitDamageIncreaseDataEffect, int> CriticalHitDamageIncreaseDataEffects => _criticalHitDamageIncreaseDataEffects;
-        internal IReadOnlyDictionary<CriticalHitDamageMultiplierDataEffect, int> CriticalHitDamageMultiplierDataEffects => _criticalHitDamageMultiplierDataEffects;
+        internal IReadOnlyList<CriticalHitChanceAdditionalDataEffect> CriticalHitChanceAdditionalDataEffects => _criticalHitChanceAdditionalDataEffects;
+        internal IReadOnlyList<CriticalHitDamageAdditionalDataEffect> CriticalHitDamageAdditionalDataEffects => _criticalHitDamageAdditionalDataEffects;
+        internal IReadOnlyList<CriticalHitDamageIncreaseDataEffect> CriticalHitDamageIncreaseDataEffects => _criticalHitDamageIncreaseDataEffects;
+        internal IReadOnlyList<CriticalHitDamageMultiplierDataEffect> CriticalHitDamageMultiplierDataEffects => _criticalHitDamageMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<MaxHPAdditionalDataEffect, int> MaxHPAdditionalDataEffects => _maxHPAdditionalDataEffects;
-        internal IReadOnlyDictionary<MaxHPIncreaseDataEffect, int> MaxHPIncreaseDataEffects => _maxHPIncreaseDataEffects;
-        internal IReadOnlyDictionary<MaxHPMultiplierDataEffect, int> MaxHPMultiplierDataEffects => _maxHPMultiplierDataEffects;
+        internal IReadOnlyList<MaxHPAdditionalDataEffect> MaxHPAdditionalDataEffects => _maxHPAdditionalDataEffects;
+        internal IReadOnlyList<MaxHPIncreaseDataEffect> MaxHPIncreaseDataEffects => _maxHPIncreaseDataEffects;
+        internal IReadOnlyList<MaxHPMultiplierDataEffect> MaxHPMultiplierDataEffects => _maxHPMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<HealingAdditionalDataEffect, int> HealingAdditionalDataEffects => _healingAdditionalDataEffects;
-        internal IReadOnlyDictionary<HealingIncreaseDataEffect, int> HealingIncreaseDataEffects => _healingIncreaseDataEffects;
-        internal IReadOnlyDictionary<HealingMultiplierDataEffect, int> HealingMultiplierDataEffects => _healingMultiplierDataEffects;
+        internal IReadOnlyList<HealingAdditionalDataEffect> HealingAdditionalDataEffects => _healingAdditionalDataEffects;
+        internal IReadOnlyList<HealingIncreaseDataEffect> HealingIncreaseDataEffects => _healingIncreaseDataEffects;
+        internal IReadOnlyList<HealingMultiplierDataEffect> HealingMultiplierDataEffects => _healingMultiplierDataEffects;
 
-        internal IReadOnlyDictionary<HPRecoveryPerSecByMaxHPIncreaseDataEffect, int> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
-        internal IReadOnlyDictionary<AbnormalStatusResistanceAdditionalDataEffect, int> AbnormalStatusResistanceAdditionalDataEffects => _abnormalStatusResistanceAdditionalDataEffects;
+        internal IReadOnlyList<HPRecoveryPerSecByMaxHPIncreaseDataEffect> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
+        internal IReadOnlyList<AbnormalStatusResistanceAdditionalDataEffect> AbnormalStatusResistanceAdditionalDataEffects => _abnormalStatusResistanceAdditionalDataEffects;
 
-        public IReadOnlyDictionary<SkillCooldownIncreaseDataEffect, (int level, string displayName)> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
+        public IReadOnlyDictionary<SkillCooldownIncreaseDataEffect, string> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
+        #endregion
 
+        #region Set
         internal IReadOnlyList<SetMinHPEffect> SetMinHPEffects => _setMinHPEffects;
         internal IReadOnlyList<SetAttackTypeEffect> SetAttackTypeEffects => _setAttackTypeEffects;
         internal IReadOnlyList<SetDamageTypeEffect> SetDamageTypeEffects => _setDamageTypeEffects;
-
-        internal IReadOnlyList<UnableToTargetOfAttackEffect> UnableToTargetOfAttackEffects => _unableToTargetOfAttackEffects;
-
         #endregion
+
+        #region Unable
+        internal IReadOnlyList<UnableToTargetOfAttackEffect> UnableToTargetOfAttackEffects => _unableToTargetOfAttackEffects;
+        #endregion
+
         #endregion
 
         private Dictionary<BuffTemplate, StatusInstance> statusDic = new Dictionary<BuffTemplate, StatusInstance>();
@@ -173,7 +186,7 @@ namespace EvolveThisMatch.Core
             unit.GetAbility<HealthAbility>().onDeath -= ClearStatusEffects;
         }
 
-        public void ApplyBuff(BuffTemplate template, float duration, int level = 1)
+        public void ApplyBuff(BuffTemplate template, float duration)
         {
             if (this == null || gameObject == null) return;
 
@@ -204,24 +217,24 @@ namespace EvolveThisMatch.Core
 
             if (template.delay > 0)
             {
-                StartCoroutine(CoAddStatus(template, duration, isContained, level));
+                StartCoroutine(CoAddStatus(template, duration, isContained));
             }
             else
             {
-                AddStatus(template, duration, isContained, level);
+                AddStatus(template, duration, isContained);
             }
         }
 
-        private IEnumerator CoAddStatus(BuffTemplate template, float duration, bool isContained, int level)
+        private IEnumerator CoAddStatus(BuffTemplate template, float duration, bool isContained)
         {
             yield return new WaitForSeconds(template.delay);
-            AddStatus(template, duration, isContained, level);
+            AddStatus(template, duration, isContained);
         }
 
         /// <summary>
         /// 버프 추가
         /// </summary>
-        private void AddStatus(BuffTemplate template, float duration, bool isContained, int level)
+        private void AddStatus(BuffTemplate template, float duration, bool isContained)
         {
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 
@@ -254,178 +267,178 @@ namespace EvolveThisMatch.Core
                 {
                     if (effect is MoveIncreaseDataEffect moveIncreaseDataEffect)
                     {
-                        _moveIncreaseDataEffects.Add(moveIncreaseDataEffect, level);
+                        _moveIncreaseDataEffects.Add(moveIncreaseDataEffect);
                     }
                     else if (effect is MoveMultiplierDataEffect moveMultiplierDataEffect)
                     {
-                        _moveMultiplierDataEffects.Add(moveMultiplierDataEffect, level);
+                        _moveMultiplierDataEffects.Add(moveMultiplierDataEffect);
                     }
 
                     else if (effect is ATKAdditionalDataEffect atkAdditionalDataEffects)
                     {
-                        _atkAdditionalDataEffects.Add(atkAdditionalDataEffects, (level, template.displayName));
+                        _atkAdditionalDataEffects.Add(atkAdditionalDataEffects, template.displayName);
                     }
                     else if (effect is ATKIncreaseDataEffect atkIncreaseDataEffect)
                     {
-                        _atkIncreaseDataEffects.Add(atkIncreaseDataEffect, (level, template.displayName));
+                        _atkIncreaseDataEffects.Add(atkIncreaseDataEffect, template.displayName);
                     }
                     else if (effect is ATKMultiplierDataEffect atkMultiplierDataEffect)
                     {
-                        _atkMultiplierDataEffects.Add(atkMultiplierDataEffect, (level, template.displayName));
+                        _atkMultiplierDataEffects.Add(atkMultiplierDataEffect, template.displayName);
                     }
 
                     else if (effect is AttackCountAdditionalDataEffect attackCountAdditionalDataEffect)
                     {
-                        _attackCountAdditionalDataEffects.Add(attackCountAdditionalDataEffect, level);
+                        _attackCountAdditionalDataEffects.Add(attackCountAdditionalDataEffect);
                     }
 
                     else if (effect is AttackSpeedIncreaseDataEffect AttackSpeedIncreaseDataEffect)
                     {
-                        _attackSpeedIncreaseDataEffects.Add(AttackSpeedIncreaseDataEffect, (level, template.displayName));
+                        _attackSpeedIncreaseDataEffects.Add(AttackSpeedIncreaseDataEffect, template.displayName);
                     }
                     else if (effect is AttackSpeedMultiplierDataEffect AttackSpeedMultiplierDataEffect)
                     {
-                        _attackSpeedMultiplierDataEffects.Add(AttackSpeedMultiplierDataEffect, (level, template.displayName));
+                        _attackSpeedMultiplierDataEffects.Add(AttackSpeedMultiplierDataEffect, template.displayName);
                     }
 
                     else if (effect is AvoidanceAdditionalDataEffect AvoidanceAdditionalDataEffect)
                     {
-                        _avoidanceAdditionalDataEffects.Add(AvoidanceAdditionalDataEffect, level);
+                        _avoidanceAdditionalDataEffects.Add(AvoidanceAdditionalDataEffect);
                     }
 
                     else if (effect is PhysicalPenetrationAdditionalDataEffect physicalPenetrationAdditionalDataEffect)
                     {
-                        _physicalPenetrationAdditionalDataEffects.Add(physicalPenetrationAdditionalDataEffect, level);
+                        _physicalPenetrationAdditionalDataEffects.Add(physicalPenetrationAdditionalDataEffect);
                     }
                     else if (effect is PhysicalPenetrationIncreaseDataEffect physicalPenetrationIncreaseDataEffect)
                     {
-                        _physicalPenetrationIncreaseDataEffects.Add(physicalPenetrationIncreaseDataEffect, level);
+                        _physicalPenetrationIncreaseDataEffects.Add(physicalPenetrationIncreaseDataEffect);
                     }
                     else if (effect is PhysicalPenetrationMultiplierDataEffect physicalPenetrationMultiplierDataEffect)
                     {
-                        _physicalPenetrationMultiplierDataEffects.Add(physicalPenetrationMultiplierDataEffect, level);
+                        _physicalPenetrationMultiplierDataEffects.Add(physicalPenetrationMultiplierDataEffect);
                     }
 
                     else if (effect is PhysicalResistanceAdditionalDataEffect physicalResistanceAdditionalDataEffect)
                     {
-                        _physicalResistanceAdditionalDataEffects.Add(physicalResistanceAdditionalDataEffect, (level, template.displayName));
+                        _physicalResistanceAdditionalDataEffects.Add(physicalResistanceAdditionalDataEffect, template.displayName);
                     }
                     else if (effect is PhysicalResistanceIncreaseDataEffect physicalResistanceIncreaseDataEffect)
                     {
-                        _physicalResistanceIncreaseDataEffects.Add(physicalResistanceIncreaseDataEffect, (level, template.displayName));
+                        _physicalResistanceIncreaseDataEffects.Add(physicalResistanceIncreaseDataEffect, template.displayName);
                     }
                     else if (effect is PhysicalResistanceMultiplierDataEffect physicalResistanceMultiplierDataEffect)
                     {
-                        _physicalResistanceMultiplierDataEffects.Add(physicalResistanceMultiplierDataEffect, (level, template.displayName));
+                        _physicalResistanceMultiplierDataEffects.Add(physicalResistanceMultiplierDataEffect, template.displayName);
                     }
 
                     else if (effect is MagicPenetrationAdditionalDataEffect magicPenetrationAdditionalDataEffect)
                     {
-                        _magicPenetrationAdditionalDataEffects.Add(magicPenetrationAdditionalDataEffect, level);
+                        _magicPenetrationAdditionalDataEffects.Add(magicPenetrationAdditionalDataEffect);
                     }
                     else if (effect is MagicPenetrationIncreaseDataEffect magicPenetrationIncreaseDataEffect)
                     {
-                        _magicPenetrationIncreaseDataEffects.Add(magicPenetrationIncreaseDataEffect, level);
+                        _magicPenetrationIncreaseDataEffects.Add(magicPenetrationIncreaseDataEffect);
                     }
                     else if (effect is MagicPenetrationMultiplierDataEffect magicPenetrationMultiplierDataEffect)
                     {
-                        _magicPenetrationMultiplierDataEffects.Add(magicPenetrationMultiplierDataEffect, level);
+                        _magicPenetrationMultiplierDataEffects.Add(magicPenetrationMultiplierDataEffect);
                     }
 
                     else if (effect is MagicResistanceAdditionalDataEffect magicResistanceAdditionalDataEffect)
                     {
-                        _magicResistanceAdditionalDataEffects.Add(magicResistanceAdditionalDataEffect, (level, template.displayName));
+                        _magicResistanceAdditionalDataEffects.Add(magicResistanceAdditionalDataEffect, template.displayName);
                     }
                     else if (effect is MagicResistanceIncreaseDataEffect magicResistanceIncreaseDataEffect)
                     {
-                        _magicResistanceIncreaseDataEffects.Add(magicResistanceIncreaseDataEffect, (level, template.displayName));
+                        _magicResistanceIncreaseDataEffects.Add(magicResistanceIncreaseDataEffect, template.displayName);
                     }
                     else if (effect is MagicResistanceMultiplierDataEffect magicResistanceMultiplierDataEffect)
                     {
-                        _magicResistanceMultiplierDataEffects.Add(magicResistanceMultiplierDataEffect, (level, template.displayName));
+                        _magicResistanceMultiplierDataEffects.Add(magicResistanceMultiplierDataEffect, template.displayName);
                     }
 
                     else if (effect is DamageAdditionalDataEffect damageAdditionalDataEffect)
                     {
-                        _damageAdditionalDataEffects.Add(damageAdditionalDataEffect, level);
+                        _damageAdditionalDataEffects.Add(damageAdditionalDataEffect);
                     }
                     else if (effect is DamageIncreaseDataEffect damageIncreaseDataEffect)
                     {
-                        _damageIncreaseDataEffects.Add(damageIncreaseDataEffect, level);
+                        _damageIncreaseDataEffects.Add(damageIncreaseDataEffect);
                     }
                     else if (effect is DamageMultiplierDataEffect damageMultiplierDataEffect)
                     {
-                        _damageMultiplierDataEffects.Add(damageMultiplierDataEffect, level);
+                        _damageMultiplierDataEffects.Add(damageMultiplierDataEffect);
                     }
 
                     else if (effect is ReceiveDamageAdditionalDataEffect receiveDamageAdditionalDataEffect)
                     {
-                        _receiveDamageAdditionalDataEffects.Add(receiveDamageAdditionalDataEffect, level);
+                        _receiveDamageAdditionalDataEffects.Add(receiveDamageAdditionalDataEffect);
                     }
                     else if (effect is ReceiveDamageIncreaseDataEffect receiveDamageIncreaseDataEffect)
                     {
-                        _receiveDamageIncreaseDataEffects.Add(receiveDamageIncreaseDataEffect, level);
+                        _receiveDamageIncreaseDataEffects.Add(receiveDamageIncreaseDataEffect);
                     }
                     else if (effect is ReceiveDamageMultiplierDataEffect receiveDamageMultiplierDataEffect)
                     {
-                        _receiveDamageMultiplierDataEffects.Add(receiveDamageMultiplierDataEffect, level);
+                        _receiveDamageMultiplierDataEffects.Add(receiveDamageMultiplierDataEffect);
                     }
 
                     else if (effect is CriticalHitChanceAdditionalDataEffect criticalHitChanceAdditionalDataEffect)
                     {
-                        _criticalHitChanceAdditionalDataEffects.Add(criticalHitChanceAdditionalDataEffect, level);
+                        _criticalHitChanceAdditionalDataEffects.Add(criticalHitChanceAdditionalDataEffect);
                     }
                     else if (effect is CriticalHitDamageAdditionalDataEffect criticalHitDamageAdditionalDataEffect)
                     {
-                        _criticalHitDamageAdditionalDataEffects.Add(criticalHitDamageAdditionalDataEffect, level);
+                        _criticalHitDamageAdditionalDataEffects.Add(criticalHitDamageAdditionalDataEffect);
                     }
                     else if (effect is CriticalHitDamageIncreaseDataEffect criticalHitDamageIncreaseDataEffect)
                     {
-                        _criticalHitDamageIncreaseDataEffects.Add(criticalHitDamageIncreaseDataEffect, level);
+                        _criticalHitDamageIncreaseDataEffects.Add(criticalHitDamageIncreaseDataEffect);
                     }
                     else if (effect is CriticalHitDamageMultiplierDataEffect criticalHitDamageMultiplierDataEffect)
                     {
-                        _criticalHitDamageMultiplierDataEffects.Add(criticalHitDamageMultiplierDataEffect, level);
+                        _criticalHitDamageMultiplierDataEffects.Add(criticalHitDamageMultiplierDataEffect);
                     }
 
                     else if (effect is MaxHPAdditionalDataEffect maxHPAdditionalDataEffect)
                     {
-                        _maxHPAdditionalDataEffects.Add(maxHPAdditionalDataEffect, level);
+                        _maxHPAdditionalDataEffects.Add(maxHPAdditionalDataEffect);
                     }
                     else if (effect is MaxHPIncreaseDataEffect maxHPIncreaseDataEffect)
                     {
-                        _maxHPIncreaseDataEffects.Add(maxHPIncreaseDataEffect, level);
+                        _maxHPIncreaseDataEffects.Add(maxHPIncreaseDataEffect);
                     }
                     else if (effect is MaxHPMultiplierDataEffect maxHPMultiplierDataEffect)
                     {
-                        _maxHPMultiplierDataEffects.Add(maxHPMultiplierDataEffect, level);
+                        _maxHPMultiplierDataEffects.Add(maxHPMultiplierDataEffect);
                     }
 
                     else if (effect is HealingAdditionalDataEffect healingAdditionalDataEffect)
                     {
-                        _healingAdditionalDataEffects.Add(healingAdditionalDataEffect, level);
+                        _healingAdditionalDataEffects.Add(healingAdditionalDataEffect);
                     }
                     else if (effect is HealingIncreaseDataEffect healingIncreaseDataEffect)
                     {
-                        _healingIncreaseDataEffects.Add(healingIncreaseDataEffect, level);
+                        _healingIncreaseDataEffects.Add(healingIncreaseDataEffect);
                     }
                     else if (effect is HealingMultiplierDataEffect healingMultiplierDataEffect)
                     {
-                        _healingMultiplierDataEffects.Add(healingMultiplierDataEffect, level);
+                        _healingMultiplierDataEffects.Add(healingMultiplierDataEffect);
                     }
 
                     else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
                     {
-                        _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Add(hpRecoveryPerSecByMaxHPIncreaseDataEffect, level);
+                        _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Add(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
                     }
                     else if (effect is AbnormalStatusResistanceAdditionalDataEffect abnormalStatusResistanceAdditionalDataEffect)
                     {
-                        _abnormalStatusResistanceAdditionalDataEffects.Add(abnormalStatusResistanceAdditionalDataEffect, level);
+                        _abnormalStatusResistanceAdditionalDataEffects.Add(abnormalStatusResistanceAdditionalDataEffect);
                     }
 
                     else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)
                     {
-                        _skillCooldownIncreaseDataEffects.Add(skillCooldownIncreaseDataEffect, (level, template.displayName));
+                        _skillCooldownIncreaseDataEffects.Add(skillCooldownIncreaseDataEffect, template.displayName);
                     }
 
                     else if (effect is SetMinHPEffect setMinHPEffect)
@@ -449,6 +462,7 @@ namespace EvolveThisMatch.Core
             }
         }
 
+        #region 버프 유지시간 관리
         private IEnumerator CoStatus(StatusInstance statusInstance, BuffTemplate template)
         {
             while (statusInstance.IsCompete == false)
@@ -458,6 +472,7 @@ namespace EvolveThisMatch.Core
 
             RemoveBuff(template);
         }
+        #endregion
 
         #region 콜백 메서드
         private void RemoveStatusByAttack()
@@ -500,7 +515,12 @@ namespace EvolveThisMatch.Core
                 }
             }
         }
+        #endregion
 
+        #region 버프 제거
+        /// <summary>
+        /// 모든 버프 제거
+        /// </summary>
         private void ClearStatusEffects()
         {
             foreach (var status in statusDic)
@@ -524,8 +544,10 @@ namespace EvolveThisMatch.Core
             statusList.Clear();
 #endif
         }
-        #endregion
 
+        /// <summary>
+        /// 특정 버프 제거
+        /// </summary>
         public void RemoveBuff(BuffTemplate template)
         {
             RemoveStatus(template.effects);
@@ -744,6 +766,7 @@ namespace EvolveThisMatch.Core
                 }
             }
         }
+        #endregion
 
         #region 유틸리티 메서드
         internal bool Contains(BuffTemplate template)

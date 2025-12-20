@@ -12,14 +12,28 @@ namespace EvolveThisMatch.Core
     public class GlobalStatusSystem : MonoBehaviour, ICoreSystem
     {
         #region Effect List
-        private Dictionary<GoldGainAdditionalDataEffect, int> _goldGainAdditionalDataEffects = new Dictionary<GoldGainAdditionalDataEffect, int>();
-        private Dictionary<GoldGainIncreaseDataEffect, int> _goldGainIncreaseDataEffects = new Dictionary<GoldGainIncreaseDataEffect, int>();
-        private Dictionary<GoldGainMultiplierDataEffect, int> _goldGainMultiplierDataEffects = new Dictionary<GoldGainMultiplierDataEffect, int>();
+        #region ImmutableData
+        private List<GoldGainAdditionalDataEffect> _goldGainAdditionalDataEffects = new List<GoldGainAdditionalDataEffect>();
+        private List<GoldGainIncreaseDataEffect> _goldGainIncreaseDataEffects = new List<GoldGainIncreaseDataEffect>();
+        private List<GoldGainMultiplierDataEffect> _goldGainMultiplierDataEffects = new List<GoldGainMultiplierDataEffect>();
+        #endregion
+
+        #region MutableData
+        private Dictionary<ATKIncreaseMutableDataEffect,string> _atkIncreaseMutableDataEffect = new Dictionary<ATKIncreaseMutableDataEffect, string>();
+        private Dictionary<ATKMultiplierMutableDataEffect, string> _atkMultiplierMutableDataEffect = new Dictionary<ATKMultiplierMutableDataEffect, string>();
+        #endregion
+        #endregion
 
         #region 프로퍼티
-        public IReadOnlyDictionary<GoldGainAdditionalDataEffect, int> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
-        public IReadOnlyDictionary<GoldGainIncreaseDataEffect, int> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
-        public IReadOnlyDictionary<GoldGainMultiplierDataEffect, int> GoldGainMultiplierDataEffects => _goldGainMultiplierDataEffects;
+        #region ImmutableData
+        public IReadOnlyList<GoldGainAdditionalDataEffect> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
+        public IReadOnlyList<GoldGainIncreaseDataEffect> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
+        public IReadOnlyList<GoldGainMultiplierDataEffect> GoldGainMultiplierDataEffects => _goldGainMultiplierDataEffects;
+        #endregion
+
+        #region MutableData
+        public IReadOnlyDictionary<ATKIncreaseMutableDataEffect, string> ATKIncreaseMutableDataEffect => _atkIncreaseMutableDataEffect;
+        public IReadOnlyDictionary<ATKMultiplierMutableDataEffect, string> ATKMultiplierMutableDataEffect => _atkMultiplierMutableDataEffect;
         #endregion
         #endregion
 
@@ -38,7 +52,7 @@ namespace EvolveThisMatch.Core
             ClearStatusEffects();
         }
 
-        internal void ApplyGlobalStatus(GlobalStatusTemplate template, float duration, int level = 1)
+        public void ApplyGlobalStatus(GlobalStatusTemplate template, float duration)
         {
             if (this == null || gameObject == null || template == null) return;
 
@@ -60,13 +74,13 @@ namespace EvolveThisMatch.Core
                 }
             }
 
-            AddStatus(template, duration, isContained, level);
+            AddStatus(template, duration, isContained);
         }
 
         /// <summary>
         /// 전역 상태 추가
         /// </summary>
-        private void AddStatus(GlobalStatusTemplate template, float duration, bool isContained, int level)
+        private void AddStatus(GlobalStatusTemplate template, float duration, bool isContained)
         {
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 
@@ -90,23 +104,36 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in template.effects)
                 {
+                    #region 골드 관련 Immutable
                     if (effect is GoldGainAdditionalDataEffect goldGainAdditionalDataEffect)
                     {
-                        _goldGainAdditionalDataEffects.Add(goldGainAdditionalDataEffect, level);
+                        _goldGainAdditionalDataEffects.Add(goldGainAdditionalDataEffect);
                     }
                     else if (effect is GoldGainIncreaseDataEffect goldGainIncreaseDataEffect)
                     {
-                        _goldGainIncreaseDataEffects.Add(goldGainIncreaseDataEffect, level);
+                        _goldGainIncreaseDataEffects.Add(goldGainIncreaseDataEffect);
                     }
                     else if (effect is GoldGainMultiplierDataEffect goldGainMultiplierDataEffect)
                     {
-                        _goldGainMultiplierDataEffects.Add(goldGainMultiplierDataEffect, level);
+                        _goldGainMultiplierDataEffects.Add(goldGainMultiplierDataEffect);
                     }
+                    #endregion
 
+                    #region 공격력 관련 Mutable
+                    else if (effect is ATKIncreaseMutableDataEffect atkIncreaseMutableDataEffect)
+                    {
+                        _atkIncreaseMutableDataEffect.Add(atkIncreaseMutableDataEffect, template.displayName);
+                    }
+                    else if (effect is ATKMultiplierMutableDataEffect atkMultiplierMutableDataEffect)
+                    {
+                        _atkMultiplierMutableDataEffect.Add(atkMultiplierMutableDataEffect, template.displayName);
+                    }
+                    #endregion
                 }
             }
         }
 
+        #region 전역 상태 유지시간 관리
         private IEnumerator CoStatus(StatusInstance statusInstance, GlobalStatusTemplate template)
         {
             while (statusInstance.IsCompete == false)
@@ -127,7 +154,12 @@ namespace EvolveThisMatch.Core
                 ExecuteRemoveFX(template);
             }
         }
+        #endregion
 
+        #region 전역 상태 제거
+        /// <summary>
+        /// 모든 전역 상태 제거
+        /// </summary>
         private void ClearStatusEffects()
         {
             foreach (var status in statusDic)
@@ -173,6 +205,7 @@ namespace EvolveThisMatch.Core
                 }
             }
         }
+        #endregion
 
         #region 유틸리티 메서드
         internal bool Contains(GlobalStatusTemplate template)

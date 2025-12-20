@@ -1,7 +1,6 @@
 using DG.Tweening;
 using FrameWork.Editor;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace EvolveThisMatch.Core
 {
@@ -28,12 +27,12 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.MoveIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value);
+                    increase += effect.value;
                 }
 
                 foreach (var effect in _abnormalStatusAbility.MoveIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value);
+                    increase += effect.value;
                 }
 
                 result *= increase;
@@ -42,7 +41,7 @@ namespace EvolveThisMatch.Core
                 #region »ó½Â¡¤ÇÏ¶ô
                 foreach (var effect in _buffAbility.MoveMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value);
+                    result *= (1 + effect.value);
                 }
                 #endregion
 

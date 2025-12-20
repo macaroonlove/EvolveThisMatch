@@ -13,13 +13,13 @@ namespace EvolveThisMatch.Core
             return "¡ÔΩ√";
         }
 
-        public override void Execute(Unit casterUnit, Unit targetUnit, int level)
+        public override void Execute(Unit casterUnit, Unit targetUnit)
         {
             if (_isCaster) targetUnit = casterUnit;
             if (casterUnit == null || targetUnit == null) return;
             if (targetUnit.isDie) return;
 
-            SkillImpact(casterUnit, targetUnit, level);
+            SkillImpact(casterUnit, targetUnit);
 
             ExecuteTargetFX(targetUnit);
         }

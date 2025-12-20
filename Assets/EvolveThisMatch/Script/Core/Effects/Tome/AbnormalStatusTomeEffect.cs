@@ -19,7 +19,7 @@ namespace EvolveThisMatch.Core
             return $"고서 대상 유닛들에게 {_duration}초 간 상태이상 적용";
         }
 
-        public override void Execute(List<Unit> targetUnits, int level)
+        public override void Execute(List<Unit> targetUnits)
         {
             foreach (var targetUnit in targetUnits)
             {
@@ -27,11 +27,11 @@ namespace EvolveThisMatch.Core
 
                 if (_isInfinity)
                 {
-                    targetUnit.GetAbility<AbnormalStatusAbility>().ApplyAbnormalStatus(_abnormalStatus, int.MaxValue, level);
+                    targetUnit.GetAbility<AbnormalStatusAbility>().ApplyAbnormalStatus(_abnormalStatus, int.MaxValue);
                 }
                 else
                 {
-                    targetUnit.GetAbility<AbnormalStatusAbility>().ApplyAbnormalStatus(_abnormalStatus, _duration, level);
+                    targetUnit.GetAbility<AbnormalStatusAbility>().ApplyAbnormalStatus(_abnormalStatus, _duration);
                 }
             }
         }

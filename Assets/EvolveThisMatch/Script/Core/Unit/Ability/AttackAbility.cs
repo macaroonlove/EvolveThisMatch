@@ -19,10 +19,11 @@ namespace EvolveThisMatch.Core
 
         private UnitAnimationAbility _unitAnimationAbility;
         private PassiveSkillAbility _passiveSkillAbility;
-        private BuffAbility _buffAbility;
-        private AbnormalStatusAbility _abnormalStatusAbility;
         private FindTargetAbility _findTargetAbility;
         private EntitySpawnAbility _entitySpawnAbility;
+        private BuffAbility _buffAbility;
+        private AbnormalStatusAbility _abnormalStatusAbility;
+        private GlobalStatusSystem _globalStatusSystem;
 
         private int _baseATK;
         private float _baseAttackTerm;
@@ -55,7 +56,7 @@ namespace EvolveThisMatch.Core
                 #region 추가·차감
                 foreach (var effect in _buffAbility.ATKAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value.level);
+                    result += effect.Key.value;
                 }
                 #endregion
 
@@ -64,7 +65,12 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.ATKIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value.level);
+                    increase += effect.Key.value;
+                }
+                
+                foreach (var effect in _globalStatusSystem.ATKIncreaseMutableDataEffect)
+                {
+                    increase += effect.Key.GetValue(unit.mutableContext);
                 }
 
                 result *= increase;
@@ -73,7 +79,12 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.ATKMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value.level);
+                    result *= (1 + effect.Key.value);
+                }
+
+                foreach (var effect in _globalStatusSystem.ATKMultiplierMutableDataEffect)
+                {
+                    result *= (1 + effect.Key.GetValue(unit.mutableContext));
                 }
                 #endregion
 
@@ -92,7 +103,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(effect.Value.level);
+                    increase += effect.Key.value;
                 }
 
                 result *= increase;
@@ -101,7 +112,7 @@ namespace EvolveThisMatch.Core
                 #region 상승·하락
                 foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects)
                 {
-                    result *= effect.Key.GetValue(effect.Value.level);
+                    result *= (1 + effect.Key.value);
                 }
                 #endregion
 
@@ -128,7 +139,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.AttackCountAdditionalDataEffects)
                 {
-                    result += effect.Key.GetValue(effect.Value);
+                    result += effect.value;
                 }
 
                 return result;
@@ -170,10 +181,11 @@ namespace EvolveThisMatch.Core
 
             _unitAnimationAbility = unit.GetAbility<UnitAnimationAbility>();
             _passiveSkillAbility = unit.GetAbility<PassiveSkillAbility>();
-            _buffAbility = unit.GetAbility<BuffAbility>();
-            _abnormalStatusAbility = unit.GetAbility<AbnormalStatusAbility>();
             _findTargetAbility = unit.GetAbility<FindTargetAbility>();
             _entitySpawnAbility = unit.GetAbility<EntitySpawnAbility>();
+            _buffAbility = unit.GetAbility<BuffAbility>();
+            _abnormalStatusAbility = unit.GetAbility<AbnormalStatusAbility>();
+            _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
 
             if (unit is AgentUnit agentUnit)
             {
@@ -386,7 +398,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
-                effect.Execute(unit, attackTarget, 1);
+                effect.Execute(unit, attackTarget);
             }
         }
         #endregion
@@ -451,7 +463,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
-                effect.Execute(unit, healTarget, 1);
+                effect.Execute(unit, healTarget);
             }
         }
         #endregion

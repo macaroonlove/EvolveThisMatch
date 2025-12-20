@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8892221409465209580
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6271132eafe0e142aa1c2b11af854b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _value: 0
+  _scaleFactor: 0.1
+  _scaleBase: 1
+  _previewScaleBase: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb9c01008d8b6b248a0632be6f8bc333, type: 3}
+  m_Name: "GlobalStatus_\uC720\uB2DB_\uC2F1\uD06C\uB85C\uC728"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _displayName: "\uC720\uB2DB \uC2F1\uD06C\uB85C\uC728"
+  _description: "\uC2F1\uD06C\uB85C\uC728\uC744 \uC0C1\uC2B9\uC2DC\uD0AC \uC218\uB85D
+    \uC804\uD22C\uB825\uC774 10%\uC529 \uC99D\uAC00\uD569\uB2C8\uB2E4.\n5\uB808\uBCA8\uC5D0
+    1\uBC88\uC9F8 \uC2A4\uD0AC\uC774 \uD574\uAE08\uB429\uB2C8\uB2E4.\n10\uB808\uBCA8\uC5D0
+    2\uBC88\uC9F8 \uC2A4\uD0AC\uC774 \uD574\uAE08\uB429\uB2C8\uB2E4.\n15\uB808\uBCA8\uC5D0
+    3\uBC88\uC9F8 \uC2A4\uD0AC\uC774 \uD574\uAE08\uB429\uB2C8\uB2E4."
+  _applyFX: {fileID: 0}
+  _removeFX: {fileID: 0}
+  effects:
+  - {fileID: -8892221409465209580}

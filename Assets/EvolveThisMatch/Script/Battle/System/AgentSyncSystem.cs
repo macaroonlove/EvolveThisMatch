@@ -5,16 +5,23 @@ namespace EvolveThisMatch.Battle
 {
     public class AgentSyncSystem : MonoBehaviour, IBattleSystem
     {
+        [SerializeField] private GlobalStatusTemplate _syncTemplate;
+
         private CoinSystem _coinSystem;
+        private GlobalStatusSystem _globalStatusSystem;
 
         public void Initialize()
         {
             _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
+            _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
+
+            _globalStatusSystem.ApplyGlobalStatus(_syncTemplate, int.MaxValue);
         }
 
         public void Deinitialize()
         {
             _coinSystem = null;
+            _globalStatusSystem = null;
         }
 
         /// <summary>
@@ -24,7 +31,7 @@ namespace EvolveThisMatch.Battle
         {
             int needCoin = GetNeedCoin(data);
 
-            if (needCoin <= 0) return -2;
+            if (needCoin <= 0 || data.sync > 15) return -2;
 
             if (!_coinSystem.PayCoin(needCoin)) return -3;
 

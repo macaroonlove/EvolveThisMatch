@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1203495559567437984
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c113e5d57dab53743a8d7bea8e5dd371, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - {fileID: 7753274360730535102}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18,4 +32,39 @@ MonoBehaviour:
   _description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 2\uBC30 \uBE68\uB77C\uC9C0\uACE0,
     \uAE30\uBCF8 \uACF5\uACA9\uC744 \uB9DE\uC740 \uB300\uC0C1\uC5D0\uAC8C \uAC10\uC804
     \uC0C1\uD0DC\uC774\uC0C1\uC744 \uC801\uC6A9\uC2DC\uD0B5\uB2C8\uB2E4."
-  triggers: []
+  triggers:
+  - {fileID: -1203495559567437984}
+--- !u!114 &6505618056780072147
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _repeatCount: 1
+  _isTick: 0
+  _tickCycle: 0
+  _tickCount: 0
+  _damageType: 0
+  _skillType: {fileID: 0}
+  _applyTypeByAmountDatas: []
+--- !u!114 &7753274360730535102
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3f4161005dfed43a03cebd93a59aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects: []
+  _targetFX: {fileID: 0}
+  _isCaster: 0

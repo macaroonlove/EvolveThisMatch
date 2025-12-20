@@ -82,7 +82,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _buffAbility.AvoidanceAdditionalDataEffects)
                 {
-                    avoidance += effect.Key.GetValue(effect.Value);
+                    avoidance += effect.value;
                 }
 
                 if (avoidance > 0)
@@ -136,7 +136,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _passiveSkillAbility.hitEventEffects)
                 {
-                    effect.Execute(unit, attackedUnit, 1);
+                    effect.Execute(unit, attackedUnit);
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.hitEventEffects)
             {
-                effect.Execute(unit, null, 1);
+                effect.Execute(unit, null);
             }
         }
 
@@ -178,7 +178,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.hitEventEffects)
             {
-                effect.Execute(unit, null, 1);
+                effect.Execute(unit, null);
             }
         }
 

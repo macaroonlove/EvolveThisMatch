@@ -29,11 +29,11 @@ namespace EvolveThisMatch.Core
             return "오류! 확인 필요";
         }
 
-        public override void Execute(int level)
+        public override void Execute()
         {
             if (_target == null) return;
 
-            int finalValue = _value + level;
+            int finalValue = _value;
 
             switch (_operator)
             {

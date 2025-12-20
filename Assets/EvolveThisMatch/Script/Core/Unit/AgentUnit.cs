@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using EvolveThisMatch.Save;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -12,10 +13,16 @@ namespace EvolveThisMatch.Core
         public int sync => agentData.sync;
         public AgentRarityTemplate limit => agentData.limit;
 
-        public void Initialize(AgentBattleData agentData)
+        public void Initialize(AgentBattleData agentData, AgentSaveData.Agent agentSaveData)
         {
             this.agentData = agentData;
             id = template.id;
+
+            mutableContext = new MutableContext
+            {
+                agentData = agentData,
+                agentSaveData = agentSaveData
+            };
 
             base.Initialize(this);
             deployAbility = GetAbility<DeployAbility>();
