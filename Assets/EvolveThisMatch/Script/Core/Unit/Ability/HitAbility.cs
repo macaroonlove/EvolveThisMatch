@@ -136,7 +136,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _passiveSkillAbility.hitEventEffects)
                 {
-                    effect.Execute(unit, attackedUnit);
+                    effect.Deliver(unit.effectContext, unit, attackedUnit);
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.hitEventEffects)
             {
-                effect.Execute(unit, null);
+                effect.Deliver(unit.effectContext, unit, null);
             }
         }
 
@@ -178,7 +178,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.hitEventEffects)
             {
-                effect.Execute(unit, null);
+                effect.Deliver(unit.effectContext, unit, null);
             }
         }
 

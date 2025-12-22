@@ -11,12 +11,12 @@ namespace EvolveThisMatch.Core
             return FormatDescription(GetPreviewValue(_value));
         }
 
-        public override string GetDescription(MutableContext context)
+        public override string GetDescription(EffectContext context)
         {
             return FormatDescription(GetValue(context));
         }
 
-        public override float GetValue(MutableContext context)
+        public override float GetValue(EffectContext context)
         {
             int scaleBase = context.GetScaleValue(_scaleBase);
 

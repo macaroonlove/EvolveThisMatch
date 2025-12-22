@@ -1,5 +1,3 @@
-using FrameWork.Editor;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +16,7 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private int _needCoin;
         [HideInInspector, SerializeField] private float _cooldownTime;
         [HideInInspector, SerializeField] private float _delay;
-        
+
         [HideInInspector, SerializeField] private ETomeRangeType _rangeType;
         [HideInInspector, SerializeField] private float _range;
         [HideInInspector, SerializeField] private EUnitType _unitType;
@@ -41,7 +39,7 @@ namespace EvolveThisMatch.Core
         public int needCoin => _needCoin;
         public float cooldownTime => _cooldownTime;
         public float delay => _delay;
-        
+
         public ETomeRangeType rangeType => _rangeType;
         public float range => _range;
         public EUnitType unitType => _unitType;
@@ -68,12 +66,12 @@ namespace EvolveThisMatch.Core
 #if UNITY_EDITOR
 namespace EvolveThisMatch.Editor
 {
-    using System;
     using EvolveThisMatch.Core;
+    using System;
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(TomeTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(TomeTemplate))]
     public class TomeTemplateEditor : EffectEditor
     {
         private TomeTemplate _target;
@@ -121,9 +119,9 @@ namespace EvolveThisMatch.Editor
             serializedObject.Update();
 
             GUILayout.BeginHorizontal();
-            
+
             _sprite.objectReferenceValue = EditorGUILayout.ObjectField(_sprite.objectReferenceValue, typeof(Sprite), false, GUILayout.Width(96), GUILayout.Height(96));
-            
+
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
@@ -140,14 +138,14 @@ namespace EvolveThisMatch.Editor
             GUILayout.Label("아이템 설명", GUILayout.Width(80));
             _description.stringValue = EditorGUILayout.TextArea(_description.stringValue, GUILayout.Height(50));
             GUILayout.EndHorizontal();
-            
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("초기값", GUILayout.Width(80));
             EditorGUILayout.PropertyField(_initValue, GUIContent.none);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
-            
+
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10);
@@ -161,7 +159,7 @@ namespace EvolveThisMatch.Editor
             GUILayout.Label("쿨타임", GUILayout.Width(192));
             EditorGUILayout.PropertyField(_cooldownTime, GUIContent.none);
             GUILayout.EndHorizontal();
-            
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("지연 시간", GUILayout.Width(192));
             EditorGUILayout.PropertyField(_delay, GUIContent.none);
@@ -224,18 +222,18 @@ namespace EvolveThisMatch.Editor
 
             if (_target.unitType == EUnitType.None)
             {
-                menu.AddItem(new GUIContent("Int 변수 변경"), false, CreateEffectCallback, typeof(ChangeIntVariableGlobalEffect));
-                menu.AddItem(new GUIContent("Float 변수 변경"), false, CreateEffectCallback, typeof(ChangeFloatVariableGlobalEffect));
-                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionGlobalEffect));
-                menu.AddItem(new GUIContent("전역 상태 적용"), false, CreateEffectCallback, typeof(GlobalStatusGlobalEffect));
+                menu.AddItem(new GUIContent("Int 변수 변경"), false, CreateEffectCallback, typeof(ChangeIntVariableNoParamEffect));
+                menu.AddItem(new GUIContent("Float 변수 변경"), false, CreateEffectCallback, typeof(ChangeFloatVariableNoParamEffect));
+                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionNoParamEffect));
+                menu.AddItem(new GUIContent("전역 상태 적용"), false, CreateEffectCallback, typeof(GlobalStatusNoParamEffect));
             }
             else
             {
-                menu.AddItem(new GUIContent("대상 유닛들에게 데미지 적용"), false, CreateEffectCallback, typeof(DamageTomeEffect));
-                menu.AddItem(new GUIContent("대상 유닛들에게 회복 적용"), false, CreateEffectCallback, typeof(HealTomeEffect));
-                menu.AddItem(new GUIContent("대상 유닛들에게 보호막 적용"), false, CreateEffectCallback, typeof(ShieldTomeEffect));
-                menu.AddItem(new GUIContent("대상 유닛들에게 버프 적용"), false, CreateEffectCallback, typeof(BuffTomeEffect));
-                menu.AddItem(new GUIContent("대상 유닛들에게 상태이상 적용"), false, CreateEffectCallback, typeof(AbnormalStatusTomeEffect));
+                menu.AddItem(new GUIContent("대상 유닛들에게 데미지 적용"), false, CreateEffectCallback, typeof(DamageBatchUnitEffect));
+                menu.AddItem(new GUIContent("대상 유닛들에게 회복 적용"), false, CreateEffectCallback, typeof(HealBatchUnitEffect));
+                menu.AddItem(new GUIContent("대상 유닛들에게 보호막 적용"), false, CreateEffectCallback, typeof(ShieldBatchUnitEffect));
+                menu.AddItem(new GUIContent("대상 유닛들에게 버프 적용"), false, CreateEffectCallback, typeof(BuffBatchUnitEffect));
+                menu.AddItem(new GUIContent("대상 유닛들에게 상태이상 적용"), false, CreateEffectCallback, typeof(AbnormalStatusBatchUnitEffect));
             }
 
             menu.ShowAsContext();
@@ -302,6 +300,7 @@ namespace EvolveThisMatch.Editor
 
             if (effect != null)
             {
+                effect.Initialize();
                 effect.hideFlags = HideFlags.HideInHierarchy;
                 _target.effects.Add(effect);
 

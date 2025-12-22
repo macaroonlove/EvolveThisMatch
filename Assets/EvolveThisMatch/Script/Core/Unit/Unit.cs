@@ -29,7 +29,7 @@ namespace EvolveThisMatch.Core
         private BoxCollider _collider;
 
         public int id { get; protected set; }
-        public MutableContext mutableContext { get; protected set; }
+        public EffectContext effectContext { get; protected set; }
         internal HealthAbility healthAbility { get; private set; }
         internal Vector2 cellPos => new Vector2(transform.position.x, transform.position.y);
         internal Vector2Int cellIntPos => new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));

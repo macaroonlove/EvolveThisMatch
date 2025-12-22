@@ -30,9 +30,8 @@ MonoBehaviour:
   _sprite: {fileID: 21300000, guid: 51235174aa667f94e92a114c049b380a, type: 3}
   _id: 15
   _displayName: "\uD669\uAE08\uC0AC\uACFC"
-  _description: "\uD68C\uC218 \uC2DC, \uCCB4\uB825 \uD68C\uBCF5 \uC18D\uB3C4\n{value}%
-    \uC99D\uAC00\uD569\uB2C8\uB2E4."
-  _initValue: 20
+  _description: "\uAC8C\uC784 \uC2DC\uC791 \uC2DC,\n\uCF54\uC778\uC744 {value}\uAC1C
+    \uD68D\uB4DD\uD569\uB2C8\uB2E4."
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: 1830051041259834362}
@@ -48,6 +47,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8693d2eed6cf324191e9bebe9e7b111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects:
-  - {fileID: -337992660910648154}
+  effects: []
   _globalEvent: {fileID: 11400000, guid: fe5efdae55e1d7340a74928bc9383ee5, type: 2}

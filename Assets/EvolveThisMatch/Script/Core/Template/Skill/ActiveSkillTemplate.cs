@@ -69,7 +69,7 @@ namespace EvolveThisMatch.Editor
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(ActiveSkillTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(ActiveSkillTemplate))]
     public class ActiveSkillTemplateEditor : EffectEditor
     {
         private ActiveSkillTemplate _target;

@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d9f1ec5f79b9e14997e30dd13e21a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects:
-  - {fileID: 1125388594828125007}
+  effects: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29,9 +28,7 @@ MonoBehaviour:
   _sprite: {fileID: 21300000, guid: 20aa642af7355c74583e61a0831bcc24, type: 3}
   _id: 11
   _displayName: "\uB300\uD658\uB2E8"
-  _description: "\uD68C\uC218 \uC2DC, \uCCB4\uB825 \uD68C\uBCF5 \uC18D\uB3C4\n{value}%
-    \uC99D\uAC00\uD569\uB2C8\uB2E4."
-  _initValue: 20
+  _description: "\uD53C\uD574\uB7C9\uC774 {value}% \uC99D\uAC00\uD569\uB2C8\uB2E4."
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: -8539569025488174539}

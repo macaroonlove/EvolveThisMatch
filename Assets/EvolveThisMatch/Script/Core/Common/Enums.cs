@@ -78,11 +78,11 @@ namespace EvolveThisMatch.Core
     public enum EApplyType
     {
         Basic,
-        FinalATK,
-        CurrentHP,
-        MAXHP,
-        Enemy_CurrentHP,
-        Enemy_MAXHP,
+        Caster_FinalATK,
+        Caster_CurrentHP,
+        Caster_MAXHP,
+        Target_CurrentHP,
+        Target_MAXHP,
     }
 
     /// <summary>
@@ -91,8 +91,8 @@ namespace EvolveThisMatch.Core
     public enum EApplyType_TargetOnly
     {
         Basic,
-        Enemy_CurrentHP,
-        Enemy_MAXHP,
+        CurrentHP,
+        MAXHP,
     }
 
     #region µî±Þ

@@ -11,6 +11,8 @@ namespace EvolveThisMatch.Core
     {
         public abstract string GetDescription();
 
+        public virtual void Initialize() { }
+
 #if UNITY_EDITOR
         public abstract void Draw(Rect rect);
 

@@ -103,7 +103,7 @@ namespace EvolveThisMatch.Editor
     using EvolveThisMatch.Core;
     using UnityEditor;
 
-    [CustomEditor(typeof(EnemyTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(EnemyTemplate))]
     public class EnemyTemplateEditor : Editor
     {
         private SerializedProperty _id;

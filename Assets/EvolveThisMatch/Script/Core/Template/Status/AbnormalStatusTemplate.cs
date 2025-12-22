@@ -55,7 +55,7 @@ namespace EvolveThisMatch.Editor
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(AbnormalStatusTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(AbnormalStatusTemplate))]
     public class AbnormalStatusTemplateEditor : EffectEditor
     {
         private AbnormalStatusTemplate _target;

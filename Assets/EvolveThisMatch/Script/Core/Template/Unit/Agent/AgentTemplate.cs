@@ -232,7 +232,7 @@ namespace EvolveThisMatch.Editor
     using UnityEditorInternal;
     using UnityEngine.AddressableAssets;
 
-    [CustomEditor(typeof(AgentTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(AgentTemplate))]
     public class AgentTemplateEditor : Editor
     {
         private AgentTemplate _target;

@@ -6,7 +6,7 @@ namespace EvolveThisMatch.Core
 {
     public abstract class GameTrigger : ScriptableObject
     {
-        public List<Effect> effects = new List<Effect>();
+        public List<DataEffectDescriptionBinding> effects = new List<DataEffectDescriptionBinding>();
 
         public abstract string GetLabel();
 

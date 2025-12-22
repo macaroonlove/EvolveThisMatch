@@ -593,6 +593,13 @@ namespace EvolveThisMatch.Editor
             {
                 LoadTemplates(ref templates, defaultPath, assetPrefix);
             }
+            if (GUILayout.Button("선택된 아이템 위치로 이동"))
+            {
+                if (templates.Count > 0 && selectedIndex >= 0 && selectedIndex < templates.Count)
+                {
+                    MoveToTemplate(templates[selectedIndex]);
+                }
+            }
 
             DrawLine();
 
@@ -708,6 +715,18 @@ namespace EvolveThisMatch.Editor
             }
 
             resizedTextures[assetPrefix] = textures;
+        }
+
+        private void MoveToTemplate(Object template)
+        {
+            if (template == null)
+            {
+                Debug.LogWarning("선택된 템플릿이 없습니다.");
+                return;
+            }
+
+            Selection.activeObject = template;
+            EditorGUIUtility.PingObject(template);
         }
 
         private void DrawLine()

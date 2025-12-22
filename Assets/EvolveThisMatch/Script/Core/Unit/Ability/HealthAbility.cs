@@ -330,7 +330,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.healEventEffects)
             {
-                effect.Execute(unit, casterUnit);
+                effect.Deliver(unit.effectContext, unit, casterUnit);
             }
         }
 

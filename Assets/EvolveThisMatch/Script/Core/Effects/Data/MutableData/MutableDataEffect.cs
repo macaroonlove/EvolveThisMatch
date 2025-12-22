@@ -10,7 +10,7 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] protected T _value;
         [SerializeField] protected float _scaleFactor;
-        [SerializeField] protected EMutableScaleBase _scaleBase;
+        [SerializeField] protected EEffectScaleBase _scaleBase;
         [SerializeField] protected int _previewScaleBase = 2;
 
         public virtual int GetPreviewValue(int value)
@@ -23,8 +23,8 @@ namespace EvolveThisMatch.Core
             return value + (_previewScaleBase * _scaleFactor);
         }
 
-        public abstract string GetDescription(MutableContext context);
-        public abstract T GetValue(MutableContext context);
+        public abstract string GetDescription(EffectContext context);
+        public abstract T GetValue(EffectContext context);
 
 #if UNITY_EDITOR
         public override int GetNumRows() => 2;
@@ -45,7 +45,7 @@ namespace EvolveThisMatch.Core
             labelRect.y += 20;
             valueRect.y += 20;
             GUI.Label(labelRect, "기준값");
-            _scaleBase = (EMutableScaleBase)EditorGUI.EnumPopup(valueRect, _scaleBase);
+            _scaleBase = (EEffectScaleBase)EditorGUI.EnumPopup(valueRect, _scaleBase);
 
             labelRect.y += 20;
             valueRect.y += 20;
@@ -62,52 +62,5 @@ namespace EvolveThisMatch.Core
             // 이곳에 다른 타입에 대한 처리를 추가할 수 있습니다.
         }
 #endif
-    }
-
-    public class MutableContext
-    {
-        public AgentBattleData agentData;
-        public AgentSaveData.Agent agentSaveData;
-        public ItemSaveData.Artifact artifactSaveData;
-        public ItemSaveData.Tome tomeSaveData;
-
-        public int GetScaleValue(EMutableScaleBase scaleBase)
-        {
-            int value = -1;
-            switch (scaleBase)
-            {
-                case EMutableScaleBase.AgentLevel:
-                    value = agentSaveData != null ? agentSaveData.level : 1;
-                    break;
-                case EMutableScaleBase.AgentSync:
-                    value = agentData != null ? agentData.sync : 1;
-                    break;
-                case EMutableScaleBase.ArtifactLevel:
-                    value = artifactSaveData != null ? artifactSaveData.level : 1;
-                    break;
-                case EMutableScaleBase.TomeLevel:
-                    value = tomeSaveData != null ? tomeSaveData.level : 1;
-                    break;
-            }
-
-
-            if (value == -1)
-            {
-                value = 1;
-#if UNITY_EDITOR
-                Debug.LogWarning($"MutableContext: {scaleBase} 기준 데이터가 없습니다.");
-#endif
-            }
-
-            return value;
-        }
-    }
-
-    public enum EMutableScaleBase
-    {
-        AgentLevel,
-        AgentSync,
-        ArtifactLevel,
-        TomeLevel,
     }
 }

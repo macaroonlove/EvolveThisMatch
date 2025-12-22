@@ -1,6 +1,46 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1203495559567437984
+--- !u!114 &-8636698911281385029
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3f4161005dfed43a03cebd93a59aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects:
+  - {fileID: -3792212825982092740}
+  _targetFX: {fileID: 0}
+  _isCaster: 0
+--- !u!114 &-8598657500224000428
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isMutable: 0
+  _scaleFactor: 0
+  _scaleBase: 0
+  _previewScaleBase: 2
+  _damageEffectLogic:
+    _repeatCount: 1
+    _isTick: 0
+    _tickCycle: 0
+    _tickCount: 0
+    _damageType: 0
+    _elementalType: {fileID: 0}
+    _applyTypeByAmountDatas: []
+--- !u!114 &-7052087321362853940
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,7 +53,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effects:
-  - {fileID: 7753274360730535102}
+  - {fileID: -8636698911281385029}
+--- !u!114 &-3792212825982092740
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isMutable: 0
+  _scaleFactor: 0
+  _scaleBase: 0
+  _previewScaleBase: 2
+  _isInfinity: 0
+  _duration: 0
+  _abnormalStatus: {fileID: 11400000, guid: ec73610e1c86c3042ab8d1bda04c8472, type: 2}
+--- !u!114 &-3628828802883567819
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3f4161005dfed43a03cebd93a59aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects:
+  - {fileID: -8598657500224000428}
+  _targetFX: {fileID: 0}
+  _isCaster: 0
+--- !u!114 &-2631034271463998401
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3f4161005dfed43a03cebd93a59aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects: []
+  _targetFX: {fileID: 0}
+  _isCaster: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29,11 +119,40 @@ MonoBehaviour:
   _sprite: {fileID: 0}
   _id: 0
   _displayName: "\uB1CC\uC2E0\uC758 \uACA9\uB178"
-  _description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 2\uBC30 \uBE68\uB77C\uC9C0\uACE0,
-    \uAE30\uBCF8 \uACF5\uACA9\uC744 \uB9DE\uC740 \uB300\uC0C1\uC5D0\uAC8C \uAC10\uC804
-    \uC0C1\uD0DC\uC774\uC0C1\uC744 \uC801\uC6A9\uC2DC\uD0B5\uB2C8\uB2E4."
+  _description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 200% \uC99D\uAC00\uD558\uACE0, \uAE30\uBCF8
+    \uACF5\uACA9\uC744 \uB9DE\uC740 \uB300\uC0C1\uC5D0\uAC8C \uAC10\uC804 \uC0C1\uD0DC\uC774\uC0C1\uC744
+    \uC801\uC6A9\uC2DC\uD0B5\uB2C8\uB2E4."
   triggers:
-  - {fileID: -1203495559567437984}
+  - {fileID: 4817412129547019891}
+  - {fileID: 4849096635758964598}
+--- !u!114 &4817412129547019891
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a331dc886cbd054998e8959bd719950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - {fileID: -2631034271463998401}
+--- !u!114 &4849096635758964598
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c113e5d57dab53743a8d7bea8e5dd371, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - {fileID: -3628828802883567819}
 --- !u!114 &6505618056780072147
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -46,13 +165,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _repeatCount: 1
-  _isTick: 0
-  _tickCycle: 0
-  _tickCount: 0
-  _damageType: 0
-  _skillType: {fileID: 0}
-  _applyTypeByAmountDatas: []
+  _isMutable: 0
+  _scaleFactor: 0
+  _scaleBase: 0
+  _previewScaleBase: 2
+  _damageEffectLogic:
+    _repeatCount: 0
+    _isTick: 0
+    _tickCycle: 0
+    _tickCount: 0
+    _damageType: 0
+    _elementalType: {fileID: 0}
+    _applyTypeByAmountDatas: []
 --- !u!114 &7753274360730535102
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -68,3 +192,20 @@ MonoBehaviour:
   _effects: []
   _targetFX: {fileID: 0}
   _isCaster: 0
+--- !u!114 &8580395653529900298
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 562f768d9418032409a7da83495552e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isMutable: 0
+  _scaleFactor: 0
+  _scaleBase: 0
+  _previewScaleBase: 2
+  _buff: {fileID: 11400000, guid: 8c8825ce98be5d84b94c6febf00e7fdb, type: 2}

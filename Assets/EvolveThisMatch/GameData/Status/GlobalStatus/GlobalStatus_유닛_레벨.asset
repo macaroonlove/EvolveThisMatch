@@ -15,7 +15,7 @@ MonoBehaviour:
   _sprite: {fileID: 0}
   _displayName: "\uC720\uB2DB \uB808\uBCA8"
   _description: "\uB808\uBCA8\uC5C5\uC744 \uD560 \uC218\uB85D \uC804\uD22C\uB825\uC774
-    1%\uC529 \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
+    5%\uC529 \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
   _applyFX: {fileID: 0}
   _removeFX: {fileID: 0}
   effects:
@@ -33,6 +33,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _value: 0
-  _scaleFactor: 0.01
+  _scaleFactor: 0.05
   _scaleBase: 0
   _previewScaleBase: 2

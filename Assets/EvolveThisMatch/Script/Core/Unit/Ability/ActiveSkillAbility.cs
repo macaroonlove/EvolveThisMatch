@@ -230,7 +230,7 @@ namespace EvolveThisMatch.Core
 
                     foreach (var target in targets)
                     {
-                        unitEffect.Execute(unit, target);
+                        unitEffect.Deliver(unit.effectContext, unit, target);
                     }
                 }
             }
@@ -242,7 +242,7 @@ namespace EvolveThisMatch.Core
             {
                 if (effect is PointEffect pointEffect)
                 {
-                    pointEffect.Execute(unit, _targetVector);
+                    pointEffect.Deliver(unit.effectContext, unit, _targetVector);
                 }
             }
         }

@@ -18,7 +18,7 @@ namespace EvolveThisMatch.Core
             this.agentData = agentData;
             id = template.id;
 
-            mutableContext = new MutableContext
+            effectContext = new EffectContext
             {
                 agentData = agentData,
                 agentSaveData = agentSaveData

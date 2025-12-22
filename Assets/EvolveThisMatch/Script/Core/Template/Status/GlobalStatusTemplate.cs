@@ -45,7 +45,7 @@ namespace EvolveThisMatch.Editor
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(GlobalStatusTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(GlobalStatusTemplate))]
     public class GlobalStatusTemplateEditor : EffectEditor
     {
         private GlobalStatusTemplate _target;

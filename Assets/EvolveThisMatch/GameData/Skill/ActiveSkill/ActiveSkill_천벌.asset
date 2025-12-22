@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _effects:
-  - {fileID: 7051101734359491632}
+  - {fileID: 5584889633473331473}
   _getTargetData:
     _getTargetFilter: 0
     _attackType: 1
@@ -58,7 +58,7 @@ MonoBehaviour:
   _casterFX: {fileID: 0}
   effects:
   - {fileID: -4195897891568079141}
---- !u!114 &7051101734359491632
+--- !u!114 &5584889633473331473
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72,10 +72,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _repeatCount: 1
   _isTick: 0
-  _tickCycle: 1
+  _tickCycle: 0
   _tickCount: 0
   _damageType: 1
   _skillType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
   _applyTypeByAmountDatas:
   - applyType: 1
-    amount: 200
+    amount: 20

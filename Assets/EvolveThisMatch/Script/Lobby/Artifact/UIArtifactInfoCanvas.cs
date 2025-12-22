@@ -46,7 +46,7 @@ namespace EvolveThisMatch.Lobby
             _displayName.text = template.displayName;
             _icon.sprite = template.sprite;
 
-            _description.text = template.description.Replace("{value}", $"{template.initValue + owned.level - 1}");
+            //_description.text = template.description.Replace("{value}", $"{template.eff}");
         }
     }
 }

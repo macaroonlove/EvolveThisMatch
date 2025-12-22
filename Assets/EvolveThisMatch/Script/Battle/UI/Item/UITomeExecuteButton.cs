@@ -47,7 +47,7 @@ namespace EvolveThisMatch.Battle
         private ActiveItemRangeRenderer _rangeRenderer;
         private TomeTemplate _template;
         private ItemSaveData.Tome _owned;
-
+        private EffectContext _effectContext;
         private int _currentCoin;
         private float _inverseMaxCoolDownTime;
         private float _currentCoolDownTime;
@@ -126,6 +126,11 @@ namespace EvolveThisMatch.Battle
 
             _template = template;
             _owned = ownedTomes.Find(t => t.id == template.id);
+
+            _effectContext = new EffectContext
+            {
+                tomeSaveData = _owned
+            };
 
             _needCoinText.text = $"<sprite name=\"Coin\"> {finalNeedCoin}";
 
@@ -533,9 +538,9 @@ namespace EvolveThisMatch.Battle
         {
             foreach (var effect in _template.effects)
             {
-                if (effect is GlobalEffect globalEffect)
+                if (effect is NoParamEffect noParamEffect)
                 {
-                    globalEffect.Execute();
+                    noParamEffect.Execute(_effectContext);
                 }
             }
         }
@@ -544,9 +549,9 @@ namespace EvolveThisMatch.Battle
         {
             foreach (var effect in _template.effects)
             {
-                if (effect is TomeEffect activeItemEffect)
+                if (effect is BatchUnitEffect batchUnitEffect)
                 {
-                    activeItemEffect.Execute(units);
+                    batchUnitEffect.Execute(_effectContext, units);
                 }
             }
         }

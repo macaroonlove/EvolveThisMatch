@@ -42,12 +42,6 @@ namespace EvolveThisMatch.Editor
                     // 아이템 설명
                     template.SetDescription(csvDic["아이템 설명"][i]);
 
-                    // 초기값
-                    if (int.TryParse(csvDic["초기값"][i], out var initValue))
-                    {
-                        template.SetInitValue(initValue);
-                    }
-
                     EditorUtility.SetDirty(template);
                 }
                 // 템플릿이 존재하지 않는다면 생성
@@ -63,12 +57,6 @@ namespace EvolveThisMatch.Editor
 
                     // 아이템 설명
                     newTemplate.SetDescription(csvDic["아이템 설명"][i]);
-
-                    // 초기값
-                    if (int.TryParse(csvDic["초기값"][i], out var initValue))
-                    {
-                        newTemplate.SetInitValue(initValue);
-                    }
 
                     string path = $"Assets/EvolveThisMatch/GameData/Item/Artifact/Artifact_{csvDic["아이템 이름"][i]}.asset";
                     AssetDatabase.CreateAsset(newTemplate, path);

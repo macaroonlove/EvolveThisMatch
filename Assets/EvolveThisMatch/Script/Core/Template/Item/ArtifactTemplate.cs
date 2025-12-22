@@ -11,7 +11,6 @@ namespace EvolveThisMatch.Core
         [HideInInspector, SerializeField] private int _id;
         [HideInInspector, SerializeField] private string _displayName;
         [HideInInspector, SerializeField] private string _description;
-        [HideInInspector, SerializeField] private int _initValue;
 
         [HideInInspector, SerializeField] private FX _casterFX;
 
@@ -24,7 +23,6 @@ namespace EvolveThisMatch.Core
         public int id => _id;
         public string displayName => _displayName;
         public string description => _description;
-        public int initValue => _initValue;
 
         public FX casterFX => _casterFX;
         #endregion
@@ -33,8 +31,20 @@ namespace EvolveThisMatch.Core
         internal void SetId(int id) => _id = id;
         public void SetDisplayName(string name) => _displayName = name;
         internal void SetDescription(string desc) => _description = desc;
-        internal void SetInitValue(int initValue) => _initValue = initValue;
         #endregion
+
+        public string GetValue(string bindText)
+        {
+            foreach (var trigger in triggers)
+            {
+                foreach (var effect in trigger.effects)
+                {
+                    
+                }
+            }
+
+            return "Error";
+        }
     }
 }
 
@@ -46,7 +56,7 @@ namespace EvolveThisMatch.Editor
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(ArtifactTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(ArtifactTemplate))]
     public class ArtifactTemplateEditor : EffectEditor
     {
         private ArtifactTemplate _target;
@@ -55,7 +65,6 @@ namespace EvolveThisMatch.Editor
         private SerializedProperty _id;
         private SerializedProperty _displayName;
         private SerializedProperty _description;
-        private SerializedProperty _initValue;
         private SerializedProperty _casterFX;
 
         private ReorderableList _triggersList;
@@ -72,7 +81,6 @@ namespace EvolveThisMatch.Editor
             _id = serializedObject.FindProperty("_id");
             _displayName = serializedObject.FindProperty("_displayName");
             _description = serializedObject.FindProperty("_description");
-            _initValue = serializedObject.FindProperty("_initValue");
             _casterFX = serializedObject.FindProperty("_casterFX");
 
             CreateEventTriggerList();
@@ -103,11 +111,6 @@ namespace EvolveThisMatch.Editor
             _description.stringValue = EditorGUILayout.TextArea(_description.stringValue, GUILayout.Height(50));
             GUILayout.EndHorizontal();
             
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("초기값", GUILayout.Width(80));
-            EditorGUILayout.PropertyField(_initValue, GUIContent.none);
-            GUILayout.EndHorizontal();
-
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
@@ -204,29 +207,32 @@ namespace EvolveThisMatch.Editor
         {
             var menu = new GenericMenu();
 
-            if (_currentTrigger is AlwaysGameTrigger)
-            {
-                menu.AddItem(new GUIContent("모든 유닛에게 무한 지속 버프 적용"), false, CreateEffectCallback, typeof(BuffAlwaysEffect));
-                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 무한 지속 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionAlwaysEffect));
-            }
-            else
-            {
-                menu.AddItem(new GUIContent("Int 변수 변경"), false, CreateEffectCallback, typeof(ChangeIntVariableGlobalEffect));
-                menu.AddItem(new GUIContent("Float 변수 변경"), false, CreateEffectCallback, typeof(ChangeFloatVariableGlobalEffect));
-                
-                if (_currentTrigger is UnitEventGameTrigger || _currentTrigger is GlobalEventGameTrigger)
-                {
-                    menu.AddItem(new GUIContent("특정 그룹의 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionGlobalEffect));
-                    menu.AddItem(new GUIContent("전역 상태 적용"), false, CreateEffectCallback, typeof(GlobalStatusGlobalEffect));
+            menu.AddItem(new GUIContent("Int 변수 변경"), false, CreateEffectCallback, typeof(ChangeIntVariableNoParamEffect));
+            menu.AddItem(new GUIContent("Float 변수 변경"), false, CreateEffectCallback, typeof(ChangeFloatVariableNoParamEffect));
 
-                    if (_currentTrigger is UnitEventGameTrigger)
-                    {
-                        menu.AddItem(new GUIContent("즉시 효과"), false, CreateEffectCallback, typeof(InstantUnitEffect));
-                        menu.AddItem(new GUIContent("투사체 효과"), false, CreateEffectCallback, typeof(ProjectileUnitEffect));
-                    }
-                }
+            bool isUnitTrigger = _currentTrigger is UnitEventGameTrigger;
+            bool isAlwaysTrigger = _currentTrigger is AlwaysGameTrigger;
+            bool isGlobalTrigger = _currentTrigger is GlobalEventGameTrigger;
+
+
+            if (isUnitTrigger || isAlwaysTrigger || isGlobalTrigger)
+            {
+                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionNoParamEffect));
+                menu.AddItem(new GUIContent("전역 상태 적용"), false, CreateEffectCallback, typeof(GlobalStatusNoParamEffect));    
             }
-            
+
+            if (isUnitTrigger || isAlwaysTrigger)
+            {
+                menu.AddItem(new GUIContent("시전자 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffSingleUnitEffect));
+                menu.AddItem(new GUIContent("시전자 유닛이 특정 조건을 성립한다면 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionSingleUnitEffect));
+            }
+
+            if (isUnitTrigger)
+            {
+                menu.AddItem(new GUIContent("즉시 효과"), false, CreateEffectCallback, typeof(InstantUnitEffect));
+                menu.AddItem(new GUIContent("투사체 효과"), false, CreateEffectCallback, typeof(ProjectileUnitEffect));
+            }
+
             menu.ShowAsContext();
         }
 
@@ -238,7 +244,7 @@ namespace EvolveThisMatch.Editor
                 },
                 (x) =>
                 {
-                    _currentEffect = x;
+                    _currentEffect = x.effect;
                 },
                 () =>
                 {
@@ -255,25 +261,31 @@ namespace EvolveThisMatch.Editor
             {
                 var element = _currentTrigger.effects[index];
 
-                if (element != null)
+                Effect effect = null;
+                if (element != null) effect = element.effect;
+                
+                if (effect != null)
                 {
                     rect.y += 2;
                     rect.width -= 10;
                     rect.height = EditorGUIUtility.singleLineHeight;
 
-                    var label = element.GetDescription();
+                    var label = effect.GetDescription();
                     EditorGUI.LabelField(rect, label, EditorStyles.boldLabel);
 
-                    DrawScript(element, rect);
+                    var bindTextRect = new Rect(rect.x + rect.width - 160, rect.y, 100, EditorGUIUtility.singleLineHeight);
+                    element.bindKey = EditorGUI.TextField(bindTextRect, element.bindKey);
+
+                    DrawScript(effect, rect);
 
                     rect.y += 5;
                     rect.y += EditorGUIUtility.singleLineHeight;
 
-                    element.Draw(rect);
+                    effect.Draw(rect);
 
                     if (GUI.changed)
                     {
-                        EditorUtility.SetDirty(element);
+                        EditorUtility.SetDirty(effect);
                     }
                 }
             };
@@ -281,11 +293,15 @@ namespace EvolveThisMatch.Editor
             _effectsList.elementHeightCallback = (index) =>
             {
                 var element = _currentTrigger.effects[index];
-                if (element == null)
+                
+                Effect effect = null;
+                if (element != null) effect = element.effect;
+
+                if (effect == null)
                 {
                     return 20;
                 }
-                return element.GetHeight();
+                return element.effect.GetHeight();
             };
         }
 
@@ -296,7 +312,7 @@ namespace EvolveThisMatch.Editor
             if (effect != null)
             {
                 effect.hideFlags = HideFlags.HideInHierarchy;
-                _currentTrigger.effects.Add(effect);
+                _currentTrigger.effects.Add(new DataEffectDescriptionBinding(effect));
 
                 var template = target as ArtifactTemplate;
                 var path = AssetDatabase.GetAssetPath(template);

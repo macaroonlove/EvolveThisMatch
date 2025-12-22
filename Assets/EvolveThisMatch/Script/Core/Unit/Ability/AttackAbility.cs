@@ -70,7 +70,7 @@ namespace EvolveThisMatch.Core
                 
                 foreach (var effect in _globalStatusSystem.ATKIncreaseMutableDataEffect)
                 {
-                    increase += effect.Key.GetValue(unit.mutableContext);
+                    increase += effect.Key.GetValue(unit.effectContext);
                 }
 
                 result *= increase;
@@ -84,7 +84,7 @@ namespace EvolveThisMatch.Core
 
                 foreach (var effect in _globalStatusSystem.ATKMultiplierMutableDataEffect)
                 {
-                    result *= (1 + effect.Key.GetValue(unit.mutableContext));
+                    result *= (1 + effect.Key.GetValue(unit.effectContext));
                 }
                 #endregion
 
@@ -398,7 +398,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
-                effect.Execute(unit, attackTarget);
+                effect.Deliver(unit.effectContext, unit, attackTarget);
             }
         }
         #endregion
@@ -463,7 +463,7 @@ namespace EvolveThisMatch.Core
 
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
-                effect.Execute(unit, healTarget);
+                effect.Deliver(unit.effectContext, unit, healTarget);
             }
         }
         #endregion

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EvolveThisMatch.Core
 {
     public class AlwaysUnitTrigger : UnitTrigger

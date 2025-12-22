@@ -16,7 +16,7 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField, ReadOnly] private List<ArtifactTemplate> _items = new List<ArtifactTemplate>();
 
-        private List<AlwaysEffect> _alwaysEffects = new List<AlwaysEffect>();
+        private List<(SingleUnitEffect effect, EffectContext context)> _alwaysEffects = new List<(SingleUnitEffect, EffectContext)>();
         private List<GlobalEvent> _globalEvents = new List<GlobalEvent>();
         private List<UnitEvent> _unitEvents = new List<UnitEvent>();
 
@@ -91,9 +91,9 @@ namespace EvolveThisMatch.Core
         {
             await UniTask.Yield();
 
-            foreach (var effect in _alwaysEffects)
+            foreach (var element in _alwaysEffects)
             {
-                effect.Execute(unit);
+                element.effect.Execute(element.context, unit);
             }
         }
 
@@ -113,58 +113,78 @@ namespace EvolveThisMatch.Core
 
             _items.Add(template);
 
+            var effectContext = new EffectContext
+            {
+                artifactSaveData = _ownedArtifactDic[template.id]
+            };
+
             foreach (var trigger in template.triggers)
             {
+                // 획득 시
                 if (trigger is GetGameTrigger getTrigger)
                 {
-                    foreach (var effect in getTrigger.effects)
+                    foreach (var element in getTrigger.effects)
                     {
-                        if (effect is GlobalEffect globalEffect)
+                        var effect = element.effect;
+                        if (effect is NoParamEffect noParamEffect)
                         {
-                            globalEffect.Execute();
+                            noParamEffect.Execute(effectContext);
                         }
                     }
                 }
+                // 전투 중, 상시 적용
                 else if (trigger is AlwaysGameTrigger alwaysTrigger)
                 {
-                    foreach (var effect in alwaysTrigger.effects)
+                    foreach (var element in alwaysTrigger.effects)
                     {
-                        if (effect is AlwaysEffect alwaysEffect)
+                        var effect = element.effect;
+                        if (effect is NoParamEffect noParamEffect)
                         {
-                            _alwaysEffects.Add(alwaysEffect);
+                            noParamEffect.Execute(effectContext);
+                        }
+                        else if (effect is SingleUnitEffect singleUnitEffect)
+                        {
+                            _alwaysEffects.Add((singleUnitEffect, effectContext));
                         }
                     }
                 }
+                // 특정 글로벌 이벤트 발생 시
                 else if (trigger is GlobalEventGameTrigger globalTrigger)
                 {
                     Action action = () =>
                     {
-                        foreach (var effect in globalTrigger.effects)
+                        foreach (var element in globalTrigger.effects)
                         {
-                            if (effect is GlobalEffect globalEffect)
+                            var effect = element.effect;
+                            if (effect is NoParamEffect noParamEffect)
                             {
-                                globalEffect.Execute();
+                                noParamEffect.Execute(effectContext);
                             }
                         }
                     };
 
                     globalTrigger.globalEvent.AddListener(action);
-
                     _globalEvents.Add(globalTrigger.globalEvent);
                 }
+                // 특정 유닛 이벤트 발생 시
                 else if (trigger is UnitEventGameTrigger unitTrigger)
                 {
                     Action<Unit, Unit> action = (casterUnit, targetUnit) =>
                     {
-                        foreach (var effect in unitTrigger.effects)
+                        foreach (var element in unitTrigger.effects)
                         {
-                            if (effect is GlobalEffect globalEffect)
+                            var effect = element.effect;
+                            if (effect is NoParamEffect noParamEffect)
                             {
-                                globalEffect.Execute();
+                                noParamEffect.Execute(effectContext);
+                            }
+                            else if (effect is SingleUnitEffect singleUnitEffect)
+                            {
+                                singleUnitEffect.Execute(effectContext, casterUnit);
                             }
                             else if (effect is UnitEffect unitEffect)
                             {
-                                unitEffect.Execute(casterUnit, targetUnit);
+                                unitEffect.Deliver(effectContext, casterUnit, targetUnit);
                             }
                         }
 
@@ -172,7 +192,6 @@ namespace EvolveThisMatch.Core
                     };
 
                     unitTrigger.unitEvent.AddListener(action);
-
                     _unitEvents.Add(unitTrigger.unitEvent);
                 }
             }

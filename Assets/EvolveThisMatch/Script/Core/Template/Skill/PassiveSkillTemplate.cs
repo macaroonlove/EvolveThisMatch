@@ -19,7 +19,7 @@ namespace EvolveThisMatch.Editor
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(PassiveSkillTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(PassiveSkillTemplate))]
     public class PassiveSkillTemplateEditor : EffectEditor
     {
         private PassiveSkillTemplate _target;
@@ -161,7 +161,8 @@ namespace EvolveThisMatch.Editor
 
             if (_currentTrigger is AlwaysUnitTrigger)
             {
-                menu.AddItem(new GUIContent("자기 자신에게 무한 지속 버프 적용"), false, CreateEffectCallback, typeof(BuffAlwaysEffect));
+                menu.AddItem(new GUIContent("시전자 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffSingleUnitEffect));
+                menu.AddItem(new GUIContent("시전자 유닛이 특정 조건을 성립한다면 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionSingleUnitEffect));
             }
             else
             {

@@ -123,7 +123,7 @@ namespace EvolveThisMatch.Editor
     using EvolveThisMatch.Core;
     using UnityEditor;
 
-    [CustomEditor(typeof(SummonTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(SummonTemplate))]
     public class SummonTemplateEditor : Editor
     {
         private SerializedProperty _id;

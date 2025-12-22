@@ -52,7 +52,7 @@ namespace EvolveThisMatch.Editor
     using UnityEditor;
     using UnityEditorInternal;
 
-    [CustomEditor(typeof(BuffTemplate)), CanEditMultipleObjects]
+    [CustomEditor(typeof(BuffTemplate))]
     public class BuffTemplateEditor : EffectEditor
     {
         private BuffTemplate _target;
