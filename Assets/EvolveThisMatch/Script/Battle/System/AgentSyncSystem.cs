@@ -15,7 +15,7 @@ namespace EvolveThisMatch.Battle
             _coinSystem = BattleManager.Instance.GetSubSystem<CoinSystem>();
             _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
 
-            _globalStatusSystem.ApplyGlobalStatus(_syncTemplate, int.MaxValue);
+            _globalStatusSystem.ApplyGlobalStatus(_syncTemplate, int.MaxValue, null);
         }
 
         public void Deinitialize()

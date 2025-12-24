@@ -132,8 +132,8 @@ namespace EvolveThisMatch.Editor
             #endregion
 
             #region Mutable
-            menu.AddItem(new GUIContent("공격력 가변 증감"), false, CreateEffectCallback, typeof(ATKIncreaseMutableDataEffect));
-            menu.AddItem(new GUIContent("공격력 가변 상승·하락"), false, CreateEffectCallback, typeof(ATKMultiplierMutableDataEffect));
+            //menu.AddItem(new GUIContent("공격력 가변 증감"), false, CreateEffectCallback, typeof(ATKIncreaseMutableDataEffect));
+            //menu.AddItem(new GUIContent("공격력 가변 상승·하락"), false, CreateEffectCallback, typeof(ATKMultiplierMutableDataEffect));
             #endregion
 
             menu.ShowAsContext();
@@ -200,6 +200,7 @@ namespace EvolveThisMatch.Editor
 
             if (effect != null)
             {
+                effect.Initialize();
                 effect.hideFlags = HideFlags.HideInHierarchy;
                 _target.effects.Add(effect);
 

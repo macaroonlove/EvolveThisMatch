@@ -7,7 +7,7 @@ using UnityEngine;
 namespace EvolveThisMatch.Core
 {
     [Serializable]
-    public class DamageEffectLogic
+    public class DamageEffectLogic : IMutableValueBindingProvider
     {
         [SerializeField] private MutableValue _repeatCountMutableValue;
         [SerializeField] private int _repeatCount;
@@ -21,12 +21,46 @@ namespace EvolveThisMatch.Core
 
         [SerializeField] private List<ApplyTypeByAmountData> _applyTypeByAmountDatas = new List<ApplyTypeByAmountData>();
 
-        public DamageEffectLogic()
+        #region MutableValue Ã³¸®
+        public void Initialize()
         {
             _repeatCountMutableValue = new MutableValue();
             _tickCycleMutableValue = new MutableValue();
             _tickCountMutableValue = new MutableValue();
         }
+
+        public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
+        {
+            if (_repeatCountMutableValue.bindKey == bindKey)
+            {
+                value = _repeatCountMutableValue.GetValueString(_repeatCount, context);
+                return true;
+            }
+
+            if (_tickCycleMutableValue.bindKey == bindKey)
+            {
+                value = _tickCycleMutableValue.GetValueString(_tickCycle, context);
+                return true;
+            }
+
+            if (_tickCountMutableValue.bindKey == bindKey)
+            {
+                value = _tickCountMutableValue.GetValueString(_tickCount, context);
+                return true;
+            }
+
+            foreach (var amountData in _applyTypeByAmountDatas)
+            {
+                if (amountData.TryGetBindValue(bindKey, context, out value))
+                {
+                    return true;
+                }
+            }
+
+            value = null;
+            return false;
+        }
+        #endregion
 
         public void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)
         {

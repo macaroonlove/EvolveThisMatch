@@ -16,30 +16,6 @@ MonoBehaviour:
   - {fileID: -3792212825982092740}
   _targetFX: {fileID: 0}
   _isCaster: 0
---- !u!114 &-8598657500224000428
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isMutable: 0
-  _scaleFactor: 0
-  _scaleBase: 0
-  _previewScaleBase: 2
-  _damageEffectLogic:
-    _repeatCount: 1
-    _isTick: 0
-    _tickCycle: 0
-    _tickCount: 0
-    _damageType: 0
-    _elementalType: {fileID: 0}
-    _applyTypeByAmountDatas: []
 --- !u!114 &-7052087321362853940
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -66,13 +42,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isMutable: 0
-  _scaleFactor: 0
-  _scaleBase: 0
-  _previewScaleBase: 2
-  _isInfinity: 0
-  _duration: 0
-  _abnormalStatus: {fileID: 11400000, guid: ec73610e1c86c3042ab8d1bda04c8472, type: 2}
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
+    _abnormalStatus: {fileID: 0}
+    _isfoldout: 0
+--- !u!114 &-3653338401376232056
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d934e4aaa61627488725dae04e1d3c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buffEffectLogic:
+    _isInfinity: 1
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 11400000, guid: 8c8825ce98be5d84b94c6febf00e7fdb, type: 2}
+    _isfoldout: 1
 --- !u!114 &-3628828802883567819
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -86,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _effects:
-  - {fileID: -8598657500224000428}
+  - {fileID: 1510611289945977499}
   _targetFX: {fileID: 0}
   _isCaster: 0
 --- !u!114 &-2631034271463998401
@@ -101,9 +112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df3f4161005dfed43a03cebd93a59aa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _effects: []
+  _effects:
+  - {fileID: -3653338401376232056}
   _targetFX: {fileID: 0}
-  _isCaster: 0
+  _isCaster: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +137,37 @@ MonoBehaviour:
   triggers:
   - {fileID: 4817412129547019891}
   - {fileID: 4849096635758964598}
+--- !u!114 &1510611289945977499
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 2
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
+    _abnormalStatus: {fileID: 11400000, guid: ec73610e1c86c3042ab8d1bda04c8472, type: 2}
+    _isfoldout: 0
 --- !u!114 &4817412129547019891
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -165,14 +208,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isMutable: 0
-  _scaleFactor: 0
-  _scaleBase: 0
-  _previewScaleBase: 2
   _damageEffectLogic:
+    _repeatCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
     _repeatCount: 0
     _isTick: 0
+    _tickCycleMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
     _tickCycle: 0
+    _tickCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
     _tickCount: 0
     _damageType: 0
     _elementalType: {fileID: 0}
@@ -204,8 +261,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562f768d9418032409a7da83495552e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isMutable: 0
-  _scaleFactor: 0
-  _scaleBase: 0
-  _previewScaleBase: 2
-  _buff: {fileID: 11400000, guid: 8c8825ce98be5d84b94c6febf00e7fdb, type: 2}
+  _unitType: 0
+  _buffEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 0}
+    _isfoldout: 0

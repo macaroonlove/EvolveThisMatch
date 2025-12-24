@@ -46,23 +46,23 @@ namespace EvolveThisMatch.Battle
         {
             StringBuilder result = new StringBuilder();
 
-            foreach (var effect in _buffAbility.MagicResistanceAdditionalDataEffects)
+            foreach (var instance in _buffAbility.MagicResistanceAdditionalDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Add)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Add)}");
             }
 
-            foreach (var effect in _buffAbility.MagicResistanceIncreaseDataEffects)
+            foreach (var instance in _buffAbility.MagicResistanceIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
             }
-            foreach (var effect in _abnormalStatusAbility.MagicResistanceIncreaseDataEffects)
+            foreach (var instance in _abnormalStatusAbility.MagicResistanceIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
             }
 
-            foreach (var effect in _buffAbility.MagicResistanceMultiplierDataEffects)
+            foreach (var instance in _buffAbility.MagicResistanceMultiplierDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Multiplier)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Multiplier)}");
             }
 
             return result.ToString();

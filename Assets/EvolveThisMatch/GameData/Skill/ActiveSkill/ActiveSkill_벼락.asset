@@ -12,12 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441fb29f73bd1264a9f34e8c595ab963, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _repeatCount: 1
-  _isTick: 0
-  _tickCycle: 0
-  _tickCount: 0
-  _skillType: {fileID: 0}
-  _applyTypeByAmountDatas: []
+  _healEffectLogic:
+    _repeatCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _repeatCount: 0
+    _isTick: 0
+    _tickCycleMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _tickCycle: 0
+    _tickCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _tickCount: 0
+    _elementalType: {fileID: 0}
+    _applyTypeByAmountDatas: []
 --- !u!114 &-4416806879964808361
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -30,9 +49,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d934e4aaa61627488725dae04e1d3c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isInfinity: 0
-  _duration: 0
-  _buff: {fileID: 0}
+  _buffEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 0}
+    _isfoldout: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,6 +107,7 @@ MonoBehaviour:
   _damageEffectLogic:
     _repeatCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -87,12 +115,14 @@ MonoBehaviour:
     _isTick: 0
     _tickCycleMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -170,9 +200,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d934e4aaa61627488725dae04e1d3c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isInfinity: 0
-  _duration: 0
-  _buff: {fileID: 0}
+  _buffEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 0}
+    _isfoldout: 0
 --- !u!114 &8470511893177815023
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -185,9 +223,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isInfinity: 0
-  _duration: 0
-  _abnormalStatus: {fileID: 0}
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
+    _abnormalStatus: {fileID: 0}
+    _isfoldout: 0
 --- !u!114 &8934454877080560445
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -203,6 +257,7 @@ MonoBehaviour:
   _damageEffectLogic:
     _repeatCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -210,21 +265,24 @@ MonoBehaviour:
     _isTick: 0
     _tickCycleMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
     _tickCount: 0
     _damageType: 1
-    _elementalType: {fileID: 0}
+    _elementalType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
     _applyTypeByAmountDatas:
     - _mutableValue:
         _enabled: 0
+        _bindKey: 
         _scaleFactor: 0
         _scaleBase: 0
         _previewScaleBase: 2

@@ -33,26 +33,52 @@ namespace EvolveThisMatch.Core
         internal void SetDescription(string desc) => _description = desc;
         #endregion
 
-        public string GetValue(string bindText)
+        #region BindKey로 값 String 받아오기
+        public string GetValue(string bindKey, EffectContext context)
         {
             foreach (var trigger in triggers)
             {
                 foreach (var effect in trigger.effects)
                 {
-                    
+                    if (TryGetBindValueRecursive(effect, bindKey, context, out var value))
+                    {
+                        return value;
+                    }
                 }
             }
 
             return "Error";
         }
+
+        private bool TryGetBindValueRecursive(Effect effect, string bindKey, EffectContext context, out string value)
+        {
+            // 자기 자신 검사
+            if (effect is IMutableValueBindingProvider provider && provider.TryGetBindValue(bindKey, context, out value))
+            {
+                return true;
+            }
+
+            // 자식에 또 Effect 리스트가 존재하면 검사
+            foreach (var child in effect.GetChildren())
+            {
+                if (TryGetBindValueRecursive(child, bindKey, context, out value))
+                {
+                    return true;
+                }
+            }
+
+            value = null;
+            return false;
+        }
+        #endregion
     }
 }
 
 #if UNITY_EDITOR
 namespace EvolveThisMatch.Editor
 {
-    using System;
     using EvolveThisMatch.Core;
+    using System;
     using UnityEditor;
     using UnityEditorInternal;
 
@@ -84,6 +110,19 @@ namespace EvolveThisMatch.Editor
             _casterFX = serializedObject.FindProperty("_casterFX");
 
             CreateEventTriggerList();
+
+            if (_triggersList.count > 0)
+            {
+                _triggersList.index = 0;
+                _triggersList.onSelectCallback?.Invoke(_triggersList);
+                _triggersList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+                {
+                    if (isActive)
+                    {
+                        EditorGUI.DrawRect(rect, new Color(0.173f, 0.365f, 0.529f, 1f));
+                    }
+                };
+            }
         }
 
         public override void OnInspectorGUI()
@@ -110,7 +149,7 @@ namespace EvolveThisMatch.Editor
             GUILayout.Label("아이템 설명", GUILayout.Width(80));
             _description.stringValue = EditorGUILayout.TextArea(_description.stringValue, GUILayout.Height(50));
             GUILayout.EndHorizontal();
-            
+
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
@@ -164,7 +203,7 @@ namespace EvolveThisMatch.Editor
 
         private void CreateEventTriggerList()
         {
-            _triggersList = SetupReorderableList("Trigger", _target.triggers, 
+            _triggersList = SetupReorderableList("Trigger", _target.triggers,
                 (rect, x) =>
                 {
                     EditorGUI.LabelField(new Rect(rect.x, rect.y, 200, EditorGUIUtility.singleLineHeight), x.GetLabel());
@@ -207,24 +246,26 @@ namespace EvolveThisMatch.Editor
         {
             var menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("Int 변수 변경"), false, CreateEffectCallback, typeof(ChangeIntVariableNoParamEffect));
-            menu.AddItem(new GUIContent("Float 변수 변경"), false, CreateEffectCallback, typeof(ChangeFloatVariableNoParamEffect));
-
             bool isUnitTrigger = _currentTrigger is UnitEventGameTrigger;
             bool isAlwaysTrigger = _currentTrigger is AlwaysGameTrigger;
             bool isGlobalTrigger = _currentTrigger is GlobalEventGameTrigger;
 
-
-            if (isUnitTrigger || isAlwaysTrigger || isGlobalTrigger)
+            if (isAlwaysTrigger)
             {
-                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionNoParamEffect));
-                menu.AddItem(new GUIContent("전역 상태 적용"), false, CreateEffectCallback, typeof(GlobalStatusNoParamEffect));    
+                menu.AddItem(new GUIContent("유닛 소환 시, 유닛이 특정 조건을 성립한다면 버프 적용"), false, CreateEffectCallback, typeof(BuffSingleUnitEffect));
+                menu.AddItem(new GUIContent("유닛 소환 시, 유닛이 특정 조건을 성립한다면 상태이상 적용"), false, CreateEffectCallback, typeof(AbnormalStatusSingleUnitEffect));
+            }
+            else
+            {
+                menu.AddItem(new GUIContent("Int 변수 변경"), false, CreateEffectCallback, typeof(ChangeIntVariableNoParamEffect));
+                menu.AddItem(new GUIContent("Float 변수 변경"), false, CreateEffectCallback, typeof(ChangeFloatVariableNoParamEffect));
             }
 
-            if (isUnitTrigger || isAlwaysTrigger)
+            if (isGlobalTrigger)
             {
-                menu.AddItem(new GUIContent("시전자 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffSingleUnitEffect));
-                menu.AddItem(new GUIContent("시전자 유닛이 특정 조건을 성립한다면 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionSingleUnitEffect));
+                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionNoParamEffect));
+                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 상태이상 적용"), false, CreateEffectCallback, typeof(AbnormalStatusByConditionGlobalEffect));
+                menu.AddItem(new GUIContent("전역 상태 적용"), false, CreateEffectCallback, typeof(GlobalStatusNoParamEffect));
             }
 
             if (isUnitTrigger)
@@ -244,7 +285,7 @@ namespace EvolveThisMatch.Editor
                 },
                 (x) =>
                 {
-                    _currentEffect = x.effect;
+                    _currentEffect = x;
                 },
                 () =>
                 {
@@ -259,11 +300,8 @@ namespace EvolveThisMatch.Editor
 
             _effectsList.drawElementCallback = (rect, index, isActive, isFocused) =>
             {
-                var element = _currentTrigger.effects[index];
+                var effect = _currentTrigger.effects[index];
 
-                Effect effect = null;
-                if (element != null) effect = element.effect;
-                
                 if (effect != null)
                 {
                     rect.y += 2;
@@ -272,9 +310,6 @@ namespace EvolveThisMatch.Editor
 
                     var label = effect.GetDescription();
                     EditorGUI.LabelField(rect, label, EditorStyles.boldLabel);
-
-                    var bindTextRect = new Rect(rect.x + rect.width - 160, rect.y, 100, EditorGUIUtility.singleLineHeight);
-                    element.bindKey = EditorGUI.TextField(bindTextRect, element.bindKey);
 
                     DrawScript(effect, rect);
 
@@ -292,16 +327,13 @@ namespace EvolveThisMatch.Editor
 
             _effectsList.elementHeightCallback = (index) =>
             {
-                var element = _currentTrigger.effects[index];
-                
-                Effect effect = null;
-                if (element != null) effect = element.effect;
+                var effect = _currentTrigger.effects[index];
 
                 if (effect == null)
                 {
                     return 20;
                 }
-                return element.effect.GetHeight();
+                return effect.GetHeight();
             };
         }
 
@@ -311,8 +343,9 @@ namespace EvolveThisMatch.Editor
 
             if (effect != null)
             {
+                effect.Initialize();
                 effect.hideFlags = HideFlags.HideInHierarchy;
-                _currentTrigger.effects.Add(new DataEffectDescriptionBinding(effect));
+                _currentTrigger.effects.Add(effect);
 
                 var template = target as ArtifactTemplate;
                 var path = AssetDatabase.GetAssetPath(template);

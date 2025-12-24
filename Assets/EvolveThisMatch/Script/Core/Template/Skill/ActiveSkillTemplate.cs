@@ -312,6 +312,7 @@ namespace EvolveThisMatch.Editor
 
             if (effect != null)
             {
+                effect.Initialize();
                 effect.hideFlags = HideFlags.HideInHierarchy;
                 _target.effects.Add(effect);
 

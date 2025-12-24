@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8090344470746932935
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3f4161005dfed43a03cebd93a59aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects:
+  - {fileID: 1849129051400514783}
+  _targetFX: {fileID: 0}
+  _isCaster: 0
 --- !u!114 &-6300108202394755765
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -28,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44747a562c7019b47897153b6e453529, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects: []
+  effects:
+  - {fileID: -8090344470746932935}
   _unitEvent: {fileID: 11400000, guid: ca27d42ed5c8403448162c8f7e654afc, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -50,6 +67,37 @@ MonoBehaviour:
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: -1245721400766982891}
+--- !u!114 &1849129051400514783
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 3
+    _isProbability: 1
+    _probabilityMutableValue:
+      _enabled: 1
+      _bindKey: value
+      _scaleFactor: 0.5
+      _scaleBase: 2
+      _previewScaleBase: 2
+    _probability: 40
+    _abnormalStatus: {fileID: 11400000, guid: 40feff2373cb63f4fbceef4d61feb1b4, type: 2}
+    _isfoldout: 0
 --- !u!114 &5934128214790486010
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -62,6 +110,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isInfinity: 0
-  _duration: 3
-  _abnormalStatus: {fileID: 11400000, guid: 40feff2373cb63f4fbceef4d61feb1b4, type: 2}
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
+    _abnormalStatus: {fileID: 0}
+    _isfoldout: 0

@@ -4,14 +4,24 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
-    public class ShieldBatchUnitEffect : BatchUnitEffect
+    public class ShieldBatchUnitEffect : BatchUnitEffect, IMutableValueBindingProvider
     {
         [SerializeField] private ShieldEffectLogic _shieldErrectLogic;
 
+        #region MutableValue Ã³¸®
         public override void Initialize()
         {
             _shieldErrectLogic = new ShieldEffectLogic();
+            _shieldErrectLogic.Initialize();
         }
+
+        public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
+        {
+            value = null;
+
+            return _shieldErrectLogic != null && _shieldErrectLogic.TryGetBindValue(bindKey, context, out value);
+        }
+        #endregion
 
         public override string GetDescription()
         {

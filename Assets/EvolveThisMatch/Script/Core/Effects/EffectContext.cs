@@ -25,16 +25,16 @@ namespace EvolveThisMatch.Core
             switch (scaleBase)
             {
                 case EEffectScaleBase.AgentLevel:
-                    value = agentSaveData != null ? agentSaveData.level : 1;
+                    value = agentSaveData != null ? agentSaveData.level : -2;
                     break;
                 case EEffectScaleBase.AgentSync:
-                    value = agentData != null ? agentData.sync : 1;
+                    value = agentData != null ? agentData.sync : -2;
                     break;
                 case EEffectScaleBase.ArtifactLevel:
-                    value = artifactSaveData != null ? artifactSaveData.level : 1;
+                    value = artifactSaveData != null ? artifactSaveData.level : -2;
                     break;
                 case EEffectScaleBase.TomeLevel:
-                    value = tomeSaveData != null ? tomeSaveData.level : 1;
+                    value = tomeSaveData != null ? tomeSaveData.level : -2;
                     break;
             }
 

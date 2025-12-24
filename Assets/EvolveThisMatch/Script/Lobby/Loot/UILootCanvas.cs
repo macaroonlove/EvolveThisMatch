@@ -196,23 +196,23 @@ namespace EvolveThisMatch.Lobby
             float result = amount;
 
             // 추가·차감
-            foreach (var effect in _globalStatusSystem.GoldGainAdditionalDataEffects)
+            foreach (var instance in _globalStatusSystem.GoldGainAdditionalDataEffects)
             {
-                result += effect.value;
+                result += instance.effect.GetValue(instance.context);
             }
 
             // 증가·감소
             float increase = 1;
-            foreach (var effect in _globalStatusSystem.GoldGainIncreaseDataEffects)
+            foreach (var instance in _globalStatusSystem.GoldGainIncreaseDataEffects)
             {
-                increase += effect.value;
+                increase += instance.effect.GetValue(instance.context);
             }
             result *= increase;
 
             // 상승·하락
-            foreach (var effect in _globalStatusSystem.GoldGainMultiplierDataEffects)
+            foreach (var instance in _globalStatusSystem.GoldGainMultiplierDataEffects)
             {
-                result *= effect.value;
+                result *= instance.effect.GetValue(instance.context);
             }
 
             return (int)result;

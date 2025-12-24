@@ -54,37 +54,37 @@ namespace EvolveThisMatch.Core
                 float result = _baseATK;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.ATKAdditionalDataEffects)
+                foreach (var instance in _buffAbility.ATKAdditionalDataEffects)
                 {
-                    result += effect.Key.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.ATKIncreaseDataEffects)
+                foreach (var instance in _buffAbility.ATKIncreaseDataEffects)
                 {
-                    increase += effect.Key.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 
-                foreach (var effect in _globalStatusSystem.ATKIncreaseMutableDataEffect)
+                foreach (var instance in _globalStatusSystem.ATKIncreaseDataEffects)
                 {
-                    increase += effect.Key.GetValue(unit.effectContext);
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.ATKMultiplierDataEffects)
+                foreach (var instance in _buffAbility.ATKMultiplierDataEffects)
                 {
-                    result *= (1 + effect.Key.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
 
-                foreach (var effect in _globalStatusSystem.ATKMultiplierMutableDataEffect)
+                foreach (var instance in _globalStatusSystem.ATKMultiplierDataEffects)
                 {
-                    result *= (1 + effect.Key.GetValue(unit.effectContext));
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 
@@ -101,18 +101,18 @@ namespace EvolveThisMatch.Core
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects)
+                foreach (var instance in _buffAbility.AttackSpeedIncreaseDataEffects)
                 {
-                    increase += effect.Key.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects)
+                foreach (var instance in _buffAbility.AttackSpeedMultiplierDataEffects)
                 {
-                    result *= (1 + effect.Key.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 
@@ -137,9 +137,9 @@ namespace EvolveThisMatch.Core
                 // 최대 동시 공격 수는 1명
                 int result = 1;
 
-                foreach (var effect in _buffAbility.AttackCountAdditionalDataEffects)
+                foreach (var instance in _buffAbility.AttackCountAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 return result;

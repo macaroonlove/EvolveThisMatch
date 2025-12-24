@@ -161,8 +161,8 @@ namespace EvolveThisMatch.Editor
 
             if (_currentTrigger is AlwaysUnitTrigger)
             {
-                menu.AddItem(new GUIContent("시전자 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffSingleUnitEffect));
-                menu.AddItem(new GUIContent("시전자 유닛이 특정 조건을 성립한다면 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionSingleUnitEffect));
+                menu.AddItem(new GUIContent("유닛 소환 시, 유닛이 특정 조건을 성립한다면 버프 적용"), false, CreateEffectCallback, typeof(BuffSingleUnitEffect));
+                menu.AddItem(new GUIContent("유닛 소환 시, 유닛이 특정 조건을 성립한다면 상태이상 적용"), false, CreateEffectCallback, typeof(AbnormalStatusSingleUnitEffect));
             }
             else
             {
@@ -238,6 +238,7 @@ namespace EvolveThisMatch.Editor
 
             if (effect != null)
             {
+                effect.Initialize();
                 effect.hideFlags = HideFlags.HideInHierarchy;
                 _currentTrigger.effects.Add(effect);
 

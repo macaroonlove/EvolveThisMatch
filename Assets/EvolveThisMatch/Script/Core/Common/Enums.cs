@@ -85,16 +85,6 @@ namespace EvolveThisMatch.Core
         Target_MAXHP,
     }
 
-    /// <summary>
-    /// 적용 방식(타겟 기준으로만 적용)
-    /// </summary>
-    public enum EApplyType_TargetOnly
-    {
-        Basic,
-        CurrentHP,
-        MAXHP,
-    }
-
     #region 등급
     /// <summary>
     /// 아군 유닛 등급

@@ -15,6 +15,7 @@ MonoBehaviour:
   _damageEffectLogic:
     _repeatCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -22,12 +23,14 @@ MonoBehaviour:
     _isTick: 0
     _tickCycleMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -50,6 +53,7 @@ MonoBehaviour:
   _damageEffectLogic:
     _repeatCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -57,12 +61,14 @@ MonoBehaviour:
     _isTick: 0
     _tickCycleMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -113,6 +119,7 @@ MonoBehaviour:
   _healEffectLogic:
     _repeatCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -120,12 +127,14 @@ MonoBehaviour:
     _isTick: 0
     _tickCycleMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -134,10 +143,11 @@ MonoBehaviour:
     _applyTypeByAmountDatas:
     - _mutableValue:
         _enabled: 1
+        _bindKey: value
         _scaleFactor: 0.01
         _scaleBase: 3
         _previewScaleBase: 2
-      _applyType: 0
+      _applyType: 5
       _amount: 30
 --- !u!114 &8603092241782901897
 MonoBehaviour:
@@ -154,6 +164,7 @@ MonoBehaviour:
   _damageEffectLogic:
     _repeatCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
@@ -161,12 +172,14 @@ MonoBehaviour:
     _isTick: 0
     _tickCycleMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
+      _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2

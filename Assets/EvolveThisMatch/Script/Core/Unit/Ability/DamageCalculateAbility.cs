@@ -45,9 +45,9 @@ namespace EvolveThisMatch.Core
             {
                 int result = 1;
 
-                foreach (var effect in _buffAbility.DamageAdditionalDataEffects)
+                foreach (var instance in _buffAbility.DamageAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 return result;
@@ -60,9 +60,9 @@ namespace EvolveThisMatch.Core
             {
                 float result = 1;
 
-                foreach (var effect in _buffAbility.DamageIncreaseDataEffects)
+                foreach (var instance in _buffAbility.DamageIncreaseDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 return result;
@@ -75,9 +75,9 @@ namespace EvolveThisMatch.Core
             {
                 float result = 1;
 
-                foreach (var effect in _buffAbility.DamageMultiplierDataEffects)
+                foreach (var instance in _buffAbility.DamageMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
 
                 return result;
@@ -92,9 +92,9 @@ namespace EvolveThisMatch.Core
             {
                 int result = 1;
 
-                foreach (var effect in _buffAbility.ReceiveDamageAdditionalDataEffects)
+                foreach (var instance in _buffAbility.ReceiveDamageAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 return result;
@@ -107,13 +107,13 @@ namespace EvolveThisMatch.Core
             {
                 float result = 1;
 
-                foreach (var effect in _buffAbility.ReceiveDamageIncreaseDataEffects)
+                foreach (var instance in _buffAbility.ReceiveDamageIncreaseDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
-                foreach (var effect in _abnormalStatusAbility.ReceiveDamageIncreaseDataEffects)
+                foreach (var instance in _abnormalStatusAbility.ReceiveDamageIncreaseDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 return result;
@@ -126,9 +126,9 @@ namespace EvolveThisMatch.Core
             {
                 float result = 1;
 
-                foreach (var effect in _buffAbility.ReceiveDamageMultiplierDataEffects)
+                foreach (var instance in _buffAbility.ReceiveDamageMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
 
                 return result;
@@ -144,31 +144,31 @@ namespace EvolveThisMatch.Core
                 float result = _basePhysicalResistance;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.PhysicalResistanceAdditionalDataEffects)
+                foreach (var instance in _buffAbility.PhysicalResistanceAdditionalDataEffects)
                 {
-                    result += effect.Key.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.PhysicalResistanceIncreaseDataEffects)
+                foreach (var instance in _buffAbility.PhysicalResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
-                foreach (var effect in _abnormalStatusAbility.PhysicalResistanceIncreaseDataEffects)
+                foreach (var instance in _abnormalStatusAbility.PhysicalResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.PhysicalResistanceMultiplierDataEffects)
+                foreach (var instance in _buffAbility.PhysicalResistanceMultiplierDataEffects)
                 {
-                    result *= (1 + effect.Key.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 
@@ -183,31 +183,31 @@ namespace EvolveThisMatch.Core
                 float result = _baseMagicResistance;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.MagicResistanceAdditionalDataEffects)
+                foreach (var instance in _buffAbility.MagicResistanceAdditionalDataEffects)
                 {
-                    result += effect.Key.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.MagicResistanceIncreaseDataEffects)
+                foreach (var instance in _buffAbility.MagicResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
-                foreach (var effect in _abnormalStatusAbility.MagicResistanceIncreaseDataEffects)
+                foreach (var instance in _abnormalStatusAbility.MagicResistanceIncreaseDataEffects)
                 {
-                    increase += effect.Key.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.MagicResistanceMultiplierDataEffects)
+                foreach (var instance in _buffAbility.MagicResistanceMultiplierDataEffects)
                 {
-                    result *= (1 + effect.Key.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 
@@ -224,27 +224,27 @@ namespace EvolveThisMatch.Core
                 float result = _basePhysicalPenetration;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.PhysicalPenetrationAdditionalDataEffects)
+                foreach (var instance in _buffAbility.PhysicalPenetrationAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.PhysicalPenetrationIncreaseDataEffects)
+                foreach (var instance in _buffAbility.PhysicalPenetrationIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.PhysicalPenetrationMultiplierDataEffects)
+                foreach (var instance in _buffAbility.PhysicalPenetrationMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 
@@ -259,27 +259,27 @@ namespace EvolveThisMatch.Core
                 float result = _baseMagicPenetration;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.MagicPenetrationAdditionalDataEffects)
+                foreach (var instance in _buffAbility.MagicPenetrationAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.MagicPenetrationIncreaseDataEffects)
+                foreach (var instance in _buffAbility.MagicPenetrationIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.MagicPenetrationMultiplierDataEffects)
+                foreach (var instance in _buffAbility.MagicPenetrationMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 
@@ -295,9 +295,9 @@ namespace EvolveThisMatch.Core
             {
                 float chance = _baseCriticalHitChance;
 
-                foreach (var effect in _buffAbility.CriticalHitChanceAdditionalDataEffects)
+                foreach (var instance in _buffAbility.CriticalHitChanceAdditionalDataEffects)
                 {
-                    chance += effect.value;
+                    chance += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 if (chance > 0)
@@ -318,27 +318,27 @@ namespace EvolveThisMatch.Core
                 float result = _baseCriticalHitDamage;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.CriticalHitDamageAdditionalDataEffects)
+                foreach (var instance in _buffAbility.CriticalHitDamageAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.CriticalHitDamageIncreaseDataEffects)
+                foreach (var instance in _buffAbility.CriticalHitDamageIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.CriticalHitDamageMultiplierDataEffects)
+                foreach (var instance in _buffAbility.CriticalHitDamageMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 

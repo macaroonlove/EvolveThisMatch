@@ -3,7 +3,6 @@ using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.UIBinding;
 using TMPro;
-using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -40,6 +39,7 @@ namespace EvolveThisMatch.Lobby
         private Image _videoImage;
         private CanvasGroupController _info;
 
+        private EffectContext _effectContext;
         private UnityAction _action;
 
         internal void Initialize(UnityAction action = null)
@@ -58,6 +58,8 @@ namespace EvolveThisMatch.Lobby
             _icon = GetImage((int)Images.Icon);
             _videoImage = GetImage((int)Images.VideoImage);
             _info = GetCanvasGroupController((int)CanvasGroups.Info);
+
+            _effectContext = new EffectContext();
         }
 
         internal void Show(TomeTemplate template, ItemSaveData.Tome owned)
@@ -82,7 +84,8 @@ namespace EvolveThisMatch.Lobby
                 _rangeValue.text = $"¿ø ({template.range})";
             }
 
-            _description.text = template.description.Replace("{value}", $"{template.initValue + owned.level - 1}");
+            _effectContext.tomeSaveData = owned;
+            _description.text = template.description.Replace("{value}", $"{template.GetValue("value", _effectContext)}");
 
             _info.Show(true);
         }

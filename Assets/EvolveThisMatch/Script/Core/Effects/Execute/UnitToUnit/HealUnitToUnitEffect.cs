@@ -2,14 +2,24 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
-    public class HealUnitToUnitEffect : UnitToUnitEffect
+    public class HealUnitToUnitEffect : UnitToUnitEffect, IMutableValueBindingProvider
     {
         [SerializeField] private HealEffectLogic _healEffectLogic;
 
+        #region MutableValue Ã³¸®
         public override void Initialize()
         {
             _healEffectLogic = new HealEffectLogic();
+            _healEffectLogic.Initialize();
         }
+
+        public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
+        {
+            value = null;
+
+            return _healEffectLogic != null && _healEffectLogic.TryGetBindValue(bindKey, context, out value);
+        }
+        #endregion
 
         public override string GetDescription()
         {

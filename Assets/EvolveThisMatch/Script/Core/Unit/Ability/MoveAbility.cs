@@ -25,23 +25,23 @@ namespace EvolveThisMatch.Core
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.MoveIncreaseDataEffects)
+                foreach (var instance in _buffAbility.MoveIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
-                foreach (var effect in _abnormalStatusAbility.MoveIncreaseDataEffects)
+                foreach (var instance in _abnormalStatusAbility.MoveIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.MoveMultiplierDataEffects)
+                foreach (var instance in _buffAbility.MoveMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 

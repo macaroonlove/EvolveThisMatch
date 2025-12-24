@@ -16,6 +16,8 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] protected List<Effect> _effects = new List<Effect>();
 
+        public override IEnumerable<Effect> GetChildren() => _effects;
+
         protected void Resolve(EffectContext effectContext, Unit casterUnit, Unit targetUnit)
         {
             foreach (var effect in _effects)
@@ -102,6 +104,7 @@ namespace EvolveThisMatch.Core
 
             if (effect != null)
             {
+                effect.Initialize();
                 effect.hideFlags = HideFlags.HideInHierarchy;
                 _effects.Add(effect);
 

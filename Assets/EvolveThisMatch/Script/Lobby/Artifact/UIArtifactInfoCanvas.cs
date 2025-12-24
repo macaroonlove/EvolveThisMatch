@@ -25,6 +25,7 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _description;
         private Image _icon;
 
+        private EffectContext _effectContext;
         private UnityAction _action;
 
         internal void Initialize(UnityAction action = null)
@@ -37,6 +38,8 @@ namespace EvolveThisMatch.Lobby
             _displayName = GetText((int)Texts.DisplayName);
             _description = GetText((int)Texts.Description);
             _icon = GetImage((int)Images.Icon);
+
+            _effectContext = new EffectContext();
         }
 
         internal void Show(ArtifactTemplate template, ItemSaveData.Artifact owned)
@@ -46,7 +49,8 @@ namespace EvolveThisMatch.Lobby
             _displayName.text = template.displayName;
             _icon.sprite = template.sprite;
 
-            //_description.text = template.description.Replace("{value}", $"{template.eff}");
+            _effectContext.artifactSaveData = owned;
+            _description.text = template.description.Replace("{value}", $"{template.GetValue("value", _effectContext)}");
         }
     }
 }

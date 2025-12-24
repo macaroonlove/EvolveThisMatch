@@ -43,19 +43,19 @@ namespace EvolveThisMatch.Battle
         {
             StringBuilder result = new StringBuilder();
 
-            foreach (var effect in _buffAbility.ATKAdditionalDataEffects)
+            foreach (var instance in _buffAbility.ATKAdditionalDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Add)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Add)}");
             }
 
-            foreach (var effect in _buffAbility.ATKIncreaseDataEffects)
+            foreach (var instance in _buffAbility.ATKIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
             }
 
-            foreach (var effect in _buffAbility.ATKMultiplierDataEffects)
+            foreach (var instance in _buffAbility.ATKMultiplierDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Multiplier)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Multiplier)}");
             }
 
             return result.ToString();

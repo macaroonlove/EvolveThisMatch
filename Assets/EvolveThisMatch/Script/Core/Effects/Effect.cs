@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ namespace EvolveThisMatch.Core
     {
         public abstract string GetDescription();
 
+        public virtual IEnumerable<Effect> GetChildren() { yield break; }
         public virtual void Initialize() { }
 
 #if UNITY_EDITOR

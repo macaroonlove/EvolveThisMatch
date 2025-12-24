@@ -26,4 +26,51 @@ MonoBehaviour:
   _unitType: 4
   _itemFX: {fileID: 0}
   _afterDelayFX: {fileID: 0}
-  effects: []
+  effects:
+  - {fileID: 7252299435261734129}
+--- !u!114 &7252299435261734129
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c6ebdde83ae45f4c906548064f70dd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damageEffectLogic:
+    _repeatCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _repeatCount: 1
+    _isTick: 0
+    _tickCycleMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _tickCycle: 0
+    _tickCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _tickCount: 0
+    _damageType: 2
+    _elementalType: {fileID: 0}
+    _applyTypeByAmountDatas:
+    - _mutableValue:
+        _enabled: 1
+        _bindKey: value
+        _scaleFactor: 300
+        _scaleBase: 3
+        _previewScaleBase: 2
+      _applyType: 0
+      _amount: 3000

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1307370309097264043
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e347ae6434ac164f8311b8443e4d321, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 1
+      _bindKey: value
+      _scaleFactor: 0.5
+      _scaleBase: 3
+      _previewScaleBase: 2
+    _duration: 3
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
+    _abnormalStatus: {fileID: 11400000, guid: 8036d0c2744767c45810eb83d5234df8, type: 2}
+    _isfoldout: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,4 +56,5 @@ MonoBehaviour:
   _unitType: 4
   _itemFX: {fileID: 0}
   _afterDelayFX: {fileID: 0}
-  effects: []
+  effects:
+  - {fileID: -1307370309097264043}

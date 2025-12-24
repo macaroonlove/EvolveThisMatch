@@ -1,5 +1,26 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-916579465106491866
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbcf70d0079669649ab66e7938b89c9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _target: {fileID: 11400000, guid: 91b151cba44e8da43ade59c3d98057cc, type: 2}
+  _operator: 0
+  _mutableValue:
+    _enabled: 1
+    _bindKey: value
+    _scaleFactor: 2
+    _scaleBase: 2
+    _previewScaleBase: 2
+  _value: 18
 --- !u!114 &-337992660910648154
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14,6 +35,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 11400000, guid: 91b151cba44e8da43ade59c3d98057cc, type: 2}
   _operator: 0
+  _mutableValue:
+    _enabled: 0
+    _bindKey: 
+    _scaleFactor: 0
+    _scaleBase: 0
+    _previewScaleBase: 2
   _value: 20
 --- !u!114 &11400000
 MonoBehaviour:
@@ -47,5 +74,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8693d2eed6cf324191e9bebe9e7b111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects: []
+  effects:
+  - {fileID: -916579465106491866}
   _globalEvent: {fileID: 11400000, guid: fe5efdae55e1d7340a74928bc9383ee5, type: 2}

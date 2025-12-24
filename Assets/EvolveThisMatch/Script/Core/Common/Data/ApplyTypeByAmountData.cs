@@ -4,16 +4,30 @@ using UnityEngine;
 namespace EvolveThisMatch.Core
 {
     [System.Serializable]
-    public class ApplyTypeByAmountData
+    public class ApplyTypeByAmountData : IMutableValueBindingProvider
     {
         [SerializeField] private MutableValue _mutableValue;
         [SerializeField] private EApplyType _applyType;
         [SerializeField] private float _amount;
 
+        #region MutableValue Ã³¸®
         public ApplyTypeByAmountData()
         {
             _mutableValue = new MutableValue();
         }
+
+        public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
+        {
+            if (_mutableValue.bindKey == bindKey)
+            {
+                value = _mutableValue.GetValueString(_amount, context);
+                return true;
+            }
+
+            value = null;
+            return false;
+        }
+        #endregion
 
         public EApplyType applyType => _applyType;
         public float amount => _amount;
@@ -36,12 +50,5 @@ namespace EvolveThisMatch.Core
         public float GetNumRows() => 2.5f + _mutableValue.GetNumRows();
 #endif
         #endregion
-    }
-
-    [System.Serializable]
-    public class ApplyType_TargetOnlyByAmountData
-    {
-        public EApplyType_TargetOnly applyType;
-        public float amount;
     }
 }

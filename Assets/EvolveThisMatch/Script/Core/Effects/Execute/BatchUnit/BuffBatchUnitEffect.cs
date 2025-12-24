@@ -1,22 +1,32 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
-    public class BuffBatchUnitEffect : BatchUnitEffect
+    public class BuffBatchUnitEffect : BatchUnitEffect, IMutableValueBindingProvider
     {
-        [SerializeField] protected bool _isInfinity;
-        [SerializeField] protected float _duration;
-        [SerializeField] protected BuffTemplate _buff;
+        [SerializeField] private BuffEffectLogic _buffEffectLogic;
+
+        #region MutableValue 처리
+        public override void Initialize()
+        {
+            _buffEffectLogic = new BuffEffectLogic();
+            _buffEffectLogic.Initialize();
+        }
+
+        public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
+        {
+            value = null;
+
+            return _buffEffectLogic != null && _buffEffectLogic.TryGetBindValue(bindKey, context, out value);
+        }
+
+        public override IEnumerable<Effect> GetChildren() => _buffEffectLogic.GetChildren();
+        #endregion
 
         public override string GetDescription()
         {
-            if (_isInfinity)
-            {
-                return "고서 대상 유닛들에게 무한 지속 버프 적용";
-            }
-            return $"고서 대상 유닛들에게 {_duration}초 간 버프 적용";
+            return $"대상 유닛들에게 버프 적용";
         }
 
         public override void Execute(EffectContext effectContext, List<Unit> targetUnits)
@@ -25,49 +35,19 @@ namespace EvolveThisMatch.Core
             {
                 if (targetUnit == null || targetUnit.isDie) continue;
 
-                if (_isInfinity)
-                {
-                    targetUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, int.MaxValue);
-                }
-                else
-                {
-                    targetUnit.GetAbility<BuffAbility>().ApplyBuff(_buff, _duration);
-                }
+                _buffEffectLogic.Execute(effectContext, targetUnit);
             }
         }
 
 #if UNITY_EDITOR
         public override void Draw(Rect rect)
         {
-            var labelRect = new Rect(rect.x, rect.y, 140, rect.height);
-            var valueRect = new Rect(rect.x + 140, rect.y, rect.width - 140, rect.height);
-
-            GUI.Label(labelRect, "무한지속 사용 여부");
-            _isInfinity = EditorGUI.Toggle(valueRect, _isInfinity);
-            if (!_isInfinity)
-            {
-                labelRect.y += 20;
-                valueRect.y += 20;
-                GUI.Label(labelRect, "지속시간");
-                _duration = EditorGUI.FloatField(valueRect, _duration);
-            }
-
-            labelRect.y += 20;
-            valueRect.y += 20;
-            GUI.Label(labelRect, "버프");
-            _buff = (BuffTemplate)EditorGUI.ObjectField(valueRect, _buff, typeof(BuffTemplate), false);
+            _buffEffectLogic.Draw(rect);
         }
 
         public override int GetNumRows()
         {
-            int rowNum = 1;
-
-            if (!_isInfinity)
-            {
-                rowNum++;
-            }
-
-            return rowNum;
+            return _buffEffectLogic.GetNumRows();
         }
 #endif
     }

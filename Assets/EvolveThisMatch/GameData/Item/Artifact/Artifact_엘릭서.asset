@@ -33,6 +33,30 @@ MonoBehaviour:
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: 5651861961436524450}
+--- !u!114 &2398781153452163479
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 562f768d9418032409a7da83495552e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitType: 3
+  _buffEffectLogic:
+    _isInfinity: 1
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 11400000, guid: 7fa39b17a2d811e4f9f9408ae3ee9e53, type: 2}
+    _isfoldout: 0
 --- !u!114 &5651861961436524450
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -45,4 +69,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d9f1ec5f79b9e14997e30dd13e21a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects: []
+  effects:
+  - {fileID: 2398781153452163479}
+--- !u!114 &7068797448342114973
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8faeda48a3ba4e41ac526fb2da848ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitType: 0
+  _buffEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 0}
+    _isfoldout: 0
+--- !u!114 &7938758314776311079
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8faeda48a3ba4e41ac526fb2da848ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitType: 3
+  _buffEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 0}
+    _isfoldout: 0

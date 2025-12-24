@@ -4,14 +4,24 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
-    public class HealBatchUnitEffect : BatchUnitEffect
+    public class HealBatchUnitEffect : BatchUnitEffect, IMutableValueBindingProvider
     {
         [SerializeField] private HealEffectLogic _healEffectLogic;
 
+        #region MutableValue Ã³¸®
         public override void Initialize()
         {
             _healEffectLogic = new HealEffectLogic();
+            _healEffectLogic.Initialize();
         }
+
+        public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
+        {
+            value = null;
+
+            return _healEffectLogic != null && _healEffectLogic.TryGetBindValue(bindKey, context, out value);
+        }
+        #endregion
 
         public override string GetDescription()
         {

@@ -33,6 +33,30 @@ MonoBehaviour:
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: 1822952850296083638}
+--- !u!114 &910176195364172753
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 562f768d9418032409a7da83495552e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitType: 3
+  _buffEffectLogic:
+    _isInfinity: 1
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _buff: {fileID: 11400000, guid: 7055696016abf7b46bcaf98e0ffb20ab, type: 2}
+    _isfoldout: 0
 --- !u!114 &1822952850296083638
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -45,4 +69,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d9f1ec5f79b9e14997e30dd13e21a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects: []
+  effects:
+  - {fileID: 910176195364172753}

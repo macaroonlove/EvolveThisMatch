@@ -83,27 +83,27 @@ namespace EvolveThisMatch.Core
                 float result = _baseMaxHP;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.MaxHPAdditionalDataEffects)
+                foreach (var instance in _buffAbility.MaxHPAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var effect in _buffAbility.MaxHPIncreaseDataEffects)
+                foreach (var instance in _buffAbility.MaxHPIncreaseDataEffects)
                 {
-                    increase += effect.value;
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var effect in _buffAbility.MaxHPMultiplierDataEffects)
+                foreach (var instance in _buffAbility.MaxHPMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
                 #endregion
 
@@ -136,15 +136,15 @@ namespace EvolveThisMatch.Core
                 int result = _baseHPRecoveryPerSec;
 
                 // 최대 체력의 % 만큼 초당 회복력 추가
-                foreach (var effect in _buffAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
+                foreach (var instance in _buffAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
                 {
-                    result += (int)(effect.value * finalMaxHP);
+                    result += (int)(instance.effect.GetValue(unit.effectContext, instance.context) * finalMaxHP);
                 }
 
                 // 최대 체력의 % 만큼 초당 회복력 추가
-                foreach (var effect in _abnormalStatusAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
+                foreach (var instance in _abnormalStatusAbility.HPRecoveryPerSecByMaxHPIncreaseDataEffects)
                 {
-                    result += (int)(effect.value * finalMaxHP);
+                    result += (int)(instance.effect.GetValue(unit.effectContext, instance.context) * finalMaxHP);
                 }
 
                 return result;
@@ -158,9 +158,9 @@ namespace EvolveThisMatch.Core
             {
                 int result = 0;
 
-                foreach (var effect in _buffAbility.HealingAdditionalDataEffects)
+                foreach (var instance in _buffAbility.HealingAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 return result;
@@ -173,9 +173,9 @@ namespace EvolveThisMatch.Core
             {
                 float result = 1;
 
-                foreach (var effect in _buffAbility.HealingIncreaseDataEffects)
+                foreach (var instance in _buffAbility.HealingIncreaseDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 return result;
@@ -188,9 +188,9 @@ namespace EvolveThisMatch.Core
             {
                 float result = 1;
 
-                foreach (var effect in _buffAbility.HealingMultiplierDataEffects)
+                foreach (var instance in _buffAbility.HealingMultiplierDataEffects)
                 {
-                    result *= (1 + effect.value);
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
 
                 return result;

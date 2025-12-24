@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8693d2eed6cf324191e9bebe9e7b111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects: []
+  effects:
+  - {fileID: 5890132151641836322}
   _globalEvent: {fileID: 11400000, guid: 17e050b9e3ebfce41bff4a79d6f54c3b, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -34,6 +35,27 @@ MonoBehaviour:
   _casterFX: {fileID: 0}
   triggers:
   - {fileID: -8268380853593309656}
+--- !u!114 &5890132151641836322
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbcf70d0079669649ab66e7938b89c9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _target: {fileID: 11400000, guid: 91b151cba44e8da43ade59c3d98057cc, type: 2}
+  _operator: 0
+  _mutableValue:
+    _enabled: 1
+    _bindKey: value
+    _scaleFactor: 0.5
+    _scaleBase: 2
+    _previewScaleBase: 2
+  _value: 1
 --- !u!114 &8397219946778862603
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -48,4 +70,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 11400000, guid: 91b151cba44e8da43ade59c3d98057cc, type: 2}
   _operator: 0
+  _mutableValue:
+    _enabled: 0
+    _bindKey: 
+    _scaleFactor: 0
+    _scaleBase: 0
+    _previewScaleBase: 2
   _value: 1

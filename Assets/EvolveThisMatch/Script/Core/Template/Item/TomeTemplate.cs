@@ -60,6 +60,42 @@ namespace EvolveThisMatch.Core
         internal void SetRangeType(ETomeRangeType rangeType) => _rangeType = rangeType;
         internal void SetRange(float range) => _range = range;
         #endregion
+
+        #region BindKey로 값 String 받아오기
+        public string GetValue(string bindKey, EffectContext context)
+        {
+            foreach (var effect in effects)
+            {
+                if (TryGetBindValueRecursive(effect, bindKey, context, out var value))
+                {
+                    return value;
+                }
+            }
+
+            return "Error";
+        }
+
+        private bool TryGetBindValueRecursive(Effect effect, string bindKey, EffectContext context, out string value)
+        {
+            // 자기 자신 검사
+            if (effect is IMutableValueBindingProvider provider && provider.TryGetBindValue(bindKey, context, out value))
+            {
+                return true;
+            }
+
+            // 자식에 또 Effect 리스트가 존재하면 검사
+            foreach (var child in effect.GetChildren())
+            {
+                if (TryGetBindValueRecursive(child, bindKey, context, out value))
+                {
+                    return true;
+                }
+            }
+
+            value = null;
+            return false;
+        }
+        #endregion
     }
 }
 
@@ -225,6 +261,7 @@ namespace EvolveThisMatch.Editor
                 menu.AddItem(new GUIContent("Int 변수 변경"), false, CreateEffectCallback, typeof(ChangeIntVariableNoParamEffect));
                 menu.AddItem(new GUIContent("Float 변수 변경"), false, CreateEffectCallback, typeof(ChangeFloatVariableNoParamEffect));
                 menu.AddItem(new GUIContent("특정 그룹의 유닛에게 버프 적용"), false, CreateEffectCallback, typeof(BuffByConditionNoParamEffect));
+                menu.AddItem(new GUIContent("특정 그룹의 유닛에게 상태이상 적용"), false, CreateEffectCallback, typeof(AbnormalStatusByConditionGlobalEffect));
                 menu.AddItem(new GUIContent("전역 상태 적용"), false, CreateEffectCallback, typeof(GlobalStatusNoParamEffect));
             }
             else

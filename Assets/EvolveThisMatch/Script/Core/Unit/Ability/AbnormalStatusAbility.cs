@@ -1,5 +1,4 @@
 using FrameWork.Editor;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,28 +9,37 @@ namespace EvolveThisMatch.Core
     public class AbnormalStatusAbility : AlwaysAbility
     {
         #region Effect List
+        #region Data
+        private List<DataEffectInstance<MoveIncreaseDataEffect>> _moveIncreaseDataEffects = new List<DataEffectInstance<MoveIncreaseDataEffect>>();
+        private List<StatDataEffectInstance<PhysicalResistanceIncreaseDataEffect>> _physicalResistanceIncreaseDataEffects = new List<StatDataEffectInstance<PhysicalResistanceIncreaseDataEffect>>();
+        private List<StatDataEffectInstance<MagicResistanceIncreaseDataEffect>> _magicResistanceIncreaseDataEffects = new List<StatDataEffectInstance<MagicResistanceIncreaseDataEffect>>();
+        private List<DataEffectInstance<ReceiveDamageIncreaseDataEffect>> _receiveDamageIncreaseDataEffects = new List<DataEffectInstance<ReceiveDamageIncreaseDataEffect>>();
+        private List<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>>();
+        #endregion
+
+        #region Unable
         private List<UnableToMoveEffect> _unableToMoveEffects = new List<UnableToMoveEffect>();
         private List<UnableToAttackEffect> _unableToAttackEffects = new List<UnableToAttackEffect>();
         private List<UnableToHealEffect> _unableToHealEffects = new List<UnableToHealEffect>();
         private List<UnableToSkillEffect> _unableToSkillEffects = new List<UnableToSkillEffect>();
-        private List<MoveIncreaseDataEffect> _moveIncreaseDataEffects = new List<MoveIncreaseDataEffect>();
-        private Dictionary<PhysicalResistanceIncreaseDataEffect, string> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, string>();
-        private Dictionary<MagicResistanceIncreaseDataEffect, string> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, string>();
-        private List<ReceiveDamageIncreaseDataEffect> _receiveDamageIncreaseDataEffects = new List<ReceiveDamageIncreaseDataEffect>();
-        private List<HPRecoveryPerSecByMaxHPIncreaseDataEffect> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<HPRecoveryPerSecByMaxHPIncreaseDataEffect>();
+        #endregion
+        #endregion
 
         #region 프로퍼티
+        #region Data
+        public IReadOnlyList<DataEffectInstance<MoveIncreaseDataEffect>> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<PhysicalResistanceIncreaseDataEffect>> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<MagicResistanceIncreaseDataEffect>> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
+        public IReadOnlyList<DataEffectInstance<ReceiveDamageIncreaseDataEffect>> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
+        public IReadOnlyList<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
+        #endregion
+
+        #region Unable
         internal IReadOnlyList<UnableToMoveEffect> UnableToMoveEffects => _unableToMoveEffects;
         internal IReadOnlyList<UnableToAttackEffect> UnableToAttackEffects => _unableToAttackEffects;
         internal IReadOnlyList<UnableToHealEffect> UnableToHealEffects => _unableToHealEffects;
         internal IReadOnlyList<UnableToSkillEffect> UnableToSkillEffects => _unableToSkillEffects;
-        internal IReadOnlyList<MoveIncreaseDataEffect> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
-        public IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, string> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
-        public IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, string> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
-        internal IReadOnlyList<ReceiveDamageIncreaseDataEffect> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
-        internal IReadOnlyList<HPRecoveryPerSecByMaxHPIncreaseDataEffect> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
         #endregion
-
         #endregion
 
         #region 스탯 계산
@@ -42,9 +50,9 @@ namespace EvolveThisMatch.Core
                 float result = 0;
 
                 #region 추가·차감
-                foreach (var effect in _buffAbility.AbnormalStatusResistanceAdditionalDataEffects)
+                foreach (var instance in _buffAbility.AbnormalStatusResistanceAdditionalDataEffects)
                 {
-                    result += effect.value;
+                    result += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
                 #endregion
 
@@ -77,7 +85,7 @@ namespace EvolveThisMatch.Core
             unit.GetAbility<HealthAbility>().onDeath -= ClearStatusEffects;
         }
 
-        internal void ApplyAbnormalStatus(AbnormalStatusTemplate template, float duration)
+        internal void ApplyAbnormalStatus(AbnormalStatusTemplate template, float duration, EffectContext context)
         {
             if (this == null || gameObject == null) return;
 
@@ -113,34 +121,34 @@ namespace EvolveThisMatch.Core
 
             if (template.delay > 0)
             {
-                StartCoroutine(CoAddStatus(template, duration, isContained));
+                StartCoroutine(CoAddStatus(template, duration, isContained, context));
             }
             else
             {
-                AddStatus(template, duration, isContained);
+                AddStatus(template, duration, isContained, context);
             }
         }
 
-        private IEnumerator CoAddStatus(AbnormalStatusTemplate template, float duration, bool isContained)
+        private IEnumerator CoAddStatus(AbnormalStatusTemplate template, float duration, bool isContained, EffectContext context)
         {
             yield return new WaitForSeconds(template.delay);
-            AddStatus(template, duration, isContained);
+            AddStatus(template, duration, isContained, context);
         }
 
         /// <summary>
         /// 상태이상 추가
         /// </summary>
-        private void AddStatus(AbnormalStatusTemplate template, float duration, bool isContained)
+        private void AddStatus(AbnormalStatusTemplate template, float duration, bool isContained, EffectContext context)
         {
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
-            
+
             // 무한지속이 아니라면
             if (duration != int.MaxValue)
             {
                 var corutine = StartCoroutine(CoStatus(statusInstance, template));
                 statusInstance.corutine = corutine;
             }
-            
+
             // 피격시 상태이상이 해제되야 한다면
             if (template.useHitCountLimit)
             {
@@ -158,45 +166,24 @@ namespace EvolveThisMatch.Core
             if (isContained == false)
             {
                 ExecuteApplyFX(template);
+                string displayName = template.displayName;
 
                 foreach (var effect in template.effects)
                 {
-                    if (effect is UnableToMoveEffect unableToMoveEffect)
-                    {
-                        _unableToMoveEffects.Add(unableToMoveEffect);
-                    }
-                    else if (effect is UnableToAttackEffect unableToAttackEffect)
-                    {
-                        _unableToAttackEffects.Add(unableToAttackEffect);
-                    }
-                    else if (effect is UnableToHealEffect unableToHealEffects)
-                    {
-                        _unableToHealEffects.Add(unableToHealEffects);
-                    }
-                    else if (effect is UnableToSkillEffect unableToSkillEffect)
-                    {
-                        _unableToSkillEffects.Add(unableToSkillEffect);
-                    }
-                    else if (effect is MoveIncreaseDataEffect moveIncreaseDataEffect)
-                    {
-                        _moveIncreaseDataEffects.Add(moveIncreaseDataEffect);
-                    }
-                    else if (effect is PhysicalResistanceIncreaseDataEffect physicalResistanceIncreaseDataEffect)
-                    {
-                        _physicalResistanceIncreaseDataEffects.Add(physicalResistanceIncreaseDataEffect, template.displayName);
-                    }
-                    else if (effect is MagicResistanceIncreaseDataEffect magicResistanceIncreaseDataEffect)
-                    {
-                        _magicResistanceIncreaseDataEffects.Add(magicResistanceIncreaseDataEffect, template.displayName);
-                    }
-                    else if (effect is ReceiveDamageIncreaseDataEffect receiveDamageIncreaseDataEffect)
-                    {
-                        _receiveDamageIncreaseDataEffects.Add(receiveDamageIncreaseDataEffect);
-                    }
-                    else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
-                    {
-                        _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Add(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
-                    }
+                    #region Data
+                    if (AddDataEffect(effect, context, _moveIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _physicalResistanceIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _magicResistanceIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _receiveDamageIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
+                    #endregion
+
+                    #region Unable
+                    if (AddDataEffect(effect, _unableToMoveEffects)) continue;
+                    if (AddDataEffect(effect, _unableToAttackEffects)) continue;
+                    if (AddDataEffect(effect, _unableToHealEffects)) continue;
+                    if (AddDataEffect(effect, _unableToSkillEffects)) continue;
+                    #endregion
                 }
             }
         }
@@ -238,7 +225,7 @@ namespace EvolveThisMatch.Core
                     if (instance.count == 0)
                     {
                         RemoveStatus(template.effects);
-                        
+
                         if (instance.corutine != null)
                         {
                             StopCoroutine(instance.corutine);
@@ -296,46 +283,83 @@ namespace EvolveThisMatch.Core
         {
             foreach (var effect in effects)
             {
-                if (effect is UnableToMoveEffect unableToMoveEffect)
-                {
-                    _unableToMoveEffects.Remove(unableToMoveEffect);
-                }
-                else if (effect is UnableToAttackEffect unableToAttackEffect)
-                {
-                    _unableToAttackEffects.Remove(unableToAttackEffect);
-                }
-                else if (effect is UnableToHealEffect unableToHealEffects)
-                {
-                    _unableToHealEffects.Remove(unableToHealEffects);
-                }
-                else if (effect is UnableToSkillEffect unableToSkillEffect)
-                {
-                    _unableToSkillEffects.Remove(unableToSkillEffect);
-                }
-                else if (effect is MoveIncreaseDataEffect moveIncreaseDataEffect)
-                {
-                    _moveIncreaseDataEffects.Remove(moveIncreaseDataEffect);
-                }
-                else if (effect is PhysicalResistanceIncreaseDataEffect physicalResistanceIncreaseDataEffect)
-                {
-                    _physicalResistanceIncreaseDataEffects.Remove(physicalResistanceIncreaseDataEffect);
-                }
-                else if (effect is MagicResistanceIncreaseDataEffect magicResistanceIncreaseDataEffect)
-                {
-                    _magicResistanceIncreaseDataEffects.Remove(magicResistanceIncreaseDataEffect);
-                }
-                else if (effect is ReceiveDamageIncreaseDataEffect receiveDamageIncreaseDataEffect)
-                {
-                    _receiveDamageIncreaseDataEffects.Remove(receiveDamageIncreaseDataEffect);
-                }
-                else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
-                {
-                    _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Remove(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
-                }
+                #region Data
+                if (RemoveDataEffect(effect, _moveIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _physicalResistanceIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _magicResistanceIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _receiveDamageIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
+                #endregion
+
+                #region Unable
+                if (RemoveDataEffect(effect, _unableToMoveEffects)) continue;
+                if (RemoveDataEffect(effect, _unableToAttackEffects)) continue;
+                if (RemoveDataEffect(effect, _unableToHealEffects)) continue;
+                if (RemoveDataEffect(effect, _unableToSkillEffects)) continue;
+                #endregion
             }
         }
 
         #region 유틸리티 메서드
+        #region 이펙트 추가
+        private bool AddDataEffect<T>(Effect effect, List<T> list) where T : Effect
+        {
+            if (effect is T typed)
+            {
+                list.Add(typed);
+                return true;
+            }
+            return false;
+        }
+
+        private bool AddDataEffect<T>(Effect effect, EffectContext context, List<DataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is T typed)
+            {
+                list.Add(new DataEffectInstance<T>(typed, context));
+                return true;
+            }
+            return false;
+        }
+
+        private bool AddDataEffect<T>(Effect effect, EffectContext context, string displayName, List<StatDataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is T typed)
+            {
+                list.Add(new StatDataEffectInstance<T>(typed, context, displayName));
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+        #region 이펙트 제거
+        private bool RemoveDataEffect<T>(Effect effect, List<T> list) where T : Effect
+        {
+            if (effect is not T typed) return false;
+
+            list.Remove(typed);
+            return true;
+        }
+
+        private bool RemoveDataEffect<T>(Effect effect, List<DataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is not T typed) return false;
+
+            list.RemoveAll(x => x.effect == typed);
+            return true;
+        }
+
+        private bool RemoveDataEffect<T>(Effect effect, List<StatDataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is not T typed) return false;
+
+            list.RemoveAll(x => x.effect == typed);
+            return true;
+        }
+        #endregion
+
+        #region 상태이상 템플릿 포함 여부
         internal bool Contains(AbnormalStatusTemplate template)
         {
             return statusDic.ContainsKey(template);
@@ -353,6 +377,7 @@ namespace EvolveThisMatch.Core
             }
             return isContains;
         }
+        #endregion
         #endregion
 
         #region FX

@@ -12,7 +12,7 @@ namespace EvolveThisMatch.Core
         {
             _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
 
-            _globalStatusSystem.ApplyGlobalStatus(_agentLevelTemplate, int.MaxValue);
+            _globalStatusSystem.ApplyGlobalStatus(_agentLevelTemplate, int.MaxValue, null);
         }
 
         public void Deinitialize()

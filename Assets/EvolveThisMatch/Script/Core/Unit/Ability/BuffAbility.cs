@@ -11,76 +11,76 @@ namespace EvolveThisMatch.Core
     public class BuffAbility : AlwaysAbility
     {
         #region Effect List
-        #region ImmutableData
+        #region Data
         // Move
-        private List<MoveIncreaseDataEffect> _moveIncreaseDataEffects = new List<MoveIncreaseDataEffect>();
-        private List<MoveMultiplierDataEffect> _moveMultiplierDataEffects = new List<MoveMultiplierDataEffect>();
+        private List<DataEffectInstance<MoveIncreaseDataEffect>> _moveIncreaseDataEffects = new List<DataEffectInstance<MoveIncreaseDataEffect>>();
+        private List<DataEffectInstance<MoveMultiplierDataEffect>> _moveMultiplierDataEffects = new List<DataEffectInstance<MoveMultiplierDataEffect>>();
 
         // Attack
-        private Dictionary<ATKAdditionalDataEffect, string> _atkAdditionalDataEffects = new Dictionary<ATKAdditionalDataEffect, string>();
-        private Dictionary<ATKIncreaseDataEffect, string> _atkIncreaseDataEffects = new Dictionary<ATKIncreaseDataEffect, string>();
-        private Dictionary<ATKMultiplierDataEffect, string> _atkMultiplierDataEffects = new Dictionary<ATKMultiplierDataEffect, string>();
+        private List<StatDataEffectInstance<ATKAdditionalDataEffect>> _atkAdditionalDataEffects = new List<StatDataEffectInstance<ATKAdditionalDataEffect>>();
+        private List<StatDataEffectInstance<ATKIncreaseDataEffect>> _atkIncreaseDataEffects = new List<StatDataEffectInstance<ATKIncreaseDataEffect>>();
+        private List<StatDataEffectInstance<ATKMultiplierDataEffect>> _atkMultiplierDataEffects = new List<StatDataEffectInstance<ATKMultiplierDataEffect>>();
 
-        private List<AttackCountAdditionalDataEffect> _attackCountAdditionalDataEffects = new List<AttackCountAdditionalDataEffect>();
+        private List<DataEffectInstance<AttackCountAdditionalDataEffect>> _attackCountAdditionalDataEffects = new List<DataEffectInstance<AttackCountAdditionalDataEffect>>();
 
-        private Dictionary<AttackSpeedIncreaseDataEffect, string> _attackSpeedIncreaseDataEffects = new Dictionary<AttackSpeedIncreaseDataEffect, string>();
-        private Dictionary<AttackSpeedMultiplierDataEffect, string> _attackSpeedMultiplierDataEffects = new Dictionary<AttackSpeedMultiplierDataEffect, string>();
+        private List<StatDataEffectInstance<AttackSpeedIncreaseDataEffect>> _attackSpeedIncreaseDataEffects = new List<StatDataEffectInstance<AttackSpeedIncreaseDataEffect>>();
+        private List<StatDataEffectInstance<AttackSpeedMultiplierDataEffect>> _attackSpeedMultiplierDataEffects = new List<StatDataEffectInstance<AttackSpeedMultiplierDataEffect>>();
 
         // Avoidance
-        private List<AvoidanceAdditionalDataEffect> _avoidanceAdditionalDataEffects = new List<AvoidanceAdditionalDataEffect>();
+        private List<DataEffectInstance<AvoidanceAdditionalDataEffect>> _avoidanceAdditionalDataEffects = new List<DataEffectInstance<AvoidanceAdditionalDataEffect>>();
 
         // Physical Penetration
-        private List<PhysicalPenetrationAdditionalDataEffect> _physicalPenetrationAdditionalDataEffects = new List<PhysicalPenetrationAdditionalDataEffect>();
-        private List<PhysicalPenetrationIncreaseDataEffect> _physicalPenetrationIncreaseDataEffects = new List<PhysicalPenetrationIncreaseDataEffect>();
-        private List<PhysicalPenetrationMultiplierDataEffect> _physicalPenetrationMultiplierDataEffects = new List<PhysicalPenetrationMultiplierDataEffect>();
+        private List<DataEffectInstance<PhysicalPenetrationAdditionalDataEffect>> _physicalPenetrationAdditionalDataEffects = new List<DataEffectInstance<PhysicalPenetrationAdditionalDataEffect>>();
+        private List<DataEffectInstance<PhysicalPenetrationIncreaseDataEffect>> _physicalPenetrationIncreaseDataEffects = new List<DataEffectInstance<PhysicalPenetrationIncreaseDataEffect>>();
+        private List<DataEffectInstance<PhysicalPenetrationMultiplierDataEffect>> _physicalPenetrationMultiplierDataEffects = new List<DataEffectInstance<PhysicalPenetrationMultiplierDataEffect>>();
 
         // Physical Resistance
-        private Dictionary<PhysicalResistanceAdditionalDataEffect, string> _physicalResistanceAdditionalDataEffects = new Dictionary<PhysicalResistanceAdditionalDataEffect, string>();
-        private Dictionary<PhysicalResistanceIncreaseDataEffect, string> _physicalResistanceIncreaseDataEffects = new Dictionary<PhysicalResistanceIncreaseDataEffect, string>();
-        private Dictionary<PhysicalResistanceMultiplierDataEffect, string> _physicalResistanceMultiplierDataEffects = new Dictionary<PhysicalResistanceMultiplierDataEffect, string>();
+        private List<StatDataEffectInstance<PhysicalResistanceAdditionalDataEffect>> _physicalResistanceAdditionalDataEffects = new List<StatDataEffectInstance<PhysicalResistanceAdditionalDataEffect>>();
+        private List<StatDataEffectInstance<PhysicalResistanceIncreaseDataEffect>> _physicalResistanceIncreaseDataEffects = new List<StatDataEffectInstance<PhysicalResistanceIncreaseDataEffect>>();
+        private List<StatDataEffectInstance<PhysicalResistanceMultiplierDataEffect>> _physicalResistanceMultiplierDataEffects = new List<StatDataEffectInstance<PhysicalResistanceMultiplierDataEffect>>();
 
         // Magic Penetration
-        private List<MagicPenetrationAdditionalDataEffect> _magicPenetrationAdditionalDataEffects = new List<MagicPenetrationAdditionalDataEffect>();
-        private List<MagicPenetrationIncreaseDataEffect> _magicPenetrationIncreaseDataEffects = new List<MagicPenetrationIncreaseDataEffect>();
-        private List<MagicPenetrationMultiplierDataEffect> _magicPenetrationMultiplierDataEffects = new List<MagicPenetrationMultiplierDataEffect>();
+        private List<DataEffectInstance<MagicPenetrationAdditionalDataEffect>> _magicPenetrationAdditionalDataEffects = new List<DataEffectInstance<MagicPenetrationAdditionalDataEffect>>();
+        private List<DataEffectInstance<MagicPenetrationIncreaseDataEffect>> _magicPenetrationIncreaseDataEffects = new List<DataEffectInstance<MagicPenetrationIncreaseDataEffect>>();
+        private List<DataEffectInstance<MagicPenetrationMultiplierDataEffect>> _magicPenetrationMultiplierDataEffects = new List<DataEffectInstance<MagicPenetrationMultiplierDataEffect>>();
 
         // Magic Resistance
-        private Dictionary<MagicResistanceAdditionalDataEffect, string> _magicResistanceAdditionalDataEffects = new Dictionary<MagicResistanceAdditionalDataEffect, string>();
-        private Dictionary<MagicResistanceIncreaseDataEffect, string> _magicResistanceIncreaseDataEffects = new Dictionary<MagicResistanceIncreaseDataEffect, string>();
-        private Dictionary<MagicResistanceMultiplierDataEffect, string> _magicResistanceMultiplierDataEffects = new Dictionary<MagicResistanceMultiplierDataEffect, string>();
+        private List<StatDataEffectInstance<MagicResistanceAdditionalDataEffect>> _magicResistanceAdditionalDataEffects = new List<StatDataEffectInstance<MagicResistanceAdditionalDataEffect>>();
+        private List<StatDataEffectInstance<MagicResistanceIncreaseDataEffect>> _magicResistanceIncreaseDataEffects = new List<StatDataEffectInstance<MagicResistanceIncreaseDataEffect>>();
+        private List<StatDataEffectInstance<MagicResistanceMultiplierDataEffect>> _magicResistanceMultiplierDataEffects = new List<StatDataEffectInstance<MagicResistanceMultiplierDataEffect>>();
 
         // Damage
-        private List<DamageAdditionalDataEffect> _damageAdditionalDataEffects = new List<DamageAdditionalDataEffect>();
-        private List<DamageIncreaseDataEffect> _damageIncreaseDataEffects = new List<DamageIncreaseDataEffect>();
-        private List<DamageMultiplierDataEffect> _damageMultiplierDataEffects = new List<DamageMultiplierDataEffect>();
+        private List<DataEffectInstance<DamageAdditionalDataEffect>> _damageAdditionalDataEffects = new List<DataEffectInstance<DamageAdditionalDataEffect>>();
+        private List<DataEffectInstance<DamageIncreaseDataEffect>> _damageIncreaseDataEffects = new List<DataEffectInstance<DamageIncreaseDataEffect>>();
+        private List<DataEffectInstance<DamageMultiplierDataEffect>> _damageMultiplierDataEffects = new List<DataEffectInstance<DamageMultiplierDataEffect>>();
 
         // Receive Damage
-        private List<ReceiveDamageAdditionalDataEffect> _receiveDamageAdditionalDataEffects = new List<ReceiveDamageAdditionalDataEffect>();
-        private List<ReceiveDamageIncreaseDataEffect> _receiveDamageIncreaseDataEffects = new List<ReceiveDamageIncreaseDataEffect>();
-        private List<ReceiveDamageMultiplierDataEffect> _receiveDamageMultiplierDataEffects = new List<ReceiveDamageMultiplierDataEffect>();
+        private List<DataEffectInstance<ReceiveDamageAdditionalDataEffect>> _receiveDamageAdditionalDataEffects = new List<DataEffectInstance<ReceiveDamageAdditionalDataEffect>>();
+        private List<DataEffectInstance<ReceiveDamageIncreaseDataEffect>> _receiveDamageIncreaseDataEffects = new List<DataEffectInstance<ReceiveDamageIncreaseDataEffect>>();
+        private List<DataEffectInstance<ReceiveDamageMultiplierDataEffect>> _receiveDamageMultiplierDataEffects = new List<DataEffectInstance<ReceiveDamageMultiplierDataEffect>>();
 
         // Critical
-        private List<CriticalHitChanceAdditionalDataEffect> _criticalHitChanceAdditionalDataEffects = new List<CriticalHitChanceAdditionalDataEffect>();
-        private List<CriticalHitDamageAdditionalDataEffect> _criticalHitDamageAdditionalDataEffects = new List<CriticalHitDamageAdditionalDataEffect>();
-        private List<CriticalHitDamageIncreaseDataEffect> _criticalHitDamageIncreaseDataEffects = new List<CriticalHitDamageIncreaseDataEffect>();
-        private List<CriticalHitDamageMultiplierDataEffect> _criticalHitDamageMultiplierDataEffects = new List<CriticalHitDamageMultiplierDataEffect>();
+        private List<DataEffectInstance<CriticalHitChanceAdditionalDataEffect>> _criticalHitChanceAdditionalDataEffects = new List<DataEffectInstance<CriticalHitChanceAdditionalDataEffect>>();
+        private List<DataEffectInstance<CriticalHitDamageAdditionalDataEffect>> _criticalHitDamageAdditionalDataEffects = new List<DataEffectInstance<CriticalHitDamageAdditionalDataEffect>>();
+        private List<DataEffectInstance<CriticalHitDamageIncreaseDataEffect>> _criticalHitDamageIncreaseDataEffects = new List<DataEffectInstance<CriticalHitDamageIncreaseDataEffect>>();
+        private List<DataEffectInstance<CriticalHitDamageMultiplierDataEffect>> _criticalHitDamageMultiplierDataEffects = new List<DataEffectInstance<CriticalHitDamageMultiplierDataEffect>>();
 
         // Max HP
-        private List<MaxHPAdditionalDataEffect> _maxHPAdditionalDataEffects = new List<MaxHPAdditionalDataEffect>();
-        private List<MaxHPIncreaseDataEffect> _maxHPIncreaseDataEffects = new List<MaxHPIncreaseDataEffect>();
-        private List<MaxHPMultiplierDataEffect> _maxHPMultiplierDataEffects = new List<MaxHPMultiplierDataEffect>();
+        private List<DataEffectInstance<MaxHPAdditionalDataEffect>> _maxHPAdditionalDataEffects = new List<DataEffectInstance<MaxHPAdditionalDataEffect>>();
+        private List<DataEffectInstance<MaxHPIncreaseDataEffect>> _maxHPIncreaseDataEffects = new List<DataEffectInstance<MaxHPIncreaseDataEffect>>();
+        private List<DataEffectInstance<MaxHPMultiplierDataEffect>> _maxHPMultiplierDataEffects = new List<DataEffectInstance<MaxHPMultiplierDataEffect>>();
 
         // Healing
-        private List<HealingAdditionalDataEffect> _healingAdditionalDataEffects = new List<HealingAdditionalDataEffect>();
-        private List<HealingIncreaseDataEffect> _healingIncreaseDataEffects = new List<HealingIncreaseDataEffect>();
-        private List<HealingMultiplierDataEffect> _healingMultiplierDataEffects = new List<HealingMultiplierDataEffect>();
+        private List<DataEffectInstance<HealingAdditionalDataEffect>> _healingAdditionalDataEffects = new List<DataEffectInstance<HealingAdditionalDataEffect>>();
+        private List<DataEffectInstance<HealingIncreaseDataEffect>> _healingIncreaseDataEffects = new List<DataEffectInstance<HealingIncreaseDataEffect>>();
+        private List<DataEffectInstance<HealingMultiplierDataEffect>> _healingMultiplierDataEffects = new List<DataEffectInstance<HealingMultiplierDataEffect>>();
 
         // HP Recovery / Abnormal Status
-        private List<HPRecoveryPerSecByMaxHPIncreaseDataEffect> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<HPRecoveryPerSecByMaxHPIncreaseDataEffect>();
-        private List<AbnormalStatusResistanceAdditionalDataEffect> _abnormalStatusResistanceAdditionalDataEffects = new List<AbnormalStatusResistanceAdditionalDataEffect>();
+        private List<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>>();
+        private List<DataEffectInstance<AbnormalStatusResistanceAdditionalDataEffect>> _abnormalStatusResistanceAdditionalDataEffects = new List<DataEffectInstance<AbnormalStatusResistanceAdditionalDataEffect>>();
 
         // Skill Cooldown
-        private Dictionary<SkillCooldownIncreaseDataEffect, string> _skillCooldownIncreaseDataEffects = new Dictionary<SkillCooldownIncreaseDataEffect, string>();
+        private List<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>> _skillCooldownIncreaseDataEffects = new List<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>>();
         #endregion
 
         #region Set
@@ -92,66 +92,65 @@ namespace EvolveThisMatch.Core
         #region Unable
         private List<UnableToTargetOfAttackEffect> _unableToTargetOfAttackEffects = new List<UnableToTargetOfAttackEffect>();
         #endregion
-
         #endregion
 
         #region 프로퍼티
-        #region ImmutableData
-        internal IReadOnlyList<MoveIncreaseDataEffect> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
-        internal IReadOnlyList<MoveMultiplierDataEffect> MoveMultiplierDataEffects => _moveMultiplierDataEffects;
+        #region Data
+        internal IReadOnlyList<DataEffectInstance<MoveIncreaseDataEffect>> MoveIncreaseDataEffects => _moveIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<MoveMultiplierDataEffect>> MoveMultiplierDataEffects => _moveMultiplierDataEffects;
 
-        public IReadOnlyDictionary<ATKAdditionalDataEffect, string> ATKAdditionalDataEffects => _atkAdditionalDataEffects;
-        public IReadOnlyDictionary<ATKIncreaseDataEffect, string> ATKIncreaseDataEffects => _atkIncreaseDataEffects;
-        public IReadOnlyDictionary<ATKMultiplierDataEffect, string> ATKMultiplierDataEffects => _atkMultiplierDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<ATKAdditionalDataEffect>> ATKAdditionalDataEffects => _atkAdditionalDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<ATKIncreaseDataEffect>> ATKIncreaseDataEffects => _atkIncreaseDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<ATKMultiplierDataEffect>> ATKMultiplierDataEffects => _atkMultiplierDataEffects;
 
-        internal IReadOnlyList<AttackCountAdditionalDataEffect> AttackCountAdditionalDataEffects => _attackCountAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<AttackCountAdditionalDataEffect>> AttackCountAdditionalDataEffects => _attackCountAdditionalDataEffects;
 
-        public IReadOnlyDictionary<AttackSpeedIncreaseDataEffect, string> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
-        public IReadOnlyDictionary<AttackSpeedMultiplierDataEffect, string> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<AttackSpeedIncreaseDataEffect>> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<AttackSpeedMultiplierDataEffect>> AttackSpeedMultiplierDataEffects => _attackSpeedMultiplierDataEffects;
 
-        internal IReadOnlyList<AvoidanceAdditionalDataEffect> AvoidanceAdditionalDataEffects => _avoidanceAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<AvoidanceAdditionalDataEffect>> AvoidanceAdditionalDataEffects => _avoidanceAdditionalDataEffects;
 
-        internal IReadOnlyList<PhysicalPenetrationAdditionalDataEffect> PhysicalPenetrationAdditionalDataEffects => _physicalPenetrationAdditionalDataEffects;
-        internal IReadOnlyList<PhysicalPenetrationIncreaseDataEffect> PhysicalPenetrationIncreaseDataEffects => _physicalPenetrationIncreaseDataEffects;
-        internal IReadOnlyList<PhysicalPenetrationMultiplierDataEffect> PhysicalPenetrationMultiplierDataEffects => _physicalPenetrationMultiplierDataEffects;
+        internal IReadOnlyList<DataEffectInstance<PhysicalPenetrationAdditionalDataEffect>> PhysicalPenetrationAdditionalDataEffects => _physicalPenetrationAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<PhysicalPenetrationIncreaseDataEffect>> PhysicalPenetrationIncreaseDataEffects => _physicalPenetrationIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<PhysicalPenetrationMultiplierDataEffect>> PhysicalPenetrationMultiplierDataEffects => _physicalPenetrationMultiplierDataEffects;
 
-        public IReadOnlyDictionary<PhysicalResistanceAdditionalDataEffect, string> PhysicalResistanceAdditionalDataEffects => _physicalResistanceAdditionalDataEffects;
-        public IReadOnlyDictionary<PhysicalResistanceIncreaseDataEffect, string> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
-        public IReadOnlyDictionary<PhysicalResistanceMultiplierDataEffect, string> PhysicalResistanceMultiplierDataEffects => _physicalResistanceMultiplierDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<PhysicalResistanceAdditionalDataEffect>> PhysicalResistanceAdditionalDataEffects => _physicalResistanceAdditionalDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<PhysicalResistanceIncreaseDataEffect>> PhysicalResistanceIncreaseDataEffects => _physicalResistanceIncreaseDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<PhysicalResistanceMultiplierDataEffect>> PhysicalResistanceMultiplierDataEffects => _physicalResistanceMultiplierDataEffects;
 
-        internal IReadOnlyList<MagicPenetrationAdditionalDataEffect> MagicPenetrationAdditionalDataEffects => _magicPenetrationAdditionalDataEffects;
-        internal IReadOnlyList<MagicPenetrationIncreaseDataEffect> MagicPenetrationIncreaseDataEffects => _magicPenetrationIncreaseDataEffects;
-        internal IReadOnlyList<MagicPenetrationMultiplierDataEffect> MagicPenetrationMultiplierDataEffects => _magicPenetrationMultiplierDataEffects;
+        internal IReadOnlyList<DataEffectInstance<MagicPenetrationAdditionalDataEffect>> MagicPenetrationAdditionalDataEffects => _magicPenetrationAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<MagicPenetrationIncreaseDataEffect>> MagicPenetrationIncreaseDataEffects => _magicPenetrationIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<MagicPenetrationMultiplierDataEffect>> MagicPenetrationMultiplierDataEffects => _magicPenetrationMultiplierDataEffects;
 
-        public IReadOnlyDictionary<MagicResistanceAdditionalDataEffect, string> MagicResistanceAdditionalDataEffects => _magicResistanceAdditionalDataEffects;
-        public IReadOnlyDictionary<MagicResistanceIncreaseDataEffect, string> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
-        public IReadOnlyDictionary<MagicResistanceMultiplierDataEffect, string> MagicResistanceMultiplierDataEffects => _magicResistanceMultiplierDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<MagicResistanceAdditionalDataEffect>> MagicResistanceAdditionalDataEffects => _magicResistanceAdditionalDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<MagicResistanceIncreaseDataEffect>> MagicResistanceIncreaseDataEffects => _magicResistanceIncreaseDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<MagicResistanceMultiplierDataEffect>> MagicResistanceMultiplierDataEffects => _magicResistanceMultiplierDataEffects;
 
-        internal IReadOnlyList<DamageAdditionalDataEffect> DamageAdditionalDataEffects => _damageAdditionalDataEffects;
-        internal IReadOnlyList<DamageIncreaseDataEffect> DamageIncreaseDataEffects => _damageIncreaseDataEffects;
-        internal IReadOnlyList<DamageMultiplierDataEffect> DamageMultiplierDataEffects => _damageMultiplierDataEffects;
+        internal IReadOnlyList<DataEffectInstance<DamageAdditionalDataEffect>> DamageAdditionalDataEffects => _damageAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<DamageIncreaseDataEffect>> DamageIncreaseDataEffects => _damageIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<DamageMultiplierDataEffect>> DamageMultiplierDataEffects => _damageMultiplierDataEffects;
 
-        internal IReadOnlyList<ReceiveDamageAdditionalDataEffect> ReceiveDamageAdditionalDataEffects => _receiveDamageAdditionalDataEffects;
-        internal IReadOnlyList<ReceiveDamageIncreaseDataEffect> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
-        internal IReadOnlyList<ReceiveDamageMultiplierDataEffect> ReceiveDamageMultiplierDataEffects => _receiveDamageMultiplierDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ReceiveDamageAdditionalDataEffect>> ReceiveDamageAdditionalDataEffects => _receiveDamageAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ReceiveDamageIncreaseDataEffect>> ReceiveDamageIncreaseDataEffects => _receiveDamageIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ReceiveDamageMultiplierDataEffect>> ReceiveDamageMultiplierDataEffects => _receiveDamageMultiplierDataEffects;
 
-        internal IReadOnlyList<CriticalHitChanceAdditionalDataEffect> CriticalHitChanceAdditionalDataEffects => _criticalHitChanceAdditionalDataEffects;
-        internal IReadOnlyList<CriticalHitDamageAdditionalDataEffect> CriticalHitDamageAdditionalDataEffects => _criticalHitDamageAdditionalDataEffects;
-        internal IReadOnlyList<CriticalHitDamageIncreaseDataEffect> CriticalHitDamageIncreaseDataEffects => _criticalHitDamageIncreaseDataEffects;
-        internal IReadOnlyList<CriticalHitDamageMultiplierDataEffect> CriticalHitDamageMultiplierDataEffects => _criticalHitDamageMultiplierDataEffects;
+        internal IReadOnlyList<DataEffectInstance<CriticalHitChanceAdditionalDataEffect>> CriticalHitChanceAdditionalDataEffects => _criticalHitChanceAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<CriticalHitDamageAdditionalDataEffect>> CriticalHitDamageAdditionalDataEffects => _criticalHitDamageAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<CriticalHitDamageIncreaseDataEffect>> CriticalHitDamageIncreaseDataEffects => _criticalHitDamageIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<CriticalHitDamageMultiplierDataEffect>> CriticalHitDamageMultiplierDataEffects => _criticalHitDamageMultiplierDataEffects;
 
-        internal IReadOnlyList<MaxHPAdditionalDataEffect> MaxHPAdditionalDataEffects => _maxHPAdditionalDataEffects;
-        internal IReadOnlyList<MaxHPIncreaseDataEffect> MaxHPIncreaseDataEffects => _maxHPIncreaseDataEffects;
-        internal IReadOnlyList<MaxHPMultiplierDataEffect> MaxHPMultiplierDataEffects => _maxHPMultiplierDataEffects;
+        internal IReadOnlyList<DataEffectInstance<MaxHPAdditionalDataEffect>> MaxHPAdditionalDataEffects => _maxHPAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<MaxHPIncreaseDataEffect>> MaxHPIncreaseDataEffects => _maxHPIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<MaxHPMultiplierDataEffect>> MaxHPMultiplierDataEffects => _maxHPMultiplierDataEffects;
 
-        internal IReadOnlyList<HealingAdditionalDataEffect> HealingAdditionalDataEffects => _healingAdditionalDataEffects;
-        internal IReadOnlyList<HealingIncreaseDataEffect> HealingIncreaseDataEffects => _healingIncreaseDataEffects;
-        internal IReadOnlyList<HealingMultiplierDataEffect> HealingMultiplierDataEffects => _healingMultiplierDataEffects;
+        internal IReadOnlyList<DataEffectInstance<HealingAdditionalDataEffect>> HealingAdditionalDataEffects => _healingAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<HealingIncreaseDataEffect>> HealingIncreaseDataEffects => _healingIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<HealingMultiplierDataEffect>> HealingMultiplierDataEffects => _healingMultiplierDataEffects;
 
-        internal IReadOnlyList<HPRecoveryPerSecByMaxHPIncreaseDataEffect> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
-        internal IReadOnlyList<AbnormalStatusResistanceAdditionalDataEffect> AbnormalStatusResistanceAdditionalDataEffects => _abnormalStatusResistanceAdditionalDataEffects;
+        internal IReadOnlyList<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<AbnormalStatusResistanceAdditionalDataEffect>> AbnormalStatusResistanceAdditionalDataEffects => _abnormalStatusResistanceAdditionalDataEffects;
 
-        public IReadOnlyDictionary<SkillCooldownIncreaseDataEffect, string> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
+        public IReadOnlyList<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
         #endregion
 
         #region Set
@@ -163,7 +162,6 @@ namespace EvolveThisMatch.Core
         #region Unable
         internal IReadOnlyList<UnableToTargetOfAttackEffect> UnableToTargetOfAttackEffects => _unableToTargetOfAttackEffects;
         #endregion
-
         #endregion
 
         private Dictionary<BuffTemplate, StatusInstance> statusDic = new Dictionary<BuffTemplate, StatusInstance>();
@@ -186,7 +184,7 @@ namespace EvolveThisMatch.Core
             unit.GetAbility<HealthAbility>().onDeath -= ClearStatusEffects;
         }
 
-        public void ApplyBuff(BuffTemplate template, float duration)
+        public void ApplyBuff(BuffTemplate template, float duration, EffectContext context)
         {
             if (this == null || gameObject == null) return;
 
@@ -217,24 +215,25 @@ namespace EvolveThisMatch.Core
 
             if (template.delay > 0)
             {
-                StartCoroutine(CoAddStatus(template, duration, isContained));
+                StartCoroutine(CoAddStatus(template, duration, isContained, context));
             }
             else
             {
-                AddStatus(template, duration, isContained);
+                AddStatus(template, duration, isContained, context);
             }
         }
 
-        private IEnumerator CoAddStatus(BuffTemplate template, float duration, bool isContained)
+        private IEnumerator CoAddStatus(BuffTemplate template, float duration, bool isContained, EffectContext context)
         {
             yield return new WaitForSeconds(template.delay);
-            AddStatus(template, duration, isContained);
+            AddStatus(template, duration, isContained, context);
         }
 
+        #region 버프 추가
         /// <summary>
         /// 버프 추가
         /// </summary>
-        private void AddStatus(BuffTemplate template, float duration, bool isContained)
+        private void AddStatus(BuffTemplate template, float duration, bool isContained, EffectContext context)
         {
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 
@@ -262,205 +261,116 @@ namespace EvolveThisMatch.Core
             if (isContained == false)
             {
                 ExecuteApplyFX(template);
+                string displayName = template.displayName;
 
                 foreach (var effect in template.effects)
                 {
-                    if (effect is MoveIncreaseDataEffect moveIncreaseDataEffect)
-                    {
-                        _moveIncreaseDataEffects.Add(moveIncreaseDataEffect);
-                    }
-                    else if (effect is MoveMultiplierDataEffect moveMultiplierDataEffect)
-                    {
-                        _moveMultiplierDataEffects.Add(moveMultiplierDataEffect);
-                    }
+                    #region 이동
+                    if (AddDataEffect(effect, context, _moveIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _moveMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is ATKAdditionalDataEffect atkAdditionalDataEffects)
-                    {
-                        _atkAdditionalDataEffects.Add(atkAdditionalDataEffects, template.displayName);
-                    }
-                    else if (effect is ATKIncreaseDataEffect atkIncreaseDataEffect)
-                    {
-                        _atkIncreaseDataEffects.Add(atkIncreaseDataEffect, template.displayName);
-                    }
-                    else if (effect is ATKMultiplierDataEffect atkMultiplierDataEffect)
-                    {
-                        _atkMultiplierDataEffects.Add(atkMultiplierDataEffect, template.displayName);
-                    }
+                    #region 전투력
+                    if (AddDataEffect(effect, context, displayName, _atkAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _atkIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _atkMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is AttackCountAdditionalDataEffect attackCountAdditionalDataEffect)
-                    {
-                        _attackCountAdditionalDataEffects.Add(attackCountAdditionalDataEffect);
-                    }
+                    #region 공격 관련
+                    // 공격 횟수
+                    if (AddDataEffect(effect, context, _attackCountAdditionalDataEffects)) continue;
+                    // 공격 간격
+                    if (AddDataEffect(effect, context, displayName, _attackSpeedIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _attackSpeedMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is AttackSpeedIncreaseDataEffect AttackSpeedIncreaseDataEffect)
-                    {
-                        _attackSpeedIncreaseDataEffects.Add(AttackSpeedIncreaseDataEffect, template.displayName);
-                    }
-                    else if (effect is AttackSpeedMultiplierDataEffect AttackSpeedMultiplierDataEffect)
-                    {
-                        _attackSpeedMultiplierDataEffects.Add(AttackSpeedMultiplierDataEffect, template.displayName);
-                    }
+                    #region 회피
+                    if (AddDataEffect(effect, context, _avoidanceAdditionalDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is AvoidanceAdditionalDataEffect AvoidanceAdditionalDataEffect)
-                    {
-                        _avoidanceAdditionalDataEffects.Add(AvoidanceAdditionalDataEffect);
-                    }
+                    #region 물리 관통력
+                    if (AddDataEffect(effect, context, _physicalPenetrationAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _physicalPenetrationIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _physicalPenetrationMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is PhysicalPenetrationAdditionalDataEffect physicalPenetrationAdditionalDataEffect)
-                    {
-                        _physicalPenetrationAdditionalDataEffects.Add(physicalPenetrationAdditionalDataEffect);
-                    }
-                    else if (effect is PhysicalPenetrationIncreaseDataEffect physicalPenetrationIncreaseDataEffect)
-                    {
-                        _physicalPenetrationIncreaseDataEffects.Add(physicalPenetrationIncreaseDataEffect);
-                    }
-                    else if (effect is PhysicalPenetrationMultiplierDataEffect physicalPenetrationMultiplierDataEffect)
-                    {
-                        _physicalPenetrationMultiplierDataEffects.Add(physicalPenetrationMultiplierDataEffect);
-                    }
+                    #region 물리 저항력
+                    if (AddDataEffect(effect, context, displayName, _physicalResistanceAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _physicalResistanceIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _physicalResistanceMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is PhysicalResistanceAdditionalDataEffect physicalResistanceAdditionalDataEffect)
-                    {
-                        _physicalResistanceAdditionalDataEffects.Add(physicalResistanceAdditionalDataEffect, template.displayName);
-                    }
-                    else if (effect is PhysicalResistanceIncreaseDataEffect physicalResistanceIncreaseDataEffect)
-                    {
-                        _physicalResistanceIncreaseDataEffects.Add(physicalResistanceIncreaseDataEffect, template.displayName);
-                    }
-                    else if (effect is PhysicalResistanceMultiplierDataEffect physicalResistanceMultiplierDataEffect)
-                    {
-                        _physicalResistanceMultiplierDataEffects.Add(physicalResistanceMultiplierDataEffect, template.displayName);
-                    }
+                    #region 마법 관통력
+                    if (AddDataEffect(effect, context, _magicPenetrationAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _magicPenetrationIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _magicPenetrationMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is MagicPenetrationAdditionalDataEffect magicPenetrationAdditionalDataEffect)
-                    {
-                        _magicPenetrationAdditionalDataEffects.Add(magicPenetrationAdditionalDataEffect);
-                    }
-                    else if (effect is MagicPenetrationIncreaseDataEffect magicPenetrationIncreaseDataEffect)
-                    {
-                        _magicPenetrationIncreaseDataEffects.Add(magicPenetrationIncreaseDataEffect);
-                    }
-                    else if (effect is MagicPenetrationMultiplierDataEffect magicPenetrationMultiplierDataEffect)
-                    {
-                        _magicPenetrationMultiplierDataEffects.Add(magicPenetrationMultiplierDataEffect);
-                    }
+                    #region 마법 저항력
+                    if (AddDataEffect(effect, context, displayName, _magicResistanceAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _magicResistanceIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, displayName, _magicResistanceMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is MagicResistanceAdditionalDataEffect magicResistanceAdditionalDataEffect)
-                    {
-                        _magicResistanceAdditionalDataEffects.Add(magicResistanceAdditionalDataEffect, template.displayName);
-                    }
-                    else if (effect is MagicResistanceIncreaseDataEffect magicResistanceIncreaseDataEffect)
-                    {
-                        _magicResistanceIncreaseDataEffects.Add(magicResistanceIncreaseDataEffect, template.displayName);
-                    }
-                    else if (effect is MagicResistanceMultiplierDataEffect magicResistanceMultiplierDataEffect)
-                    {
-                        _magicResistanceMultiplierDataEffects.Add(magicResistanceMultiplierDataEffect, template.displayName);
-                    }
+                    #region 피해량
+                    if (AddDataEffect(effect, context, _damageAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _damageIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _damageMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is DamageAdditionalDataEffect damageAdditionalDataEffect)
-                    {
-                        _damageAdditionalDataEffects.Add(damageAdditionalDataEffect);
-                    }
-                    else if (effect is DamageIncreaseDataEffect damageIncreaseDataEffect)
-                    {
-                        _damageIncreaseDataEffects.Add(damageIncreaseDataEffect);
-                    }
-                    else if (effect is DamageMultiplierDataEffect damageMultiplierDataEffect)
-                    {
-                        _damageMultiplierDataEffects.Add(damageMultiplierDataEffect);
-                    }
+                    #region 받는 피해량
+                    if (AddDataEffect(effect, context, _receiveDamageAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _receiveDamageIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _receiveDamageMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is ReceiveDamageAdditionalDataEffect receiveDamageAdditionalDataEffect)
-                    {
-                        _receiveDamageAdditionalDataEffects.Add(receiveDamageAdditionalDataEffect);
-                    }
-                    else if (effect is ReceiveDamageIncreaseDataEffect receiveDamageIncreaseDataEffect)
-                    {
-                        _receiveDamageIncreaseDataEffects.Add(receiveDamageIncreaseDataEffect);
-                    }
-                    else if (effect is ReceiveDamageMultiplierDataEffect receiveDamageMultiplierDataEffect)
-                    {
-                        _receiveDamageMultiplierDataEffects.Add(receiveDamageMultiplierDataEffect);
-                    }
+                    #region 치명타
+                    // 치명타 확률
+                    if (AddDataEffect(effect, context, _criticalHitChanceAdditionalDataEffects)) continue;
 
-                    else if (effect is CriticalHitChanceAdditionalDataEffect criticalHitChanceAdditionalDataEffect)
-                    {
-                        _criticalHitChanceAdditionalDataEffects.Add(criticalHitChanceAdditionalDataEffect);
-                    }
-                    else if (effect is CriticalHitDamageAdditionalDataEffect criticalHitDamageAdditionalDataEffect)
-                    {
-                        _criticalHitDamageAdditionalDataEffects.Add(criticalHitDamageAdditionalDataEffect);
-                    }
-                    else if (effect is CriticalHitDamageIncreaseDataEffect criticalHitDamageIncreaseDataEffect)
-                    {
-                        _criticalHitDamageIncreaseDataEffects.Add(criticalHitDamageIncreaseDataEffect);
-                    }
-                    else if (effect is CriticalHitDamageMultiplierDataEffect criticalHitDamageMultiplierDataEffect)
-                    {
-                        _criticalHitDamageMultiplierDataEffects.Add(criticalHitDamageMultiplierDataEffect);
-                    }
+                    // 치명타 데미지
+                    if (AddDataEffect(effect, context, _criticalHitDamageAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _criticalHitDamageIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _criticalHitDamageMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is MaxHPAdditionalDataEffect maxHPAdditionalDataEffect)
-                    {
-                        _maxHPAdditionalDataEffects.Add(maxHPAdditionalDataEffect);
-                    }
-                    else if (effect is MaxHPIncreaseDataEffect maxHPIncreaseDataEffect)
-                    {
-                        _maxHPIncreaseDataEffects.Add(maxHPIncreaseDataEffect);
-                    }
-                    else if (effect is MaxHPMultiplierDataEffect maxHPMultiplierDataEffect)
-                    {
-                        _maxHPMultiplierDataEffects.Add(maxHPMultiplierDataEffect);
-                    }
+                    #region 최대 체력
+                    if (AddDataEffect(effect, context, _maxHPAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _maxHPIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _maxHPMultiplierDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is HealingAdditionalDataEffect healingAdditionalDataEffect)
-                    {
-                        _healingAdditionalDataEffects.Add(healingAdditionalDataEffect);
-                    }
-                    else if (effect is HealingIncreaseDataEffect healingIncreaseDataEffect)
-                    {
-                        _healingIncreaseDataEffects.Add(healingIncreaseDataEffect);
-                    }
-                    else if (effect is HealingMultiplierDataEffect healingMultiplierDataEffect)
-                    {
-                        _healingMultiplierDataEffects.Add(healingMultiplierDataEffect);
-                    }
+                    #region 회복
+                    // 회복량
+                    if (AddDataEffect(effect, context, _healingAdditionalDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _healingIncreaseDataEffects)) continue;
+                    if (AddDataEffect(effect, context, _healingMultiplierDataEffects)) continue;
 
-                    else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
-                    {
-                        _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Add(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
-                    }
-                    else if (effect is AbnormalStatusResistanceAdditionalDataEffect abnormalStatusResistanceAdditionalDataEffect)
-                    {
-                        _abnormalStatusResistanceAdditionalDataEffects.Add(abnormalStatusResistanceAdditionalDataEffect);
-                    }
+                    // 최대 체력 비례 초당 체력 회복량
+                    if (AddDataEffect(effect, context, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)
-                    {
-                        _skillCooldownIncreaseDataEffects.Add(skillCooldownIncreaseDataEffect, template.displayName);
-                    }
+                    #region 상태이상 저항력
+                    if (AddDataEffect(effect, context, _abnormalStatusResistanceAdditionalDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is SetMinHPEffect setMinHPEffect)
-                    {
-                        _setMinHPEffects.Add(setMinHPEffect);
-                    }
-                    else if (effect is SetAttackTypeEffect setAttackTypeEffect)
-                    {
-                        _setAttackTypeEffects.Add(setAttackTypeEffect);
-                    }
-                    else if (effect is SetDamageTypeEffect setDamageTypeEffect)
-                    {
-                        _setDamageTypeEffects.Add(setDamageTypeEffect);
-                    }
+                    #region 스킬 가속
+                    if (AddDataEffect(effect, context, displayName, _skillCooldownIncreaseDataEffects)) continue;
+                    #endregion
 
-                    else if (effect is UnableToTargetOfAttackEffect unableToTargetOfAttackEffect)
-                    {
-                        _unableToTargetOfAttackEffects.Add(unableToTargetOfAttackEffect);
-                    }
+                    #region Set
+                    if (AddDataEffect(effect, _setMinHPEffects)) continue;
+                    if (AddDataEffect(effect, _setAttackTypeEffects)) continue;
+                    if (AddDataEffect(effect, _setDamageTypeEffects)) continue;
+                    #endregion
+
+                    #region Unable
+                    if (AddDataEffect(effect, _unableToTargetOfAttackEffects)) continue;
+                    #endregion
                 }
             }
         }
+        #endregion
 
         #region 버프 유지시간 관리
         private IEnumerator CoStatus(StatusInstance statusInstance, BuffTemplate template)
@@ -571,204 +481,171 @@ namespace EvolveThisMatch.Core
         {
             foreach (var effect in effects)
             {
-                if (effect is MoveIncreaseDataEffect moveIncreaseDataEffect)
-                {
-                    _moveIncreaseDataEffects.Remove(moveIncreaseDataEffect);
-                }
-                else if (effect is MoveMultiplierDataEffect moveMultiplierDataEffect)
-                {
-                    _moveMultiplierDataEffects.Remove(moveMultiplierDataEffect);
-                }
+                #region 이동
+                if (RemoveDataEffect(effect, _moveIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _moveMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is ATKAdditionalDataEffect atkAdditionalDataEffects)
-                {
-                    _atkAdditionalDataEffects.Remove(atkAdditionalDataEffects);
-                }
-                else if (effect is ATKIncreaseDataEffect atkIncreaseDataEffect)
-                {
-                    _atkIncreaseDataEffects.Remove(atkIncreaseDataEffect);
-                }
-                else if (effect is ATKMultiplierDataEffect atkMultiplierDataEffect)
-                {
-                    _atkMultiplierDataEffects.Remove(atkMultiplierDataEffect);
-                }
+                #region 전투력
+                if (RemoveDataEffect(effect, _atkAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _atkIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _atkMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is AttackCountAdditionalDataEffect attackCountAdditionalDataEffect)
-                {
-                    _attackCountAdditionalDataEffects.Remove(attackCountAdditionalDataEffect);
-                }
+                #region 공격 관련
+                if (RemoveDataEffect(effect, _attackCountAdditionalDataEffects)) continue;
 
-                else if (effect is AttackSpeedIncreaseDataEffect AttackSpeedIncreaseDataEffect)
-                {
-                    _attackSpeedIncreaseDataEffects.Remove(AttackSpeedIncreaseDataEffect);
-                }
-                else if (effect is AttackSpeedMultiplierDataEffect AttackSpeedMultiplierDataEffect)
-                {
-                    _attackSpeedMultiplierDataEffects.Remove(AttackSpeedMultiplierDataEffect);
-                }
+                if (RemoveDataEffect(effect, _attackSpeedIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _attackSpeedMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is AvoidanceAdditionalDataEffect AvoidanceAdditionalDataEffect)
-                {
-                    _avoidanceAdditionalDataEffects.Remove(AvoidanceAdditionalDataEffect);
-                }
+                #region 회피
+                if (RemoveDataEffect(effect, _avoidanceAdditionalDataEffects)) continue;
+                #endregion
 
-                else if (effect is PhysicalPenetrationAdditionalDataEffect physicalPenetrationAdditionalDataEffect)
-                {
-                    _physicalPenetrationAdditionalDataEffects.Remove(physicalPenetrationAdditionalDataEffect);
-                }
-                else if (effect is PhysicalPenetrationIncreaseDataEffect physicalPenetrationIncreaseDataEffect)
-                {
-                    _physicalPenetrationIncreaseDataEffects.Remove(physicalPenetrationIncreaseDataEffect);
-                }
-                else if (effect is PhysicalPenetrationMultiplierDataEffect physicalPenetrationMultiplierDataEffect)
-                {
-                    _physicalPenetrationMultiplierDataEffects.Remove(physicalPenetrationMultiplierDataEffect);
-                }
+                #region 물리 관통력
+                if (RemoveDataEffect(effect, _physicalPenetrationAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _physicalPenetrationIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _physicalPenetrationMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is PhysicalResistanceAdditionalDataEffect physicalResistanceAdditionalDataEffect)
-                {
-                    _physicalResistanceAdditionalDataEffects.Remove(physicalResistanceAdditionalDataEffect);
-                }
-                else if (effect is PhysicalResistanceIncreaseDataEffect physicalResistanceIncreaseDataEffect)
-                {
-                    _physicalResistanceIncreaseDataEffects.Remove(physicalResistanceIncreaseDataEffect);
-                }
-                else if (effect is PhysicalResistanceMultiplierDataEffect physicalResistanceMultiplierDataEffect)
-                {
-                    _physicalResistanceMultiplierDataEffects.Remove(physicalResistanceMultiplierDataEffect);
-                }
+                #region 물리 저항력
+                if (RemoveDataEffect(effect, _physicalResistanceAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _physicalResistanceIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _physicalResistanceMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is MagicPenetrationAdditionalDataEffect magicPenetrationAdditionalDataEffect)
-                {
-                    _magicPenetrationAdditionalDataEffects.Remove(magicPenetrationAdditionalDataEffect);
-                }
-                else if (effect is MagicPenetrationIncreaseDataEffect magicPenetrationIncreaseDataEffect)
-                {
-                    _magicPenetrationIncreaseDataEffects.Remove(magicPenetrationIncreaseDataEffect);
-                }
-                else if (effect is MagicPenetrationMultiplierDataEffect magicPenetrationMultiplierDataEffect)
-                {
-                    _magicPenetrationMultiplierDataEffects.Remove(magicPenetrationMultiplierDataEffect);
-                }
+                #region 마법 관통력
+                if (RemoveDataEffect(effect, _magicPenetrationAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _magicPenetrationIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _magicPenetrationMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is MagicResistanceAdditionalDataEffect magicResistanceAdditionalDataEffect)
-                {
-                    _magicResistanceAdditionalDataEffects.Remove(magicResistanceAdditionalDataEffect);
-                }
-                else if (effect is MagicResistanceIncreaseDataEffect magicResistanceIncreaseDataEffect)
-                {
-                    _magicResistanceIncreaseDataEffects.Remove(magicResistanceIncreaseDataEffect);
-                }
-                else if (effect is MagicResistanceMultiplierDataEffect magicResistanceMultiplierDataEffect)
-                {
-                    _magicResistanceMultiplierDataEffects.Remove(magicResistanceMultiplierDataEffect);
-                }
+                #region 마법 저항력
+                if (RemoveDataEffect(effect, _magicResistanceAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _magicResistanceIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _magicResistanceMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is DamageAdditionalDataEffect damageAdditionalDataEffect)
-                {
-                    _damageAdditionalDataEffects.Remove(damageAdditionalDataEffect);
-                }
-                else if (effect is DamageIncreaseDataEffect damageIncreaseDataEffect)
-                {
-                    _damageIncreaseDataEffects.Remove(damageIncreaseDataEffect);
-                }
-                else if (effect is DamageMultiplierDataEffect damageMultiplierDataEffect)
-                {
-                    _damageMultiplierDataEffects.Remove(damageMultiplierDataEffect);
-                }
+                #region 피해량
+                if (RemoveDataEffect(effect, _damageAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _damageIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _damageMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is ReceiveDamageAdditionalDataEffect receiveDamageAdditionalDataEffect)
-                {
-                    _receiveDamageAdditionalDataEffects.Remove(receiveDamageAdditionalDataEffect);
-                }
-                else if (effect is ReceiveDamageIncreaseDataEffect receiveDamageIncreaseDataEffect)
-                {
-                    _receiveDamageIncreaseDataEffects.Remove(receiveDamageIncreaseDataEffect);
-                }
-                else if (effect is ReceiveDamageMultiplierDataEffect receiveDamageMultiplierDataEffect)
-                {
-                    _receiveDamageMultiplierDataEffects.Remove(receiveDamageMultiplierDataEffect);
-                }
+                #region 받는 피해량
+                if (RemoveDataEffect(effect, _receiveDamageAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _receiveDamageIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _receiveDamageMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is CriticalHitChanceAdditionalDataEffect criticalHitChanceAdditionalDataEffect)
-                {
-                    _criticalHitChanceAdditionalDataEffects.Remove(criticalHitChanceAdditionalDataEffect);
-                }
-                else if (effect is CriticalHitDamageAdditionalDataEffect criticalHitDamageAdditionalDataEffect)
-                {
-                    _criticalHitDamageAdditionalDataEffects.Remove(criticalHitDamageAdditionalDataEffect);
-                }
-                else if (effect is CriticalHitDamageIncreaseDataEffect criticalHitDamageIncreaseDataEffect)
-                {
-                    _criticalHitDamageIncreaseDataEffects.Remove(criticalHitDamageIncreaseDataEffect);
-                }
-                else if (effect is CriticalHitDamageMultiplierDataEffect criticalHitDamageMultiplierDataEffect)
-                {
-                    _criticalHitDamageMultiplierDataEffects.Remove(criticalHitDamageMultiplierDataEffect);
-                }
+                #region 치명타
+                // 치명타 확률
+                if (RemoveDataEffect(effect, _criticalHitChanceAdditionalDataEffects)) continue;
 
-                else if (effect is MaxHPAdditionalDataEffect maxHPAdditionalDataEffect)
-                {
-                    _maxHPAdditionalDataEffects.Remove(maxHPAdditionalDataEffect);
-                }
-                else if (effect is MaxHPIncreaseDataEffect maxHPIncreaseDataEffect)
-                {
-                    _maxHPIncreaseDataEffects.Remove(maxHPIncreaseDataEffect);
-                }
-                else if (effect is MaxHPMultiplierDataEffect maxHPMultiplierDataEffect)
-                {
-                    _maxHPMultiplierDataEffects.Remove(maxHPMultiplierDataEffect);
-                }
+                // 치명타 데미지
+                if (RemoveDataEffect(effect, _criticalHitDamageAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _criticalHitDamageIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _criticalHitDamageMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is HealingAdditionalDataEffect healingAdditionalDataEffect)
-                {
-                    _healingAdditionalDataEffects.Remove(healingAdditionalDataEffect);
-                }
-                else if (effect is HealingIncreaseDataEffect healingIncreaseDataEffect)
-                {
-                    _healingIncreaseDataEffects.Remove(healingIncreaseDataEffect);
-                }
-                else if (effect is HealingMultiplierDataEffect healingMultiplierDataEffect)
-                {
-                    _healingMultiplierDataEffects.Remove(healingMultiplierDataEffect);
-                }
+                #region 최대 체력
+                if (RemoveDataEffect(effect, _maxHPAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _maxHPIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _maxHPMultiplierDataEffects)) continue;
+                #endregion
 
-                else if (effect is HPRecoveryPerSecByMaxHPIncreaseDataEffect hpRecoveryPerSecByMaxHPIncreaseDataEffect)
-                {
-                    _hpRecoveryPerSecByMaxHPIncreaseDataEffects.Remove(hpRecoveryPerSecByMaxHPIncreaseDataEffect);
-                }
-                else if (effect is AbnormalStatusResistanceAdditionalDataEffect abnormalStatusResistanceAdditionalDataEffect)
-                {
-                    _abnormalStatusResistanceAdditionalDataEffects.Remove(abnormalStatusResistanceAdditionalDataEffect);
-                }
+                #region 회복
+                // 회복량
+                if (RemoveDataEffect(effect, _healingAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _healingIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _healingMultiplierDataEffects)) continue;
 
-                else if (effect is SkillCooldownIncreaseDataEffect skillCooldownIncreaseDataEffect)
-                {
-                    _skillCooldownIncreaseDataEffects.Remove(skillCooldownIncreaseDataEffect);
-                }
+                // 최대 체력 비례 초당 체력 회복량
+                if (RemoveDataEffect(effect, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
+                #endregion
 
-                else if (effect is SetMinHPEffect setMinHPEffect)
-                {
-                    _setMinHPEffects.Remove(setMinHPEffect);
-                }
-                else if (effect is SetAttackTypeEffect setAttackTypeEffect)
-                {
-                    _setAttackTypeEffects.Remove(setAttackTypeEffect);
-                }
-                else if (effect is SetDamageTypeEffect setDamageTypeEffect)
-                {
-                    _setDamageTypeEffects.Remove(setDamageTypeEffect);
-                }
+                #region 상태이상 저항력
+                if (RemoveDataEffect(effect, _abnormalStatusResistanceAdditionalDataEffects)) continue;
+                #endregion
 
-                else if (effect is UnableToTargetOfAttackEffect unableToTargetOfAttackEffect)
-                {
-                    _unableToTargetOfAttackEffects.Remove(unableToTargetOfAttackEffect);
-                }
+                #region 스킬 가속
+                if (RemoveDataEffect(effect, _skillCooldownIncreaseDataEffects)) continue;
+                #endregion
+
+                #region Set
+                if (RemoveDataEffect(effect, _setMinHPEffects)) continue;
+                if (RemoveDataEffect(effect, _setAttackTypeEffects)) continue;
+                if (RemoveDataEffect(effect, _setDamageTypeEffects)) continue;
+                #endregion
+
+                #region Unable
+                if (RemoveDataEffect(effect, _unableToTargetOfAttackEffects)) continue;
+                #endregion
             }
         }
         #endregion
 
         #region 유틸리티 메서드
+        #region 이펙트 추가
+        private bool AddDataEffect<T>(Effect effect, List<T> list) where T : Effect
+        {
+            if (effect is T typed)
+            {
+                list.Add(typed);
+                return true;
+            }
+            return false;
+        }
+
+        private bool AddDataEffect<T>(Effect effect, EffectContext context, List<DataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is T typed)
+            {
+                list.Add(new DataEffectInstance<T>(typed, context));
+                return true;
+            }
+            return false;
+        }
+
+        private bool AddDataEffect<T>(Effect effect, EffectContext context, string displayName, List<StatDataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is T typed)
+            {
+                list.Add(new StatDataEffectInstance<T>(typed, context, displayName));
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+        #region 이펙트 제거
+        private bool RemoveDataEffect<T>(Effect effect, List<T> list) where T : Effect
+        {
+            if (effect is not T typed) return false;
+
+            list.Remove(typed);
+            return true;
+        }
+
+        private bool RemoveDataEffect<T>(Effect effect, List<DataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is not T typed) return false;
+
+            list.RemoveAll(x => x.effect == typed);
+            return true;
+        }
+
+        private bool RemoveDataEffect<T>(Effect effect, List<StatDataEffectInstance<T>> list) where T : DataEffectBase
+        {
+            if (effect is not T typed) return false;
+
+            list.RemoveAll(x => x.effect == typed);
+            return true;
+        }
+        #endregion
+
+        #region 버프 템플릿 포함 여부
         internal bool Contains(BuffTemplate template)
         {
             return statusDic.ContainsKey(template);
@@ -786,6 +663,7 @@ namespace EvolveThisMatch.Core
             }
             return isContains;
         }
+        #endregion
         #endregion
 
         #region FX

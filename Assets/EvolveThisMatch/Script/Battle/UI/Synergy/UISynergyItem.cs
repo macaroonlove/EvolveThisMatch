@@ -61,7 +61,7 @@ namespace EvolveThisMatch.Battle
 
                     if (data.count == activeCount)
                     {
-                        buffAbility.ApplyBuff(data.buff, int.MaxValue);
+                        buffAbility.ApplyBuff(data.buff, int.MaxValue, null);
                     }
                     else
                     {

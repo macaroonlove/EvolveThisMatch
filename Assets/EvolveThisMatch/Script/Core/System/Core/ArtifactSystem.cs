@@ -123,9 +123,8 @@ namespace EvolveThisMatch.Core
                 // È¹µæ ½Ã
                 if (trigger is GetGameTrigger getTrigger)
                 {
-                    foreach (var element in getTrigger.effects)
+                    foreach (var effect in getTrigger.effects)
                     {
-                        var effect = element.effect;
                         if (effect is NoParamEffect noParamEffect)
                         {
                             noParamEffect.Execute(effectContext);
@@ -135,14 +134,9 @@ namespace EvolveThisMatch.Core
                 // ÀüÅõ Áß, »ó½Ã Àû¿ë
                 else if (trigger is AlwaysGameTrigger alwaysTrigger)
                 {
-                    foreach (var element in alwaysTrigger.effects)
+                    foreach (var effect in alwaysTrigger.effects)
                     {
-                        var effect = element.effect;
-                        if (effect is NoParamEffect noParamEffect)
-                        {
-                            noParamEffect.Execute(effectContext);
-                        }
-                        else if (effect is SingleUnitEffect singleUnitEffect)
+                        if (effect is SingleUnitEffect singleUnitEffect)
                         {
                             _alwaysEffects.Add((singleUnitEffect, effectContext));
                         }
@@ -153,9 +147,8 @@ namespace EvolveThisMatch.Core
                 {
                     Action action = () =>
                     {
-                        foreach (var element in globalTrigger.effects)
+                        foreach (var effect in globalTrigger.effects)
                         {
-                            var effect = element.effect;
                             if (effect is NoParamEffect noParamEffect)
                             {
                                 noParamEffect.Execute(effectContext);
@@ -171,18 +164,9 @@ namespace EvolveThisMatch.Core
                 {
                     Action<Unit, Unit> action = (casterUnit, targetUnit) =>
                     {
-                        foreach (var element in unitTrigger.effects)
+                        foreach (var effect in unitTrigger.effects)
                         {
-                            var effect = element.effect;
-                            if (effect is NoParamEffect noParamEffect)
-                            {
-                                noParamEffect.Execute(effectContext);
-                            }
-                            else if (effect is SingleUnitEffect singleUnitEffect)
-                            {
-                                singleUnitEffect.Execute(effectContext, casterUnit);
-                            }
-                            else if (effect is UnitEffect unitEffect)
+                            if (effect is UnitEffect unitEffect)
                             {
                                 unitEffect.Deliver(effectContext, casterUnit, targetUnit);
                             }

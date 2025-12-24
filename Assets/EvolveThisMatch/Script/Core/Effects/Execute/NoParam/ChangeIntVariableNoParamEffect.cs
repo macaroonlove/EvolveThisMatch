@@ -4,11 +4,31 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
-    public class ChangeIntVariableNoParamEffect : NoParamEffect
+    public class ChangeIntVariableNoParamEffect : NoParamEffect, IMutableValueBindingProvider
     {
         [SerializeField] private ObscuredIntVariable _target;
         [SerializeField] private EOperator _operator = EOperator.Add;
+        [SerializeField] private MutableValue _mutableValue;
         [SerializeField] private int _value;
+
+        #region MutableValue 처리
+        public override void Initialize()
+        {
+            _mutableValue = new MutableValue();
+        }
+
+        public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
+        {
+            if (_mutableValue.bindKey == bindKey)
+            {
+                value = _mutableValue.GetValueString(_value, context);
+                return true;
+            }
+
+            value = null;
+            return false;
+        }
+        #endregion
 
         public override string GetDescription()
         {
@@ -17,14 +37,16 @@ namespace EvolveThisMatch.Core
                 return "변수를 넣어주세요.";
             }
 
+            var value = _mutableValue.GetPreviewValue(_value);
+
             switch (_operator)
             {
                 case EOperator.Add:
-                    return $"{_target.name}의 값에 {_value}만큼 더하기";
+                    return $"{_target.name}의 값에 {value}만큼 더하기";
                 case EOperator.Multiply:
-                    return $"{_target.name}의 값에 {_value}만큼 곱하기";
+                    return $"{_target.name}의 값에 {value}만큼 곱하기";
                 case EOperator.Set:
-                    return $"{_target.name}의 값을 {_value}로 변경하기";
+                    return $"{_target.name}의 값을 {value}로 변경하기";
             }
             return "오류! 확인 필요";
         }
@@ -33,7 +55,7 @@ namespace EvolveThisMatch.Core
         {
             if (_target == null) return;
 
-            int finalValue = _value;
+            int finalValue = _mutableValue.GetValue(_value, effectContext);
 
             switch (_operator)
             {
@@ -52,24 +74,29 @@ namespace EvolveThisMatch.Core
 #if UNITY_EDITOR
         public override void Draw(Rect rect)
         {
-            var labelRect = new Rect(rect.x, rect.y, 140, rect.height);
-            var valueRect = new Rect(rect.x + 140, rect.y, rect.width - 140, rect.height);
+            EffectDrawUtility.DrawRow(ref rect, "변수", valueRect =>
+            {
+                _target = EditorGUI.ObjectField(valueRect, _target, typeof(ObscuredIntVariable), false) as ObscuredIntVariable;
+            });
 
-            GUI.Label(labelRect, "변수");
-            _target = EditorGUI.ObjectField(valueRect, _target, typeof(ObscuredIntVariable), false) as ObscuredIntVariable;
-            labelRect.y += 20;
-            valueRect.y += 20;
-            GUI.Label(labelRect, "연산자");
-            _operator = (EOperator)EditorGUI.EnumPopup(valueRect, _operator);
-            labelRect.y += 20;
-            valueRect.y += 20;
-            GUI.Label(labelRect, "값");
-            _value = EditorGUI.IntField(valueRect, _value);
+            EffectDrawUtility.DrawRow(ref rect, "연산자", valueRect =>
+            {
+                _operator = (EOperator)EditorGUI.EnumPopup(valueRect, _operator);
+            });
+
+            EffectDrawUtility.DrawBoxedMutableValue(ref rect, _mutableValue, "값", valueRect =>
+            {
+                _value = EditorGUI.IntField(valueRect, _value);
+            });
         }
 
         public override int GetNumRows()
         {
-            return 3;
+            int rowNum = 2;
+
+            rowNum += _mutableValue.GetNumRows();
+
+            return rowNum;
         }
 #endif
     }

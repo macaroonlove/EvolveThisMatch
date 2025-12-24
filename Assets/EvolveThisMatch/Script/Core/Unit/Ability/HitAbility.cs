@@ -80,9 +80,9 @@ namespace EvolveThisMatch.Core
             {
                 float avoidance = 0;
 
-                foreach (var effect in _buffAbility.AvoidanceAdditionalDataEffects)
+                foreach (var instance in _buffAbility.AvoidanceAdditionalDataEffects)
                 {
-                    avoidance += effect.value;
+                    avoidance += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
                 if (avoidance > 0)

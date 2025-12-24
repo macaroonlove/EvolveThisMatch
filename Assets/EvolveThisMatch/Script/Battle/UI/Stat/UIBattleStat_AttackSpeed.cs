@@ -43,14 +43,14 @@ namespace EvolveThisMatch.Battle
         {
             StringBuilder result = new StringBuilder();
 
-            foreach (var effect in _buffAbility.AttackSpeedIncreaseDataEffects)
+            foreach (var instance in _buffAbility.AttackSpeedIncreaseDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Increase)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
             }
 
-            foreach (var effect in _buffAbility.AttackSpeedMultiplierDataEffects)
+            foreach (var instance in _buffAbility.AttackSpeedMultiplierDataEffects)
             {
-                result.AppendLine($"{effect.Value} {ValueFormat(effect.Key.value, EDataType.Multiplier)}");
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Multiplier)}");
             }
 
             return result.ToString();

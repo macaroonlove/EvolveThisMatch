@@ -8,15 +8,59 @@ namespace EvolveThisMatch.Core
     public class MutableValue
     {
         [SerializeField] private bool _enabled;
+        [SerializeField] private string _bindKey;
         [SerializeField] private float _scaleFactor;
         [SerializeField] private EEffectScaleBase _scaleBase;
 
-        public virtual float GetValue(int value, EffectContext context)
+        public string bindKey => _bindKey;
+
+        #region Int
+        public virtual string GetValueString(int value, EffectContext context)
+        {
+            return GetValue(value, context, null).ToString();
+        }
+
+        public virtual int GetValue(int value, EffectContext context)
+        {
+            return GetValue(value, context, null);
+        }
+
+        public virtual int GetValue(int value, EffectContext context, EffectContext contextSub)
         {
             if (!_enabled) return value;
 
-            int scaleBase = context.GetScaleValue(_scaleBase);
+            int scaleBase = GetScaleBase(context, contextSub);
+            return (int)(value + scaleBase * _scaleFactor);
+        }
+        #endregion
+
+        #region Float
+        public virtual string GetValueString(float value, EffectContext context)
+        {
+            return GetValue(value, context, null).ToString("N0");
+        }
+
+        public virtual float GetValue(float value, EffectContext context)
+        {
+            return GetValue(value, context, null);
+        }
+
+        public virtual float GetValue(float value, EffectContext context, EffectContext contextSub)
+        {
+            if (!_enabled) return value;
+
+            int scaleBase = GetScaleBase(context, contextSub);
             return value + scaleBase * _scaleFactor;
+        }
+        #endregion
+
+        protected int GetScaleBase(EffectContext context, EffectContext contextSub)
+        {
+            int scaleBase = context.GetScaleValue(_scaleBase);
+            if (scaleBase == -2 && contextSub != null) scaleBase = contextSub.GetScaleValue(_scaleBase);
+            if (scaleBase == -2) scaleBase = 1;
+
+            return scaleBase;
         }
 
 #if UNITY_EDITOR
@@ -42,10 +86,13 @@ namespace EvolveThisMatch.Core
             EffectDrawUtility.DrawRow(ref rect, "가변값 사용 여부", valueRect =>
             {
                 _enabled = EditorGUI.Toggle(valueRect, _enabled);
-            });
+            }, valueWidthMargin: 140);
 
             if (_enabled)
             {
+                var bindTextRect = new Rect(rect.width - 140, rect.y - 20, 160, EditorGUIUtility.singleLineHeight);
+                _bindKey = EditorGUI.TextField(bindTextRect, _bindKey);
+
                 EffectDrawUtility.DrawRow(ref rect, "증가 계수", valueRect =>
                 {
                     _scaleFactor = EditorGUI.FloatField(valueRect, _scaleFactor);
