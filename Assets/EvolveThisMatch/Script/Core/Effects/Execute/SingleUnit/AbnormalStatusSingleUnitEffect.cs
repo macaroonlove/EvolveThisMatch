@@ -44,7 +44,7 @@ namespace EvolveThisMatch.Core
             else
                 unitLabel = unitLabel.Substring(0, unitLabel.Length - 2);
 
-            return $"시전자 유닛이 {unitLabel} 타입이라면 상태이상 적용";
+            return $"시전자 유닛이 {unitLabel} 타입이라면 " + _abnormalStatusEffectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext, Unit casterUnit)

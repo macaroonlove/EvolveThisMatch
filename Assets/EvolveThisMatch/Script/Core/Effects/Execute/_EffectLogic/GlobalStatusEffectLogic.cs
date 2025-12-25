@@ -11,13 +11,13 @@ namespace EvolveThisMatch.Core
     [Serializable]
     public class GlobalStatusEffectLogic : IMutableValueBindingProvider
     {
-        [SerializeField] protected bool _isInfinity;
+        [SerializeField] private bool _isInfinity;
         [SerializeField] private MutableValue _durationMutableValue;
-        [SerializeField] protected float _duration;
-        [SerializeField] protected bool _isProbability;
+        [SerializeField] private float _duration;
+        [SerializeField] private bool _isProbability;
         [SerializeField] private MutableValue _probabilityMutableValue;
-        [SerializeField] protected int _probability;
-        [SerializeField] protected GlobalStatusTemplate _globalStatus;
+        [SerializeField] private int _probability;
+        [SerializeField] private GlobalStatusTemplate _globalStatus;
 
         #region MutableValue 처리
         public void Initialize()
@@ -52,6 +52,31 @@ namespace EvolveThisMatch.Core
             {
                 if (effect != null) yield return effect;
             }
+        }
+        #endregion
+
+        #region 설명
+        public string GetDescription()
+        {
+            string result = "";
+
+            if (_isProbability)
+            {
+                float probability = _probabilityMutableValue.GetPreviewValue(_probability);
+                result += $" {probability}%의 확률로 ";
+            }
+
+            if (_isInfinity)
+            {
+                result += "무한지속";
+            }
+            else
+            {
+                float duration = _durationMutableValue.GetPreviewValue(_duration);
+                result += $"{duration}초 동안 유지되는";
+            }
+
+            return result + $" {_globalStatus.displayName} 전역 상태를 부여합니다.";
         }
         #endregion
 

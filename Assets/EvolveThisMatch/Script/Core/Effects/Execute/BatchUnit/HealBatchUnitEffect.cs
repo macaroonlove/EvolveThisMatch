@@ -25,7 +25,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "대상 유닛들에게 회복 적용";
+            return "대상 유닛들을 " + _healEffectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext, List<Unit> targetUnits)

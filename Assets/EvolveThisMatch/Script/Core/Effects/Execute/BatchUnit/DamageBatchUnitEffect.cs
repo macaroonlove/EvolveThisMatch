@@ -25,7 +25,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "대상 유닛들에게 데미지 적용";
+            return "대상 유닛들에게 " + _damageEffectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext, List<Unit> targetUnits)

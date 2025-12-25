@@ -23,7 +23,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "社発呪 社発";
+            return _spawnSummonEffectLogic.GetDescription();
         }
 
         internal override void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)

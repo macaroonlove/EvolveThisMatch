@@ -44,7 +44,7 @@ namespace EvolveThisMatch.Core
             else
                 unitLabel = unitLabel.Substring(0, unitLabel.Length - 2);
 
-            return $"{unitLabel} 유닛에게 무한 지속 버프 적용";
+            return $"{unitLabel} 유닛에게 " + _buffEffectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext)

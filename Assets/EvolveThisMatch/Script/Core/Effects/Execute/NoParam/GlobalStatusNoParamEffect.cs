@@ -23,7 +23,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "전역 상태 적용";
+            return _globalStatusEffectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext)

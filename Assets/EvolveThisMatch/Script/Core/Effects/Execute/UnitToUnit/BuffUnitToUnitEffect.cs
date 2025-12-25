@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "น๖วม";
+            return _buffEffectLogic.GetDescription();
         }
 
         internal override void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)

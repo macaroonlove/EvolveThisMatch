@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return $"대상 유닛들에게 버프 적용";
+            return $"대상 유닛들에게 " + _buffEffectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext, List<Unit> targetUnits)

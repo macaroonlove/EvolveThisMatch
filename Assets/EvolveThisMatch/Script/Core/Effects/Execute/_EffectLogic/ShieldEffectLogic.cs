@@ -13,12 +13,12 @@ namespace EvolveThisMatch.Core
         [SerializeField] private int _repeatCount;
         [SerializeField] private bool _isTick;
         [SerializeField] private MutableValue _tickCycleMutableValue;
-        [SerializeField] private int _tickCycle;
+        [SerializeField] private float _tickCycle;
         [SerializeField] private MutableValue _tickCountMutableValue;
         [SerializeField] private int _tickCount;
-        [SerializeField] protected bool _isInfinity;
+        [SerializeField] private bool _isInfinity;
         [SerializeField] private MutableValue _durationMutableValue;
-        [SerializeField] protected float _duration;
+        [SerializeField] private float _duration;
         [SerializeField] private SkillTypeTemplate _elementalType;
 
         [SerializeField] private List<ApplyTypeByAmountData> _applyTypeByAmountDatas = new List<ApplyTypeByAmountData>();
@@ -71,44 +71,50 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+        #region 설명
+        public string GetDescription()
+        {
+            int repeatCount = _repeatCountMutableValue.GetPreviewValue(_repeatCount);
+
+            string result = $"{repeatCount}회에 걸쳐";
+
+            if (_isTick)
+            {
+                float tickCycle = _tickCycleMutableValue.GetPreviewValue(_tickCycle);
+                int tickCount = _tickCountMutableValue.GetPreviewValue(_tickCount);
+                float tickTime = tickCycle * tickCount;
+                result += $", {tickTime}초 동안 {tickCycle}초 마다";
+            }
+
+            if (_isInfinity)
+            {
+                result += " 무한지속";
+            }
+            else
+            {
+                float duration = _durationMutableValue.GetPreviewValue(_duration);
+                result += $" {duration}초 동안 유지되는";
+            }
+
+            return result + " 보호막을 획득합니다.";
+        }
+        #endregion
+
         public void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)
         {
-            int shield = GetAmount(casterUnit, targetUnit);
+            int shield = GetAmount(effectContext, casterUnit, targetUnit);
 
-            Execute_RepeatCount(casterUnit, targetUnit, shield);
+            Execute_RepeatCount(effectContext, casterUnit, targetUnit, shield);
         }
 
         #region 데미지 계산
-        private int GetAmount(Unit casterUnit, Unit targetUnit)
+        private int GetAmount(EffectContext effectContext, Unit casterUnit, Unit targetUnit)
         {
             float totalAmount = 0;
 
             foreach (var applyTypeByAmountData in _applyTypeByAmountDatas)
             {
-                float typeValue = 0f;
-                switch (applyTypeByAmountData.applyType)
-                {
-                    case EApplyType.Basic:
-                        typeValue = 1;
-                        break;
-                    case EApplyType.Caster_FinalATK:
-                        typeValue = casterUnit.GetAbility<AttackAbility>().finalATK;
-                        break;
-                    case EApplyType.Caster_CurrentHP:
-                        typeValue = casterUnit.GetAbility<HealthAbility>().currentHP;
-                        break;
-                    case EApplyType.Caster_MAXHP:
-                        typeValue = casterUnit.GetAbility<HealthAbility>().finalMaxHP;
-                        break;
-                    case EApplyType.Target_CurrentHP:
-                        typeValue = targetUnit.GetAbility<HealthAbility>().currentHP;
-                        break;
-                    case EApplyType.Target_MAXHP:
-                        typeValue = targetUnit.GetAbility<HealthAbility>().finalMaxHP;
-                        break;
-                }
-
-                totalAmount += (typeValue * applyTypeByAmountData.amount);
+                totalAmount += applyTypeByAmountData.GetAmount(effectContext, casterUnit, targetUnit);
             }
 
             return GetElementEngraveAmount(totalAmount);
@@ -129,53 +135,58 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 피해 횟수
-        private void Execute_RepeatCount(Unit casterUnit, Unit targetUnit, int shield)
+        private void Execute_RepeatCount(EffectContext context, Unit casterUnit, Unit targetUnit, int shield)
         {
-            if (_repeatCount > 1)
+            int repeatCount = _repeatCountMutableValue.GetValue(_repeatCount, context);
+
+            if (repeatCount > 1)
             {
-                for (int i = 0; i < _repeatCount; i++)
+                for (int i = 0; i < repeatCount; i++)
                 {
                     if (targetUnit.isDie) return;
 
-                    Execute_Tick(casterUnit, targetUnit, shield);
+                    Execute_Tick(context, casterUnit, targetUnit, shield);
                 }
             }
             else
             {
-                Execute_Tick(casterUnit, targetUnit, shield);
+                Execute_Tick(context, casterUnit, targetUnit, shield);
             }
         }
         #endregion
 
         #region 지속 피해
-        private void Execute_Tick(Unit casterUnit, Unit targetUnit, int shield)
+        private void Execute_Tick(EffectContext context, Unit casterUnit, Unit targetUnit, int shield)
         {
             if (_isTick)
             {
-                targetUnit.StartCoroutine(CoExecute_Tick(casterUnit, targetUnit, shield));
+                targetUnit.StartCoroutine(CoExecute_Tick(context, casterUnit, targetUnit, shield));
             }
             else
             {
-                Execute_Duration(casterUnit, targetUnit, shield);
+                Execute_Duration(context, casterUnit, targetUnit, shield);
             }
         }
 
-        private IEnumerator CoExecute_Tick(Unit casterUnit, Unit targetUnit, int shield)
+        private IEnumerator CoExecute_Tick(EffectContext context, Unit casterUnit, Unit targetUnit, int shield)
         {
-            var wfs = new WaitForSeconds(_tickCycle);
+            var tickCycle = _tickCycleMutableValue.GetValue(_tickCycle, context);
+            var tickCount = _tickCountMutableValue.GetValue(_tickCount, context);
 
-            for (int i = 0; i < _tickCount; i++)
+            var wfs = new WaitForSeconds(tickCycle);
+
+            for (int i = 0; i < tickCount; i++)
             {
                 if (targetUnit.isDie) yield break;
 
-                Execute_Duration(casterUnit, targetUnit, shield);
+                Execute_Duration(context, casterUnit, targetUnit, shield);
                 yield return wfs;
             }
         }
         #endregion
 
         #region 지속시간 부여
-        private void Execute_Duration(Unit casterUnit, Unit targetUnit, int shield)
+        private void Execute_Duration(EffectContext context, Unit casterUnit, Unit targetUnit, int shield)
         {
             if (_isInfinity)
             {
@@ -183,7 +194,8 @@ namespace EvolveThisMatch.Core
             }
             else
             {
-                targetUnit.healthAbility.AddShield(shield, _duration);
+                float duration = _durationMutableValue.GetValue(_duration, context);
+                targetUnit.healthAbility.AddShield(shield, duration);
             }
         }
         #endregion
@@ -212,7 +224,7 @@ namespace EvolveThisMatch.Core
                 #region 주기(초)
                 EffectDrawUtility.DrawBoxedMutableValue(ref rect, _tickCycleMutableValue, "주기(초)", valueRect =>
                 {
-                    _tickCycle = EditorGUI.IntField(valueRect, _tickCycle);
+                    _tickCycle = EditorGUI.FloatField(valueRect, _tickCycle);
                 });
                 #endregion
 

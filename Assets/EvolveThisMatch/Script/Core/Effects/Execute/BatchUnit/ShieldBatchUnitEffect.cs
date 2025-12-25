@@ -25,7 +25,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "대상 유닛들에게 보호막 적용";
+            return "대상 유닛들에게 " + _shieldErrectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext, List<Unit> targetUnits)

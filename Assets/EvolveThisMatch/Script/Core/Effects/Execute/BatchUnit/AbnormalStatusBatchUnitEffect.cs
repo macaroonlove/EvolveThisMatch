@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "대상 유닛들에게 상태이상 적용";
+            return "대상 유닛들에게 " + _abnormalStatusEffectLogic.GetDescription();
         }
 
         public override void Execute(EffectContext effectContext, List<Unit> targetUnits)

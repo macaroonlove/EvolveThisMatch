@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "상태이상";
+            return _abnormalStatusEffectLogic.GetDescription();
         }
 
         internal override void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)

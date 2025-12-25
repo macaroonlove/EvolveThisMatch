@@ -26,9 +26,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 364d535383334034e91770acc7e94f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isInfinity: 0
-  _duration: 0
-  _globalStatus: {fileID: 0}
+  _globalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
+    _globalStatus: {fileID: 0}
+    _isfoldout: 0
 --- !u!114 &-4198729787734168220
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51,8 +67,16 @@ MonoBehaviour:
       _scaleBase: 0
       _previewScaleBase: 2
     _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
     _buff: {fileID: 11400000, guid: 745236dd4fc618e4ab9d28d4fab64985, type: 2}
-    _isfoldout: 1
+    _isfoldout: 0
 --- !u!114 &-2792660369070884289
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -108,5 +132,13 @@ MonoBehaviour:
       _scaleBase: 0
       _previewScaleBase: 2
     _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
     _buff: {fileID: 0}
     _isfoldout: 0

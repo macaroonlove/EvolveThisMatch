@@ -23,7 +23,7 @@ namespace EvolveThisMatch.Core
 
         public override string GetDescription()
         {
-            return "È¸º¹";
+            return _healEffectLogic.GetDescription();
         }
 
         internal override void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)

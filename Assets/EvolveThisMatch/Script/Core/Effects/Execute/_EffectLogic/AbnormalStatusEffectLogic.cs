@@ -10,13 +10,13 @@ namespace EvolveThisMatch.Core
     [Serializable]
     public class AbnormalStatusEffectLogic : IMutableValueBindingProvider
     {
-        [SerializeField] protected bool _isInfinity;
+        [SerializeField] private bool _isInfinity;
         [SerializeField] private MutableValue _durationMutableValue;
-        [SerializeField] protected float _duration;
-        [SerializeField] protected bool _isProbability;
+        [SerializeField] private float _duration;
+        [SerializeField] private bool _isProbability;
         [SerializeField] private MutableValue _probabilityMutableValue;
-        [SerializeField] protected int _probability;
-        [SerializeField] protected AbnormalStatusTemplate _abnormalStatus;
+        [SerializeField] private int _probability;
+        [SerializeField] private AbnormalStatusTemplate _abnormalStatus;
 
         #region MutableValue 처리
         public void Initialize()
@@ -51,6 +51,31 @@ namespace EvolveThisMatch.Core
             {
                 if (effect != null) yield return effect;
             }
+        }
+        #endregion
+
+        #region 설명
+        public string GetDescription()
+        {
+            string result = "";
+
+            if (_isProbability)
+            {
+                float probability = _probabilityMutableValue.GetPreviewValue(_probability);
+                result += $" {probability}%의 확률로 ";
+            }
+
+            if (_isInfinity)
+            {
+                result += "무한지속";
+            }
+            else
+            {
+                float duration = _durationMutableValue.GetPreviewValue(_duration);
+                result += $"{duration}초 동안 유지되는";
+            }
+
+            return result + $" {_abnormalStatus.displayName} 상태이상을 부여합니다.";
         }
         #endregion
 

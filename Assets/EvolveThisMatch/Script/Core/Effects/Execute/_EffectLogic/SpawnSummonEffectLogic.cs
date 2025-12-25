@@ -45,6 +45,31 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+        #region 설명
+        public string GetDescription()
+        {
+            string result = "";
+
+            if (_isProbability)
+            {
+                float probability = _probabilityMutableValue.GetPreviewValue(_probability);
+                result += $" {probability}%의 확률로 ";
+            }
+
+            if (_isInfinity)
+            {
+                result += "무한지속";
+            }
+            else
+            {
+                float duration = _durationMutableValue.GetPreviewValue(_duration);
+                result += $"{duration}초 동안 유지되는";
+            }
+
+            return result + $" {_summon.displayName}를 소환합니다.";
+        }
+        #endregion
+
         public void Execute(EffectContext context, Unit casterUnit, Vector3 spawnPosition)
         {
             if (casterUnit == null) return;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
-
 #endif
 
 namespace EvolveThisMatch.Core
@@ -11,13 +10,13 @@ namespace EvolveThisMatch.Core
     [Serializable]
     public class BuffEffectLogic : IMutableValueBindingProvider
     {
-        [SerializeField] protected bool _isInfinity;
+        [SerializeField] private bool _isInfinity;
         [SerializeField] private MutableValue _durationMutableValue;
-        [SerializeField] protected float _duration;
-        [SerializeField] protected bool _isProbability;
+        [SerializeField] private float _duration;
+        [SerializeField] private bool _isProbability;
         [SerializeField] private MutableValue _probabilityMutableValue;
-        [SerializeField] protected int _probability;
-        [SerializeField] protected BuffTemplate _buff;
+        [SerializeField] private int _probability;
+        [SerializeField] private BuffTemplate _buff;
 
         #region MutableValue 처리
         public void Initialize()
@@ -52,6 +51,31 @@ namespace EvolveThisMatch.Core
             {
                 if (effect != null) yield return effect;
             }
+        }
+        #endregion
+
+        #region 설명
+        public string GetDescription()
+        {
+            string result = "";
+
+            if (_isProbability)
+            {
+                float probability = _probabilityMutableValue.GetPreviewValue(_probability);
+                result += $" {probability}%의 확률로 ";
+            }
+
+            if (_isInfinity)
+            {
+                result += "무한지속";
+            }
+            else
+            {
+                float duration = _durationMutableValue.GetPreviewValue(_duration);
+                result += $"{duration}초 동안 유지되는";
+            }
+
+            return result + $" {_buff.displayName} 버프를 부여합니다.";
         }
         #endregion
 
@@ -90,7 +114,7 @@ namespace EvolveThisMatch.Core
             {
                 _isInfinity = EditorGUI.Toggle(valueRect, _isInfinity);
             });
-            
+
             if (!_isInfinity)
             {
                 rect.y += 5;
@@ -145,7 +169,7 @@ namespace EvolveThisMatch.Core
             EditorGUILayout.BeginVertical(GUI.skin.box);
 
             string foldoutLabel = string.IsNullOrEmpty(_buff.displayName) ? "Buff Template" : _buff.displayName;
-            _isfoldout = EditorGUILayout.Foldout(_isfoldout, foldoutLabel,true);
+            _isfoldout = EditorGUILayout.Foldout(_isfoldout, foldoutLabel, true);
             if (_isfoldout)
             {
                 EditorGUI.indentLevel++;
