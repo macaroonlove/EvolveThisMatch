@@ -7,12 +7,16 @@ namespace EvolveThisMatch.Core
 {
     public class FXAbility : AlwaysAbility
     {
+        private void Awake()
+        {
+            InitializeShaderFX();
+        }
+
         internal override void Initialize(Unit unit)
         {
             base.Initialize(unit);
 
             InitializeParticleFX();
-            InitializeShaderFX();
         }
 
         internal override void Deinitialize()
@@ -140,53 +144,65 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region ºŒ¿Ã¥ı
+        private static readonly Dictionary<string, float> _defaultFX = new Dictionary<string, float>
+        {
+            { "_HologramFade", 0f },
+            { "_FrozenFade", 0f },
+            { "_CamouflageFade", 0f },
+            { "_BurnFade", 0f },
+            { "_PoisonFade", 0f },
+            { "_EnchantedFade", 0f },
+            { "_TextureLayer1Fade", 0f },
+            { "_FullAlphaDissolveFade", 1f },
+            { "_FullGlowDissolveFade", 1f },
+            { "_FullDistortionFade", 1f },
+            { "_WiggleFade", 0f },
+        };
+
         private List<SpriteRenderer> _renderers = new List<SpriteRenderer>();
         private MaterialPropertyBlock _propertyBlock;
         private bool _isDirty;
 
         private void InitializeShaderFX()
         {
+            _renderers.Clear();
             _renderers.AddRange(GetComponentsInChildren<SpriteRenderer>());
-            _propertyBlock = new MaterialPropertyBlock();
 
-            foreach (var renderer in _renderers)
+            if (_propertyBlock == null) _propertyBlock = new MaterialPropertyBlock();
+
+            ResetAllFX();
+        }
+
+        private void ResetAllFX()
+        {
+            _propertyBlock.Clear();
+
+            foreach (var fx in _defaultFX) 
             {
-                renderer?.sharedMaterial?.SetTexture("_MainTex", renderer?.sprite?.texture);
-                renderer?.GetPropertyBlock(_propertyBlock);
-                renderer?.SetPropertyBlock(_propertyBlock);
+                _propertyBlock.SetFloat(fx.Key, fx.Value);
+            }
+
+            ApplyPropertyBlock();
+            _isDirty = false;
+        }
+
+        private void ApplyPropertyBlock()
+        {
+            for (int i = 0; i < _renderers.Count; i++)
+            {
+                var renderer = _renderers[i];
+                if (renderer == null) continue;
+
+                renderer.SetPropertyBlock(_propertyBlock);
             }
         }
 
         private void UpdateShaderFX()
         {
-            if (_isDirty)
-            {
-                foreach (var renderer in _renderers)
-                {
-                    //renderer?.material?.SetTexture("_MainTex", renderer?.sprite?.texture);
-                    renderer?.SetPropertyBlock(_propertyBlock);
-                }
-                _isDirty = false;
-            }
-        }
+            if (!_isDirty) return;
 
-        public void SetShaderKeyword(string keywordName, bool isOn)
-        {
-            if (isOn)
-            {
-                foreach (var renderer in _renderers)
-                {
-                    renderer?.material?.EnableKeyword(keywordName);
-                }
-            }
-            else
-            {
-                foreach (var renderer in _renderers)
-                {
-                    renderer?.material?.DisableKeyword(keywordName);
-                }
-            }
-            _isDirty = true;
+            ApplyPropertyBlock();
+            _isDirty = false;
         }
 
         public void SetShaderProperty(string propertyName, float value)
@@ -237,6 +253,7 @@ namespace EvolveThisMatch.Core
             SetShaderProperty(propertyName, endValue);
         }
         #endregion
+
         #endregion
     }
 }

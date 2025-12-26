@@ -9,14 +9,14 @@ namespace EvolveThisMatch.Core
         public override void Play(Unit target)
         {
             var fxAbility = target.GetAbility<FXAbility>();
-            fxAbility.Fade("_BurnFade", 0.5f, 4.0f, 0.0f);
+            fxAbility.Fade("_BurnEdgeNoiseFactor", 0.5f, 0, -30);
             target.StartCoroutine(CoPlay(fxAbility));
         }
 
         private IEnumerator CoPlay(FXAbility fxAbility)
         {
             yield return new WaitForSeconds(0.5f);
-            fxAbility.SetShaderKeyword("_ENABLEBURN_ON", false);
+            fxAbility.SetShaderProperty("_BurnFade", 0);
         }
     }
 }

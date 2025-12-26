@@ -8,7 +8,7 @@ namespace EvolveThisMatch.Core
         public override void Play(Unit target)
         {
             var fxAbility = target.GetAbility<FXAbility>();
-            fxAbility.SetShaderKeyword("_ENABLEENCHANTED_ON", false);
+            fxAbility.SetShaderProperty("_EnchantedFade", 0);
         }
     }
 }

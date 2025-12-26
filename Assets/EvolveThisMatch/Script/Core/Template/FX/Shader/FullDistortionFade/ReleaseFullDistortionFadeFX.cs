@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -9,7 +8,6 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private int _startDelay;
         [SerializeField] private float _fadeTime;
-        [SerializeField] private int _offDelay;
 
         public override async void Play(Unit target)
         {
@@ -17,8 +15,6 @@ namespace EvolveThisMatch.Core
 
             await UniTask.Delay(_startDelay);
             fxAbility.FadeIn("_FullDistortionFade", _fadeTime);
-            await UniTask.Delay(_offDelay);
-            fxAbility.SetShaderKeyword("_ENABLEFULLDISTORTION_ON", false);
         }
     }
 }

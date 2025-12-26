@@ -8,7 +8,7 @@ namespace EvolveThisMatch.Core
         public override void Play(Unit target)
         {
             var fxAbility = target.GetAbility<FXAbility>();
-            fxAbility.SetShaderKeyword("_ENABLEWIGGLE_ON", false);
+            fxAbility.SetShaderProperty("_WiggleFade", 0);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace EvolveThisMatch.Core
         public override void Play(Unit target)
         {
             var fxAbility = target.GetAbility<FXAbility>();
-            fxAbility.SetShaderKeyword("_ENABLEFULLALPHADISSOLVE_ON", true);
+            fxAbility.SetShaderProperty("_FullAlphaDissolveFade", 0.5f);
         }
     }
 }

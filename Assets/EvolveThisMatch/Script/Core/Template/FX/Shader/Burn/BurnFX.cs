@@ -8,8 +8,8 @@ namespace EvolveThisMatch.Core
         public override void Play(Unit target)
         {
             var fxAbility = target.GetAbility<FXAbility>();
-            fxAbility.SetShaderKeyword("_ENABLEBURN_ON", true);
-            fxAbility.Fade("_BurnFade", 0.5f, 0.0f, 4.0f);
+            fxAbility.SetShaderProperty("_BurnFade", 1);
+            fxAbility.Fade("_BurnEdgeNoiseFactor", 0.5f, -30, 0);
         }
     }
 }

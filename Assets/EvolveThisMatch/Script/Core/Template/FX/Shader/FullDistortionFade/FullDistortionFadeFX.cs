@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -12,7 +11,6 @@ namespace EvolveThisMatch.Core
             var fxAbility = target.GetAbility<FXAbility>();
 
             await UniTask.Delay(100);
-            fxAbility.SetShaderKeyword("_ENABLEFULLDISTORTION_ON", true);
             fxAbility.FadeOut("_FullDistortionFade", 0.5f);
         }
     }

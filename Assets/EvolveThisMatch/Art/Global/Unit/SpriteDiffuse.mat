@@ -13,6 +13,17 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - ETC1_EXTERNAL_ALPHA
+  - _ENABLEBURN_ON
+  - _ENABLECAMOUFLAGE_ON
+  - _ENABLEENCHANTED_ON
+  - _ENABLEFROZEN_ON
+  - _ENABLEFULLALPHADISSOLVE_ON
+  - _ENABLEFULLDISTORTION_ON
+  - _ENABLEFULLGLOWDISSOLVE_ON
+  - _ENABLEHOLOGRAM_ON
+  - _ENABLEPOISON_ON
+  - _ENABLETEXTURELAYER1_ON
+  - _ENABLEWIGGLE_ON
   - _SHADERFADING_NONE
   - _SHADERSPACE_UV
   - _TEXTURELAYER1SHEETTOGGLE_ON
@@ -75,7 +86,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 3, guid: 00000000000000000000000000000000, type: 0}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -188,18 +199,18 @@ Material:
     - _BlackTintPower: 4
     - _Brightness: 1
     - _BumpScale: 1
-    - _BurnEdgeNoiseFactor: 0.05
-    - _BurnFade: 1
-    - _BurnInsideContrast: 2
+    - _BurnEdgeNoiseFactor: 0
+    - _BurnFade: 0
+    - _BurnInsideContrast: 3
     - _BurnInsideNoiseFactor: 0.7
-    - _BurnRadius: 0.4
+    - _BurnRadius: 10
     - _BurnSwirlFactor: 1
-    - _BurnWidth: 0.01
+    - _BurnWidth: 0.3
     - _CamouflageAnimationToggle: 0
     - _CamouflageContrast: 1
     - _CamouflageDensityA: 0.4
     - _CamouflageDensityB: 0.4
-    - _CamouflageFade: 1
+    - _CamouflageFade: 0
     - _CamouflageSmoothnessA: 0.2
     - _CamouflageSmoothnessB: 0.2
     - _CheckerboardDarken: 0.5
@@ -238,8 +249,8 @@ Material:
     - _EnableAlphaTint: 0
     - _EnableBlackTint: 0
     - _EnableBrightness: 0
-    - _EnableBurn: 0
-    - _EnableCamouflage: 0
+    - _EnableBurn: 1.1
+    - _EnableCamouflage: 1.1
     - _EnableCheckerboard: 0
     - _EnableColorReplace: 0
     - _EnableContrast: 0
@@ -247,17 +258,17 @@ Material:
     - _EnableDirectionalAlphaFade: 0
     - _EnableDirectionalDistortion: 0
     - _EnableDirectionalGlowFade: 0
-    - _EnableEnchanted: 0
+    - _EnableEnchanted: 1.1
     - _EnableExternalAlpha: 0
     - _EnableFlame: 0
-    - _EnableFrozen: 0
-    - _EnableFullAlphaDissolve: 0
-    - _EnableFullDistortion: 0
-    - _EnableFullGlowDissolve: 0
+    - _EnableFrozen: 1.1
+    - _EnableFullAlphaDissolve: 1.1
+    - _EnableFullDistortion: 1.1
+    - _EnableFullGlowDissolve: 1.1
     - _EnableGaussianBlur: 0
     - _EnableGlitch: 0
     - _EnableHalftone: 0
-    - _EnableHologram: 0
+    - _EnableHologram: 1.1
     - _EnableHue: 0
     - _EnableInkSpread: 0
     - _EnableInnerOutline: 0
@@ -267,7 +278,7 @@ Material:
     - _EnablePingPongGlow: 0
     - _EnablePixelOutline: 0
     - _EnablePixelate: 0
-    - _EnablePoison: 0
+    - _EnablePoison: 1.1
     - _EnableRainbow: 0
     - _EnableRecolorRGB: 0
     - _EnableRecolorRGBYCP: 0
@@ -290,19 +301,19 @@ Material:
     - _EnableSqueeze: 0
     - _EnableSquish: 0
     - _EnableStrongTint: 0
-    - _EnableTextureLayer1: 0
+    - _EnableTextureLayer1: 1.1
     - _EnableTextureLayer2: 0
     - _EnableUVDistort: 0
     - _EnableUVRotate: 0
     - _EnableUVScale: 0
     - _EnableUVScroll: 0
     - _EnableVibrate: 0
-    - _EnableWiggle: 0
+    - _EnableWiggle: 1.1
     - _EnableWind: 0
     - _EnableWorldTiling: 0
     - _EnchantedBrightness: 1
     - _EnchantedContrast: 0.5
-    - _EnchantedFade: 1
+    - _EnchantedFade: 0
     - _EnchantedLerpToggle: 0
     - _EnchantedRainbowDensity: 0.5
     - _EnchantedRainbowSaturation: 0.8
@@ -319,15 +330,15 @@ Material:
     - _FlameRadius: 0.2
     - _FlameSmooth: 2
     - _FrozenContrast: 2
-    - _FrozenFade: 1
+    - _FrozenFade: 0
     - _FrozenHighlightContrast: 2
     - _FrozenHighlightDensity: 1
     - _FrozenSnowContrast: 1
     - _FrozenSnowDensity: 0.25
-    - _FullAlphaDissolveFade: 0.5
+    - _FullAlphaDissolveFade: 1
     - _FullAlphaDissolveWidth: 10
     - _FullDistortionFade: 1
-    - _FullGlowDissolveFade: 0.5
+    - _FullGlowDissolveFade: 1
     - _FullGlowDissolveWidth: 0.5
     - _GaussianBlurFade: 1
     - _GaussianBlurOffset: 0.5
@@ -347,7 +358,7 @@ Material:
     - _HologramDistortionOffset: 0.5
     - _HologramDistortionScale: 10
     - _HologramDistortionSpeed: 2
-    - _HologramFade: 1
+    - _HologramFade: 0
     - _HologramLineFrequency: 500
     - _HologramLineGap: 3
     - _HologramLineSpeed: 0.01
@@ -398,7 +409,7 @@ Material:
     - _PixelatePixelsPerUnit: 100
     - _PixelsPerUnit: 100
     - _PoisonDensity: 3
-    - _PoisonFade: 1
+    - _PoisonFade: 0
     - _PoisonNoiseBrightness: 2
     - _PoisonRecolorFactor: 0.5
     - _PoisonShiftSpeed: 0.2
@@ -464,7 +475,7 @@ Material:
     - _SmokeVertexSeed: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SourceAlphaDissolveFade: 1
+    - _SourceAlphaDissolveFade: -1.95
     - _SourceAlphaDissolveInvert: 0
     - _SourceAlphaDissolveNoiseFactor: 0.2
     - _SourceAlphaDissolveWidth: 0.2
@@ -500,7 +511,7 @@ Material:
     - _TextureLayer1Contrast: 1
     - _TextureLayer1ContrastToggle: 0
     - _TextureLayer1EdgeClip: 0.005
-    - _TextureLayer1Fade: 1
+    - _TextureLayer1Fade: 0
     - _TextureLayer1Rows: 3
     - _TextureLayer1ScrollToggle: 0
     - _TextureLayer1SheetToggle: 1
@@ -537,7 +548,7 @@ Material:
     - _VibrateFrequency: 100
     - _VibrateOffset: 0.04
     - _VibrateRotation: 4
-    - _WiggleFade: 1
+    - _WiggleFade: 0
     - _WiggleFixedGroundToggle: 0
     - _WiggleFrequency: 2
     - _WiggleOffset: 0.02
@@ -563,11 +574,11 @@ Material:
     - _AlphaTintColor: {r: 95.87451, g: 5.019608, b: 95.87451, a: 0}
     - _BlackTintColor: {r: 0, g: 0, b: 1, a: 0}
     - _BurnEdgeColor: {r: 11.98431, g: 1.129412, b: 0.1254902, a: 0}
-    - _BurnEdgeNoiseScale: {r: 0.03, g: 0.03, b: 0, a: 0}
+    - _BurnEdgeNoiseScale: {r: 0.2, g: 0.2, b: 0, a: 0}
     - _BurnInsideColor: {r: 0.75, g: 0.5625, b: 0.525, a: 0}
     - _BurnInsideNoiseColor: {r: 3084.047, g: 257.0039, b: 0, a: 0}
     - _BurnInsideNoiseScale: {r: 3, g: 3, b: 0, a: 0}
-    - _BurnPosition: {r: 0, g: -0.1, b: 0, a: 0}
+    - _BurnPosition: {r: 0, g: 0, b: 0, a: 0}
     - _BurnSwirlNoiseScale: {r: 0.1, g: 0.1, b: 0, a: 0}
     - _CamouflageBaseColor: {r: 0.7450981, g: 0.7254902, b: 0.5686274, a: 0}
     - _CamouflageColorA: {r: 0.62745106, g: 0.5882353, b: 0.43137258, a: 0}
@@ -684,7 +695,7 @@ Material:
     - _SqueezeScale: {r: 2, g: 0, b: 0, a: 0}
     - _StrongTintTint: {r: 1, g: 1, b: 1, a: 1}
     - _TextureLayer1Color: {r: 0.4494117, g: 1.298301, b: 2.996079, a: 1}
-    - _TextureLayer1Offset: {r: 0, g: 0.75, b: 0, a: 0}
+    - _TextureLayer1Offset: {r: 0, g: 0, b: 0, a: 0}
     - _TextureLayer1Scale: {r: 1, g: 1, b: 0, a: 0}
     - _TextureLayer1ScrollSpeed: {r: 0, g: 1, b: 0, a: 0}
     - _TextureLayer2Color: {r: 0.4494117, g: 1.298301, b: 2.996079, a: 1}

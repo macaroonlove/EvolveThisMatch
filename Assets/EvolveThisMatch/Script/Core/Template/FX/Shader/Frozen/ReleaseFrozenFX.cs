@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace EvolveThisMatch.Core
@@ -10,13 +9,6 @@ namespace EvolveThisMatch.Core
         {
             var fxAbility = target.GetAbility<FXAbility>();
             fxAbility.FadeOut("_FrozenFade", 0.5f);
-            target.StartCoroutine(CoPlay(fxAbility));
-        }
-
-        private IEnumerator CoPlay(FXAbility fxAbility)
-        {
-            yield return new WaitForSeconds(0.5f);
-            fxAbility.SetShaderKeyword("_ENABLEFROZEN_ON", false);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace EvolveThisMatch.Core
         public override void Play(Unit target)
         {
             var fxAbility = target.GetAbility<FXAbility>();
-            fxAbility.SetShaderKeyword("_ENABLETEXTURELAYER1_ON", true);
+            fxAbility.SetShaderProperty("_TextureLayer1Fade", 1);
         }
     }
 }
