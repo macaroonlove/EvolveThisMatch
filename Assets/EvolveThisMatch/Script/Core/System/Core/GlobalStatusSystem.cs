@@ -55,35 +55,25 @@ namespace EvolveThisMatch.Core
         {
             if (this == null || gameObject == null || template == null) return;
 
-            var isContained = false;
-
+            // 이미 포함되어 있다면
             if (statusDic.ContainsKey(template))
             {
-                isContained = true;
-
                 var instance = statusDic[template];
+
+                // 더 효과가 길게 유지된다면 최신화
                 if (instance.IsOld(duration))
                 {
                     instance.duration = duration;
                     instance.startTime = Time.time;
                 }
-                else
-                {
-                    return;
-                }
+
+                return;
             }
 
-            AddStatus(template, duration, isContained, context);
-        }
-
-        /// <summary>
-        /// 전역 상태 추가
-        /// </summary>
-        private void AddStatus(GlobalStatusTemplate template, float duration, bool isContained, EffectContext context)
-        {
+            // 포함되어 있지 않다면 생성
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 
-            // 무한지속이 아니라면
+            // 무한지속이 아니라면 코루틴 생성
             if (duration != int.MaxValue)
             {
                 var corutine = StartCoroutine(CoStatus(statusInstance, template));
@@ -96,26 +86,9 @@ namespace EvolveThisMatch.Core
             statusList.Add(template);
 #endif
 
-            // 전역 상태 적용 (동일한 전역 상태는 중복되지 않음)
-            if (isContained == false)
-            {
-                ExecuteApplyFX(template);
-                string displayName = template.displayName;
+            ExecuteApplyFX(template);
 
-                foreach (var effect in template.effects)
-                {
-                    #region 전투력
-                    if (AddDataEffect(effect, context, displayName, _atkIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _atkMultiplierDataEffects)) continue;
-                    #endregion
-
-                    #region 골드 획득량
-                    if (AddDataEffect(effect, context, _goldGainAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _goldGainIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _goldGainMultiplierDataEffects)) continue;
-                    #endregion
-                }
-            }
+            AddStatus(template, context);
         }
 
         #region 전역 상태 유지시간 관리
@@ -141,7 +114,49 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        #region 전역 상태 제거
+        #region 전역 상태 효과 추가/제거
+        /// <summary>
+        /// 전역 상태 추가
+        /// </summary>
+        private void AddStatus(GlobalStatusTemplate template, EffectContext context)
+        {
+            string displayName = template.displayName;
+
+            foreach (var effect in template.effects)
+            {
+                #region 전투력
+                if (AddDataEffect(effect, context, displayName, _atkIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _atkMultiplierDataEffects)) continue;
+                #endregion
+
+                #region 골드 획득량
+                if (AddDataEffect(effect, context, _goldGainAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _goldGainIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _goldGainMultiplierDataEffects)) continue;
+                #endregion
+            }
+        }
+
+        /// <summary>
+        /// 전역 상태 제거
+        /// </summary>
+        private void RemoveStatus(List<Effect> effects)
+        {
+            foreach (var effect in effects)
+            {
+                #region 전투력
+                if (RemoveDataEffect(effect, _atkIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _atkMultiplierDataEffects)) continue;
+                #endregion
+
+                #region 골드 획득량
+                if (RemoveDataEffect(effect, _goldGainAdditionalDataEffects)) continue;
+                if (RemoveDataEffect(effect, _goldGainIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _goldGainMultiplierDataEffects)) continue;
+                #endregion
+            }
+        }
+
         /// <summary>
         /// 모든 전역 상태 제거
         /// </summary>
@@ -167,26 +182,6 @@ namespace EvolveThisMatch.Core
 #if UNITY_EDITOR
             statusList.Clear();
 #endif
-        }
-
-        /// <summary>
-        /// 전역 상태 제거
-        /// </summary>
-        private void RemoveStatus(List<Effect> effects)
-        {
-            foreach (var effect in effects)
-            {
-                #region 전투력
-                if (RemoveDataEffect(effect, _atkIncreaseDataEffects)) continue;
-                if (RemoveDataEffect(effect, _atkMultiplierDataEffects)) continue;
-                #endregion
-
-                #region 골드 획득량
-                if (RemoveDataEffect(effect, _goldGainAdditionalDataEffects)) continue;
-                if (RemoveDataEffect(effect, _goldGainIncreaseDataEffects)) continue;
-                if (RemoveDataEffect(effect, _goldGainMultiplierDataEffects)) continue;
-                #endregion
-            }
         }
         #endregion
 

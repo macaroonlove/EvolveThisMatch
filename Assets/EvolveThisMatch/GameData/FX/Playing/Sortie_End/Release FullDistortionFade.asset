@@ -14,4 +14,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startDelay: 500
   _fadeTime: 0.5
-  _offDelay: 500

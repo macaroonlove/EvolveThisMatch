@@ -125,15 +125,15 @@ namespace EvolveThisMatch.Editor
         {
             var menu = new GenericMenu();
 
-            #region Immutable
+            #region °ñµå
             menu.AddItem(new GUIContent("°ñµå Ãß°¡ È¹µæ"), false, CreateEffectCallback, typeof(GoldGainAdditionalDataEffect));
             menu.AddItem(new GUIContent("°ñµå È¹µæ·® Áõ°¨"), false, CreateEffectCallback, typeof(GoldGainIncreaseDataEffect));
             menu.AddItem(new GUIContent("°ñµå È¹µæ·® »ó½Â¡¤ÇÏ¶ô"), false, CreateEffectCallback, typeof(GoldGainMultiplierDataEffect));
             #endregion
 
-            #region Mutable
-            //menu.AddItem(new GUIContent("°ø°Ý·Â °¡º¯ Áõ°¨"), false, CreateEffectCallback, typeof(ATKIncreaseMutableDataEffect));
-            //menu.AddItem(new GUIContent("°ø°Ý·Â °¡º¯ »ó½Â¡¤ÇÏ¶ô"), false, CreateEffectCallback, typeof(ATKMultiplierMutableDataEffect));
+            #region ÀüÅõ·Â
+            menu.AddItem(new GUIContent("ÀüÅõ·Â Áõ°¨"), false, CreateEffectCallback, typeof(ATKIncreaseDataEffect));
+            menu.AddItem(new GUIContent("ÀüÅõ·Â »ó½Â¡¤ÇÏ¶ô"), false, CreateEffectCallback, typeof(ATKMultiplierDataEffect));
             #endregion
 
             menu.ShowAsContext();

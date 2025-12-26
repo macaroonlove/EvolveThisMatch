@@ -186,55 +186,46 @@ namespace EvolveThisMatch.Core
 
         public void ApplyBuff(BuffTemplate template, float duration, EffectContext context)
         {
-            if (this == null || gameObject == null) return;
+            if (this == null || gameObject == null || template == null) return;
 
-            var isContained = false;
-
+            // 이미 포함되어 있다면
             if (statusDic.ContainsKey(template))
             {
-                isContained = true;
-
                 var instance = statusDic[template];
+
+                // 더 효과가 길게 유지된다면 최신화
                 if (instance.IsOld(duration))
                 {
                     instance.duration = duration;
                     instance.startTime = Time.time;
+                }
 
-                    if (template.useAttackCountLimit)
-                    {
-                        instance.useCountLimit = true;
-                        instance.count = template.attackCount;
-                    }
-                    return;
-                }
-                else
+                // 공격 시, 버프가 해제되야 한다면 횟수 초기화
+                if (template.useAttackCountLimit)
                 {
-                    return;
+                    instance.useCountLimit = true;
+                    instance.count = template.attackCount;
                 }
+
+                return;
             }
 
             if (template.delay > 0)
-            {
-                StartCoroutine(CoAddStatus(template, duration, isContained, context));
-            }
+                StartCoroutine(CoAddStatus(template, duration, context));
             else
-            {
-                AddStatus(template, duration, isContained, context);
-            }
+                AddInstance(template, duration, context);
         }
 
-        private IEnumerator CoAddStatus(BuffTemplate template, float duration, bool isContained, EffectContext context)
+        private IEnumerator CoAddStatus(BuffTemplate template, float duration, EffectContext context)
         {
             yield return new WaitForSeconds(template.delay);
-            AddStatus(template, duration, isContained, context);
+            AddInstance(template, duration, context);
         }
 
         #region 버프 추가
-        /// <summary>
-        /// 버프 추가
-        /// </summary>
-        private void AddStatus(BuffTemplate template, float duration, bool isContained, EffectContext context)
+        private void AddInstance(BuffTemplate template, float duration, EffectContext context)
         {
+            // 포함되어 있지 않다면 생성
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 
             // 무한지속이 아니라면
@@ -244,7 +235,7 @@ namespace EvolveThisMatch.Core
                 statusInstance.corutine = corutine;
             }
 
-            // 공격시 상태이상이 해제되야 한다면
+            // 공격 시, 버프가 해제되야 한다면 횟수 초기화
             if (template.useAttackCountLimit)
             {
                 statusInstance.useCountLimit = true;
@@ -257,117 +248,121 @@ namespace EvolveThisMatch.Core
             statusList.Add(template);
 #endif
 
-            // 버프 효과 적용 (동일한 버프 효과는 중복되지 않음)
-            if (isContained == false)
+            AddStatus(template, context);
+        }
+
+        /// <summary>
+        /// 버프 추가
+        /// </summary>
+        private void AddStatus(BuffTemplate template, EffectContext context)
+        {
+            ExecuteApplyFX(template);
+            string displayName = template.displayName;
+
+            foreach (var effect in template.effects)
             {
-                ExecuteApplyFX(template);
-                string displayName = template.displayName;
+                #region 이동
+                if (AddDataEffect(effect, context, _moveIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _moveMultiplierDataEffects)) continue;
+                #endregion
 
-                foreach (var effect in template.effects)
-                {
-                    #region 이동
-                    if (AddDataEffect(effect, context, _moveIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _moveMultiplierDataEffects)) continue;
-                    #endregion
+                #region 전투력
+                if (AddDataEffect(effect, context, displayName, _atkAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _atkIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _atkMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 전투력
-                    if (AddDataEffect(effect, context, displayName, _atkAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _atkIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _atkMultiplierDataEffects)) continue;
-                    #endregion
+                #region 공격 관련
+                // 공격 횟수
+                if (AddDataEffect(effect, context, _attackCountAdditionalDataEffects)) continue;
+                // 공격 간격
+                if (AddDataEffect(effect, context, displayName, _attackSpeedIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _attackSpeedMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 공격 관련
-                    // 공격 횟수
-                    if (AddDataEffect(effect, context, _attackCountAdditionalDataEffects)) continue;
-                    // 공격 간격
-                    if (AddDataEffect(effect, context, displayName, _attackSpeedIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _attackSpeedMultiplierDataEffects)) continue;
-                    #endregion
+                #region 회피
+                if (AddDataEffect(effect, context, _avoidanceAdditionalDataEffects)) continue;
+                #endregion
 
-                    #region 회피
-                    if (AddDataEffect(effect, context, _avoidanceAdditionalDataEffects)) continue;
-                    #endregion
+                #region 물리 관통력
+                if (AddDataEffect(effect, context, _physicalPenetrationAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _physicalPenetrationIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _physicalPenetrationMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 물리 관통력
-                    if (AddDataEffect(effect, context, _physicalPenetrationAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _physicalPenetrationIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _physicalPenetrationMultiplierDataEffects)) continue;
-                    #endregion
+                #region 물리 저항력
+                if (AddDataEffect(effect, context, displayName, _physicalResistanceAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _physicalResistanceIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _physicalResistanceMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 물리 저항력
-                    if (AddDataEffect(effect, context, displayName, _physicalResistanceAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _physicalResistanceIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _physicalResistanceMultiplierDataEffects)) continue;
-                    #endregion
+                #region 마법 관통력
+                if (AddDataEffect(effect, context, _magicPenetrationAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _magicPenetrationIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _magicPenetrationMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 마법 관통력
-                    if (AddDataEffect(effect, context, _magicPenetrationAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _magicPenetrationIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _magicPenetrationMultiplierDataEffects)) continue;
-                    #endregion
+                #region 마법 저항력
+                if (AddDataEffect(effect, context, displayName, _magicResistanceAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _magicResistanceIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _magicResistanceMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 마법 저항력
-                    if (AddDataEffect(effect, context, displayName, _magicResistanceAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _magicResistanceIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _magicResistanceMultiplierDataEffects)) continue;
-                    #endregion
+                #region 피해량
+                if (AddDataEffect(effect, context, _damageAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _damageIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _damageMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 피해량
-                    if (AddDataEffect(effect, context, _damageAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _damageIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _damageMultiplierDataEffects)) continue;
-                    #endregion
+                #region 받는 피해량
+                if (AddDataEffect(effect, context, _receiveDamageAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _receiveDamageIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _receiveDamageMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 받는 피해량
-                    if (AddDataEffect(effect, context, _receiveDamageAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _receiveDamageIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _receiveDamageMultiplierDataEffects)) continue;
-                    #endregion
+                #region 치명타
+                // 치명타 확률
+                if (AddDataEffect(effect, context, _criticalHitChanceAdditionalDataEffects)) continue;
 
-                    #region 치명타
-                    // 치명타 확률
-                    if (AddDataEffect(effect, context, _criticalHitChanceAdditionalDataEffects)) continue;
+                // 치명타 데미지
+                if (AddDataEffect(effect, context, _criticalHitDamageAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _criticalHitDamageIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _criticalHitDamageMultiplierDataEffects)) continue;
+                #endregion
 
-                    // 치명타 데미지
-                    if (AddDataEffect(effect, context, _criticalHitDamageAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _criticalHitDamageIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _criticalHitDamageMultiplierDataEffects)) continue;
-                    #endregion
+                #region 최대 체력
+                if (AddDataEffect(effect, context, _maxHPAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _maxHPIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _maxHPMultiplierDataEffects)) continue;
+                #endregion
 
-                    #region 최대 체력
-                    if (AddDataEffect(effect, context, _maxHPAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _maxHPIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _maxHPMultiplierDataEffects)) continue;
-                    #endregion
+                #region 회복
+                // 회복량
+                if (AddDataEffect(effect, context, _healingAdditionalDataEffects)) continue;
+                if (AddDataEffect(effect, context, _healingIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _healingMultiplierDataEffects)) continue;
 
-                    #region 회복
-                    // 회복량
-                    if (AddDataEffect(effect, context, _healingAdditionalDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _healingIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _healingMultiplierDataEffects)) continue;
+                // 최대 체력 비례 초당 체력 회복량
+                if (AddDataEffect(effect, context, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
+                #endregion
 
-                    // 최대 체력 비례 초당 체력 회복량
-                    if (AddDataEffect(effect, context, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
-                    #endregion
+                #region 상태이상 저항력
+                if (AddDataEffect(effect, context, _abnormalStatusResistanceAdditionalDataEffects)) continue;
+                #endregion
 
-                    #region 상태이상 저항력
-                    if (AddDataEffect(effect, context, _abnormalStatusResistanceAdditionalDataEffects)) continue;
-                    #endregion
+                #region 스킬 가속
+                if (AddDataEffect(effect, context, displayName, _skillCooldownIncreaseDataEffects)) continue;
+                #endregion
 
-                    #region 스킬 가속
-                    if (AddDataEffect(effect, context, displayName, _skillCooldownIncreaseDataEffects)) continue;
-                    #endregion
+                #region Set
+                if (AddDataEffect(effect, _setMinHPEffects)) continue;
+                if (AddDataEffect(effect, _setAttackTypeEffects)) continue;
+                if (AddDataEffect(effect, _setDamageTypeEffects)) continue;
+                #endregion
 
-                    #region Set
-                    if (AddDataEffect(effect, _setMinHPEffects)) continue;
-                    if (AddDataEffect(effect, _setAttackTypeEffects)) continue;
-                    if (AddDataEffect(effect, _setDamageTypeEffects)) continue;
-                    #endregion
-
-                    #region Unable
-                    if (AddDataEffect(effect, _unableToTargetOfAttackEffects)) continue;
-                    #endregion
-                }
+                #region Unable
+                if (AddDataEffect(effect, _unableToTargetOfAttackEffects)) continue;
+                #endregion
             }
         }
         #endregion
@@ -475,7 +470,7 @@ namespace EvolveThisMatch.Core
         }
 
         /// <summary>
-        /// 버프 제거
+        /// 버프 효과 제거
         /// </summary>
         private void RemoveStatus(List<Effect> effects)
         {

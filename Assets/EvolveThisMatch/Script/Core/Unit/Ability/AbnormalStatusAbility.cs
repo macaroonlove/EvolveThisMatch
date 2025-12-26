@@ -87,59 +87,49 @@ namespace EvolveThisMatch.Core
 
         internal void ApplyAbnormalStatus(AbnormalStatusTemplate template, float duration, EffectContext context)
         {
-            if (this == null || gameObject == null) return;
+            if (this == null || gameObject == null || template == null) return;
 
-            if (Random.value < finalAbnormalStatusResistance)
-            {
-                return;
-            }
+            // 상태이상 저항율을 넘지 못하면 반환
+            if (Random.value < finalAbnormalStatusResistance) return;
 
-            var isContained = false;
-
+            // 이미 포함되어 있다면
             if (statusDic.ContainsKey(template))
             {
-                isContained = true;
-
                 var instance = statusDic[template];
+
+                // 더 효과가 길게 유지된다면 최신화
                 if (instance.IsOld(duration))
                 {
                     instance.duration = duration;
                     instance.startTime = Time.time;
+                }
 
-                    if (template.useHitCountLimit)
-                    {
-                        instance.useCountLimit = true;
-                        instance.count = template.hitCount;
-                    }
-                    return;
-                }
-                else
+                // 피격 시, 상태이상이 해제되야 한다면 횟수 초기화
+                if (template.useHitCountLimit)
                 {
-                    return;
+                    instance.useCountLimit = true;
+                    instance.count = template.hitCount;
                 }
+
+                return;
             }
 
             if (template.delay > 0)
-            {
-                StartCoroutine(CoAddStatus(template, duration, isContained, context));
-            }
+                StartCoroutine(CoAddStatus(template, duration, context));
             else
-            {
-                AddStatus(template, duration, isContained, context);
-            }
+                AddInstance(template, duration, context);
         }
 
-        private IEnumerator CoAddStatus(AbnormalStatusTemplate template, float duration, bool isContained, EffectContext context)
+        private IEnumerator CoAddStatus(AbnormalStatusTemplate template, float duration, EffectContext context)
         {
             yield return new WaitForSeconds(template.delay);
-            AddStatus(template, duration, isContained, context);
+            AddInstance(template, duration, context);
         }
 
-        /// <summary>
-        /// 상태이상 추가
-        /// </summary>
-        private void AddStatus(AbnormalStatusTemplate template, float duration, bool isContained, EffectContext context)
+        #region 상태이상 추가
+        private void AddInstance(AbnormalStatusTemplate template, float duration, EffectContext context)
         {
+            // 포함되어 있지 않다면 생성
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 
             // 무한지속이 아니라면
@@ -149,7 +139,7 @@ namespace EvolveThisMatch.Core
                 statusInstance.corutine = corutine;
             }
 
-            // 피격시 상태이상이 해제되야 한다면
+            // 피격 시, 상태이상이 해제되야 한다면 횟수 초기화
             if (template.useHitCountLimit)
             {
                 statusInstance.useCountLimit = true;
@@ -162,32 +152,38 @@ namespace EvolveThisMatch.Core
             statusList.Add(template);
 #endif
 
-            // 상태이상 효과 적용 (동일한 상태이상 효과는 중복되지 않음)
-            if (isContained == false)
-            {
-                ExecuteApplyFX(template);
-                string displayName = template.displayName;
-
-                foreach (var effect in template.effects)
-                {
-                    #region Data
-                    if (AddDataEffect(effect, context, _moveIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _physicalResistanceIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, displayName, _magicResistanceIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _receiveDamageIncreaseDataEffects)) continue;
-                    if (AddDataEffect(effect, context, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
-                    #endregion
-
-                    #region Unable
-                    if (AddDataEffect(effect, _unableToMoveEffects)) continue;
-                    if (AddDataEffect(effect, _unableToAttackEffects)) continue;
-                    if (AddDataEffect(effect, _unableToHealEffects)) continue;
-                    if (AddDataEffect(effect, _unableToSkillEffects)) continue;
-                    #endregion
-                }
-            }
+            AddStatus(template, context);
         }
 
+        /// <summary>
+        /// 상태이상 추가
+        /// </summary>
+        private void AddStatus(AbnormalStatusTemplate template, EffectContext context)
+        {
+            ExecuteApplyFX(template);
+            string displayName = template.displayName;
+
+            foreach (var effect in template.effects)
+            {
+                #region Data
+                if (AddDataEffect(effect, context, _moveIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _physicalResistanceIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, displayName, _magicResistanceIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _receiveDamageIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _hpRecoveryPerSecByMaxHPIncreaseDataEffects)) continue;
+                #endregion
+
+                #region Unable
+                if (AddDataEffect(effect, _unableToMoveEffects)) continue;
+                if (AddDataEffect(effect, _unableToAttackEffects)) continue;
+                if (AddDataEffect(effect, _unableToHealEffects)) continue;
+                if (AddDataEffect(effect, _unableToSkillEffects)) continue;
+                #endregion
+            }
+        }
+        #endregion
+
+        #region 상태이상 유지시간 관리
         private IEnumerator CoStatus(StatusInstance statusInstance, AbnormalStatusTemplate template)
         {
             while (statusInstance.IsCompete == false)
@@ -208,6 +204,7 @@ namespace EvolveThisMatch.Core
                 ExecuteRemoveFX(template);
             }
         }
+        #endregion
 
         #region 콜백 메서드
         private void RemoveStatusByHit()
@@ -276,8 +273,9 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+        #region 상태이상 제거
         /// <summary>
-        /// 상태이상 제거
+        /// 상태이상 효과 제거
         /// </summary>
         private void RemoveStatus(List<Effect> effects)
         {
@@ -299,6 +297,7 @@ namespace EvolveThisMatch.Core
                 #endregion
             }
         }
+        #endregion
 
         #region 유틸리티 메서드
         #region 이펙트 추가
