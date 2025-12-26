@@ -1,6 +1,8 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.Editor;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,6 +19,9 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
+        [Header("이벤트")]
+        [SerializeField, Label("고서 데이터 변경 시")] protected GameEvent _tomeDataChangedGameEvent;
+
         protected Transform _parent;
         protected List<UITomeListItem> _tomeListItems;
         protected List<TomeTemplate> _tomeTemplates;
@@ -30,6 +35,8 @@ namespace EvolveThisMatch.Lobby
             BindObject(typeof(Objects));
 
             _parent = GetObject((int)Objects.Content).transform;
+
+            _tomeDataChangedGameEvent.AddListener(RefreshTomeListItem);
         }
 
         internal void InitializeItem()
@@ -66,7 +73,7 @@ namespace EvolveThisMatch.Lobby
 
             Destroy(tomeListItem.gameObject);
 
-            RegistTomeListItem();
+            RefreshTomeListItem();
         }
 
         private void ChangeTome(UITomeListItem item)
@@ -81,8 +88,46 @@ namespace EvolveThisMatch.Lobby
             // 모든 아이템 선택 취소
             foreach (var item in _tomeListItems) item.DeSelectItem();
         }
+        #endregion
 
-        internal void RegistTomeListItem()
+        #region 대여/반납
+        internal void RentTome(int index)
+        {
+            int finalIndex = index;
+            for (int i = index + 1; i < _tomeListItems.Count; i++)
+            {
+                if (!_tomeListItems[i].isEquip)
+                {
+                    finalIndex = i;
+                    break;
+                }
+            }
+
+            if (finalIndex == index)
+            {
+                for (int i = index - 1; i >= 0; i--)
+                {
+                    if (!_tomeListItems[i].isEquip)
+                    {
+                        finalIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            _tomeListItems[finalIndex].SelectItem();
+        }
+
+        internal void ReturnTome(int index)
+        {
+            if (index == -1) return;
+
+            _tomeListItems[index].Show();
+        }
+        #endregion
+
+        #region 리스트 갱신
+        private void RefreshTomeListItem()
         {
             var ownedTomes = SaveManager.Instance.itemData.ownedTomes;
             var equipTomes = SaveManager.Instance.formationData.equipTomes;
@@ -114,39 +159,5 @@ namespace EvolveThisMatch.Lobby
             }
         }
         #endregion
-
-        internal void RentTome(int index)
-        {
-            int finalIndex = index;
-            for (int i = index + 1; i < _tomeListItems.Count; i++) 
-            {
-                if (!_tomeListItems[i].isEquip)
-                {
-                    finalIndex = i;
-                    break;
-                }
-            }
-
-            if (finalIndex == index)
-            {
-                for (int i = index - 1; i >= 0; i--)
-                {
-                    if (!_tomeListItems[i].isEquip)
-                    {
-                        finalIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            _tomeListItems[finalIndex].SelectItem();
-        }
-
-        internal void ReturnTome(int index)
-        {
-            if (index == -1) return;
-
-            _tomeListItems[index].Show();
-        }
     }
 }

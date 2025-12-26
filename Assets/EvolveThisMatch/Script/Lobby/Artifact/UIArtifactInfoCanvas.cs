@@ -2,7 +2,6 @@ using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using TMPro;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -26,12 +25,9 @@ namespace EvolveThisMatch.Lobby
         private Image _icon;
 
         private EffectContext _effectContext;
-        private UnityAction _action;
 
-        internal void Initialize(UnityAction action = null)
+        protected override void Initialize()
         {
-            _action = action;
-
             BindText(typeof(Texts));
             BindImage(typeof(Images));
 

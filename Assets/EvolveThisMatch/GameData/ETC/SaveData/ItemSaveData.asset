@@ -15,4 +15,5 @@ MonoBehaviour:
   _data:
     ownedArtifacts: []
     ownedTomes: []
-    equipTomes: ffffffffffffffffffffffff
+  _artifactDataChangedGameEvent: {fileID: 11400000, guid: 1ec1ef599eae4f04e8c79906fe26df1b, type: 2}
+  _tomeDataChangedGameEvent: {fileID: 11400000, guid: 1e4a45ee8a3d0ca4dbd3453f23442f55, type: 2}

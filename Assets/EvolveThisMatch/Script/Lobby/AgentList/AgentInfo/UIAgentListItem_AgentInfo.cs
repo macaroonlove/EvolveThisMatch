@@ -85,7 +85,7 @@ namespace EvolveThisMatch.Lobby
             else
             {
                 _counterText.text = $"{unitCount}/{maxUnitCount}";
-                _counterImage.fillAmount = unitCount / maxUnitCount;
+                _counterImage.fillAmount = unitCount / (float)maxUnitCount;
             }
 
             _dim.enabled = false;

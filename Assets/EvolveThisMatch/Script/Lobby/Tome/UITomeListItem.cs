@@ -83,7 +83,7 @@ namespace EvolveThisMatch.Lobby
             else
             {
                 _counterText.text = $"{tomeCount}/{maxTomeCount}";
-                _counterImage.fillAmount = tomeCount / maxTomeCount;
+                _counterImage.fillAmount = tomeCount / (float)maxTomeCount;
             }
         }
 

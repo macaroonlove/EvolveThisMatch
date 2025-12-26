@@ -1,6 +1,4 @@
-using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
-using FrameWork.UI;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine;
@@ -104,7 +102,7 @@ namespace EvolveThisMatch.Lobby
                 _tierGroups[0].Show(_owned.tier);
                 _tierGroups[1].Show(_owned.tier + 1);
             }
-            
+
             for (int i = 0; i < _tierAdvantageItems.Length; i++)
             {
                 _tierAdvantageItems[i].ShowItem(i < tier);

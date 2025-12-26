@@ -1,7 +1,9 @@
 using DG.Tweening;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.Editor;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,9 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
+        [Header("이벤트")]
+        [SerializeField, Label("유닛 데이터 변경 시")] protected GameEvent _agentDataChangedGameEvent;
+
         protected Transform _parent;
         protected List<UIAgentListItem> _agentListItems;
         protected List<AgentTemplate> _agentTemplates;
@@ -35,6 +40,8 @@ namespace EvolveThisMatch.Lobby
             BindObject(typeof(Objects));
 
             _parent = GetObject((int)Objects.Content).transform;
+
+            _agentDataChangedGameEvent.AddListener(RefreshAgentListItem);
         }
 
         protected void Start()
@@ -77,33 +84,9 @@ namespace EvolveThisMatch.Lobby
 
             _action?.Invoke(template, owned);
         }
-
-        internal void RegistAgentListItem()
-        {
-            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
-            int count = _agentTemplates.Count;
-
-            // 보유한 유닛의 아이디
-            var ownedAgentDic = ownedAgents.ToDictionary(a => a.id);
-
-            for (int i = 0; i < count; i++)
-            {
-                var template = _agentTemplates[i];
-
-                if (ownedAgentDic.TryGetValue(template.id, out var owned))
-                {
-                    // 보유한 유닛 → level, unitCount 전달
-                    _agentListItems[i].Show(template, owned);
-                }
-                else
-                {
-                    // 미보유 유닛
-                    _agentListItems[i].Show(template, null);
-                }
-            }
-        }
         #endregion
 
+        #region 필터 정렬
         protected virtual void ChangeFilterOrder(int index)
         {
             _filterIndex = index;
@@ -129,7 +112,7 @@ namespace EvolveThisMatch.Lobby
                     break;
             }
 
-            RegistAgentListItem();
+            RefreshAgentListItem();
 
             _parent.DOLocalMoveY(0, 0.1f);
         }
@@ -151,5 +134,33 @@ namespace EvolveThisMatch.Lobby
                     .ToList();
             }
         }
+        #endregion
+
+        #region 리스트 갱신
+        private void RefreshAgentListItem()
+        {
+            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
+            int count = _agentTemplates.Count;
+
+            // 보유한 유닛의 아이디
+            var ownedAgentDic = ownedAgents.ToDictionary(a => a.id);
+
+            for (int i = 0; i < count; i++)
+            {
+                var template = _agentTemplates[i];
+
+                if (ownedAgentDic.TryGetValue(template.id, out var owned))
+                {
+                    // 보유한 유닛 → level, unitCount 전달
+                    _agentListItems[i].Show(template, owned);
+                }
+                else
+                {
+                    // 미보유 유닛
+                    _agentListItems[i].Show(template, null);
+                }
+            }
+        }
+        #endregion
     }
 }

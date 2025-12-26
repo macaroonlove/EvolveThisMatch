@@ -306,6 +306,14 @@ namespace EvolveThisMatch.Lobby
 
         private void PickUpAfter(string[] rewards)
         {
+            var profileData = SaveManager.Instance.profileData;
+            var agentData = SaveManager.Instance.agentData;
+            var itemData = SaveManager.Instance.itemData;
+            
+            agentData.BeginAddAgentBatch();
+            itemData.BeginAddAartifactBatch();
+            itemData.BeginAddTomeBatch();
+
             foreach (var reward in rewards)
             {
                 var parts = reward.Split('_');
@@ -314,19 +322,19 @@ namespace EvolveThisMatch.Lobby
 
                 if (type == "Agent")
                 {
-                    SaveManager.Instance.agentData.AddAgent(id);
+                    agentData.AddAgent(id);
                 }
                 else if (type == "Artifact")
                 {
-                    SaveManager.Instance.itemData.AddArtifact(id);
+                    itemData.AddArtifact(id);
                 }
                 else if (type == "Tome")
                 {
-                    SaveManager.Instance.itemData.AddTome(id);
+                    itemData.AddTome(id);
                 }
                 else
                 {
-                    var variable = SaveManager.Instance.profileData.GetVariable(type);
+                    var variable = profileData.GetVariable(type);
                     if (variable != null) variable.AddValue(id);
                 }
             }
@@ -334,6 +342,10 @@ namespace EvolveThisMatch.Lobby
             Select(_currentTab);
 
             _gachaResultCanvas.Show(rewards);
+
+            agentData.EndAddAgentBatch();
+            itemData.EndAddArtifactBatch();
+            itemData.EndAddTomeBatch();
         }
         #endregion
     }

@@ -650,6 +650,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c4976b5e8e2a6468acf8574d57a046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tomeDataChangedGameEvent: {fileID: 11400000, guid: 1e4a45ee8a3d0ca4dbd3453f23442f55, type: 2}
 --- !u!1001 &1256614204577795885
 PrefabInstance:
   m_ObjectHideFlags: 0

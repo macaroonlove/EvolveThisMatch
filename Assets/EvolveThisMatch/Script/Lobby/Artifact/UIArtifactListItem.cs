@@ -2,6 +2,7 @@ using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -56,11 +57,11 @@ namespace EvolveThisMatch.Lobby
         {
             if (owned == null)
             {
-                gameObject.SetActive(false);
+                gameObject?.SetActive(false);
                 return;
             }
 
-            gameObject.SetActive(true);
+            gameObject?.SetActive(true);
 
             this.template = template;
             this.owned = owned;
@@ -80,7 +81,7 @@ namespace EvolveThisMatch.Lobby
             else
             {
                 _counterText.text = $"{artifactCount}/{maxArtifactCount}";
-                _counterImage.fillAmount = artifactCount / maxArtifactCount;
+                _counterImage.fillAmount = artifactCount / (float)maxArtifactCount;
             }
         }
 

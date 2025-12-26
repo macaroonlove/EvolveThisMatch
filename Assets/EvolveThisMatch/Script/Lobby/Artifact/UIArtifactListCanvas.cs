@@ -1,6 +1,8 @@
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
+using FrameWork.Editor;
 using FrameWork.UIBinding;
+using ScriptableObjectArchitecture;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,6 +19,9 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
+        [Header("이벤트")]
+        [SerializeField, Label("아티팩트 데이터 변경 시")] protected GameEvent _artifactDataChangedGameEvent;
+
         protected Transform _parent;
         protected List<UIArtifactListItem> _artifactListItems;
         protected List<ArtifactTemplate> _artifactTemplates;
@@ -30,6 +35,8 @@ namespace EvolveThisMatch.Lobby
             BindObject(typeof(Objects));
 
             _parent = GetObject((int)Objects.Content).transform;
+
+            _artifactDataChangedGameEvent.AddListener(RefreshArtifactListItem);
         }
 
         protected void Start()
@@ -59,7 +66,7 @@ namespace EvolveThisMatch.Lobby
 
             Destroy(artifactListItem.gameObject);
 
-            RegistArtifactListItem();
+            RefreshArtifactListItem();
         }
 
         private void ChangeArtifact(ArtifactTemplate template, ItemSaveData.Artifact owned)
@@ -69,8 +76,10 @@ namespace EvolveThisMatch.Lobby
 
             _action?.Invoke(template, owned);
         }
+        #endregion
 
-        internal void RegistArtifactListItem()
+        #region 리스트 갱신
+        private void RefreshArtifactListItem()
         {
             var ownedArtifacts = SaveManager.Instance.itemData.ownedArtifacts;
             int count = _artifactTemplates.Count;

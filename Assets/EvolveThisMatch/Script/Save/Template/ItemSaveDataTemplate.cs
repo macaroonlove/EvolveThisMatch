@@ -1,6 +1,7 @@
 using CodeStage.AntiCheat.ObscuredTypes;
 using FrameWork.Editor;
 using FrameWork.PlayFabExtensions;
+using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -84,6 +85,9 @@ namespace EvolveThisMatch.Save
                 TitleDataManager.LoadItemData(ref _artifactLevelUpRequirements, ref _tomeLevelUpRequirements);
             }
 
+            _artifactDataChangedGameEvent?.Raise();
+            _tomeDataChangedGameEvent?.Raise();
+
             return isLoaded;
         }
 
@@ -100,7 +104,14 @@ namespace EvolveThisMatch.Save
             isLoaded = false;
         }
 
+        #region 아티팩트
         #region 아티팩트 추가 (로컬)
+        [Header("아티팩트 데이터 변경 이벤트")]
+        [SerializeField] private GameEvent _artifactDataChangedGameEvent;
+
+        private int _artifactBatchDepth = 0;
+        private bool _isArtifactDataChange = false;
+
         /// <summary>
         /// 아티팩트 추가
         /// </summary>
@@ -122,8 +133,39 @@ namespace EvolveThisMatch.Save
 
                 TryLevelupArtifact(modifyArtifact);
             }
+
+            if (_artifactBatchDepth > 0)
+                _isArtifactDataChange = true;
+            else
+                _artifactDataChangedGameEvent?.Raise();
         }
 
+        #region 아티팩트 추가 묶어 보내기
+        public void BeginAddAartifactBatch()
+        {
+            _artifactBatchDepth++;
+        }
+
+        public void EndAddArtifactBatch()
+        {
+            if (_artifactBatchDepth <= 0)
+            {
+                _artifactBatchDepth = 0;
+                return;
+            }
+
+            _artifactBatchDepth--;
+
+            if (_artifactBatchDepth == 0 && _isArtifactDataChange)
+            {
+                _isArtifactDataChange = false;
+                _artifactDataChangedGameEvent?.Raise();
+            }
+        }
+        #endregion
+        #endregion
+
+        #region 레벨업
         /// <summary>
         /// 레벨업 시도
         /// </summary>
@@ -148,6 +190,19 @@ namespace EvolveThisMatch.Save
         }
 
         /// <summary>
+        /// 아티팩트 레벨에 따른 최대 요구 개수 반환
+        /// </summary>
+        public int GetMaxArtifactCountByLevel(int level)
+        {
+            if (level < 0 || level >= _artifactLevelUpRequirements.Length)
+                return -1;
+
+            return _artifactLevelUpRequirements[level];
+        }
+        #endregion
+
+        #region 유틸리티
+        /// <summary>
         /// 아티팩트 찾기
         /// </summary>
         private ItemSaveData.Artifact FindArtifact(List<ItemSaveData.Artifact> artifacts, int artifactId)
@@ -162,10 +217,18 @@ namespace EvolveThisMatch.Save
             return null;
         }
         #endregion
+        #endregion
 
-        #region 아티팩트 추가 (로컬)
+        #region 고서
+        #region 고서 추가 (로컬)
+        [Header("고서 데이터 변경 이벤트")]
+        [SerializeField] private GameEvent _tomeDataChangedGameEvent;
+
+        private int _tomeBatchDepth = 0;
+        private bool _isTomeDataChange = false;
+
         /// <summary>
-        /// 아티팩트 추가
+        /// 고서 추가
         /// </summary>
         public void AddTome(int id, int count = 1)
         {
@@ -185,8 +248,39 @@ namespace EvolveThisMatch.Save
 
                 TryLevelupTome(modifyTome);
             }
+
+            if (_tomeBatchDepth > 0)
+                _isTomeDataChange = true;
+            else
+                _tomeDataChangedGameEvent?.Raise();
         }
 
+        #region 아티팩트 추가 묶어 보내기
+        public void BeginAddTomeBatch()
+        {
+            _tomeBatchDepth++;
+        }
+
+        public void EndAddTomeBatch()
+        {
+            if (_tomeBatchDepth <= 0)
+            {
+                _tomeBatchDepth = 0;
+                return;
+            }
+
+            _tomeBatchDepth--;
+
+            if (_tomeBatchDepth == 0 && _isTomeDataChange)
+            {
+                _isTomeDataChange = false;
+                _tomeDataChangedGameEvent?.Raise();
+            }
+        }
+        #endregion
+        #endregion
+
+        #region 레벨업
         /// <summary>
         /// 레벨업 시도
         /// </summary>
@@ -211,7 +305,20 @@ namespace EvolveThisMatch.Save
         }
 
         /// <summary>
-        /// 아티팩트 찾기
+        /// 고서 레벨에 따른 최대 요구 개수 반환
+        /// </summary>
+        public int GetMaxTomeCountByLevel(int level)
+        {
+            if (level < 0 || level >= _tomeLevelUpRequirements.Length)
+                return -1;
+
+            return _tomeLevelUpRequirements[level];
+        }
+        #endregion
+
+        #region 유틸리티
+        /// <summary>
+        /// 고서 찾기
         /// </summary>
         private ItemSaveData.Tome FindTome(List<ItemSaveData.Tome> tomes, int tomeId)
         {
@@ -225,27 +332,6 @@ namespace EvolveThisMatch.Save
             return null;
         }
         #endregion
-
-        /// <summary>
-        /// 아티팩트 레벨에 따른 최대 요구 개수 반환
-        /// </summary>
-        public int GetMaxArtifactCountByLevel(int level)
-        {
-            if (level < 0 || level >= _artifactLevelUpRequirements.Length)
-                return -1;
-
-            return _artifactLevelUpRequirements[level];
-        }
-
-        /// <summary>
-        /// 고서 레벨에 따른 최대 요구 개수 반환
-        /// </summary>
-        public int GetMaxTomeCountByLevel(int level)
-        {
-            if (level < 0 || level >= _tomeLevelUpRequirements.Length)
-                return -1;
-
-            return _tomeLevelUpRequirements[level];
-        }
+        #endregion
     }
 }

@@ -1450,6 +1450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad1a5ef4deae194dabb155be31c82ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _agentDataChangedGameEvent: {fileID: 11400000, guid: 11afb5a512af18e4e91922fe0fc4d331, type: 2}
 --- !u!1001 &7362400949847092107
 PrefabInstance:
   m_ObjectHideFlags: 0

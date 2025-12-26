@@ -3,7 +3,6 @@ using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.UIBinding;
 using TMPro;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -40,12 +39,9 @@ namespace EvolveThisMatch.Lobby
         private CanvasGroupController _info;
 
         private EffectContext _effectContext;
-        private UnityAction _action;
 
-        internal void Initialize(UnityAction action = null)
+        protected override void Initialize()
         {
-            _action = action;
-
             BindText(typeof(Texts));
             BindImage(typeof(Images));
             BindCanvasGroupController(typeof(CanvasGroups));

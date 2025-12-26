@@ -510,10 +510,22 @@ namespace EvolveThisMatch.Lobby
 
             Dictionary<string, AcquireItem> acquireDic = new Dictionary<string, AcquireItem>();
 
+            var profileSaveData = SaveManager.Instance.profileData;
+            var agentSaveData = SaveManager.Instance.agentData;
+            var itemSaveData = SaveManager.Instance.itemData;
+
+            agentSaveData.BeginAddAgentBatch();
+            itemSaveData.BeginAddAartifactBatch();
+            itemSaveData.BeginAddTomeBatch();
+
             foreach (var reward in rewards)
             {
                 OrganizeReward(reward, acquireDic);
             }
+
+            agentSaveData.EndAddAgentBatch();
+            itemSaveData.EndAddArtifactBatch();
+            itemSaveData.EndAddTomeBatch();
 
             UIPopupManager.Instance.ShowAcquirePopup(acquireDic.Values.ToList());
 

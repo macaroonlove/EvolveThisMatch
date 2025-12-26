@@ -5,7 +5,6 @@ using FrameWork.UI;
 using FrameWork.UIBinding;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
@@ -63,11 +62,9 @@ namespace EvolveThisMatch.Lobby
         private CanvasGroupController[] _panels = new CanvasGroupController[6];
 
         private AgentSaveData.Agent _owned;
-        private UnityAction _action;
 
-        internal void Initialize(UnityAction action = null)
+        protected override void Initialize()
         {
-            _action = action;
             _poolSystem = CoreManager.Instance.GetSubSystem<PoolSystem>();
 
             BindText(typeof(Texts));
@@ -191,7 +188,6 @@ namespace EvolveThisMatch.Lobby
         private void ReShow(AgentTemplate template, AgentSaveData.Agent owned)
         {
             Show(template, owned);
-            _action?.Invoke();
         }
 
         private void SaveTalent()

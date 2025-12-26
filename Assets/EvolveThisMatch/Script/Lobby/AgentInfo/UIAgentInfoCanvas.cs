@@ -28,7 +28,6 @@ namespace EvolveThisMatch.Lobby
             _overUICamera = Camera.main.transform.Find("OverUICamera").gameObject;
 
             _agentListCanvas.Initialize((AgentTemplate template, AgentSaveData.Agent owned) => _agentDetailCanvas.Show(template, owned));
-            _agentDetailCanvas.Initialize(_agentListCanvas.RegistAgentListItem);
 
             BindButton(typeof(Buttons));
 

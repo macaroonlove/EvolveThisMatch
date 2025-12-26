@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a68e790fdebbf8f46b73870c0b751e94, type: 3}
-  m_Name: AgentSaveData
+  m_Script: {fileID: 11500000, guid: 7a78c7052899406438e9fc79486b45c0, type: 3}
+  m_Name: "\uACE0\uC11C \uB370\uC774\uD130 \uBCC0\uACBD \uC2DC"
   m_EditorClassIdentifier: 
-  _data:
-    ownedAgents: []
-  _agentDataChangedGameEvent: {fileID: 11400000, guid: 11afb5a512af18e4e91922fe0fc4d331, type: 2}

@@ -1,5 +1,3 @@
-using EvolveThisMatch.Core;
-using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using UnityEngine.Events;
 
@@ -27,7 +25,6 @@ namespace EvolveThisMatch.Lobby
 
             _tomeListCanvas.Initialize((UITomeListItem item) => { _tomeEquipCanvas.SelectTomeListItem(item); _tomeInfoCanvas.Show(item.template, item.owned); });
             _tomeEquipCanvas.Initialize((UITomeEquipItem item) => { _tomeInfoCanvas.Show(item.template, item.owned); }, (int index) => _tomeListCanvas.RentTome(index), (int index) => _tomeListCanvas.ReturnTome(index));
-            _tomeInfoCanvas.Initialize(_tomeListCanvas.RegistTomeListItem);
 
             BindButton(typeof(Buttons));
 

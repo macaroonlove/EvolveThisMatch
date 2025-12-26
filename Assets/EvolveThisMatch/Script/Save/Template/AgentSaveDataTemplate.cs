@@ -5,6 +5,7 @@ using FrameWork.UIPopup;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.Json;
+using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,6 +143,7 @@ namespace EvolveThisMatch.Save
     [CreateAssetMenu(menuName = "Templates/SaveData/AgentSaveData", fileName = "AgentSaveData", order = 1)]
     public class AgentSaveDataTemplate : SaveDataTemplate
     {
+        [Header("내부 데이터")]
         [SerializeField, ReadOnly] private AgentSaveData _data;
         private Dictionary<int, TalentSaveData> _talentLocalData = new Dictionary<int, TalentSaveData>();
 
@@ -161,13 +163,7 @@ namespace EvolveThisMatch.Save
             TitleDataManager.LoadAgentData(ref _agentTierUpRequirements, ref _agentMaxLevelPerTier, ref _foodExp);
             talentTitleData = TitleDataManager.LoadTalentData();
 
-            // 초기 캐릭터 추가
-            for (int i = 0; i <= 35; i++)
-            {
-                AddAgent(i);
-            }
-
-            // 서버에도 초기 캐릭터 추가
+            // 서버에 초기 캐릭터 추가
             var request = new ExecuteCloudScriptRequest
             {
                 FunctionName = "InitializeAgent",
@@ -184,6 +180,7 @@ namespace EvolveThisMatch.Save
                     if (!string.IsNullOrEmpty(agentDataJson))
                     {
                         _data = JsonUtility.FromJson<AgentSaveData>(agentDataJson);
+                        _agentDataChangedGameEvent?.Raise();
                     }
                 }
             }, DebugPlayFabError);
@@ -199,6 +196,8 @@ namespace EvolveThisMatch.Save
             if (_data != null)
             {
                 isLoaded = _data.ownedAgents.Count > 0;
+
+                _agentDataChangedGameEvent?.Raise();
 
                 TitleDataManager.LoadAgentData(ref _agentTierUpRequirements, ref _agentMaxLevelPerTier, ref _foodExp);
                 talentTitleData = TitleDataManager.LoadTalentData();
@@ -227,6 +226,12 @@ namespace EvolveThisMatch.Save
         #region 유닛
 
         #region 유닛 추가 (로컬 적용)
+        [Header("유닛 데이터 변경 이벤트")]
+        [SerializeField] private GameEvent _agentDataChangedGameEvent;
+
+        private int _batchDepth = 0;
+        private bool _isDataChange = false;
+
         /// <summary>
         /// 유닛 추가
         /// </summary>
@@ -248,7 +253,36 @@ namespace EvolveThisMatch.Save
             {
                 modifyUnit.unitCount += count;
             }
+
+            if (_batchDepth > 0)
+                _isDataChange = true;
+            else
+                _agentDataChangedGameEvent?.Raise();
         }
+
+        #region 유닛 추가 묶어 보내기
+        public void BeginAddAgentBatch()
+        {
+            _batchDepth++;
+        }
+
+        public void EndAddAgentBatch()
+        {
+            if (_batchDepth <= 0)
+            {
+                _batchDepth = 0;
+                return;
+            }
+
+            _batchDepth--;
+
+            if (_batchDepth == 0 && _isDataChange)
+            {
+                _isDataChange = false;
+                _agentDataChangedGameEvent?.Raise();
+            }
+        }
+        #endregion
         #endregion
 
         #region 유닛 레벨업
@@ -280,6 +314,7 @@ namespace EvolveThisMatch.Save
                         agent.level = finalLevel;
 
                         onComplete?.Invoke();
+                        _agentDataChangedGameEvent?.Raise();
                     }
                     else
                     {
@@ -328,6 +363,7 @@ namespace EvolveThisMatch.Save
                         agent.tier++;
 
                         onComplete?.Invoke();
+                        _agentDataChangedGameEvent?.Raise();
                     }
                     else
                     {
