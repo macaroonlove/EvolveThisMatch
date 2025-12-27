@@ -229,7 +229,7 @@ namespace EvolveThisMatch.Editor
             var trigger = ScriptableObject.CreateInstance((Type)obj) as GameTrigger;
             if (trigger != null)
             {
-                trigger.hideFlags = HideFlags.HideInHierarchy;
+                trigger.hideFlags = HideFlags.HideInInspector;
                 _target.triggers.Add(trigger);
 
                 var template = target as ArtifactTemplate;
@@ -344,7 +344,7 @@ namespace EvolveThisMatch.Editor
             if (effect != null)
             {
                 effect.Initialize();
-                effect.hideFlags = HideFlags.HideInHierarchy;
+                effect.hideFlags = HideFlags.HideInInspector;
                 _currentTrigger.effects.Add(effect);
 
                 var template = target as ArtifactTemplate;

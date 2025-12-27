@@ -1,5 +1,4 @@
 using EvolveThisMatch.Core;
-using FrameWork;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +21,7 @@ namespace EvolveThisMatch.Editor
 
         #region 아군
         private int selectedAllyTitle = 0;
+        private int prevAllyTitle = -1;
 
         #region 등장인물
         private UnityEditor.Editor agentEditor;
@@ -40,6 +40,7 @@ namespace EvolveThisMatch.Editor
 
         #region 적군
         private int selectedRoundTitle = 0;
+        private int prevRoundTitle = -1;
 
         #region 적
         private UnityEditor.Editor enemyEditor;
@@ -138,6 +139,7 @@ namespace EvolveThisMatch.Editor
 
         private void OnGUI()
         {
+            resizedTextures.Clear();
             DrawTab();
         }
 
@@ -207,7 +209,7 @@ namespace EvolveThisMatch.Editor
         {
             GUILayout.BeginHorizontal();
             if (GUILayout.Toggle(selectedUnitTitle == 0, "아군", "Button")) selectedUnitTitle = 0;
-            if (GUILayout.Toggle(selectedUnitTitle == 2, "라운드", "Button")) selectedUnitTitle = 1;
+            if (GUILayout.Toggle(selectedUnitTitle == 1, "라운드", "Button")) selectedUnitTitle = 1;
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10);
@@ -260,9 +262,9 @@ namespace EvolveThisMatch.Editor
         #region 유닛
         private void AutoLoadUnit<T>(ref List<T> templates, string assetPrefix) where T : ScriptableObject, IDataWindowEntry
         {
-            if (prevUnitTitle != selectedUnitTitle)
+            if (prevAllyTitle != selectedAllyTitle)
             {
-                prevUnitTitle = selectedUnitTitle;
+                prevAllyTitle = selectedAllyTitle;
 
                 LoadTemplates(ref templates, $"Assets/EvolveThisMatch/GameData/Unit/{assetPrefix}", assetPrefix);
             }
@@ -339,7 +341,11 @@ namespace EvolveThisMatch.Editor
 
         private void DrawEnemyTab()
         {
-            AutoLoadUnit(ref enemyTemplates, "Enemy");
+            if (prevRoundTitle != selectedRoundTitle)
+            {
+                prevRoundTitle = selectedRoundTitle;
+                LoadTemplates(ref enemyTemplates, $"Assets/EvolveThisMatch/GameData/Unit/Enemy", "Enemy");
+            }
 
             DrawTemplateTab<EnemyTemplate>(
                 ref enemyTemplates,
@@ -361,10 +367,9 @@ namespace EvolveThisMatch.Editor
 
         private void DrawWaveTab()
         {
-            if (prevUnitTitle != selectedUnitTitle)
+            if (prevRoundTitle != selectedRoundTitle)
             {
-                prevUnitTitle = selectedUnitTitle;
-
+                prevRoundTitle = selectedRoundTitle;
                 LoadTemplates(ref waveTemplates, $"Assets/EvolveThisMatch/GameData/ETC/Library/Wave", "Wave");
             }
 
@@ -608,9 +613,8 @@ namespace EvolveThisMatch.Editor
             var catalogStyle = new GUIStyle(GUI.skin.button)
             {
                 alignment = TextAnchor.MiddleLeft,
-                padding = new RectOffset(5, 5, 5, 5),
-                margin = new RectOffset(5, 5, -2, -2),
-                border = new RectOffset(0, 0, 0, 0),
+                padding = new RectOffset(8, 8, 0, 0),
+                margin = new RectOffset(4, 4, 2, 2),
                 fixedWidth = GUI.skin.box.fixedWidth,
                 fixedHeight = 40
             };
@@ -621,21 +625,33 @@ namespace EvolveThisMatch.Editor
 
                 if (!resizedTextures.ContainsKey(assetPrefix)) LoadTexture(templates, assetPrefix);
 
-                bool isNullTexture = resizedTextures[assetPrefix][i] == null;
+                var texture = resizedTextures[assetPrefix][i];
                 var displayName = templates[i].displayName;
-                int maxLength = isNullTexture ? 18 : 13;
+
+                int maxLength = texture == null ? 18 : 13;
                 string text = "  " + displayName.Substring(0, Mathf.Min(displayName.Length, maxLength));
 
-                GUIContent content = isNullTexture ? new GUIContent(text) : new GUIContent(text, resizedTextures[assetPrefix][i]);
-
-                if (GUILayout.Toggle(isSelected, content, catalogStyle))
+                Rect rect = GUILayoutUtility.GetRect(GUIContent.none, catalogStyle, GUILayout.Height(40));
+                bool clicked = GUI.Toggle(rect, isSelected, GUIContent.none, catalogStyle);
+                if (clicked && selectedIndex != i)
                 {
-                    if (selectedIndex != i)
-                    {
-                        selectedIndex = i;
-                        GUI.FocusControl(null);
-                    }
+                    selectedIndex = i;
+                    GUI.FocusControl(null);
                 }
+
+                float textStartX = rect.x + 8;
+
+                // 아이콘
+                if (texture != null)
+                {
+                    Rect iconRect = new Rect(rect.x + 6, rect.y + 5, 30, 30);
+                    GUI.DrawTexture(iconRect, texture, ScaleMode.ScaleToFit);
+                    textStartX = rect.x + 44;
+                }
+
+                // 텍스트
+                Rect labelRect = new Rect(textStartX, rect.y + 10, rect.width - (textStartX - rect.x), rect.height);
+                GUI.Label(labelRect, text);
             }
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
@@ -711,7 +727,7 @@ namespace EvolveThisMatch.Editor
             for (int i = 0; i < templates.Count; i++)
             {
                 var sprite = templates[i].sprite;
-                textures.Add(sprite != null ? sprite.texture.ResizeTexture(30, 30) : null);
+                textures.Add(sprite != null ? sprite.texture : null);
             }
 
             resizedTextures[assetPrefix] = textures;

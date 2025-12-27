@@ -571,11 +571,12 @@ namespace EvolveThisMatch.Editor
             {
                 var fileName = Path.GetFileNameWithoutExtension(path);
                 skin.SetDisplayName(fileName.Replace(defaultFileName, ""));
-                _target.skins.Add(skin);
 
                 AssetDatabase.CreateAsset(skin, path);
                 AssetDatabase.CreateAsset(skinLobby, Path.Combine(defaultPath, $"{fileName}_Lobby.asset"));
                 AssetDatabase.CreateAsset(skinBattle, Path.Combine(defaultPath, $"{fileName}_Battle.asset"));
+
+                _target.skins.Add(skin);
 
                 #region 어드레서블 등록
                 var settings = AddressableAssetSettingsDefaultObject.Settings;

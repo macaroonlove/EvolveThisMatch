@@ -105,7 +105,7 @@ namespace EvolveThisMatch.Core
             if (effect != null)
             {
                 effect.Initialize();
-                effect.hideFlags = HideFlags.HideInHierarchy;
+                effect.hideFlags = HideFlags.HideInInspector;
                 _effects.Add(effect);
 
                 var path = AssetDatabase.GetAssetPath(this);
