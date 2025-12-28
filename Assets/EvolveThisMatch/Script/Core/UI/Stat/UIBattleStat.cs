@@ -28,6 +28,8 @@ namespace EvolveThisMatch.Core
 
         private TextMeshProUGUI _valueText;
 
+        protected GlobalStatusSystem _globalStatusSystem;
+
         protected override void Awake()
         {
             base.Awake();
@@ -36,6 +38,8 @@ namespace EvolveThisMatch.Core
 
             BindText(typeof(Texts));
             _valueText = GetText((int)Texts.Value);
+
+            _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
         }
 
         private void OnDestroy()

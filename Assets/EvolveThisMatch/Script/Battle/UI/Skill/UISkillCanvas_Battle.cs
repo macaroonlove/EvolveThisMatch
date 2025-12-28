@@ -14,15 +14,28 @@ namespace EvolveThisMatch.Battle
             _skillSlots = GetComponentsInChildren<UISkillSlot_Battle>();
         }
 
-        internal void ShowSkill(AgentUnit unit)
+        internal void Show(AgentUnit unit)
         {
-            int cnt = unit.template.skillTemplates.Count;
+            unit.agentData.onSyncIncrease += OnSyncChanged;
+
+            OnSyncChanged(unit.agentData);
+        }
+
+        internal void Hide(AgentUnit unit)
+        {
+            unit.agentData.onSyncIncrease -= OnSyncChanged;
+        }
+
+        private void OnSyncChanged(AgentBattleData agentData)
+        {
+            int cnt = agentData.agentTemplate.skillTemplates.Count;
 
             for (int i = 0; i < _skillSlots.Length; i++)
             {
                 if (i < cnt)
                 {
-                    _skillSlots[i].ShowSkillSlot(unit, unit.template.skillTemplates[i]);
+                    bool isUnlock = agentData.skillUnlock < i + 1;
+                    _skillSlots[i].ShowSkillSlot(agentData.agentUnit, agentData.agentTemplate.skillTemplates[i], isUnlock);
                 }
                 else
                 {

@@ -53,7 +53,17 @@ namespace EvolveThisMatch.Battle
                 result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
             }
 
+            foreach (var instance in _globalStatusSystem.ATKIncreaseDataEffects)
+            {
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
+            }
+
             foreach (var instance in _buffAbility.ATKMultiplierDataEffects)
+            {
+                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Multiplier)}");
+            }
+
+            foreach (var instance in _globalStatusSystem.ATKMultiplierDataEffects)
             {
                 result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Multiplier)}");
             }

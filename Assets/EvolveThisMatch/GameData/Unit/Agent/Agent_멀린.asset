@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 315827f885b2bdb4db10ec962e833c34, type: 3}
   m_Name: "Agent_\uBA40\uB9B0"
   m_EditorClassIdentifier: 
-  _id: 19
+  _id: 18
   _rarity: {fileID: 11400000, guid: e2abef2d73980a943aa1a2f6a18c9ed1, type: 2}
   _job: {fileID: 11400000, guid: 13aa90185a908bf4a9619efab8f60ce9, type: 2}
   _synergy:
@@ -33,7 +33,7 @@ MonoBehaviour:
   _physicalPenetration: 10
   _magicPenetration: 10
   _criticalHitChance: 0
-  _criticalHitDamage: 0
+  _criticalHitDamage: 180
   _maxHP: 3600
   _physicalResistance: 28
   _magicResistance: 28

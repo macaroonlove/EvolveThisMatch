@@ -5,9 +5,11 @@ namespace EvolveThisMatch.Core
 {
     public class ActiveSkillInstance
     {
+        private AgentBattleData _agentData;
         private ActiveSkillAbility _activeSkillAbility;
         private HealthAbility _healthAbility;
         private BuffAbility _buffAbility;
+        private int _index;
         private bool _isEnoughPayAmount;
 
         public ActiveSkillTemplate template { get; private set; }
@@ -37,9 +39,11 @@ namespace EvolveThisMatch.Core
 
         public event UnityAction<bool> onChangedIsEnoughPayAmount;
 
-        public ActiveSkillInstance(ActiveSkillTemplate template, ActiveSkillAbility activeSkillAbility)
+        public ActiveSkillInstance(int index, ActiveSkillTemplate template, ActiveSkillAbility activeSkillAbility, AgentBattleData agentData = null)
         {
             this.template = template;
+            _index = index;
+            _agentData = agentData;
             _activeSkillAbility = activeSkillAbility;
             _healthAbility = _activeSkillAbility.unit.healthAbility;
             _buffAbility = _activeSkillAbility.unit.GetAbility<BuffAbility>();
@@ -81,6 +85,8 @@ namespace EvolveThisMatch.Core
 
         public bool CanExecute()
         {
+            if (_agentData.skillUnlock < _index) return false;
+
             if (coolDownTime > 0) return false;
 
             if (_isEnoughPayAmount == false) return false;

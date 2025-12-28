@@ -21,7 +21,7 @@ MonoBehaviour:
   _moveType: 0
   _moveSpeed: 3
   _chaseRange: 10
-  _chaseFailRange: 10
+  _chaseFailRange: 14
   _attackType: 0
   _damageType: 0
   _atk: 190
@@ -33,7 +33,7 @@ MonoBehaviour:
   _physicalPenetration: 10
   _magicPenetration: 10
   _criticalHitChance: 0
-  _criticalHitDamage: 0
+  _criticalHitDamage: 200
   _maxHP: 9600
   _physicalResistance: 72
   _magicResistance: 72

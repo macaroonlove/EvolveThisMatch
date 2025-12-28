@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace EvolveThisMatch.Core
 
             if (unit is AgentUnit agentUnit && agentUnit.template.skillTemplates.Count > 0)
             {
-                InitializePassiveSkill(agentUnit.template.skillTemplates);
+                CheckUnlockSkill(agentUnit.agentData);
             }
             else if (unit is SummonUnit summonUnit && summonUnit.template.skillTemplates.Count > 0)
             {
@@ -41,6 +42,12 @@ namespace EvolveThisMatch.Core
             {
                 InitializePassiveSkill(enemyUnit.enemyData.template.skillTemplates);
             }
+        }
+
+        private async void CheckUnlockSkill(AgentBattleData agentData)
+        {
+            await UniTask.WaitUntil(() => agentData.skillUnlock >= 2);
+            InitializePassiveSkill(agentData.agentTemplate.skillTemplates);
         }
 
         private void InitializePassiveSkill(IReadOnlyList<SkillTemplate> skillTemplates)

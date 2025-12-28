@@ -5364,6 +5364,10 @@ PrefabInstance:
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
+    - target: {fileID: 2528463109865026288, guid: 683a72583dd50a443b204416254b5c32, type: 3}
+      propertyPath: m_text
+      value: "\uD574\uAE08\uC870\uAC74: \uC2F1\uD06C\uB85C\uC728 10 \u25B2"
+      objectReference: {fileID: 0}
     - target: {fileID: 3106614762129678463, guid: 683a72583dd50a443b204416254b5c32, type: 3}
       propertyPath: _actionType
       value: 1
@@ -5679,6 +5683,10 @@ PrefabInstance:
     - target: {fileID: 1443646964740727167, guid: 683a72583dd50a443b204416254b5c32, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 2528463109865026288, guid: 683a72583dd50a443b204416254b5c32, type: 3}
+      propertyPath: m_text
+      value: "\uD574\uAE08\uC870\uAC74: \uC2F1\uD06C\uB85C\uC728 15 \u25B2"
       objectReference: {fileID: 0}
     - target: {fileID: 3106614762129678463, guid: 683a72583dd50a443b204416254b5c32, type: 3}
       propertyPath: _actionType

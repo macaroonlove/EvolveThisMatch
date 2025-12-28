@@ -81,7 +81,7 @@ namespace EvolveThisMatch.Battle
                 _isInitialize = true;
 
                 int needCoin = _syncSystem.GetNeedCoin(_agentUnit.agentData);
-                UpdateButtonState(needCoin, _coinSystem.currentCoin);
+                UpdateButtonState(agentUnit.sync, needCoin, _coinSystem.currentCoin);
             }
 
             _coinSystem.onChangedCoin += OnChangedCoin;
@@ -101,7 +101,7 @@ namespace EvolveThisMatch.Battle
             if (_agentUnit == null) return;
 
             int needCoin = _syncSystem.GetNeedCoin(_agentUnit.agentData);
-            UpdateButtonState(needCoin, coin);
+            UpdateButtonState(_agentUnit.sync, needCoin, coin);
         }
 
         private void RequestIncreaseSync()
@@ -110,7 +110,7 @@ namespace EvolveThisMatch.Battle
 
             int result = _syncSystem.RequestIncreaseSync(_agentUnit.agentData);
 
-            switch (result) 
+            switch (result)
             {
                 case -3:
                     UIPopupManager.Instance.ShowNotificationPopup("코인이 부족합니다.");
@@ -139,12 +139,12 @@ namespace EvolveThisMatch.Battle
             _text.text = sync.ToString();
             _needText.text = $"<sprite name=\"Coin\"> {needCoin}";
 
-            UpdateButtonState(needCoin, _coinSystem.currentCoin);
+            UpdateButtonState(sync, needCoin, _coinSystem.currentCoin);
         }
 
-        private void UpdateButtonState(int needCoin, int currentCoin)
+        private void UpdateButtonState(int sync, int needCoin, int currentCoin)
         {
-            bool canUpgrade = needCoin > 0;
+            bool canUpgrade = sync < 15;
             _button.gameObject.SetActive(canUpgrade);
 
             if (!canUpgrade) return;

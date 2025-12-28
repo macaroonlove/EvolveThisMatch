@@ -48,6 +48,19 @@ namespace EvolveThisMatch.Core
                 AddItem(debugItem);
             }
 #endif
+
+            EUnitType unitType = EUnitType.Agent | EUnitType.Summon;
+            var agents = BattleManager.Instance.GetSubSystem<AllySystem>().GetAllAllies(unitType);
+            foreach (var agent in agents)
+            {
+                ApplyAlwaysEvent(agent);
+            }
+
+            var enemies = BattleManager.Instance.GetSubSystem<EnemySystem>().GetAllEnemies();
+            foreach (var enemy in enemies)
+            {
+                ApplyAlwaysEvent(enemy);
+            }
         }
 
         public void Deinitialize()

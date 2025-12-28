@@ -23,7 +23,7 @@ namespace EvolveThisMatch.Core
                 agentData = agentData,
                 agentSaveData = agentSaveData
             };
-
+            
             base.Initialize(this);
             deployAbility = GetAbility<DeployAbility>();
         }

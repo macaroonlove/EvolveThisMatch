@@ -22,7 +22,7 @@ namespace EvolveThisMatch.Battle
         {
             _coinSystem = null;
             _globalStatusSystem = null;
-        }
+        } 
 
         /// <summary>
         /// 동기화율 상승 요청

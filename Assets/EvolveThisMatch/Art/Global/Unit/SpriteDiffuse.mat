@@ -263,7 +263,7 @@ Material:
     - _EnableFlame: 0
     - _EnableFrozen: 1.1
     - _EnableFullAlphaDissolve: 1.1
-    - _EnableFullDistortion: 1
+    - _EnableFullDistortion: 1.1
     - _EnableFullGlowDissolve: 1.1
     - _EnableGaussianBlur: 0
     - _EnableGlitch: 0

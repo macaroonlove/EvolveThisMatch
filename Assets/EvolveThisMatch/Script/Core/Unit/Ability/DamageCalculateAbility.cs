@@ -302,7 +302,7 @@ namespace EvolveThisMatch.Core
 
                 if (chance > 0)
                 {
-                    return Random.value < chance;
+                    return Random.value * 100 < chance;
                 }
                 else
                 {

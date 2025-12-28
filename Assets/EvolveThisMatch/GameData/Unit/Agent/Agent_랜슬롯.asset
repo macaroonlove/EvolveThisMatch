@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 315827f885b2bdb4db10ec962e833c34, type: 3}
   m_Name: "Agent_\uB79C\uC2AC\uB86F"
   m_EditorClassIdentifier: 
-  _id: 20
+  _id: 19
   _rarity: {fileID: 11400000, guid: 0625512b8a29c4c44930a82d24f700ca, type: 2}
   _job: {fileID: 11400000, guid: 68be10d7a2cf1664db54e8f2f75e1081, type: 2}
   _synergy:
@@ -21,7 +21,7 @@ MonoBehaviour:
   _moveType: 0
   _moveSpeed: 1
   _chaseRange: 10
-  _chaseFailRange: 10
+  _chaseFailRange: 14
   _attackType: 0
   _damageType: 0
   _atk: 100
@@ -33,7 +33,7 @@ MonoBehaviour:
   _physicalPenetration: 10
   _magicPenetration: 10
   _criticalHitChance: 0
-  _criticalHitDamage: 0
+  _criticalHitDamage: 160
   _maxHP: 4800
   _physicalResistance: 36
   _magicResistance: 36

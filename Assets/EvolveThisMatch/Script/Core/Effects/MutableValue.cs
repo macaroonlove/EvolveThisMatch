@@ -56,7 +56,8 @@ namespace EvolveThisMatch.Core
 
         protected int GetScaleBase(EffectContext context, EffectContext contextSub)
         {
-            int scaleBase = context.GetScaleValue(_scaleBase);
+            int scaleBase = 0;
+            if (context != null) scaleBase = context.GetScaleValue(_scaleBase);
             if (scaleBase == -2 && contextSub != null) scaleBase = contextSub.GetScaleValue(_scaleBase);
             if (scaleBase == -2) scaleBase = 1;
 

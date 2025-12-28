@@ -87,7 +87,7 @@ namespace EvolveThisMatch.Core
 
                 if (avoidance > 0)
                 {
-                    return Random.value < avoidance;
+                    return Random.value * 100 < avoidance;
                 }
                 else
                 {

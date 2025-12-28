@@ -69,5 +69,13 @@ MonoBehaviour:
       _scaleBase: 0
       _previewScaleBase: 2
     _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probability: 0
     _buff: {fileID: 11400000, guid: 7827094ebd0c4b94fba828df7ca5ccb7, type: 2}
     _isfoldout: 0

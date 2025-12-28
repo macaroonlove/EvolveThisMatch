@@ -47,7 +47,7 @@ namespace EvolveThisMatch.Core
         {
             if (unit is AgentUnit agentUnit && agentUnit.template.skillTemplates.Count > 0)
             {
-                InitializeActiveSkillInstance(agentUnit.template.skillTemplates);
+                InitializeActiveSkillInstance(agentUnit.template.skillTemplates, agentUnit.agentData);
             }
             else if (unit is SummonUnit summonUnit && summonUnit.template.skillTemplates.Count > 0)
             {
@@ -59,13 +59,15 @@ namespace EvolveThisMatch.Core
             }
         }
 
-        private void InitializeActiveSkillInstance(IReadOnlyList<SkillTemplate> skillTemplates)
+        private void InitializeActiveSkillInstance(IReadOnlyList<SkillTemplate> skillTemplates, AgentBattleData agentData = null)
         {
+            int index = 1;
             foreach (var skillTemplate in skillTemplates)
             {
                 if (skillTemplate is ActiveSkillTemplate skill)
                 {
-                    _skills[skill.id] = (new ActiveSkillInstance(skill, this));
+                    _skills[skill.id] = (new ActiveSkillInstance(index, skill, this, agentData));
+                    index += 2;
                 }
             }
         }

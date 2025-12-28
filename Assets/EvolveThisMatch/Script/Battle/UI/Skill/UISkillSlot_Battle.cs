@@ -1,6 +1,6 @@
 using DG.Tweening;
 using EvolveThisMatch.Core;
-using FrameWork.UIBinding;
+using FrameWork;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +17,10 @@ namespace EvolveThisMatch.Battle
         {
             AutoSkillToggle,
         }
+        enum CanvasGroups
+        {
+            LockSkill,
+        }
         #endregion
 
         [SerializeField] private Color _inActiveColor;
@@ -24,6 +28,7 @@ namespace EvolveThisMatch.Battle
 
         private Image _autoSkillImage;
         private Toggle _autoSkillToggle;
+        private CanvasGroupController _lockSkillCanvasGroupController;
 
         private ActiveSkillInstance _instance;
         private UISkillExecuteButton _skillExecuteButton;
@@ -37,19 +42,22 @@ namespace EvolveThisMatch.Battle
 
             BindImage(typeof(Images));
             BindToggle(typeof(Toggles));
+            BindCanvasGroupController(typeof(CanvasGroups));
 
             _autoSkillImage = GetImage((int)Images.AutoSkill);
             _autoSkillToggle = GetToggle((int)Toggles.AutoSkillToggle);
+            _lockSkillCanvasGroupController = GetCanvasGroupController((int)CanvasGroups.LockSkill);
 
             _autoSkillToggle.onValueChanged.AddListener(AutoSkill);
         }
 
-        internal void ShowSkillSlot(AgentUnit unit, SkillTemplate template)
+        internal void ShowSkillSlot(AgentUnit unit, SkillTemplate template, bool isUnlock)
         {
             _skillName.text = template.displayName;
             _skillDescription.text = template.description;
 
             _skillExecuteButton.Show(unit, template);
+            _lockSkillCanvasGroupController.ShowOrHide(isUnlock);
 
             if (template is ActiveSkillTemplate activeSkillTemplate)
             {
@@ -67,6 +75,7 @@ namespace EvolveThisMatch.Battle
                 {
                     _autoSkillToggle.isOn = false;
                 }
+
                 _skillExecuteButton.gameObject.SetActive(true);
             }
             else

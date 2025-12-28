@@ -86,7 +86,7 @@ namespace EvolveThisMatch.Battle
             _battleStatCanvas.Show(agentUnit);
 
             // ½ºÅ³ Äµ¹ö½º
-            _skillCanvas.ShowSkill(agentUnit);
+            _skillCanvas.Show(agentUnit);
 
             Show(true);
         }
@@ -116,6 +116,7 @@ namespace EvolveThisMatch.Battle
         {
             _syncButton.Hide();
             _limitButton.Hide();
+            _skillCanvas.Hide(_agentUnit);
         }
 
         private void DestinyRecast()

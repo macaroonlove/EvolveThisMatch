@@ -15,3 +15,4 @@ MonoBehaviour:
   _fxList:
   - {fileID: 11400000, guid: 6ba97dc11e2c4964b8aafe5b9d99bd5a, type: 2}
   - {fileID: 11400000, guid: 8c3da34ffe929a94eab5e1089029c9b4, type: 2}
+  - {fileID: 11400000, guid: be8b3c83f7be8be4db4cdd1c7305c53c, type: 2}

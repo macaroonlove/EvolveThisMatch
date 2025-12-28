@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EvolveThisMatch.Core
 {
@@ -15,8 +16,11 @@ namespace EvolveThisMatch.Core
         public AgentUnit agentUnit { get; private set; }
         public SignBoard signBoard { get; private set; }
         public int sync { get; private set; }
+        public int skillUnlock { get; private set; }
         public AgentRarityTemplate limit { get; private set; }
         public TileController mountTile { get; private set; }
+
+        public event UnityAction<AgentBattleData> onSyncIncrease;
 
         public AgentBattleData(AgentUnit agentUnit, AgentTemplate agentTemplate)
         {
@@ -62,6 +66,8 @@ namespace EvolveThisMatch.Core
             if (Time.frameCount != _antiCheatFrame) return -1;
 
             sync++;
+            skillUnlock = sync / 5;
+            onSyncIncrease?.Invoke(this);
             _antiCheatToken = 0;
 
             return 1;

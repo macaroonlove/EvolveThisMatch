@@ -650,7 +650,7 @@ namespace EvolveThisMatch.Editor
                 }
 
                 // ≈ÿΩ∫∆Æ
-                Rect labelRect = new Rect(textStartX, rect.y + 10, rect.width - (textStartX - rect.x), rect.height);
+                Rect labelRect = new Rect(textStartX, rect.y + 5, rect.width - (textStartX - rect.x), 30);
                 GUI.Label(labelRect, text);
             }
             GUILayout.EndScrollView();
