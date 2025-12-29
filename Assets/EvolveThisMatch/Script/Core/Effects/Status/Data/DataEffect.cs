@@ -13,12 +13,14 @@ namespace EvolveThisMatch.Core
     public abstract class DataEffect<T> : DataEffectBase
     {
         [SerializeField] protected MutableValue _mutableValue;
+        [SerializeField] private ElementalValue _elementalValue;
         [SerializeField] protected T _value;
 
         #region MutableValue 처리
         public override void Initialize()
         {
             _mutableValue = new MutableValue();
+            _elementalValue = new ElementalValue();
         }
         #endregion
 
@@ -29,22 +31,30 @@ namespace EvolveThisMatch.Core
         #region 계산 중계
         protected int GetValue(int value, EffectContext context)
         {
-            return _mutableValue.GetValue(value, context);
+            value = _mutableValue.GetValue(value, context);
+            value = _elementalValue.GetValue(value);
+            return value;
         }
 
         protected int GetValue(int value, EffectContext context, EffectContext contextSub)
         {
-            return _mutableValue.GetValue(value, context, contextSub);
+            value = _mutableValue.GetValue(value, context, contextSub);
+            value = _elementalValue.GetValue(value);
+            return value;
         }
 
         protected float GetValue(float value, EffectContext context)
         {
-            return _mutableValue.GetValue(value, context);
+            value = _mutableValue.GetValue(value, context);
+            value = _elementalValue.GetValue(value);
+            return value;
         }
 
         protected float GetValue(float value, EffectContext context, EffectContext contextSub)
         {
-            return _mutableValue.GetValue(value, context, contextSub);
+            value = _mutableValue.GetValue(value, context, contextSub);
+            value = _elementalValue.GetValue(value);
+            return value;
         }
         #endregion
 
@@ -53,19 +63,23 @@ namespace EvolveThisMatch.Core
 
         public virtual int GetPreviewValue(int value)
         {
-            return _mutableValue.GetPreviewValue(value);
+            value = _mutableValue.GetPreviewValue(value);
+            value = _elementalValue.GetPreviewValue(value);
+            return value;
         }
 
         public virtual float GetPreviewValue(float value)
         {
-            return _mutableValue.GetPreviewValue(value);
+            value = _mutableValue.GetPreviewValue(value);
+            value = _elementalValue.GetPreviewValue(value);
+            return value;
         }
 
-        public override int GetNumRows() => _mutableValue.GetNumRows();
+        public override int GetNumRows() => _mutableValue.GetNumRows() + _elementalValue.GetNumRows();
 
         public override void Draw(Rect rect)
         {
-            EffectDrawUtility.DrawBoxedMutableValue(ref rect, _mutableValue, "초기 값", valueRect =>
+            EffectDrawUtility.DrawBoxedScaledValue(ref rect, _mutableValue, _elementalValue, "초기 값", valueRect =>
             {
                 if (typeof(T) == typeof(int))
                     _value = (T)(object)EditorGUI.IntField(valueRect, (int)(object)_value);
@@ -73,7 +87,6 @@ namespace EvolveThisMatch.Core
                     _value = (T)(object)EditorGUI.FloatField(valueRect, (float)(object)_value);
                 // 이곳에 다른 타입에 대한 처리를 추가할 수 있습니다.
             });
-
         }
 #endif
     }

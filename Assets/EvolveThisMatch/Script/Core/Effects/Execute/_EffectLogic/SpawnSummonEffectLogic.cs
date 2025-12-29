@@ -12,9 +12,11 @@ namespace EvolveThisMatch.Core
     {
         [SerializeField] private bool _isInfinity;
         [SerializeField] private MutableValue _durationMutableValue;
+        [SerializeField] private ElementalValue _durationElementalValue;
         [SerializeField] private float _duration;
         [SerializeField] private bool _isProbability;
         [SerializeField] private MutableValue _probabilityMutableValue;
+        [SerializeField] private ElementalValue _probabilityElementalValue;
         [SerializeField] private int _probability;
         [SerializeField] private Vector3 _offset;
         [SerializeField] private SummonTemplate _summon;
@@ -23,7 +25,9 @@ namespace EvolveThisMatch.Core
         public void Initialize()
         {
             _durationMutableValue = new MutableValue();
+            _durationElementalValue = new ElementalValue();
             _probabilityMutableValue = new MutableValue();
+            _probabilityElementalValue = new ElementalValue();
         }
 
         public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
@@ -53,6 +57,7 @@ namespace EvolveThisMatch.Core
             if (_isProbability)
             {
                 float probability = _probabilityMutableValue.GetPreviewValue(_probability);
+                probability = _probabilityElementalValue.GetPreviewValue(probability);
                 result += $" {probability}%의 확률로 ";
             }
 
@@ -63,6 +68,7 @@ namespace EvolveThisMatch.Core
             else
             {
                 float duration = _durationMutableValue.GetPreviewValue(_duration);
+                duration = _durationElementalValue.GetPreviewValue(duration);
                 result += $"{duration}초 동안 유지되는";
             }
 
@@ -84,6 +90,7 @@ namespace EvolveThisMatch.Core
             else
             {
                 float duration = _durationMutableValue.GetValue(_duration, context);
+                duration = _durationElementalValue.GetValue(duration);
                 BattleManager.Instance.GetSubSystem<SummonCreateSystem>().CreateUnit(_summon, spawnPosition, duration, casterUnit);
             }
         }
@@ -92,8 +99,10 @@ namespace EvolveThisMatch.Core
         {
             if (_isProbability == false) return true;
 
-            var rand = UnityEngine.Random.Range(0, 100.0f);
-            return rand <= _probabilityMutableValue.GetValue(_probability, context);
+            var rand = UnityEngine.Random.Range(0, 100);
+            int probability = _probabilityMutableValue.GetValue(_probability, context);
+            probability = _probabilityElementalValue.GetValue(probability);
+            return rand <= probability;
         }
 
         #region 그리기
@@ -108,7 +117,7 @@ namespace EvolveThisMatch.Core
             if (!_isInfinity)
             {
                 rect.y += 5;
-                EffectDrawUtility.DrawBoxedMutableValue(ref rect, _durationMutableValue, "지속시간", valueRect =>
+                EffectDrawUtility.DrawBoxedScaledValue(ref rect, _durationMutableValue, _durationElementalValue, "지속시간", valueRect =>
                 {
                     _duration = EditorGUI.FloatField(valueRect, _duration);
                     _duration = Mathf.Max(_duration, 0);
@@ -125,7 +134,7 @@ namespace EvolveThisMatch.Core
             if (_isProbability)
             {
                 rect.y += 5;
-                EffectDrawUtility.DrawBoxedMutableValue(ref rect, _probabilityMutableValue, "확률", valueRect =>
+                EffectDrawUtility.DrawBoxedScaledValue(ref rect, _probabilityMutableValue, _probabilityElementalValue, "확률", valueRect =>
                 {
                     _probability = (int)EditorGUI.Slider(valueRect, _probability, 0, 100);
                 });
@@ -144,13 +153,15 @@ namespace EvolveThisMatch.Core
         }
         public int GetNumRows()
         {
-            int rowNum = 2;
+            int rowNum = 0;
 
             if (!_isInfinity) rowNum += 2;
             if (_isProbability) rowNum += 2;
 
             rowNum += _durationMutableValue.GetNumRows();
+            rowNum += _durationElementalValue.GetNumRows();
             rowNum += _probabilityMutableValue.GetNumRows();
+            rowNum += _probabilityElementalValue.GetNumRows();
 
             return rowNum;
         }

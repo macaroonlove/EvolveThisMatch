@@ -6,7 +6,7 @@ namespace EvolveThisMatch.Core
     [CreateAssetMenu(menuName = "Templates/Skill/Active Skill", fileName = "ActiveSkill", order = 0)]
     public class ActiveSkillTemplate : SkillTemplate
     {
-        [HideInInspector, SerializeField] private SkillTypeTemplate _skillType;
+        [HideInInspector, SerializeField] private ElementalTemplate _skillType;
 
         [HideInInspector, SerializeField] private EActiveSkillTriggerType _skillTriggerType;
 
@@ -28,7 +28,7 @@ namespace EvolveThisMatch.Core
         public List<Effect> effects = new List<Effect>();
 
         #region 프로퍼티
-        public SkillTypeTemplate skillType => _skillType;
+        public ElementalTemplate skillType => _skillType;
         public EActiveSkillTriggerType skillTriggerType => _skillTriggerType;
 
         public EActiveSkillTargetingType skillTargetingType => _skillTargetingType;
@@ -46,7 +46,7 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 값 변경 메서드
-        internal void SetSkillType(SkillTypeTemplate type) => _skillType = type;
+        internal void SetSkillType(ElementalTemplate type) => _skillType = type;
         internal void SetActiveSkillTriggerType(EActiveSkillTriggerType triggerType) => _skillTriggerType = triggerType;
         internal void SetActiveSkillTargetingType(EActiveSkillTargetingType targetingType) => _skillTargetingType = targetingType;
         internal void SetActiveSkillPayType(EActiveSkillPayType payType) => _skillPayType = payType;

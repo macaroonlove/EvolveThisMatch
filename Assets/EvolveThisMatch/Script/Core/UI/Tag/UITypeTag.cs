@@ -2,7 +2,7 @@ namespace EvolveThisMatch.Core
 {
     public class UITypeTag : UITag
     {
-        public void Show(SkillTypeTemplate template)
+        public void Show(ElementalTemplate template)
         {
             _background.color = template.backgroundColor;
             _text.color = template.textColor;

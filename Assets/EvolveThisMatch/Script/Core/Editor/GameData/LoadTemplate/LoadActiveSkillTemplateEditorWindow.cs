@@ -149,7 +149,7 @@ namespace EvolveThisMatch.Editor
         }
 
         #region 스킬 타입 템플릿 가져오기
-        private Dictionary<string, SkillTypeTemplate> _skillTypeDic = new Dictionary<string, SkillTypeTemplate>();
+        private Dictionary<string, ElementalTemplate> _skillTypeDic = new Dictionary<string, ElementalTemplate>();
 
         private void InitializeSkillTypeTemplates()
         {
@@ -157,7 +157,7 @@ namespace EvolveThisMatch.Editor
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var skillType = AssetDatabase.LoadAssetAtPath<SkillTypeTemplate>(path);
+                var skillType = AssetDatabase.LoadAssetAtPath<ElementalTemplate>(path);
                 _skillTypeDic[skillType.type.ToString()] = skillType;
             }
         }

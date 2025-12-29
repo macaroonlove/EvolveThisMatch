@@ -77,6 +77,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 1
     _isTick: 0
     _tickCycleMutableValue:
@@ -85,6 +90,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -92,9 +102,13 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
     _damageType: 1
-    _elementalType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
     _applyTypeByAmountDatas:
     - _mutableValue:
         _enabled: 0
@@ -102,5 +116,10 @@ MonoBehaviour:
         _scaleFactor: 0
         _scaleBase: 0
         _previewScaleBase: 2
+      _elementalValue:
+        _enabled: 1
+        _scaleFactor: 0.1
+        _elementalType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
+        _previewElementalLevel: 1
       _applyType: 1
       _amount: 20

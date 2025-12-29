@@ -19,6 +19,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 1
     _isTick: 0
     _tickCycleMutableValue:
@@ -27,6 +33,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -34,9 +46,14 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
     _damageType: 0
-    _elementalType: {fileID: 0}
     _applyTypeByAmountDatas: []
 --- !u!114 &-7713097841010425908
 MonoBehaviour:
@@ -57,6 +74,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 1
     _isTick: 0
     _tickCycleMutableValue:
@@ -65,6 +88,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -72,9 +101,14 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
     _damageType: 0
-    _elementalType: {fileID: 0}
     _applyTypeByAmountDatas: []
 --- !u!114 &11400000
 MonoBehaviour:
@@ -123,6 +157,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 1
     _isTick: 0
     _tickCycleMutableValue:
@@ -131,6 +171,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -138,15 +184,26 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
-    _elementalType: {fileID: 0}
     _applyTypeByAmountDatas:
     - _mutableValue:
         _enabled: 1
         _bindKey: value
-        _scaleFactor: 0.01
+        _scaleFactor: 0.5
         _scaleBase: 3
         _previewScaleBase: 2
+      _elementalValue:
+        _enabled: 0
+        _bindKey: 
+        _scaleFactor: 0
+        _elementalType: {fileID: 0}
+        _previewElementalLevel: 2
       _applyType: 5
       _amount: 30
 --- !u!114 &8603092241782901897
@@ -168,6 +225,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 1
     _isTick: 0
     _tickCycleMutableValue:
@@ -176,6 +239,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -183,7 +252,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
     _damageType: 0
-    _elementalType: {fileID: 0}
     _applyTypeByAmountDatas: []

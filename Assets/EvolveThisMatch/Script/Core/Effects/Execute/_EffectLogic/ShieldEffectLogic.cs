@@ -10,16 +10,19 @@ namespace EvolveThisMatch.Core
     public class ShieldEffectLogic : IMutableValueBindingProvider
     {
         [SerializeField] private MutableValue _repeatCountMutableValue;
+        [SerializeField] private ElementalValue _repeatCountElementalValue;
         [SerializeField] private int _repeatCount;
         [SerializeField] private bool _isTick;
         [SerializeField] private MutableValue _tickCycleMutableValue;
+        [SerializeField] private ElementalValue _tickCycleElementalValue;
         [SerializeField] private float _tickCycle;
         [SerializeField] private MutableValue _tickCountMutableValue;
+        [SerializeField] private ElementalValue _tickCountElementalValue;
         [SerializeField] private int _tickCount;
         [SerializeField] private bool _isInfinity;
         [SerializeField] private MutableValue _durationMutableValue;
+        [SerializeField] private ElementalValue _durationElementalValue;
         [SerializeField] private float _duration;
-        [SerializeField] private SkillTypeTemplate _elementalType;
 
         [SerializeField] private List<ApplyTypeByAmountData> _applyTypeByAmountDatas = new List<ApplyTypeByAmountData>();
 
@@ -30,6 +33,10 @@ namespace EvolveThisMatch.Core
             _tickCycleMutableValue = new MutableValue();
             _tickCountMutableValue = new MutableValue();
             _durationMutableValue = new MutableValue();
+            _repeatCountElementalValue = new ElementalValue();
+            _tickCycleElementalValue = new ElementalValue();
+            _tickCountElementalValue = new ElementalValue();
+            _durationElementalValue = new ElementalValue();
         }
 
         public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
@@ -75,13 +82,18 @@ namespace EvolveThisMatch.Core
         public string GetDescription()
         {
             int repeatCount = _repeatCountMutableValue.GetPreviewValue(_repeatCount);
+            repeatCount = _repeatCountElementalValue.GetPreviewValue(repeatCount);
 
             string result = $"{repeatCount}회에 걸쳐";
 
             if (_isTick)
             {
                 float tickCycle = _tickCycleMutableValue.GetPreviewValue(_tickCycle);
+                tickCycle = _tickCycleElementalValue.GetPreviewValue(tickCycle);
+
                 int tickCount = _tickCountMutableValue.GetPreviewValue(_tickCount);
+                tickCount = _tickCountElementalValue.GetPreviewValue(tickCount);
+
                 float tickTime = tickCycle * tickCount;
                 result += $", {tickTime}초 동안 {tickCycle}초 마다";
             }
@@ -93,6 +105,8 @@ namespace EvolveThisMatch.Core
             else
             {
                 float duration = _durationMutableValue.GetPreviewValue(_duration);
+                duration = _durationElementalValue.GetPreviewValue(duration);
+
                 result += $" {duration}초 동안 유지되는";
             }
 
@@ -117,19 +131,6 @@ namespace EvolveThisMatch.Core
                 totalAmount += applyTypeByAmountData.GetAmount(effectContext, casterUnit, targetUnit);
             }
 
-            return GetElementEngraveAmount(totalAmount);
-        }
-
-        /// <summary>
-        /// 속성 진화 적용 값
-        /// </summary>
-        private int GetElementEngraveAmount(float totalAmount)
-        {
-            //if (_elementalType != null)
-            //{
-            //    totalAmount += (totalAmount * GetLevelAmount(_elementalType.engraveLevel));
-            //}
-
             return (int)totalAmount;
         }
         #endregion
@@ -138,6 +139,7 @@ namespace EvolveThisMatch.Core
         private void Execute_RepeatCount(EffectContext context, Unit casterUnit, Unit targetUnit, int shield)
         {
             int repeatCount = _repeatCountMutableValue.GetValue(_repeatCount, context);
+            repeatCount = _repeatCountElementalValue.GetValue(repeatCount);
 
             if (repeatCount > 1)
             {
@@ -171,7 +173,9 @@ namespace EvolveThisMatch.Core
         private IEnumerator CoExecute_Tick(EffectContext context, Unit casterUnit, Unit targetUnit, int shield)
         {
             var tickCycle = _tickCycleMutableValue.GetValue(_tickCycle, context);
+            tickCycle = _tickCycleElementalValue.GetValue(tickCycle);
             var tickCount = _tickCountMutableValue.GetValue(_tickCount, context);
+            tickCount = _tickCountElementalValue.GetValue(tickCount);
 
             var wfs = new WaitForSeconds(tickCycle);
 
@@ -195,6 +199,7 @@ namespace EvolveThisMatch.Core
             else
             {
                 float duration = _durationMutableValue.GetValue(_duration, context);
+                duration = _durationElementalValue.GetValue(duration);
                 targetUnit.healthAbility.AddShield(shield, duration);
             }
         }
@@ -205,7 +210,7 @@ namespace EvolveThisMatch.Core
         public void Draw(Rect rect)
         {
             #region 피해 횟수
-            EffectDrawUtility.DrawBoxedMutableValue(ref rect, _repeatCountMutableValue, "피해 횟수", valueRect =>
+            EffectDrawUtility.DrawBoxedScaledValue(ref rect, _repeatCountMutableValue, _repeatCountElementalValue, "피해 횟수", valueRect =>
             {
                 _repeatCount = EditorGUI.IntField(valueRect, _repeatCount);
                 if (_repeatCount <= 0) _repeatCount = 1;
@@ -222,7 +227,7 @@ namespace EvolveThisMatch.Core
             if (_isTick)
             {
                 #region 주기(초)
-                EffectDrawUtility.DrawBoxedMutableValue(ref rect, _tickCycleMutableValue, "주기(초)", valueRect =>
+                EffectDrawUtility.DrawBoxedScaledValue(ref rect, _tickCycleMutableValue, _tickCycleElementalValue, "주기(초)", valueRect =>
                 {
                     _tickCycle = EditorGUI.FloatField(valueRect, _tickCycle);
                 });
@@ -230,7 +235,7 @@ namespace EvolveThisMatch.Core
 
                 #region 주기마다 피해 횟수
                 rect.y += 5;
-                EffectDrawUtility.DrawBoxedMutableValue(ref rect, _tickCountMutableValue, "주기마다 피해 횟수", valueRect =>
+                EffectDrawUtility.DrawBoxedScaledValue(ref rect, _tickCountMutableValue, _tickCountElementalValue, "주기마다 피해 횟수", valueRect =>
                 {
                     _tickCount = EditorGUI.IntField(valueRect, _tickCount);
                 });
@@ -251,7 +256,7 @@ namespace EvolveThisMatch.Core
 
             if (!_isInfinity)
             {
-                EffectDrawUtility.DrawBoxedMutableValue(ref rect, _durationMutableValue, "지속 시간", valueRect =>
+                EffectDrawUtility.DrawBoxedScaledValue(ref rect, _durationMutableValue, _durationElementalValue, "지속 시간", valueRect =>
                 {
                     _duration = EditorGUI.FloatField(valueRect, _duration);
                 });
@@ -259,13 +264,7 @@ namespace EvolveThisMatch.Core
             #endregion
 
             #region 보호막 양 계산
-            rect.y += 20;
-            EffectDrawUtility.DrawRow(ref rect, "속성", valueRect =>
-            {
-                _elementalType = (SkillTypeTemplate)EditorGUI.ObjectField(valueRect, _elementalType, typeof(SkillTypeTemplate), false);
-            });
-
-            rect.y += 5;
+            rect.y += 25;
 
             EffectDrawUtility.DrawRow(ref rect, "", valueRect =>
             {
@@ -296,7 +295,7 @@ namespace EvolveThisMatch.Core
 
         public int GetNumRows()
         {
-            float rowNum = 4;
+            float rowNum = 1;
 
             if (_isTick)
             {
@@ -313,9 +312,13 @@ namespace EvolveThisMatch.Core
                 rowNum += amountData.GetNumRows();
             }
             rowNum += _repeatCountMutableValue.GetNumRows();
+            rowNum += _repeatCountElementalValue.GetNumRows();
             rowNum += _tickCycleMutableValue.GetNumRows();
+            rowNum += _tickCycleElementalValue.GetNumRows();
             rowNum += _tickCountMutableValue.GetNumRows();
+            rowNum += _tickCountElementalValue.GetNumRows();
             rowNum += _durationMutableValue.GetNumRows();
+            rowNum += _durationElementalValue.GetNumRows();
 
             return (int)rowNum;
         }

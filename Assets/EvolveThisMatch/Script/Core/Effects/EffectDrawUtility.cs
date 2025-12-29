@@ -28,12 +28,12 @@ namespace EvolveThisMatch.Core
             DrawRow(ref rect, label, drawField, labelWidth, valueWidthMargin: valueWidthMargin);
         }
 
-        public static void DrawBoxedMutableValue(ref Rect rect, MutableValue mutable, string label, UnityAction<Rect> drawField, float labelWidth = 140f)
+        public static void DrawBoxedScaledValue(ref Rect rect, MutableValue mutable, ElementalValue elemental, string label, UnityAction<Rect> drawField, float labelWidth = 140f)
         {
             Color boxColor = EditorGUIUtility.isProSkin ? new Color(1, 1, 1, 0.08f) : new Color(0, 0, 0, 0.08f);
 
             float startY = rect.y;
-            float height = mutable.GetHeight() + 20f;
+            float height = mutable.GetHeight() + elemental.GetHeight() + 20f;
 
             var boxRect = new Rect(rect.x - 5, rect.y - 1, rect.width + 10, height + 2);
             EditorGUI.DrawRect(boxRect, boxColor);
@@ -41,6 +41,10 @@ namespace EvolveThisMatch.Core
             // MutableValue
             mutable.Draw(new Rect(rect.x, rect.y, rect.width, 0));
             rect.y += mutable.GetHeight();
+
+            // ElementalValue
+            elemental.Draw(new Rect(rect.x, rect.y, rect.width, 0));
+            rect.y += elemental.GetHeight();
 
             DrawRow(ref rect, label, drawField, labelWidth);
         }

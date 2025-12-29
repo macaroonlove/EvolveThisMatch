@@ -10,6 +10,7 @@ namespace EvolveThisMatch.Core
     public class ApplyTypeByAmountData : IMutableValueBindingProvider
     {
         [SerializeField] private MutableValue _mutableValue;
+        [SerializeField] private ElementalValue _elementalValue;
         [SerializeField] private EApplyType _applyType;
         [SerializeField] private float _amount;
 
@@ -19,6 +20,7 @@ namespace EvolveThisMatch.Core
         public ApplyTypeByAmountData()
         {
             _mutableValue = new MutableValue();
+            _elementalValue = new ElementalValue();
         }
 
         public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
@@ -49,7 +51,9 @@ namespace EvolveThisMatch.Core
                 _ => 0f
             };
 
-            return _mutableValue.GetValue(typeValue * _amount, effectContext);
+            float amount = _mutableValue.GetValue(typeValue * _amount, effectContext);
+            amount = _elementalValue.GetValue(amount);
+            return amount;
         }
 
         private static float SafeGetStatusValue<T>(Unit unit, Func<T, float> getter) where T : Ability
@@ -68,7 +72,7 @@ namespace EvolveThisMatch.Core
             EffectDrawUtility.DrawBox(ref rect, "적용 방식", valueRect =>
             {
                 _applyType = (EApplyType)EditorGUI.EnumPopup(valueRect, _applyType);
-            }, boxHeight: 40 + _mutableValue.GetHeight(), valueWidthMargin: 20);
+            }, boxHeight: 40 + _mutableValue.GetHeight() + _elementalValue.GetHeight(), valueWidthMargin: 20);
 
 
             Color boxColor = EditorGUIUtility.isProSkin ? new Color(1, 1, 1, 0.20f) : new Color(0, 0, 0, 0.20f);
@@ -76,16 +80,40 @@ namespace EvolveThisMatch.Core
             EditorGUI.DrawRect(descRect, boxColor);
             descRect.x += 8;
             descRect.y += 1;
-            EditorGUI.LabelField(descRect, $"예상 결과값: {_mutableValue.GetPreviewValue(_amount)}");
+            var previewAmount = _mutableValue.GetPreviewValue(_amount);
+            previewAmount = _elementalValue.GetPreviewValue(previewAmount);
+            EditorGUI.LabelField(descRect, $"예상 결과값: {GetApplyTypeString()} {previewAmount}%");
 
 
-            EffectDrawUtility.DrawBoxedMutableValue(ref rect, _mutableValue, "값", valueRect =>
+            EffectDrawUtility.DrawBoxedScaledValue(ref rect, _mutableValue, _elementalValue, "값", valueRect =>
             {
                 _amount = EditorGUI.FloatField(valueRect, _amount);
             });
         }
 
-        public float GetNumRows() => 2.5f + _mutableValue.GetNumRows();
+        private string GetApplyTypeString()
+        {
+            switch (_applyType)
+            {
+                case EApplyType.Basic:
+                    return "기본값의";
+                case EApplyType.Caster_FinalATK:
+                    return "시전자의 전투력의";
+                case EApplyType.Caster_CurrentHP:
+                    return "시전자의 현재 체력의";
+                case EApplyType.Caster_MAXHP:
+                    return "시전자의 최대 체력의";
+                case EApplyType.Target_CurrentHP:
+                    return "타겟의 현재 체력의";
+                case EApplyType.Target_MAXHP:
+                    return "타겟의 최대 체력의";
+                default:
+                    break;
+            }
+            return "";
+        }
+
+        public float GetNumRows() => 3 + _mutableValue.GetNumRows() + _elementalValue.GetNumRows();
 #endif
         #endregion
     }

@@ -19,6 +19,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 0
     _isTick: 0
     _tickCycleMutableValue:
@@ -27,6 +32,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -34,8 +44,12 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
-    _elementalType: {fileID: 0}
     _applyTypeByAmountDatas: []
 --- !u!114 &-4416806879964808361
 MonoBehaviour:
@@ -57,7 +71,25 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
+    _probability: 0
     _buff: {fileID: 0}
     _isfoldout: 0
 --- !u!114 &11400000
@@ -111,6 +143,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 0
     _isTick: 0
     _tickCycleMutableValue:
@@ -119,6 +156,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -126,9 +168,13 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
     _damageType: 0
-    _elementalType: {fileID: 0}
     _applyTypeByAmountDatas: []
 --- !u!114 &2203926672717209640
 MonoBehaviour:
@@ -184,10 +230,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0623572b61417049817a1c10a86464a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isInfinity: 0
-  _duration: 0
-  _offset: {x: 0, y: 0, z: 0}
-  _summon: {fileID: 0}
+  _spawnSummonEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
+    _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
+    _probability: 0
+    _offset: {x: 0, y: 0, z: 0}
+    _summon: {fileID: 0}
 --- !u!114 &7675746981996901755
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -208,7 +279,25 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
+    _probability: 0
     _buff: {fileID: 0}
     _isfoldout: 0
 --- !u!114 &8470511893177815023
@@ -231,6 +320,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _duration: 0
     _isProbability: 0
     _probabilityMutableValue:
@@ -239,6 +333,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _probability: 0
     _abnormalStatus: {fileID: 0}
     _isfoldout: 0
@@ -261,6 +360,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _repeatCount: 1
     _isTick: 0
     _tickCycleMutableValue:
@@ -269,6 +373,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCycle: 0
     _tickCountMutableValue:
       _enabled: 0
@@ -276,9 +385,13 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 2
     _tickCount: 0
     _damageType: 1
-    _elementalType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
     _applyTypeByAmountDatas:
     - _mutableValue:
         _enabled: 0
@@ -286,5 +399,10 @@ MonoBehaviour:
         _scaleFactor: 0
         _scaleBase: 0
         _previewScaleBase: 2
+      _elementalValue:
+        _enabled: 1
+        _scaleFactor: 0.2
+        _elementalType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
+        _previewElementalLevel: 1
       _applyType: 1
       _amount: 10

@@ -1,19 +1,20 @@
 using EvolveThisMatch.Core;
+using FrameWork.UIPopup;
 using UnityEngine;
 
 namespace EvolveThisMatch.Battle
 {
     public class UITypeEngraveButton : UIEngraveButton
     {
-        [SerializeField] private SkillTypeTemplate _skillTypeTemplate;
+        [SerializeField] private ElementalTemplate _elementalTemplate;
 
         private CrystalSystem _crystalSystem;
+        private ElementalSystem _elemantalSystem;
 
         internal override void InitializeBattle(UIEngraveCanvas engraveCanvas)
         {
-            _skillTypeTemplate.Initialize();
-
             _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
+            _elemantalSystem = BattleManager.Instance.GetSubSystem<ElementalSystem>();
             _crystalSystem.onChangedCrystal += OnChangedCrystal;
 
             OnChangedCrystal(_crystalSystem.currentCrystal);
@@ -30,7 +31,7 @@ namespace EvolveThisMatch.Battle
 
         private void OnChangedCrystal(int value)
         {
-            var needCrystal = _skillTypeTemplate.GetEngraveData().needCrystal;
+            int needCrystal = _elemantalSystem.GetNeedCrystal(_elementalTemplate);
 
             if (needCrystal > value)
             {
@@ -44,40 +45,66 @@ namespace EvolveThisMatch.Battle
 
         protected override void Engrave()
         {
-            var needCrystal = _skillTypeTemplate.GetEngraveData().needCrystal;
+            if (_elemantalSystem == null || _elementalTemplate == null) return;
 
-            if (!_crystalSystem.CheckCrystal(needCrystal)) return;
+            int result = _elemantalSystem.RequestIncreaseElemental(_elementalTemplate);
 
-            if (_skillTypeTemplate.UpgradeEngraveLevel())
+            switch (result)
             {
-                _crystalSystem.PayCrystal(needCrystal);
-
-                Refrash();
+                case -2:
+                    UIPopupManager.Instance.ShowNotificationPopup("더 이상 각인 레벨을 상승시킬 수 없습니다.");
+                    return;
+                case -1:
+                    UIPopupManager.Instance.ShowNotificationPopup("비정상적인 각인 레벨업을 시도하고 있습니다.");
+                    return;
+                case 1:
+                    UIPopupManager.Instance.ShowNotificationPopup("성공적으로 각인 레벨을 상승시켰습니다.");
+                    break;
+                default:
+                    return;
             }
+
+            int needCrystal = _elemantalSystem.GetNeedCrystal(_elementalTemplate);
+            if (!_crystalSystem.PayCrystal(needCrystal))
+            {
+                UIPopupManager.Instance.ShowNotificationPopup("크리스탈이 부족합니다.");
+                return;
+            }
+
+            Refrash();
         }
 
         internal override void ForceEngrave()
         {
-            if (_skillTypeTemplate.UpgradeEngraveLevel())
+            if (_elemantalSystem == null || _elementalTemplate == null) return;
+
+            int result = _elemantalSystem.RequestIncreaseElemental(_elementalTemplate);
+
+            switch (result)
             {
-                Refrash();
+                case -1:
+                    UIPopupManager.Instance.ShowNotificationPopup("비정상적인 각인 레벨업을 시도하고 있습니다.");
+                    return;
             }
+
+            Refrash();
         }
 
         private void Refrash()
         {
-            var data = _skillTypeTemplate.GetEngraveData();
+            var level = _elemantalSystem.GetLevel(_elementalTemplate);
 
-            if (data.needCrystal == -1)
+            if (level == 5)
             {
                 _payText.text = "Max";
             }
             else
             {
-                _payText.text = $"<sprite name=\"Crystal\"> {data.needCrystal}";
+                var needCrystal = _elemantalSystem.GetNeedCrystal(_elementalTemplate);
+                _payText.text = $"<sprite name=\"Crystal\"> {needCrystal}";
             }
 
-            _levelText.text = $"LV. {_skillTypeTemplate.engraveLevel + 1}";
+            _levelText.text = $"LV. {level}";
         }
     }
 }

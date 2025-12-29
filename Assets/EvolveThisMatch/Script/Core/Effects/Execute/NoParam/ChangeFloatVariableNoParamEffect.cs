@@ -9,12 +9,14 @@ namespace EvolveThisMatch.Core
         [SerializeField] private ObscuredFloatVariable _target;
         [SerializeField] private EOperator _operator = EOperator.Add;
         [SerializeField] private MutableValue _mutableValue;
+        [SerializeField] private ElementalValue _elementalValue;
         [SerializeField] private float _value;
 
         #region MutableValue 처리
         public override void Initialize()
         {
             _mutableValue = new MutableValue();
+            _elementalValue = new ElementalValue();
         }
 
         public bool TryGetBindValue(string bindKey, EffectContext context, out string value)
@@ -38,15 +40,16 @@ namespace EvolveThisMatch.Core
             }
 
             var value = _mutableValue.GetPreviewValue(_value);
+            value = _elementalValue.GetPreviewValue(value);
 
             switch (_operator)
             {
                 case EOperator.Add:
-                    return $"{_target.name}의 값에 {_value}만큼 더하기";
+                    return $"{_target.name}의 값에 {value}만큼 더하기";
                 case EOperator.Multiply:
-                    return $"{_target.name}의 값에 {_value}만큼 곱하기";
+                    return $"{_target.name}의 값에 {value}만큼 곱하기";
                 case EOperator.Set:
-                    return $"{_target.name}의 값을 {_value}로 변경하기";
+                    return $"{_target.name}의 값을 {value}로 변경하기";
             }
             return "오류! 확인 필요";
         }
@@ -55,18 +58,19 @@ namespace EvolveThisMatch.Core
         {
             if (_target == null) return;
 
-            float finalValue = _mutableValue.GetValue(_value, effectContext);
+            float value = _mutableValue.GetValue(_value, effectContext);
+            value = _elementalValue.GetValue(value);
 
             switch (_operator)
             {
                 case EOperator.Add:
-                    _target.Value += finalValue;
+                    _target.Value += value;
                     break;
                 case EOperator.Multiply:
-                    _target.Value *= finalValue;
+                    _target.Value *= value;
                     break;
                 case EOperator.Set:
-                    _target.Value = finalValue;
+                    _target.Value = value;
                     break;
             }
         }
@@ -84,7 +88,7 @@ namespace EvolveThisMatch.Core
                 _operator = (EOperator)EditorGUI.EnumPopup(valueRect, _operator);
             });
 
-            EffectDrawUtility.DrawBoxedMutableValue(ref rect, _mutableValue, "값", valueRect =>
+            EffectDrawUtility.DrawBoxedScaledValue(ref rect, _mutableValue, _elementalValue, "값", valueRect =>
             {
                 _value = EditorGUI.FloatField(valueRect, _value);
             });
@@ -92,9 +96,10 @@ namespace EvolveThisMatch.Core
 
         public override int GetNumRows()
         {
-            int rowNum = 2;
+            int rowNum = 1;
 
             rowNum += _mutableValue.GetNumRows();
+            rowNum += _elementalValue.GetNumRows();
 
             return rowNum;
         }
