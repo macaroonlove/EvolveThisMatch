@@ -1,7 +1,5 @@
 using EvolveThisMatch.Core;
-using EvolveThisMatch.Save;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -20,9 +18,9 @@ namespace EvolveThisMatch.Lobby
 
         private Transform _orderIcon;
 
-        internal override void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
+        protected override void Initialize()
         {
-            base.Initialize(action);
+            base.Initialize();
 
             BindDropdown(typeof(Dropdowns));
             BindToggle(typeof(Toggles));
@@ -75,7 +73,7 @@ namespace EvolveThisMatch.Lobby
 
         internal void SelectedClear()
         {
-            foreach (var item in _agentListItems) 
+            foreach (var item in _agentListItems)
             {
                 (item as UIAgentListItem_Formation).DeSelectItem();
             }

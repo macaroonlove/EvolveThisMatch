@@ -54,7 +54,25 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
     _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _probability: 0
     _buff: {fileID: 11400000, guid: 323a24c7888764a48b25c5fa67808be3, type: 2}
     _isfoldout: 0
 --- !u!114 &8478712444418775519

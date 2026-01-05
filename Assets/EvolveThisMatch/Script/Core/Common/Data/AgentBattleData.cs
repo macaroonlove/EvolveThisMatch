@@ -53,10 +53,15 @@ namespace EvolveThisMatch.Core
         #endregion
 
         #region 동기화
-        public void PrepareSyncIncrease(int token)
+        public int PrepareSyncIncrease()
         {
+            // 외부에서 메서드에 직접 접근할 경우를 대비하여 단발성 토큰 부여
+            int token = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+
             _antiCheatToken = token;
             _antiCheatFrame = Time.frameCount;
+
+            return token;
         }
 
         /// <returns>-1: 비정상적인 접근 | 1: 성공</returns>

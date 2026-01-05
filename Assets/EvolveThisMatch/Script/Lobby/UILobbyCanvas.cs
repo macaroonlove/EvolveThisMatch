@@ -4,7 +4,6 @@ using EvolveThisMatch.Save;
 using FrameWork;
 using FrameWork.UI;
 using FrameWork.UIBinding;
-using ScriptableObjectArchitecture;
 using UnityEngine;
 
 namespace EvolveThisMatch.Lobby

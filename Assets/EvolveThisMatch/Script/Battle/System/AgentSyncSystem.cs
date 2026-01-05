@@ -34,11 +34,8 @@ namespace EvolveThisMatch.Battle
             if (needCoin <= 0 || data.sync > 15) return -2;
 
             if (!_coinSystem.PayCoin(needCoin)) return -3;
-
-            // 외부에서 메서드에 직접 접근할 경우를 대비하여 단발성 토큰 부여
-            int token = Random.Range(int.MinValue, int.MaxValue);
             
-            data.PrepareSyncIncrease(token);
+            var token = data.PrepareSyncIncrease();
             return data.ApplySyncIncrease(token);
         }
 

@@ -53,7 +53,7 @@ namespace EvolveThisMatch.Lobby
             _agentReturnSystem = BattleManager.Instance.GetSubSystem<AgentReturnSystem>();
 
             _agentListCanvas = GetComponentInChildren<UIAgentListCanvas_Formation>();
-            _agentListCanvas.Initialize(SelectAgent);
+            _agentListCanvas.Bind(SelectAgent);
 
             BindButton(typeof(Buttons));
             BindToggle(typeof(Toggles));

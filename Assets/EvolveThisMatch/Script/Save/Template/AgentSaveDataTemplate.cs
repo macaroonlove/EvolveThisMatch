@@ -486,17 +486,20 @@ namespace EvolveThisMatch.Save
             // 동일한 order와 index 기준으로 마지막 잠금 상태만 남기기
             foreach (var localData in _talentLocalData.Values)
             {
-                var lockHistory = localData.lockHistory
+                if (localData.lockHistory == null || localData.lockHistory.Count == 0) continue;
+
+                localData.lockHistory = localData.lockHistory
                     .GroupBy(h => new { h.order, h.index })
                     .Select(g => g.Last())
                     .OrderBy(h => h.order)
                     .ThenBy(h => h.index)
                     .ToList();
-
-                localData.lockHistory = lockHistory;
             }
 
-            var talentLocalData = _talentLocalData.Values.Select(TalentSaveDataEncrypted.FromEncrypted).ToList();
+            var filteredLocalData = _talentLocalData.Values.Where(data => data.rollCount > 0 || (data.lockHistory != null && data.lockHistory.Count > 0)).ToList();
+            if (filteredLocalData.Count == 0) return;
+
+            var talentLocalData = filteredLocalData.Select(TalentSaveDataEncrypted.FromEncrypted).ToList();
 
             var request = new ExecuteCloudScriptRequest
             {

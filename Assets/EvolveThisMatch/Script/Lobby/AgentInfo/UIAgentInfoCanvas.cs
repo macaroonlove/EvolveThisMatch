@@ -1,8 +1,8 @@
 using EvolveThisMatch.Core;
-using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
@@ -13,43 +13,47 @@ namespace EvolveThisMatch.Lobby
         {
             CloseButton,
         }
+        enum Images
+        {
+            FullBody,
+        }
         #endregion
 
-        private UIAgentListCanvas _agentListCanvas;
-        private UIAgentDetailCanvas _agentDetailCanvas;
-
-        private GameObject _overUICamera;
-        private UnityAction _onClose;
+        private Image _fullBody;
+        private UIAgentInfoController _controller;
 
         protected override void Initialize()
         {
-            _agentListCanvas = GetComponentInChildren<UIAgentListCanvas>();
-            _agentDetailCanvas = GetComponentInChildren<UIAgentDetailCanvas>();
-            _overUICamera = Camera.main.transform.Find("OverUICamera").gameObject;
+            var agentListCanvas = GetComponentInChildren<UIAgentListCanvas>();
+            var agentDetailCanvas = GetComponentInChildren<UIAgentDetailCanvas>();
+            var overUICamera = Camera.main.transform.Find("OverUICamera").gameObject;
 
-            _agentListCanvas.Initialize((AgentTemplate template, AgentSaveData.Agent owned) => _agentDetailCanvas.Show(template, owned));
-
+            BindImage(typeof(Images));
             BindButton(typeof(Buttons));
 
+            _fullBody = GetImage((int)Images.FullBody);
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
+
+            _controller = new UIAgentInfoController(this, agentListCanvas, agentDetailCanvas, overUICamera);
         }
 
         public void Show(UnityAction onClose)
         {
-            _onClose = onClose;
-
-            _agentListCanvas.SelectFirstItem();
-            _overUICamera.SetActive(true);
+            _controller.Show(onClose);
 
             base.Show(true);
         }
 
+        public void Render(AgentTemplate template)
+        {
+            // 유닛 풀 이미지
+            _fullBody.sprite = template.sprite;
+        }
+
         public void Hide()
         {
-            _agentDetailCanvas.HidePanel();
-            _overUICamera.SetActive(false);
+            _controller?.Hide();
 
-            _onClose?.Invoke();
             base.Hide(true);
         }
     }

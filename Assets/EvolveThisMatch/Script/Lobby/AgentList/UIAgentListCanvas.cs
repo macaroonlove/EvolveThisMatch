@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using EvolveThisMatch.Core;
 using EvolveThisMatch.Save;
@@ -31,58 +32,60 @@ namespace EvolveThisMatch.Lobby
         protected bool _isAsc;
         protected int _filterIndex;
 
-        protected UnityAction<AgentTemplate, AgentSaveData.Agent> _action;
+        protected UnityAction<AgentTemplate, AgentSaveData.Agent> _onSelected;
 
-        internal virtual void Initialize(UnityAction<AgentTemplate, AgentSaveData.Agent> action = null)
+        protected override void Initialize()
         {
-            _action = action;
-
             BindObject(typeof(Objects));
-
             _parent = GetObject((int)Objects.Content).transform;
 
             _agentDataChangedGameEvent.AddListener(RefreshAgentListItem);
-        }
 
-        protected void Start()
-        {
             InitializeAgentListItem();
         }
 
-        internal void SelectFirstItem()
+        internal void Bind(UnityAction<AgentTemplate, AgentSaveData.Agent> onSelected)
         {
-            _agentListItems[0].SelectItem();
+            _onSelected = onSelected;
         }
 
         #region 리스트 아이템 생성
         private void InitializeAgentListItem()
         {
             _agentTemplates = GameDataManager.Instance.agentTemplates.ToList();
-            int count = _agentTemplates.Count;
-
-            _agentListItems = new List<UIAgentListItem>(count);
+            _agentListItems = new List<UIAgentListItem>(_agentTemplates.Count);
 
             var agentInfoItem = GetComponentInChildren<UIAgentListItem>();
 
             // 나머지 프리팹 인스턴스 생성
-            for (int i = 0; i < count; i++)
+            foreach (var tempalte in _agentTemplates)
             {
                 var item = Instantiate(agentInfoItem.gameObject, _parent).GetComponent<UIAgentListItem>();
-                item.Initialize(ChangeAgent);
+                item.Initialize(OnAgentSelected);
                 _agentListItems.Add(item);
             }
 
             Destroy(agentInfoItem.gameObject);
 
             ChangeFilterOrder(0);
+
+            SelectFirstItem().Forget();
         }
 
-        private void ChangeAgent(AgentTemplate template, AgentSaveData.Agent owned)
+        private void OnAgentSelected(AgentTemplate template, AgentSaveData.Agent owned)
         {
             // 모든 아이템 선택 취소
             foreach (var item in _agentListItems) item.DeSelectItem();
+            
+            _onSelected?.Invoke(template, owned);
+        }
 
-            _action?.Invoke(template, owned);
+        private async UniTaskVoid SelectFirstItem()
+        {
+            await UniTask.WaitUntil(() => _onSelected != null);
+
+            if (_agentListItems.Count > 0)
+                _agentListItems[0].SelectItem();
         }
         #endregion
 
@@ -139,26 +142,15 @@ namespace EvolveThisMatch.Lobby
         #region 리스트 갱신
         private void RefreshAgentListItem()
         {
-            var ownedAgents = SaveManager.Instance.agentData.ownedAgents;
-            int count = _agentTemplates.Count;
-
             // 보유한 유닛의 아이디
-            var ownedAgentDic = ownedAgents.ToDictionary(a => a.id);
+            var ownedAgents = SaveManager.Instance.agentData.ownedAgents.ToDictionary(a => a.id);
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < _agentTemplates.Count; i++)
             {
                 var template = _agentTemplates[i];
+                ownedAgents.TryGetValue(template.id, out var owned);
 
-                if (ownedAgentDic.TryGetValue(template.id, out var owned))
-                {
-                    // 보유한 유닛 → level, unitCount 전달
-                    _agentListItems[i].Show(template, owned);
-                }
-                else
-                {
-                    // 미보유 유닛
-                    _agentListItems[i].Show(template, null);
-                }
+                _agentListItems[i].Show(template, owned);
             }
         }
         #endregion

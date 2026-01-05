@@ -37,7 +37,7 @@ namespace EvolveThisMatch.Battle
         private UIBattleSyncButton _syncButton;
         private UIBattleLimitButton _limitButton;
         private UIBattleStatCanvas _battleStatCanvas;
-        private UISkillCanvas_Battle _skillCanvas;
+        private UISkillView _skillCanvas;
 
         protected override void Initialize()
         {
@@ -47,7 +47,7 @@ namespace EvolveThisMatch.Battle
             _syncButton = GetComponentInChildren<UIBattleSyncButton>();
             _limitButton = GetComponentInChildren<UIBattleLimitButton>();
             _battleStatCanvas = GetComponentInChildren<UIBattleStatCanvas>();
-            _skillCanvas = GetComponentInChildren<UISkillCanvas_Battle>();
+            _skillCanvas = GetComponentInChildren<UISkillView>();
 
             _crystalSystem = BattleManager.Instance.GetSubSystem<CrystalSystem>();
 

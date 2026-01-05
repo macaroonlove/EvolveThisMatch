@@ -50,7 +50,7 @@ namespace EvolveThisMatch.Lobby
             _agentListCanvas = GetComponentInChildren<UIAgentListCanvas_Department>();
             _craftListPanel = GetComponentInChildren<UICraftListPanel>();
 
-            _agentListCanvas.Initialize(ChangeAgent);
+            _agentListCanvas.Bind(ChangeAgent);
             _craftListPanel.Initialize(ChangeCraft);
 
             BindButton(typeof(Buttons));

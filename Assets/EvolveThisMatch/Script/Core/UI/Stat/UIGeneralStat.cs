@@ -16,6 +16,7 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
+        [SerializeField] protected EJob _includeJob;
         private TextMeshProUGUI _valueText;
 
         protected override async void Awake()
@@ -50,6 +51,11 @@ namespace EvolveThisMatch.Core
         public void Clear()
         {
             _valueText.text = "NULL";
+        }
+
+        protected bool IsIncludeJob(AgentTemplate template)
+        {
+            return (_includeJob & template.job.job) != 0;
         }
     }
 }

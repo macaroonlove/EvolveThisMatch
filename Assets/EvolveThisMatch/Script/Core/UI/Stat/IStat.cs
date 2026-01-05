@@ -1,3 +1,5 @@
+using EvolveThisMatch.Save;
+
 namespace EvolveThisMatch.Core
 {
     public interface IBattleStat 
@@ -8,9 +10,9 @@ namespace EvolveThisMatch.Core
     
     public interface IGeneralStat
     {
-        void Initialize(AgentTemplate template);
-        void Initialize(EnemyTemplate template);
+        void Initialize(AgentTemplate template, AgentSaveData.Agent owned);
         void Clear();
         void Deinitialize();
+        bool IsAvailable(AgentTemplate template);
     }
 }

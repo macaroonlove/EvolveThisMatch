@@ -2,11 +2,13 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Core
 {
+    [System.Flags]
     public enum EJob
     {
-        Melee,
-        Wizard,
-        Summoner,
+        None = 0,
+        Melee = 1 << 0,
+        Wizard = 1 << 1,
+        Summoner = 1 << 2,
     }
 
     [CreateAssetMenu(menuName = "Templates/Etc/Job", fileName = "Job", order = 1)]
