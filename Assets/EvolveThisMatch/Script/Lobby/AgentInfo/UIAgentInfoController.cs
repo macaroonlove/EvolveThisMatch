@@ -8,13 +8,13 @@ namespace EvolveThisMatch.Lobby
     public sealed class UIAgentInfoController
     {
         private readonly UIAgentInfoCanvas _agentInfoCanvas;
-        private readonly UIAgentListCanvas _agentListCanvas;
+        private readonly UIAgentListCanvas_AgentInfo _agentListCanvas;
         private readonly UIAgentDetailCanvas _agentDetailCanvas;
         private readonly GameObject _overUICamera;
 
         private UnityAction _onClose;
 
-        public UIAgentInfoController(UIAgentInfoCanvas info,UIAgentListCanvas list, UIAgentDetailCanvas detail, GameObject overUICamera)
+        public UIAgentInfoController(UIAgentInfoCanvas info,UIAgentListCanvas_AgentInfo list, UIAgentDetailCanvas detail, GameObject overUICamera)
         {
             _agentInfoCanvas = info;
             _agentListCanvas = list;

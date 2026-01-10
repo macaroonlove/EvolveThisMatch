@@ -24,7 +24,7 @@ namespace EvolveThisMatch.Lobby
 
         protected override void Initialize()
         {
-            var agentListCanvas = GetComponentInChildren<UIAgentListCanvas>();
+            var agentListCanvas = GetComponentInChildren<UIAgentListCanvas_AgentInfo>();
             var agentDetailCanvas = GetComponentInChildren<UIAgentDetailCanvas>();
             var overUICamera = Camera.main.transform.Find("OverUICamera").gameObject;
 

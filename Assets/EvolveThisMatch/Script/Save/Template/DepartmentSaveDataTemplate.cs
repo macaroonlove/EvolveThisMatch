@@ -1,4 +1,5 @@
 using CodeStage.AntiCheat.ObscuredTypes;
+using Cysharp.Threading.Tasks;
 using FrameWork.Editor;
 using FrameWork.PlayFabExtensions;
 using FrameWork.UIPopup;
@@ -9,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace EvolveThisMatch.Save
@@ -34,51 +34,72 @@ namespace EvolveThisMatch.Save
     [Serializable]
     public class DepartmentLocalSaveData
     {
-        [SerializeField] private string _departmentId;
-        [SerializeField] private List<CraftingJob> _activeJobs = new List<CraftingJob>();
+        [field: SerializeField] public string departmentId { get; private set; }
+        [field: SerializeField] public CraftingJob[] jobs { get; private set; }
 
-        public string departmentId => _departmentId;
-        internal IReadOnlyList<CraftingJob> activeJobs => _activeJobs;
-        public int activeJobCount => _activeJobs.Count;
+        public int workbenchCount { get => 3; }
+        public int activeWorkbenchCount
+        {
+            get
+            {
+                int count = 0;
+                for (int i = 0; i < jobs.Length; i++)
+                {
+                    if (jobs[i].isActive)
+                        count++;
+                }
+                return count;
+            }
+        }
 
         public DepartmentLocalSaveData(string name)
         {
-            _departmentId = name;
-        }
+            departmentId = name;
 
-        public CraftingJob GetActiveJob(int workbenchId)
-        {
-            return _activeJobs.FirstOrDefault(job => job.workbenchId == workbenchId);
-        }
-
-        public void SetActiveJob(int workbenchId, int unitId, int itemId, int maxAmount)
-        {
-            // 해당 작업대가 존재할리 없다면
-            if (workbenchId < 0 || workbenchId > 2) return;
-
-            var job = GetActiveJob(workbenchId);
-
-            // 작업대가 존재하지 않으면 새로운 작업 추가
-            if (job == null)
+            jobs = new CraftingJob[workbenchCount];
+            for (int i = 0; i < workbenchCount; i++)
             {
-                job = new CraftingJob();
-                job.workbenchId = workbenchId;
-
-                _activeJobs.Add(job);
+                jobs[i] = new CraftingJob { workbenchId = i };
             }
-
-            job.unitId = unitId;
-            job.craftItemId = itemId;
-            job.maxAmount = maxAmount;
-            job.startTime = DateTime.UtcNow;
         }
 
-        public void RemoveActiveJob(CraftingJob job)
+        public CraftingJob GetJob(int workbenchId)
         {
+            if (!IsValidWorkbench(workbenchId)) return null;
+            return jobs[workbenchId];
+        }
+
+        public void RegistJob(int workbenchId, int unitId, int itemId, int maxAmount)
+        {
+            var job = GetJob(workbenchId);
+
+            if (job != null)
+            {
+                job.unitId = unitId;
+                job.craftItemId = itemId;
+                job.maxAmount = maxAmount;
+                job.startTime = DateTime.UtcNow;
+                job.isActive = true;
+            }
+        }
+
+        public void RemoveJob(int workbenchId)
+        {
+            var job = GetJob(workbenchId);
             if (job == null) return;
 
-            _activeJobs.Remove(job);
+            job.Clear();
         }
+
+        public void ClearJob()
+        {
+            for (int i = 0; i < workbenchCount; i++)
+            {
+                jobs[i].Clear();
+            }
+        }
+
+        private bool IsValidWorkbench(int workbenchId) => workbenchId >= 0 && workbenchId < workbenchCount;
 
         [Serializable]
         public class CraftingJob
@@ -87,14 +108,24 @@ namespace EvolveThisMatch.Save
             public ObscuredInt workbenchId;
             public ObscuredInt craftItemId;
             public ObscuredInt maxAmount;
-            [SerializeField] private ObscuredLong _startTimeTicks;
+            public ObscuredBool isActive;
 
+            [SerializeField] private ObscuredLong _startTimeTicks;
             internal long startTimeTicks => _startTimeTicks;
 
             public DateTime startTime
             {
                 get => new DateTime(_startTimeTicks);
                 set => _startTimeTicks = value.Ticks;
+            }
+
+            public void Clear()
+            {
+                unitId = 0;
+                craftItemId = 0;
+                maxAmount = 0;
+                _startTimeTicks = 0;
+                isActive = false;
             }
         }
     }
@@ -104,7 +135,7 @@ namespace EvolveThisMatch.Save
     public class DepartmentLocalSaveDataEncrypted
     {
         public string departmentId;
-        public List<CraftingJob> activeJobs = new List<CraftingJob>();
+        public List<CraftingJob> activeJobs;
 
         [Serializable]
         public class CraftingJob
@@ -121,7 +152,8 @@ namespace EvolveThisMatch.Save
             return new DepartmentLocalSaveDataEncrypted
             {
                 departmentId = localData.departmentId,
-                activeJobs = localData.activeJobs
+                activeJobs = localData.jobs
+                    .Where(job => job.isActive)
                     .Select(job => new CraftingJob
                     {
                         unitId = job.unitId,
@@ -242,134 +274,190 @@ namespace EvolveThisMatch.Save
         #endregion
 
         #region 생산품 획득
-        public void GainCraftItem(string departmentId, int workbenchId, int craftCount, DateTime utcNow, float remainTime, UnityAction onComplete)
+        public UniTask GainCraftItem(string departmentId, int workbenchId, int craftCount, DateTime utcNow, float remainTime)
         {
+            var tcs = new UniTaskCompletionSource();
+
             var localData = _departmentLocalSaveData.TryGetValue(departmentId, out var departmentLocalSaveData) ? DepartmentLocalSaveDataEncrypted.FromEncrypted(departmentLocalSaveData) : null;
 
-            if (localData == null) return;
+            if (localData == null)
+            {
+                tcs.TrySetResult();
+                return tcs.Task;
+            }
 
             var request = new ExecuteCloudScriptRequest
             {
                 FunctionName = "GainCraftItem",
-                FunctionParameter = new { departmentId = departmentId, workbenchId = workbenchId, localData = localData, craftCount = craftCount },
+                FunctionParameter = new
+                {
+                    departmentId = departmentId,
+                    workbenchId = workbenchId,
+                    localData = localData,
+                    craftCount = craftCount
+                },
                 GeneratePlayStreamEvent = true
             };
 
             PlayFabClientAPI.ExecuteCloudScript(request,
                 (ExecuteCloudScriptResult result) =>
                 {
-                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
-
-                    if ((bool)jsonResult["success"])
+                    try
                     {
-                        var job = departmentLocalSaveData.GetActiveJob(workbenchId);
+                        JsonObject jsonResult = (JsonObject)result.FunctionResult;
 
-                        // 시작 시간 보정
-                        job.startTime = utcNow - TimeSpan.FromSeconds(remainTime);
-
-                        // 최대 생산량 적용
-                        int remainCount = Convert.ToInt32(jsonResult["remainCount"]);
-
-                        if (remainCount == 0)
+                        if ((bool)jsonResult["success"])
                         {
-                            // 남은 개수가 0개 라면 작업대 비우기
-                            departmentLocalSaveData.RemoveActiveJob(job);
-                        }
-                        else
-                        {
-                            job.maxAmount = remainCount;
-                        }
+                            var job = departmentLocalSaveData.GetJob(workbenchId);
 
-                        // 변경된 생산품 적용
-                        var results = SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
-
-                        List<AcquireItem> acquireItems = new List<AcquireItem>();
-                        foreach (var (variable, diff) in results)
-                        {
-                            if (diff <= 0) continue;
-
-                            acquireItems.Add(new AcquireItem(variable.Icon, diff, variable.DisplayName));
-                        }
-
-                        UIPopupManager.Instance.ShowAcquirePopup(acquireItems);
-
-                        SaveDepartmentLocalData();
-
-                        onComplete?.Invoke();
-                    }
-                    else
-                    {
-                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
-                    }
-                }, DebugPlayFabError);
-        }
-
-        public void BundleGainCraftItem(string departmentId, List<int> craftCounts, DateTime utcNow, List<float> remainTimes, UnityAction onComplete)
-        {
-            var localData = _departmentLocalSaveData.TryGetValue(departmentId, out var departmentLocalSaveData) ? DepartmentLocalSaveDataEncrypted.FromEncrypted(departmentLocalSaveData) : null;
-
-            var request = new ExecuteCloudScriptRequest
-            {
-                FunctionName = "BundleGainCraftItem",
-                FunctionParameter = new { departmentId = departmentId, localData = localData, craftCounts = craftCounts },
-                GeneratePlayStreamEvent = true
-            };
-
-            PlayFabClientAPI.ExecuteCloudScript(request,
-                (ExecuteCloudScriptResult result) =>
-                {
-                    JsonObject jsonResult = (JsonObject)result.FunctionResult;
-
-                    if ((bool)jsonResult["success"])
-                    {
-                        // 모든 작업대 순회
-                        if (jsonResult.TryGetValue("workbenches", out var workbenchObj) && workbenchObj is JsonObject workbenches)
-                        {
-                            foreach (var kvp in workbenches)
+                            if (job != null)
                             {
-                                int workbenchId = Convert.ToInt32(kvp.Key);
-                                int remainCount = Convert.ToInt32(kvp.Value);
-
-                                var job = departmentLocalSaveData.GetActiveJob(workbenchId);
-
                                 // 시작 시간 보정
-                                job.startTime = utcNow - TimeSpan.FromSeconds(remainTimes[workbenchId]);
+                                job.startTime = utcNow - TimeSpan.FromSeconds(remainTime);
 
                                 // 최대 생산량 적용
+                                int remainCount = Convert.ToInt32(jsonResult["remainCount"]);
+
                                 if (remainCount == 0)
                                 {
-                                    // 개수가 0개 라면 작업대 비우기
-                                    departmentLocalSaveData.RemoveActiveJob(job);
+                                    // 남은 개수가 0개 라면 작업대 비우기
+                                    departmentLocalSaveData.RemoveJob(workbenchId);
                                 }
                                 else
                                 {
                                     job.maxAmount = remainCount;
                                 }
                             }
+
+                            // 변경된 생산품 적용
+                            var results = SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+
+                            List<AcquireItem> acquireItems = new List<AcquireItem>();
+                            foreach (var (variable, diff) in results)
+                            {
+                                if (diff <= 0) continue;
+
+                                acquireItems.Add(new AcquireItem(variable.Icon, diff, variable.DisplayName));
+                            }
+
+                            UIPopupManager.Instance.ShowAcquirePopup(acquireItems);
+
+                            SaveDepartmentLocalData();
                         }
-
-                        // 변경된 생산품 적용
-                        var results = SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
-
-                        List<AcquireItem> acquireItems = new List<AcquireItem>();
-                        foreach (var (variable, diff) in results)
+                        else
                         {
-                            if (diff <= 0) continue;
-
-                            acquireItems.Add(new AcquireItem(variable.Icon, diff, variable.DisplayName));
+                            UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
                         }
 
-                        UIPopupManager.Instance.ShowAcquirePopup(acquireItems);
-
-                        SaveDepartmentLocalData();
-
-                        onComplete?.Invoke();
+                        tcs.TrySetResult();
                     }
-                    else
+                    catch
                     {
-                        UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                        tcs.TrySetResult();
                     }
-                }, DebugPlayFabError);
+                },
+                (PlayFabError error) =>
+                {
+                    DebugPlayFabError(error);
+                    tcs.TrySetResult();
+                });
+
+            return tcs.Task;
+        }
+
+        public UniTask BundleGainCraftItem(string departmentId, List<int> craftCounts, DateTime utcNow, List<float> remainTimes)
+        {
+            var tcs = new UniTaskCompletionSource();
+
+            var localData = _departmentLocalSaveData.TryGetValue(departmentId, out var departmentLocalSaveData) ? DepartmentLocalSaveDataEncrypted.FromEncrypted(departmentLocalSaveData) : null;
+
+            if (localData == null)
+            {
+                tcs.TrySetResult();
+                return tcs.Task;
+            }
+
+            var request = new ExecuteCloudScriptRequest
+            {
+                FunctionName = "BundleGainCraftItem",
+                FunctionParameter = new 
+                { 
+                    departmentId = departmentId, 
+                    localData = localData, 
+                    craftCounts = craftCounts 
+                },
+                GeneratePlayStreamEvent = true
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                (ExecuteCloudScriptResult result) =>
+                {
+                    try
+                    {
+                        JsonObject jsonResult = (JsonObject)result.FunctionResult;
+
+                        if ((bool)jsonResult["success"])
+                        {
+                            // 모든 작업대 순회
+                            if (jsonResult.TryGetValue("workbenches", out var workbenchObj) && workbenchObj is JsonObject workbenches)
+                            {
+                                foreach (var kvp in workbenches)
+                                {
+                                    int workbenchId = Convert.ToInt32(kvp.Key);
+                                    int remainCount = Convert.ToInt32(kvp.Value);
+
+                                    var job = departmentLocalSaveData.GetJob(workbenchId);
+
+                                    // 시작 시간 보정
+                                    job.startTime = utcNow - TimeSpan.FromSeconds(remainTimes[workbenchId]);
+
+                                    // 최대 생산량 적용
+                                    if (remainCount == 0)
+                                    {
+                                        // 개수가 0개 라면 작업대 비우기
+                                        departmentLocalSaveData.RemoveJob(workbenchId);
+                                    }
+                                    else
+                                    {
+                                        job.maxAmount = remainCount;
+                                    }
+                                }
+
+                                // 변경된 생산품 적용
+                                var results = SaveManager.Instance.profileData.ChangeProfileData(jsonResult["profileData"].ToString());
+
+                                List<AcquireItem> acquireItems = new List<AcquireItem>();
+                                foreach (var (variable, diff) in results)
+                                {
+                                    if (diff <= 0) continue;
+
+                                    acquireItems.Add(new AcquireItem(variable.Icon, diff, variable.DisplayName));
+                                }
+
+                                UIPopupManager.Instance.ShowAcquirePopup(acquireItems);
+
+                                SaveDepartmentLocalData();
+                            }
+                            else
+                            {
+                                UIPopupManager.Instance.ShowConfirmPopup(jsonResult["error"].ToString());
+                            }
+                        }
+
+                        tcs.TrySetResult();
+                    }
+                    catch
+                    {
+                        tcs.TrySetResult();
+                    }
+                }, 
+                (PlayFabError error) =>
+                {
+                    DebugPlayFabError(error);
+                    tcs.TrySetResult();
+                });
+
+            return tcs.Task;
         }
         #endregion
 

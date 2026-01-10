@@ -45,6 +45,36 @@ namespace FrameWork
             };
         }
 
+        public async UniTask<Sprite> GetSpriteAsync(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+                return null;
+
+            if (_sprites.TryGetValue(key, out var cachedHandle))
+                return cachedHandle.Result;
+
+            var handle = Addressables.LoadAssetAsync<Sprite>(key);
+
+            try
+            {
+                await handle.Task;
+
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    _sprites.TryAdd(key, handle);
+                    return handle.Result;
+                }
+
+                Addressables.Release(handle);
+                return null;
+            }
+            catch
+            {
+                Addressables.Release(handle);
+                throw;
+            }
+        }
+
         public void ReleaseSprite(string key)
         {
             if (_sprites.TryGetValue(key, out var handle))

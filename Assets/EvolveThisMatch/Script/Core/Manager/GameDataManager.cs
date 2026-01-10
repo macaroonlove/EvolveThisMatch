@@ -27,26 +27,36 @@ namespace EvolveThisMatch.Core
         public IReadOnlyList<ArtifactTemplate> artifactTemplates => _artifactLibrary.templates;
         public IReadOnlyList<TomeTemplate> tomeTemplates => _tomeLibrary.templates;
 
+        #region 데이터 불러오기
+        private Dictionary<int, AgentTemplate> _agentDictionary;
+        private Dictionary<int, ArtifactTemplate> _artifactDictionary;
+        private Dictionary<int, TomeTemplate> _tomeDictionary;
+
         public AgentTemplate GetAgentTemplateById(int id)
         {
-            return _agentLibrary.templates.Where(x => x.id == id).FirstOrDefault();
+            return _agentDictionary[id];
         }
 
         public ArtifactTemplate GetArtifactTemplateById(int id)
         {
-            return _artifactLibrary.templates.Where(x => x.id == id).FirstOrDefault();
+            return _artifactDictionary[id];
         }
 
         public TomeTemplate GetTomeTemplateById(int id)
         {
-            return _tomeLibrary.templates.Where(x => x.id == id).FirstOrDefault();
+            return _tomeDictionary[id];
         }
+        #endregion
 
         /// <summary>
         /// 게임을 시작할 때 초기화
         /// </summary>
         protected override async void Initialize()
         {
+            _agentDictionary = _agentLibrary.templates.ToDictionary(t => t.id);
+            _artifactDictionary = _artifactLibrary.templates.ToDictionary(t => t.id);
+            _tomeDictionary = _tomeLibrary.templates.ToDictionary(t => t.id);
+
             await UniTask.WaitUntil(() => SaveManager.Instance.agentData.isLoaded);
 
             List<UniTask> tasks = new List<UniTask>();

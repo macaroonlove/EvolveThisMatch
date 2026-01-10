@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIAgentListCanvas_AgentInfo : UIAgentListCanvas
+    public class UIAgentListCanvas_AgentInfo : UIAgentListCanvas<UIAgentListItem_AgentInfo>
     {
         #region ¹ÙÀÎµù
         enum Dropdowns

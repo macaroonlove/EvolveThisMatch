@@ -1,0 +1,110 @@
+using EvolveThisMatch.Save;
+using FrameWork.PlayFabExtensions;
+using FrameWork.UIBinding;
+using TMPro;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+namespace EvolveThisMatch.Lobby
+{
+    public class UICraftListItem : UIBase, IPointerClickHandler
+    {
+        #region ¹ÙÀÎµù
+        enum Images
+        {
+            CraftBackground,
+            CraftIcon,
+            SelectDim,
+        }
+        enum Texts
+        {
+            CraftTime,
+            CraftName,
+            CraftWeight,
+        }
+        #endregion
+
+        private Image _craftBackground;
+        private Image _craftIcon;
+        private Image _selectDim;
+        private TextMeshProUGUI _craftTime;
+        private TextMeshProUGUI _craftName;
+        private TextMeshProUGUI _craftWeight;
+
+        private UICraftRequiredItem[] _craftRequiredItems;
+        private UnityAction _action;
+
+        internal void Initialize(UnityAction action)
+        {
+            _action = action;
+
+            _craftRequiredItems = GetComponentsInChildren<UICraftRequiredItem>();
+
+            BindImage(typeof(Images));
+            BindText(typeof(Texts));
+
+            _craftBackground = GetImage((int)Images.CraftBackground);
+            _craftIcon = GetImage((int)Images.CraftIcon);
+            _selectDim = GetImage((int)Images.SelectDim);
+            _craftTime = GetText((int)Texts.CraftTime);
+            _craftName = GetText((int)Texts.CraftName);
+            _craftWeight = GetText((int)Texts.CraftWeight);
+        }
+
+        #region Show/Hide
+        internal void Show(DepartmentCraftData itemData)
+        {
+            int minutes = itemData.CraftTime / 60;
+            int seconds = itemData.CraftTime % 60;
+
+            var variable = SaveManager.Instance.profileData.GetVariable(itemData.Variable);
+
+            _craftBackground.sprite = variable.IconBG;
+            _craftIcon.sprite = variable.Icon;
+            _craftTime.text = $"{minutes:D2}:{seconds:D2}";
+            _craftName.text = variable.DisplayName;
+            _craftWeight.text = $"{itemData.Weight}kg";
+
+            int requiredItemCount = itemData.RequiredItems.Count;
+            for (int i = 0; i < _craftRequiredItems.Length; i++)
+            {
+                if (i < requiredItemCount)
+                {
+                    _craftRequiredItems[i].Show(itemData.RequiredItems[i]);
+                }
+                else
+                {
+                    _craftRequiredItems[i].Hide(true);
+                }
+            }
+
+            gameObject.SetActive(true);
+        }
+
+        internal void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+        #endregion
+
+        #region Select/DeSelect
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            SelectItem();
+        }
+
+        internal void SelectItem()
+        {
+            _action?.Invoke();
+
+            _selectDim.enabled = true;
+        }
+
+        internal void DeSelectItem()
+        {
+            _selectDim.enabled = false;
+        }
+        #endregion
+    }
+}

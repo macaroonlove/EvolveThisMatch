@@ -13,7 +13,7 @@ using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
-    public abstract class UIAgentListCanvas : UIBase
+    public abstract class UIAgentListCanvas<TItem> : UIBase where TItem : UIAgentListItem
     {
         #region 바인딩
         enum Objects
@@ -26,7 +26,7 @@ namespace EvolveThisMatch.Lobby
         [SerializeField, Label("유닛 데이터 변경 시")] protected GameEvent _agentDataChangedGameEvent;
 
         protected Transform _parent;
-        protected List<UIAgentListItem> _agentListItems;
+        protected List<TItem> _agentListItems;
         protected List<AgentTemplate> _agentTemplates;
 
         protected bool _isAsc;
@@ -53,14 +53,14 @@ namespace EvolveThisMatch.Lobby
         private void InitializeAgentListItem()
         {
             _agentTemplates = GameDataManager.Instance.agentTemplates.ToList();
-            _agentListItems = new List<UIAgentListItem>(_agentTemplates.Count);
+            _agentListItems = new List<TItem>(_agentTemplates.Count);
 
-            var agentInfoItem = GetComponentInChildren<UIAgentListItem>();
+            var agentInfoItem = GetComponentInChildren<TItem>();
 
             // 나머지 프리팹 인스턴스 생성
             foreach (var tempalte in _agentTemplates)
             {
-                var item = Instantiate(agentInfoItem.gameObject, _parent).GetComponent<UIAgentListItem>();
+                var item = Instantiate(agentInfoItem.gameObject, _parent).GetComponent<TItem>();
                 item.Initialize(OnAgentSelected);
                 _agentListItems.Add(item);
             }
