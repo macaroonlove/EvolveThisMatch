@@ -1,12 +1,11 @@
-using EvolveThisMatch.Core;
-using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIArtifactInfoCanvas : UIBase
+    public class UIArtifactInfoView : UIBase
     {
         #region ¹ÙÀÎµù
         enum Texts
@@ -24,8 +23,6 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _description;
         private Image _icon;
 
-        private EffectContext _effectContext;
-
         protected override void Initialize()
         {
             BindText(typeof(Texts));
@@ -34,19 +31,27 @@ namespace EvolveThisMatch.Lobby
             _displayName = GetText((int)Texts.DisplayName);
             _description = GetText((int)Texts.Description);
             _icon = GetImage((int)Images.Icon);
-
-            _effectContext = new EffectContext();
         }
 
-        internal void Show(ArtifactTemplate template, ItemSaveData.Artifact owned)
+        internal void Show(ArtifactInfoViewState state)
         {
-            if (template == null) return;
+            _displayName.text = state.displayName;
+            _description.text = state.description;
+            _icon.sprite = state.icon;
+        }
+    }
 
-            _displayName.text = template.displayName;
-            _icon.sprite = template.sprite;
+    public readonly struct ArtifactInfoViewState
+    {
+        public readonly string displayName;
+        public readonly string description;
+        public readonly Sprite icon;
 
-            _effectContext.artifactSaveData = owned;
-            _description.text = template.description.Replace("{value}", $"{template.GetValue("value", _effectContext)}");
+        public ArtifactInfoViewState(string displayName, string description, Sprite icon)
+        {
+            this.displayName = displayName;
+            this.description = description;
+            this.icon = icon;
         }
     }
 }

@@ -26,14 +26,11 @@ namespace EvolveThisMatch.Lobby
         protected List<UIArtifactListItem> _artifactListItems;
         protected List<ArtifactTemplate> _artifactTemplates;
 
-        protected UnityAction<ArtifactTemplate, ItemSaveData.Artifact> _action;
+        public event UnityAction<ArtifactTemplate, ItemSaveData.Artifact> onSelected;
 
-        internal virtual void Initialize(UnityAction<ArtifactTemplate, ItemSaveData.Artifact> action = null)
+        protected override void Initialize()
         {
-            _action = action;
-
             BindObject(typeof(Objects));
-
             _parent = GetObject((int)Objects.Content).transform;
 
             _artifactDataChangedGameEvent.AddListener(RefreshArtifactListItem);
@@ -74,7 +71,7 @@ namespace EvolveThisMatch.Lobby
             // 모든 아이템 선택 취소
             foreach (var item in _artifactListItems) item.DeSelectItem();
 
-            _action?.Invoke(template, owned);
+            onSelected?.Invoke(template, owned);
         }
         #endregion
 

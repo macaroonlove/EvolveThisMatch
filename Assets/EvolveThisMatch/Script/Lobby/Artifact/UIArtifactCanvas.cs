@@ -1,5 +1,3 @@
-using EvolveThisMatch.Core;
-using EvolveThisMatch.Save;
 using FrameWork.UIBinding;
 using UnityEngine.Events;
 
@@ -14,16 +12,14 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        private UIArtifactListCanvas _artifactListCanvas;
-        private UIArtifactInfoCanvas _artifactInfoCanvas;
         private UnityAction _onClose;
 
         protected override void Initialize()
         {
-            _artifactListCanvas = GetComponentInChildren<UIArtifactListCanvas>();
-            _artifactInfoCanvas = GetComponentInChildren<UIArtifactInfoCanvas>();
-
-            _artifactListCanvas.Initialize((ArtifactTemplate template, ItemSaveData.Artifact owned) => _artifactInfoCanvas.Show(template, owned));
+            var listCanvas = GetComponentInChildren<UIArtifactListCanvas>();
+            var infoView = GetComponentInChildren<UIArtifactInfoView>();
+            var model = new UIArtifactModel();
+            var presenter = new UIArtifactPresenter(listCanvas, infoView, model);
 
             BindButton(typeof(Buttons));
 
