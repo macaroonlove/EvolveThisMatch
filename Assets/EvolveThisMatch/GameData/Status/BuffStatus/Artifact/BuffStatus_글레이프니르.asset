@@ -39,5 +39,10 @@ MonoBehaviour:
     _scaleFactor: 0.01
     _scaleBase: 2
     _previewScaleBase: 2
+  _elementalValue:
+    _enabled: 0
+    _scaleFactor: 0
+    _elementalType: {fileID: 0}
+    _previewElementalLevel: 1
   _value: 0.14
   _previewScaleBase: 2

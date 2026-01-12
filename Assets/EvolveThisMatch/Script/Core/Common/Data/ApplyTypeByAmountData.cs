@@ -56,6 +56,63 @@ namespace EvolveThisMatch.Core
             return amount;
         }
 
+        public float GetElementalBuffAmount(Unit casterUnit, float amount)
+        {
+            var buffAbility = casterUnit.GetAbility<BuffAbility>();
+
+            float increase = 1;
+
+            switch (_elementalValue.elementalType)
+            {
+                case EElementalType.Divine:
+                    foreach (var instance in buffAbility.ElementalDivineIncreaseDataEffects)
+                    {
+                        increase += instance.effect.GetValue(instance.context);
+                    }
+                    break;
+                case EElementalType.Dark:
+                    foreach (var instance in buffAbility.ElementalDarkIncreaseDataEffects)
+                    {
+                        increase += instance.effect.GetValue(instance.context);
+                    }
+                    break;
+                case EElementalType.Fire:
+                    foreach (var instance in buffAbility.ElementalFireIncreaseDataEffects)
+                    {
+                        increase += instance.effect.GetValue(instance.context);
+                    }
+                    break;
+                case EElementalType.Water:
+                    foreach (var instance in buffAbility.ElementalWaterIncreaseDataEffects)
+                    {
+                        increase += instance.effect.GetValue(instance.context);
+                    }
+                    break;
+                case EElementalType.Earth:
+                    foreach (var instance in buffAbility.ElementalEarthIncreaseDataEffects)
+                    {
+                        increase += instance.effect.GetValue(instance.context);
+                    }
+                    break;
+                case EElementalType.Wind:
+                    foreach (var instance in buffAbility.ElementalWindIncreaseDataEffects)
+                    {
+                        increase += instance.effect.GetValue(instance.context);
+                    }
+                    break;
+                case EElementalType.Thunder:
+                    foreach (var instance in buffAbility.ElementalThunderIncreaseDataEffects)
+                    {
+                        increase += instance.effect.GetValue(instance.context);
+                    }
+                    break;
+            }
+
+            amount *= increase;
+
+            return amount;
+        }
+
         private static float SafeGetStatusValue<T>(Unit unit, Func<T, float> getter) where T : Ability
         {
             if (unit == null) return 0;

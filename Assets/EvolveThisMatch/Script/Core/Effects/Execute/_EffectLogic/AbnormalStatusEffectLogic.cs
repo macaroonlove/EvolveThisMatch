@@ -81,7 +81,15 @@ namespace EvolveThisMatch.Core
                 result += $"{duration}초 동안 유지되는";
             }
 
-            return result + $" {_abnormalStatus.displayName} 상태이상을 부여합니다.";
+            if (_abnormalStatus != null)
+            {
+                return result + $" {_abnormalStatus.displayName} 상태이상을 부여합니다.";
+            }
+            else
+            {
+                return result + $" 상태이상을 부여합니다.";
+            }
+            
         }
         #endregion
 

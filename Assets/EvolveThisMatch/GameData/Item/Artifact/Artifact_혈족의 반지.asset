@@ -87,6 +87,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
     _duration: 3
     _isProbability: 1
     _probabilityMutableValue:
@@ -95,6 +100,11 @@ MonoBehaviour:
       _scaleFactor: 0.5
       _scaleBase: 2
       _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
     _probability: 40
     _abnormalStatus: {fileID: 11400000, guid: 40feff2373cb63f4fbceef4d61feb1b4, type: 2}
     _isfoldout: 0
@@ -118,6 +128,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
     _duration: 0
     _isProbability: 0
     _probabilityMutableValue:
@@ -126,6 +141,11 @@ MonoBehaviour:
       _scaleFactor: 0
       _scaleBase: 0
       _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
     _probability: 0
     _abnormalStatus: {fileID: 0}
     _isfoldout: 0

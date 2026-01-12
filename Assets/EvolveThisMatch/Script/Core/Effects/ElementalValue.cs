@@ -11,6 +11,8 @@ namespace EvolveThisMatch.Core
         [SerializeField] private float _scaleFactor;
         [SerializeField] private ElementalTemplate _elementalType;
 
+        public EElementalType elementalType => _elementalType.type;
+
         #region Int
         public virtual int GetValue(int value)
         {

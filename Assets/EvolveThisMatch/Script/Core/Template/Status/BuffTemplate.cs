@@ -203,6 +203,14 @@ namespace EvolveThisMatch.Editor
             menu.AddItem(new GUIContent("초당 회복량 증감"), false, CreateEffectCallback, typeof(HPRecoveryPerSecByMaxHPIncreaseDataEffect));
             menu.AddItem(new GUIContent("상태이상 저항력 추가"), false, CreateEffectCallback, typeof(AbnormalStatusResistanceAdditionalDataEffect));
 
+            menu.AddItem(new GUIContent("속성[빛] 피해량 증감"), false, CreateEffectCallback, typeof(ElementalDivineIncreaseDataEffect));
+            menu.AddItem(new GUIContent("속성[어둠] 피해량 증감"), false, CreateEffectCallback, typeof(ElementalDarkIncreaseDataEffect));
+            menu.AddItem(new GUIContent("속성[불] 피해량 증감"), false, CreateEffectCallback, typeof(ElementalFireIncreaseDataEffect));
+            menu.AddItem(new GUIContent("속성[물] 피해량 증감"), false, CreateEffectCallback, typeof(ElementalWaterIncreaseDataEffect));
+            menu.AddItem(new GUIContent("속성[땅] 피해량 증감"), false, CreateEffectCallback, typeof(ElementalEarthIncreaseDataEffect));
+            menu.AddItem(new GUIContent("속성[바람] 피해량 증감"), false, CreateEffectCallback, typeof(ElementalWindIncreaseDataEffect));
+            menu.AddItem(new GUIContent("속성[번개] 피해량 증감"), false, CreateEffectCallback, typeof(ElementalThunderIncreaseDataEffect));
+
             menu.AddItem(new GUIContent("스킬 가속도 증감"), false, CreateEffectCallback, typeof(SkillCooldownIncreaseDataEffect));
             #endregion
 

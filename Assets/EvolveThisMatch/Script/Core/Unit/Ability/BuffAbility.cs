@@ -79,6 +79,15 @@ namespace EvolveThisMatch.Core
         private List<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>> _hpRecoveryPerSecByMaxHPIncreaseDataEffects = new List<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>>();
         private List<DataEffectInstance<AbnormalStatusResistanceAdditionalDataEffect>> _abnormalStatusResistanceAdditionalDataEffects = new List<DataEffectInstance<AbnormalStatusResistanceAdditionalDataEffect>>();
 
+        // Elemental
+        private List<DataEffectInstance<ElementalDivineIncreaseDataEffect>> _elementalDivineIncreaseDataEffects = new List<DataEffectInstance<ElementalDivineIncreaseDataEffect>>();
+        private List<DataEffectInstance<ElementalDarkIncreaseDataEffect>> _elementalDarkIncreaseDataEffects = new List<DataEffectInstance<ElementalDarkIncreaseDataEffect>>();
+        private List<DataEffectInstance<ElementalFireIncreaseDataEffect>> _elementalFireIncreaseDataEffects = new List<DataEffectInstance<ElementalFireIncreaseDataEffect>>();
+        private List<DataEffectInstance<ElementalWaterIncreaseDataEffect>> _elementalWaterIncreaseDataEffects = new List<DataEffectInstance<ElementalWaterIncreaseDataEffect>>();
+        private List<DataEffectInstance<ElementalEarthIncreaseDataEffect>> _elementalEarthIncreaseDataEffects = new List<DataEffectInstance<ElementalEarthIncreaseDataEffect>>();
+        private List<DataEffectInstance<ElementalWindIncreaseDataEffect>> _elementalWindIncreaseDataEffects = new List<DataEffectInstance<ElementalWindIncreaseDataEffect>>();
+        private List<DataEffectInstance<ElementalThunderIncreaseDataEffect>> _elementalThunderIncreaseDataEffects = new List<DataEffectInstance<ElementalThunderIncreaseDataEffect>>();
+
         // Skill Cooldown
         private List<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>> _skillCooldownIncreaseDataEffects = new List<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>>();
         #endregion
@@ -149,6 +158,14 @@ namespace EvolveThisMatch.Core
 
         internal IReadOnlyList<DataEffectInstance<HPRecoveryPerSecByMaxHPIncreaseDataEffect>> HPRecoveryPerSecByMaxHPIncreaseDataEffects => _hpRecoveryPerSecByMaxHPIncreaseDataEffects;
         internal IReadOnlyList<DataEffectInstance<AbnormalStatusResistanceAdditionalDataEffect>> AbnormalStatusResistanceAdditionalDataEffects => _abnormalStatusResistanceAdditionalDataEffects;
+
+        internal IReadOnlyList<DataEffectInstance<ElementalDivineIncreaseDataEffect>> ElementalDivineIncreaseDataEffects => _elementalDivineIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ElementalDarkIncreaseDataEffect>> ElementalDarkIncreaseDataEffects => _elementalDarkIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ElementalFireIncreaseDataEffect>> ElementalFireIncreaseDataEffects => _elementalFireIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ElementalWaterIncreaseDataEffect>> ElementalWaterIncreaseDataEffects => _elementalWaterIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ElementalEarthIncreaseDataEffect>> ElementalEarthIncreaseDataEffects => _elementalEarthIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ElementalWindIncreaseDataEffect>> ElementalWindIncreaseDataEffects => _elementalWindIncreaseDataEffects;
+        internal IReadOnlyList<DataEffectInstance<ElementalThunderIncreaseDataEffect>> ElementalThunderIncreaseDataEffects => _elementalThunderIncreaseDataEffects;
 
         public IReadOnlyList<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
         #endregion
@@ -348,6 +365,16 @@ namespace EvolveThisMatch.Core
 
                 #region 상태이상 저항력
                 if (AddDataEffect(effect, context, _abnormalStatusResistanceAdditionalDataEffects)) continue;
+                #endregion
+
+                #region 속성
+                if (AddDataEffect(effect, context, _elementalDivineIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _elementalDarkIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _elementalFireIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _elementalWaterIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _elementalEarthIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _elementalWindIncreaseDataEffects)) continue;
+                if (AddDataEffect(effect, context, _elementalThunderIncreaseDataEffects)) continue;
                 #endregion
 
                 #region 스킬 가속
@@ -562,6 +589,16 @@ namespace EvolveThisMatch.Core
 
                 #region 상태이상 저항력
                 if (RemoveDataEffect(effect, _abnormalStatusResistanceAdditionalDataEffects)) continue;
+                #endregion
+
+                #region 속성
+                if (RemoveDataEffect(effect, _elementalDivineIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _elementalDarkIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _elementalFireIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _elementalWaterIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _elementalEarthIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _elementalWindIncreaseDataEffects)) continue;
+                if (RemoveDataEffect(effect, _elementalThunderIncreaseDataEffects)) continue;
                 #endregion
 
                 #region 스킬 가속

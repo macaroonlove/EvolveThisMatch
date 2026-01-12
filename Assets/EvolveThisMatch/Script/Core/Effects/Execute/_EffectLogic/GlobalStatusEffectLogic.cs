@@ -82,7 +82,14 @@ namespace EvolveThisMatch.Core
                 result += $"{duration}초 동안 유지되는";
             }
 
-            return result + $" {_globalStatus.displayName} 전역 상태를 부여합니다.";
+            if (_globalStatus != null)
+            {
+                return result + $" {_globalStatus.displayName} 전역 상태를 부여합니다.";
+            }
+            else
+            {
+                return result + $" 전역 상태를 부여합니다.";
+            }
         }
         #endregion
 
@@ -191,7 +198,7 @@ namespace EvolveThisMatch.Core
 
         public int GetNumRows()
         {
-            float rowNum = -1;
+            float rowNum = 0;
 
             if (!_isInfinity) rowNum += 2;
             if (_isProbability) rowNum += 2;

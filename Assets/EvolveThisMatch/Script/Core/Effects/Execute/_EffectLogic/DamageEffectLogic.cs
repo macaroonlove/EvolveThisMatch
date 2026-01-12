@@ -105,7 +105,8 @@ namespace EvolveThisMatch.Core
 
             foreach (var applyTypeByAmountData in _applyTypeByAmountDatas)
             {
-                totalAmount += applyTypeByAmountData.GetAmount(effectContext, casterUnit, targetUnit);
+                var amount = applyTypeByAmountData.GetAmount(effectContext, casterUnit, targetUnit);
+                totalAmount += applyTypeByAmountData.GetElementalBuffAmount(casterUnit, amount);
             }
 
             return (int)totalAmount;
