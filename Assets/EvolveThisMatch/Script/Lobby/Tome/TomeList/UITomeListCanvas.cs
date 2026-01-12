@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIArtifactListCanvas : UIBase
+    public class UITomeListCanvas : UIBase
     {
         #region 바인딩
         enum Objects
@@ -19,42 +19,44 @@ namespace EvolveThisMatch.Lobby
         #endregion
 
         [Header("전역")]
-        [SerializeField, Label("아티팩트 아이템 프리팹")] private GameObject _prefab;
+        [SerializeField, Label("고서 아이템 프리팹")] private GameObject _prefab;
 
         [Header("이벤트")]
-        [SerializeField, Label("아티팩트 데이터 변경 시")] protected GameEvent _artifactDataChangedGameEvent;
+        [SerializeField, Label("고서 데이터 변경 시")] protected GameEvent _tomeDataChangedGameEvent;
 
-        private Transform _parent;
-        protected List<UIArtifactListItem> _items;
+        protected Transform _parent;
+        protected List<UITomeListItem> _items;
+
+        private UITomeListPresenter _presenter;
 
         public event UnityAction onRefresh;
-        public event UnityAction<ArtifactTemplate, ItemSaveData.Artifact> onSelected;
+        public event UnityAction<TomeTemplate, ItemSaveData.Tome> onSelected;
 
         protected override void Initialize()
         {
             BindObject(typeof(Objects));
             _parent = GetObject((int)Objects.Content).transform;
 
-            var model = new UIArtifactListModel();
-            var presenter = new UIArtifactListPresenter(this, model);
+            var model = new UITomeListModel();
+            _presenter = new UITomeListPresenter(this, model);
         }
 
-        public void InitializeArtifactListItem(int count, UnityAction<int> onSelect)
+        public void InitializeTomeListItem(int count, UnityAction<int> onSelect)
         {
-            _items = new List<UIArtifactListItem>(count);
+            _items = new List<UITomeListItem>(count);
 
             for (int i = 0; i < count; i++)
             {
                 int index = i;
-                var item = Instantiate(_prefab, _parent).GetComponent<UIArtifactListItem>();
+                var item = Instantiate(_prefab, _parent).GetComponent<UITomeListItem>();
                 item.Initialize(() => onSelect?.Invoke(index));
                 _items.Add(item);
             }
 
-            _artifactDataChangedGameEvent.AddListener(() => onRefresh?.Invoke());
+            _tomeDataChangedGameEvent.AddListener(() => onRefresh?.Invoke());
         }
 
-        public void RenderItem(int index, ArtifactListItemViewState state)
+        public void RenderItem(int index, TomeListItemViewState state)
         {
             _items[index].Render(state);
         }
@@ -67,9 +69,19 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        public void OnSelected(ArtifactTemplate template, ItemSaveData.Artifact owned)
+        public void OnSelected(TomeTemplate template, ItemSaveData.Tome owned)
         {
             onSelected?.Invoke(template, owned);
+        }
+
+        public void ShowItem(int id)
+        {
+            _presenter.Show(id);
+        }
+
+        public void HideItem(int id)
+        {
+            _presenter.Hide(id);
         }
     }
 }

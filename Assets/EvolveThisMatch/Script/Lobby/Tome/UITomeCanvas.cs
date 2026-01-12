@@ -12,29 +12,20 @@ namespace EvolveThisMatch.Lobby
         }
         #endregion
 
-        private UITomeListCanvas _tomeListCanvas;
-        private UITomeInfoCanvas _tomeInfoCanvas;
-        private UITomeEquipCanvas _tomeEquipCanvas;
         private UnityAction _onClose;
 
         protected override void Initialize()
         {
-            _tomeListCanvas = GetComponentInChildren<UITomeListCanvas>();
-            _tomeInfoCanvas = GetComponentInChildren<UITomeInfoCanvas>();
-            _tomeEquipCanvas = GetComponentInChildren<UITomeEquipCanvas>();
+            var listCanvas = GetComponentInChildren<UITomeListCanvas>();
+            var infoView = GetComponentInChildren<UITomeInfoView>();
+            var equipView = GetComponentInChildren<UITomeEquipView>();
 
-            _tomeListCanvas.Initialize((UITomeListItem item) => { _tomeEquipCanvas.SelectTomeListItem(item); _tomeInfoCanvas.Show(item.template, item.owned); });
-            _tomeEquipCanvas.Initialize((UITomeEquipItem item) => { _tomeInfoCanvas.Show(item.template, item.owned); }, (int index) => _tomeListCanvas.RentTome(index), (int index) => _tomeListCanvas.ReturnTome(index));
+            var model = new UITomeModel();
+            var presenter = new UITomePresenter(listCanvas, infoView, equipView, model);
 
             BindButton(typeof(Buttons));
 
             GetButton((int)Buttons.CloseButton).onClick.AddListener(Hide);
-        }
-
-        private void Start()
-        {
-            _tomeEquipCanvas.InitializeItem();
-            _tomeListCanvas.InitializeItem();
         }
 
         public void Show(UnityAction onClose)

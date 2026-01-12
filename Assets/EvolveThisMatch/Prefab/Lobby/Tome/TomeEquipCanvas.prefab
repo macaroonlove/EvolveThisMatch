@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1448787406966308844}
   - component: {fileID: 8720276193635756923}
   - component: {fileID: 4836259712498805446}
-  - component: {fileID: 360306304033804166}
+  - component: {fileID: 2896747158317698501}
   m_Layer: 5
   m_Name: TomeEquipCanvas
   m_TagString: Untagged
@@ -67,7 +67,7 @@ MonoBehaviour:
   duration: 0.25
   ease: 9
   _canvasGroup: {fileID: 8720276193635756923}
---- !u!114 &360306304033804166
+--- !u!114 &2896747158317698501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

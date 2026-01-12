@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UIArtifactListItem : UIBase, IPointerClickHandler
+    public class UITomeListItem : UIBase, IPointerClickHandler
     {
         #region ¹ÙÀÎµù
         enum Texts
@@ -33,7 +33,7 @@ namespace EvolveThisMatch.Lobby
 
         private UnityAction _onClick;
 
-        internal virtual void Initialize(UnityAction onClick)
+        internal void Initialize(UnityAction onClick)
         {
             _onClick = onClick;
 
@@ -48,7 +48,7 @@ namespace EvolveThisMatch.Lobby
             _selectDim = GetImage((int)Images.SelectDim);
         }
 
-        public void Render(ArtifactListItemViewState state)
+        public void Render(TomeListItemViewState state)
         {
             gameObject.SetActive(state.isVisible);
             if (!state.isVisible) return;
@@ -71,7 +71,7 @@ namespace EvolveThisMatch.Lobby
         }
     }
 
-    public readonly struct ArtifactListItemViewState
+    public readonly struct TomeListItemViewState
     {
         public readonly bool isVisible;
         public readonly Sprite icon;
@@ -80,7 +80,7 @@ namespace EvolveThisMatch.Lobby
         public readonly string countText;
         public readonly float countProgress;
 
-        public ArtifactListItemViewState(bool isVisible, Sprite icon, string displayName, int level, string countText, float countProgress)
+        public TomeListItemViewState(bool isVisible, Sprite icon, string displayName, int level, string countText, float countProgress)
         {
             this.isVisible = isVisible;
             this.icon = icon;

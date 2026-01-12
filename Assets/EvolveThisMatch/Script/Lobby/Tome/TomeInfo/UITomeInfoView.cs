@@ -1,13 +1,11 @@
-using EvolveThisMatch.Core;
-using EvolveThisMatch.Save;
-using FrameWork;
 using FrameWork.UIBinding;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace EvolveThisMatch.Lobby
 {
-    public class UITomeInfoCanvas : UIBase
+    public class UITomeInfoView : UIBase
     {
         #region 바인딩
         enum Texts
@@ -36,9 +34,6 @@ namespace EvolveThisMatch.Lobby
         private TextMeshProUGUI _rangeValue;
         private Image _icon;
         private Image _videoImage;
-        private CanvasGroupController _info;
-
-        private EffectContext _effectContext;
 
         protected override void Initialize()
         {
@@ -53,37 +48,36 @@ namespace EvolveThisMatch.Lobby
             _rangeValue = GetText((int)Texts.RangeValue);
             _icon = GetImage((int)Images.Icon);
             _videoImage = GetImage((int)Images.VideoImage);
-            _info = GetCanvasGroupController((int)CanvasGroups.Info);
-
-            _effectContext = new EffectContext();
         }
 
-        internal void Show(TomeTemplate template, ItemSaveData.Tome owned)
+        internal void Show(TomeInfoViewState state)
         {
-            if (template == null)
-            {
-                _info.Hide(true);
-                return;
-            }
+            _displayName.text = state.displayName;
+            _description.text = state.description;
+            _icon.sprite = state.icon;
+            _needCoinValue.text = $"{state.needCoin} 개";
+            _cooldownTimeValue.text = $"{state.cooldownTime} 초";
+            _rangeValue.text = state.range;
+        }
+    }
 
-            _displayName.text = template.displayName;
-            _needCoinValue.text = $"{template.needCoin} 개";
-            _cooldownTimeValue.text = $"{template.cooldownTime} 초";
-            _icon.sprite = template.sprite;
+    public readonly struct TomeInfoViewState
+    {
+        public readonly string displayName;
+        public readonly string description;
+        public readonly Sprite icon;
+        public readonly int needCoin;
+        public readonly float cooldownTime;
+        public readonly string range;
 
-            if (template.rangeType == ETomeRangeType.All)
-            {
-                _rangeValue.text = "전체";
-            }
-            else if (template.rangeType == ETomeRangeType.Circle)
-            {
-                _rangeValue.text = $"원 ({template.range})";
-            }
-
-            _effectContext.tomeSaveData = owned;
-            _description.text = template.description.Replace("{value}", $"{template.GetValue("value", _effectContext)}");
-
-            _info.Show(true);
+        public TomeInfoViewState(string displayName, string description, Sprite icon, int needCoin, float cooldownTime, string range)
+        {
+            this.displayName = displayName;
+            this.description = description;
+            this.icon = icon;
+            this.needCoin = needCoin;
+            this.cooldownTime = cooldownTime;
+            this.range = range;
         }
     }
 }
