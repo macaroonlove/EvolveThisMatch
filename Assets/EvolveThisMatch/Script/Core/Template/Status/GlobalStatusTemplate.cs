@@ -136,6 +136,18 @@ namespace EvolveThisMatch.Editor
             menu.AddItem(new GUIContent("전투력 상승·하락"), false, CreateEffectCallback, typeof(ATKMultiplierDataEffect));
             #endregion
 
+            #region 공격 속도
+            menu.AddItem(new GUIContent("공격속도 증감"), false, CreateEffectCallback, typeof(AttackSpeedIncreaseDataEffect));
+            #endregion
+
+            #region 치명타 확률
+            menu.AddItem(new GUIContent("치명타 확률 추가"), false, CreateEffectCallback, typeof(CriticalHitChanceAdditionalDataEffect));
+            #endregion
+
+            #region 스킬 가속
+            menu.AddItem(new GUIContent("스킬 가속도 증감"), false, CreateEffectCallback, typeof(SkillCooldownIncreaseDataEffect));
+            #endregion
+
             menu.ShowAsContext();
         }
 

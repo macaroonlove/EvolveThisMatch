@@ -12,6 +12,7 @@ namespace EvolveThisMatch.Core
         private float _baseCriticalHitChance;
         private float _baseCriticalHitDamage;
 
+        private GlobalStatusSystem _globalStatusSystem;
         private BuffAbility _buffAbility;
         private AbnormalStatusAbility _abnormalStatusAbility;
 
@@ -295,11 +296,16 @@ namespace EvolveThisMatch.Core
             {
                 float chance = _baseCriticalHitChance;
 
-                foreach (var instance in _buffAbility.CriticalHitChanceAdditionalDataEffects)
+                foreach (var instance in _globalStatusSystem.CriticalHitChanceAdditionalDataEffects)
                 {
                     chance += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
+                foreach (var instance in _buffAbility.CriticalHitChanceAdditionalDataEffects)
+                {
+                    chance += instance.effect.GetValue(unit.effectContext, instance.context);
+                }
+                
                 if (chance > 0)
                 {
                     return Random.value * 100 < chance;
@@ -352,6 +358,7 @@ namespace EvolveThisMatch.Core
         {
             base.Initialize(unit);
 
+            _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
             _buffAbility = unit.GetAbility<BuffAbility>();
             _abnormalStatusAbility = unit.GetAbility<AbnormalStatusAbility>();
 

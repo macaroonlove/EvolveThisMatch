@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb9c01008d8b6b248a0632be6f8bc333, type: 3}
+  m_Name: "GlobalStatus_\uC720\uB2DB_\uC7AC\uB2A5_\uACF5\uACA9\uAC04\uACA9 \uAC10\uC18C"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _displayName: "\uC7AC\uB2A5[\uACF5\uACA9\uAC04\uACA9]"
+  _description: 
+  _applyFX: {fileID: 0}
+  _removeFX: {fileID: 0}
+  effects:
+  - {fileID: 5794733371626791856}
+--- !u!114 &5794733371626791856
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07d78d243b3f54f4bbca82fc966bd5ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mutableValue:
+    _enabled: 1
+    _bindKey: 
+    _scaleFactor: -0.01
+    _scaleBase: 4
+    _effectType: 1
+    _previewScaleBase: 2
+  _elementalValue:
+    _enabled: 0
+    _scaleFactor: 0
+    _elementalType: {fileID: 0}
+    _previewElementalLevel: 1
+  _value: 0
+  _previewScaleBase: 2

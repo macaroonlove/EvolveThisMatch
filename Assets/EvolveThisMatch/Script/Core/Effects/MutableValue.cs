@@ -11,6 +11,7 @@ namespace EvolveThisMatch.Core
         [SerializeField] private string _bindKey;
         [SerializeField] private float _scaleFactor;
         [SerializeField] private EEffectScaleBase _scaleBase;
+        [SerializeField] private EEffectType _effectType;
 
         public string bindKey => _bindKey;
 
@@ -57,8 +58,8 @@ namespace EvolveThisMatch.Core
         protected int GetScaleBase(EffectContext context, EffectContext contextSub)
         {
             int scaleBase = 0;
-            if (context != null) scaleBase = context.GetScaleValue(_scaleBase);
-            if (scaleBase == -2 && contextSub != null) scaleBase = contextSub.GetScaleValue(_scaleBase);
+            if (context != null) scaleBase = context.GetScaleValue(_scaleBase, _effectType);
+            if (scaleBase == -2 && contextSub != null) scaleBase = contextSub.GetScaleValue(_scaleBase, _effectType);
             if (scaleBase == -2) scaleBase = 1;
 
             return scaleBase;
@@ -78,8 +79,8 @@ namespace EvolveThisMatch.Core
         }
 
         public void ForceDisable() => _enabled = false;
-        public int GetHeight() => 20 * GetNumberRows() + (_enabled ? 4 : 0);
-        public int GetNumRows() => GetNumberRows() + (_enabled ? 1 : 0);
+        public int GetHeight() => 20 * GetNumberRows() + (_enabled ? 4 : 0) + (_scaleBase == EEffectScaleBase.Talent ? 20 : 0);
+        public int GetNumRows() => GetNumberRows() + (_enabled ? 1 : 0) + (_scaleBase == EEffectScaleBase.Talent ? 1 : 0);
         private int GetNumberRows() => _enabled ? 4 : 1;
 
         public void Draw(Rect rect)
@@ -103,6 +104,14 @@ namespace EvolveThisMatch.Core
                 {
                     _scaleBase = (EEffectScaleBase)EditorGUI.EnumPopup(valueRect, _scaleBase);
                 });
+
+                if (_scaleBase == EEffectScaleBase.Talent)
+                {
+                    EffectDrawUtility.DrawRow(ref rect, "효과 타입", valueRect =>
+                    {
+                        _effectType = (EEffectType)EditorGUI.EnumPopup(valueRect, _effectType);
+                    });
+                }
 
                 EffectDrawUtility.DrawRow(ref rect, "기준값 미리보기", valueRect =>
                 {

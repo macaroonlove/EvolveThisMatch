@@ -17,6 +17,15 @@ namespace EvolveThisMatch.Core
         private List<StatDataEffectInstance<ATKIncreaseDataEffect>> _atkIncreaseDataEffects = new List<StatDataEffectInstance<ATKIncreaseDataEffect>>();
         private List<StatDataEffectInstance<ATKMultiplierDataEffect>> _atkMultiplierDataEffects = new List<StatDataEffectInstance<ATKMultiplierDataEffect>>();
 
+        // AttackSpeed
+        private List<StatDataEffectInstance<AttackSpeedIncreaseDataEffect>> _attackSpeedIncreaseDataEffects = new List<StatDataEffectInstance<AttackSpeedIncreaseDataEffect>>();
+
+        // Critical
+        private List<DataEffectInstance<CriticalHitChanceAdditionalDataEffect>> _criticalHitChanceAdditionalDataEffects = new List<DataEffectInstance<CriticalHitChanceAdditionalDataEffect>>();
+
+        // SkillCooldown
+        private List<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>> _skillCooldownIncreaseDataEffects = new List<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>>();
+
         // Gold
         private List<DataEffectInstance<GoldGainAdditionalDataEffect>> _goldGainAdditionalDataEffects = new List<DataEffectInstance<GoldGainAdditionalDataEffect>>();
         private List<DataEffectInstance<GoldGainIncreaseDataEffect>> _goldGainIncreaseDataEffects = new List<DataEffectInstance<GoldGainIncreaseDataEffect>>();
@@ -28,6 +37,12 @@ namespace EvolveThisMatch.Core
         #region Data
         public IReadOnlyList<StatDataEffectInstance<ATKIncreaseDataEffect>> ATKIncreaseDataEffects => _atkIncreaseDataEffects;
         public IReadOnlyList<StatDataEffectInstance<ATKMultiplierDataEffect>> ATKMultiplierDataEffects => _atkMultiplierDataEffects;
+        
+        public IReadOnlyList<StatDataEffectInstance<AttackSpeedIncreaseDataEffect>> AttackSpeedIncreaseDataEffects => _attackSpeedIncreaseDataEffects;
+
+        public IReadOnlyList<DataEffectInstance<CriticalHitChanceAdditionalDataEffect>> CriticalHitChanceAdditionalDataEffects => _criticalHitChanceAdditionalDataEffects;
+
+        public IReadOnlyList<StatDataEffectInstance<SkillCooldownIncreaseDataEffect>> SkillCooldownIncreaseDataEffects => _skillCooldownIncreaseDataEffects;
 
         public IReadOnlyList<DataEffectInstance<GoldGainAdditionalDataEffect>> GoldGainAdditionalDataEffects => _goldGainAdditionalDataEffects;
         public IReadOnlyList<DataEffectInstance<GoldGainIncreaseDataEffect>> GoldGainIncreaseDataEffects => _goldGainIncreaseDataEffects;
@@ -129,6 +144,18 @@ namespace EvolveThisMatch.Core
                 if (AddDataEffect(effect, context, displayName, _atkMultiplierDataEffects)) continue;
                 #endregion
 
+                #region °ø°Ý °£°Ý
+                if (AddDataEffect(effect, context, displayName, _attackSpeedIncreaseDataEffects)) continue;
+                #endregion
+
+                #region Ä¡¸íÅ¸ È®·ü
+                if (AddDataEffect(effect, context, _criticalHitChanceAdditionalDataEffects)) continue;
+                #endregion
+
+                #region ½ºÅ³ °£°Ý
+                if (AddDataEffect(effect, context, displayName, _skillCooldownIncreaseDataEffects)) continue;
+                #endregion
+
                 #region °ñµå È¹µæ·®
                 if (AddDataEffect(effect, context, _goldGainAdditionalDataEffects)) continue;
                 if (AddDataEffect(effect, context, _goldGainIncreaseDataEffects)) continue;
@@ -147,6 +174,18 @@ namespace EvolveThisMatch.Core
                 #region ÀüÅõ·Â
                 if (RemoveDataEffect(effect, _atkIncreaseDataEffects)) continue;
                 if (RemoveDataEffect(effect, _atkMultiplierDataEffects)) continue;
+                #endregion
+
+                #region °ø°Ý °£°Ý
+                if (RemoveDataEffect(effect, _attackSpeedIncreaseDataEffects)) continue;
+                #endregion
+
+                #region Ä¡¸íÅ¸ È®·ü
+                if (RemoveDataEffect(effect, _criticalHitChanceAdditionalDataEffects)) continue;
+                #endregion
+
+                #region ½ºÅ³ °£°Ý
+                if (RemoveDataEffect(effect, _skillCooldownIncreaseDataEffects)) continue;
                 #endregion
 
                 #region °ñµå È¹µæ·®

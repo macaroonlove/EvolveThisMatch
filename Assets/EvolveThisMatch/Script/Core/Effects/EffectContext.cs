@@ -9,6 +9,15 @@ namespace EvolveThisMatch.Core
         AgentSync,
         ArtifactLevel,
         TomeLevel,
+        Talent,
+    }
+
+    public enum EEffectType
+    {
+        ATKIncrease,
+        AttackSpeedIncrease,
+        CriticalHitChanceAdditional,
+        SkillCooldownIncrease,
     }
 
     public class EffectContext
@@ -19,7 +28,7 @@ namespace EvolveThisMatch.Core
         public ItemSaveData.Artifact artifactSaveData;
         public ItemSaveData.Tome tomeSaveData;
 
-        public int GetScaleValue(EEffectScaleBase scaleBase)
+        public int GetScaleValue(EEffectScaleBase scaleBase, EEffectType effectType)
         {
             int value = -1;
             switch (scaleBase)
@@ -36,6 +45,9 @@ namespace EvolveThisMatch.Core
                 case EEffectScaleBase.TomeLevel:
                     value = tomeSaveData != null ? tomeSaveData.level : -2;
                     break;
+                case EEffectScaleBase.Talent:
+                    value = agentSaveData != null ? GetTalentValueByType(effectType) : -2;
+                    break;
             }
 
             if (value == -1)
@@ -47,6 +59,20 @@ namespace EvolveThisMatch.Core
             }
 
             return value;
+        }
+
+        private int GetTalentValueByType(EEffectType type)
+        {
+            int total = 0;
+
+            var talent = agentSaveData.talent;
+            for (int i = 0; i < talent.Length; i++)
+            {
+                if (talent[i].id == (int)type)
+                    total += talent[i].value;
+            }
+
+            return total;
         }
     }
 }

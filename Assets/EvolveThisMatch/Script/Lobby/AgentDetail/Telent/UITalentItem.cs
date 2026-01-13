@@ -29,11 +29,14 @@ namespace EvolveThisMatch.Lobby
         private UIRarityTag _rarityTag;
         private CanvasGroupController _empty;
 
+        private AgentTalentSystem _agentTalentSystem;
+
         private UnityAction<bool> _onLockChanged;
 
         protected override void Initialize()
         {
             _rarityTag = GetComponentInChildren<UIRarityTag>();
+            _agentTalentSystem = BattleManager.Instance.GetSubSystem<AgentTalentSystem>();
 
             BindToggle(typeof(Toggles));
             BindText(typeof(Texts));
@@ -55,14 +58,10 @@ namespace EvolveThisMatch.Lobby
 
             if (state.id == -1) return;
 
-            var effect = GameDataManager.Instance.talentEffects[state.id];
+            var type = (EEffectType)state.id;
 
-            if (effect is IRuntimeDataEffect runtimeDataEffect)
-            {
-                runtimeDataEffect.SetValue(state.value);
-                _talentText.text = effect.GetDescription();
-                _rarityTag.Show(state.rarity);
-            }
+            _talentText.text = _agentTalentSystem.GetTalentDescription(type, state.value);
+            _rarityTag.Show(state.rarity);
         }
     }
 }

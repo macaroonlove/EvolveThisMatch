@@ -9,6 +9,7 @@ namespace EvolveThisMatch.Core
         private ActiveSkillAbility _activeSkillAbility;
         private HealthAbility _healthAbility;
         private BuffAbility _buffAbility;
+        private GlobalStatusSystem _globalStatusSystem;
         private int _index;
         private bool _isEnoughPayAmount;
 
@@ -24,6 +25,11 @@ namespace EvolveThisMatch.Core
 
                 #region 증가·감소
                 float increase = 1;
+
+                foreach (var instance in _globalStatusSystem.SkillCooldownIncreaseDataEffects)
+                {
+                    increase -= instance.effect.GetValue(_activeSkillAbility.unit.effectContext, instance.context);
+                }
 
                 foreach (var instance in _buffAbility.SkillCooldownIncreaseDataEffects)
                 {
@@ -47,6 +53,7 @@ namespace EvolveThisMatch.Core
             _activeSkillAbility = activeSkillAbility;
             _healthAbility = _activeSkillAbility.unit.healthAbility;
             _buffAbility = _activeSkillAbility.unit.GetAbility<BuffAbility>();
+            _globalStatusSystem = CoreManager.Instance.GetSubSystem<GlobalStatusSystem>();
 
             _isEnoughPayAmount = true;
             isAutoSkill = true;

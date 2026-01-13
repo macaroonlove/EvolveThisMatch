@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using EvolveThisMatch.Core;
 using FrameWork;
 using FrameWork.UIBinding;
@@ -59,23 +58,19 @@ namespace EvolveThisMatch.Lobby
             InitializeTalentToggle();
         }
 
-        private async void InitializeTalentToggle()
+        private void InitializeTalentToggle()
         {
-            await UniTask.WaitUntil(() => PersistentLoad.isLoaded);
-
-            var effects = GameDataManager.Instance.talentEffects;
+            var agentTalentSystem = BattleManager.Instance.GetSubSystem<AgentTalentSystem>();
 
             var prefab = GetObject((int)Objects.TalentCondition);
             var parent = GetObject((int)Objects.Content).transform;
 
-            foreach (var effect in effects)
+            for (int i = 0; i < agentTalentSystem.talentCount; i++)
             {
-                if (effect is not IRuntimeDataEffect runtimeDataEffect) continue;
-
                 var instance = Instantiate(prefab, parent);
                 var toggle = instance.GetComponent<Toggle>();
                 var text = instance.GetComponentInChildren<TextMeshProUGUI>();
-                text.text = runtimeDataEffect.GetTitle();
+                text.text = agentTalentSystem.GetTalentTitle((EEffectType)i);
 
                 _talentToggles.Add(toggle);
             }

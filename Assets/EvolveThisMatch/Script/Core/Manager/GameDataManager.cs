@@ -11,7 +11,6 @@ namespace EvolveThisMatch.Core
     {
         [Header("Library")]
         [SerializeField] private AgentLibraryTemplate _agentLibrary;
-        [SerializeField] private List<Effect> _talentEffects = new List<Effect>();
         [SerializeField] private SkinLibraryTemplate _agentSkinLibrary;
         [SerializeField] private AgentRarityLibrary _agentRarityLibrary;
 
@@ -19,7 +18,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] private TomeLibraryTemplate _tomeLibrary;
 
         public IReadOnlyList<AgentTemplate> agentTemplates => _agentLibrary.templates;
-        public IReadOnlyList<Effect> talentEffects => _talentEffects;
         public IReadOnlyDictionary<SkinTemplate, AgentTemplate> agentSkinTemplates => _agentSkinLibrary.templates;
         public IReadOnlyList<AgentRarityTemplate> agentRarityTemplates => _agentRarityLibrary.agentRarityTemplates;
         public int probabilityLevel => _agentRarityLibrary.probabilityLevel;

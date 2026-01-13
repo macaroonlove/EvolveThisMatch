@@ -63,29 +63,29 @@ namespace EvolveThisMatch.Core
                 #region 증가·감소
                 float increase = 1;
 
-                foreach (var instance in _buffAbility.ATKIncreaseDataEffects)
-                {
-                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
-                }
-                
                 foreach (var instance in _globalStatusSystem.ATKIncreaseDataEffects)
                 {
                     increase += instance.effect.GetValue(unit.effectContext, instance.context);
                 }
 
+                foreach (var instance in _buffAbility.ATKIncreaseDataEffects)
+                {
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
+                }
+                
                 result *= increase;
                 #endregion
 
                 #region 상승·하락
-                foreach (var instance in _buffAbility.ATKMultiplierDataEffects)
-                {
-                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
-                }
-
                 foreach (var instance in _globalStatusSystem.ATKMultiplierDataEffects)
                 {
                     result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
                 }
+
+                foreach (var instance in _buffAbility.ATKMultiplierDataEffects)
+                {
+                    result *= (1 + instance.effect.GetValue(unit.effectContext, instance.context));
+                }                
                 #endregion
 
                 return (int)result;
@@ -100,6 +100,11 @@ namespace EvolveThisMatch.Core
 
                 #region 증가·감소
                 float increase = 1;
+
+                foreach (var instance in _globalStatusSystem.AttackSpeedIncreaseDataEffects)
+                {
+                    increase += instance.effect.GetValue(unit.effectContext, instance.context);
+                }
 
                 foreach (var instance in _buffAbility.AttackSpeedIncreaseDataEffects)
                 {

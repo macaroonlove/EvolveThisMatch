@@ -3215,6 +3215,7 @@ GameObject:
   - component: {fileID: 5981209525603622466}
   - component: {fileID: 4690849884617939593}
   - component: {fileID: 3647784503078418233}
+  - component: {fileID: 7352988519613766339}
   m_Layer: 0
   m_Name: AgentSystem
   m_TagString: Untagged
@@ -3289,6 +3290,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _agentLevelTemplate: {fileID: 11400000, guid: 5eba5e435d378644cbf862a0f3666e42, type: 2}
+--- !u!114 &7352988519613766339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4220791289374802386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40562f1f22a7b664aaeb53ff1468ca88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _talentTemplates:
+  - {fileID: 11400000, guid: ff6f27e4ae972b547a28104de9917ab6, type: 2}
+  - {fileID: 11400000, guid: 81fdd411f7b682e42a8efd96952b8898, type: 2}
+  - {fileID: 11400000, guid: 23b8a0d475b79cf41a7c665a2262b970, type: 2}
+  - {fileID: 11400000, guid: 6eb32fc288fee514c8f12ea984963cb6, type: 2}
 --- !u!1 &4324550503223331136
 GameObject:
   m_ObjectHideFlags: 0

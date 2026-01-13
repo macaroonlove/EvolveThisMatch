@@ -48,22 +48,28 @@ namespace EvolveThisMatch.Battle
                 result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Add)}");
             }
 
+            foreach (var instance in _globalStatusSystem.ATKIncreaseDataEffects)
+            {
+                var value = instance.effect.GetValue(_unit.effectContext, instance.context);
+                if (value == 0) continue;
+
+                result.AppendLine($"{instance.displayName} {ValueFormat(value, EDataType.Increase)}");
+            }
+
             foreach (var instance in _buffAbility.ATKIncreaseDataEffects)
             {
                 result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
             }
 
-            foreach (var instance in _globalStatusSystem.ATKIncreaseDataEffects)
+            foreach (var instance in _globalStatusSystem.ATKMultiplierDataEffects)
             {
-                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Increase)}");
+                var value = instance.effect.GetValue(_unit.effectContext, instance.context);
+                if (value == 0) continue;
+
+                result.AppendLine($"{instance.displayName} {ValueFormat(value, EDataType.Multiplier)}");
             }
 
             foreach (var instance in _buffAbility.ATKMultiplierDataEffects)
-            {
-                result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Multiplier)}");
-            }
-
-            foreach (var instance in _globalStatusSystem.ATKMultiplierDataEffects)
             {
                 result.AppendLine($"{instance.displayName} {ValueFormat(instance.effect.GetValue(_unit.effectContext, instance.context), EDataType.Multiplier)}");
             }
