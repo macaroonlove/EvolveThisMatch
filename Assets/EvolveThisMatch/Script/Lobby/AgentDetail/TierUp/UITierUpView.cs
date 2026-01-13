@@ -36,12 +36,12 @@ namespace EvolveThisMatch.Lobby
         private UIAgentTier[] _tierGroups;
         private UITierAdvantageItem[] _tierAdvantageItems;
 
-        private UITierUpController _controller;
+        private UITierUpPresenter _presenter;
 
         protected override void Initialize()
         {
             var model = new UITierUpModel();
-            _controller = new UITierUpController(this, model);
+            _presenter = new UITierUpPresenter(this, model);
 
             _tierGroups = GetComponentsInChildren<UIAgentTier>();
             _tierAdvantageItems = GetComponentsInChildren<UITierAdvantageItem>();
@@ -56,12 +56,12 @@ namespace EvolveThisMatch.Lobby
             _tierUpButton = GetButton((int)Buttons.TierUpButton);
             _arrow = GetObject((int)Objects.Arrow);
 
-            _tierUpButton.onClick.AddListener(_controller.TierUp);
+            _tierUpButton.onClick.AddListener(_presenter.TierUp);
         }
 
         internal void Show(AgentSaveData.Agent owned, UnityAction reShow)
         {
-            _controller.Show(owned, reShow);
+            _presenter.Show(owned, reShow);
         }
 
         internal void RenderEmpty()

@@ -32,7 +32,7 @@ namespace EvolveThisMatch.Lobby
 
         private UITalentItem[] _items;
         private UITalentFilterView _talentFilterPanel;
-        private UITalentController _controller;
+        private UITalentPresenter _presenter;
 
         #region 초기화
         protected override void Initialize()
@@ -65,9 +65,9 @@ namespace EvolveThisMatch.Lobby
             };
 
             var model = new UITalentModel(rarityProb);
-            _controller = new UITalentController(model, this);
+            _presenter = new UITalentPresenter(model, this);
 
-            _changeTalentButton.onClick.AddListener(_controller.OnRollOnce);
+            _changeTalentButton.onClick.AddListener(_presenter.OnRollOnce);
             _openTalentFilterButton.onClick.AddListener(OpenFilter);
         }
 
@@ -79,7 +79,7 @@ namespace EvolveThisMatch.Lobby
 
         internal void Show(AgentSaveData.Agent owned)
         {
-            _controller.Show(owned);
+            _presenter.Show(owned);
         }
 
         public void Render(TalentViewState state)
@@ -98,7 +98,7 @@ namespace EvolveThisMatch.Lobby
 
                 _items[idx].Show(slot, isLock =>
                 {
-                    _controller.OnLockChanged(idx, isLock);
+                    _presenter.OnLockChanged(idx, isLock);
                 });
             }
         }
@@ -106,13 +106,13 @@ namespace EvolveThisMatch.Lobby
         #region 필터
         private void OpenFilter()
         {
-            var buttonText = _controller.currentButtonText;
-            _talentFilterPanel.Show(buttonText, condition => _controller.OnRollFiltered(condition), _controller.StopRolling);
+            var buttonText = _presenter.currentButtonText;
+            _talentFilterPanel.Show(buttonText, condition => _presenter?.OnRollFiltered(condition), _presenter.StopRolling);
         }
         #endregion
 
         #region 초기화 (외부에서 재능을 적용해서)
-        public void ClearRNG() => _controller.ClearRNG();
+        public void ClearRNG() => _presenter.ClearRNG();
         #endregion
     }
 

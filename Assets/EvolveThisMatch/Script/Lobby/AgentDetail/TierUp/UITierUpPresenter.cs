@@ -3,14 +3,14 @@ using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
-    public sealed class UITierUpController
+    public sealed class UITierUpPresenter
     {
         private readonly UITierUpView _view;
         private readonly UITierUpModel _model;
 
         private UnityAction _reShow;
 
-        public UITierUpController(UITierUpView view, UITierUpModel model)
+        public UITierUpPresenter(UITierUpView view, UITierUpModel model)
         {
             _view = view;
             _model = model;

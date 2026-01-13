@@ -4,7 +4,7 @@ using FrameWork.UIPopup;
 
 namespace EvolveThisMatch.Lobby
 {
-    public sealed class UITalentController
+    public sealed class UITalentPresenter
     {
         private readonly UITalentModel _model;
         private readonly UITalentView _view;
@@ -19,7 +19,7 @@ namespace EvolveThisMatch.Lobby
             }
         }
 
-        public UITalentController(UITalentModel model, UITalentView view)
+        public UITalentPresenter(UITalentModel model, UITalentView view)
         {
             _model = model;
             _view = view;

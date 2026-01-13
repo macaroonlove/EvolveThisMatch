@@ -3,13 +3,13 @@ using UnityEngine.Events;
 
 namespace EvolveThisMatch.Lobby
 {
-    public sealed class UILevelUpController
+    public sealed class UILevelUpPresenter
     {
         private readonly UILevelUpView _view;
         private readonly UILevelUpModel _model;
         private UnityAction _reShow;
 
-        public UILevelUpController(UILevelUpView view, UILevelUpModel model)
+        public UILevelUpPresenter(UILevelUpView view, UILevelUpModel model)
         {
             _view = view;
             _model = model;

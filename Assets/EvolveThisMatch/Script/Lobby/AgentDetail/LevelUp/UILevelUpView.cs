@@ -43,12 +43,12 @@ namespace EvolveThisMatch.Lobby
         private UILevelUpFoodSelectItem[] _stocks;
         private UILevelUpAutoSelectItem _autoSelect;
 
-        private UILevelUpController _controller;
+        private UILevelUpPresenter _presenter;
 
         protected override void Initialize()
         {
             var model = new UILevelUpModel();
-            _controller = new UILevelUpController(this, model);
+            _presenter = new UILevelUpPresenter(this, model);
 
             BindText(typeof(Texts));
             BindImage(typeof(Images));
@@ -70,7 +70,7 @@ namespace EvolveThisMatch.Lobby
                 int index = i;
                 _eats[i].InitializeItem(() =>
                 {
-                    if (_controller.RemoveFood(index))
+                    if (_presenter.RemoveFood(index))
                     {
                         _eats[index].Decrement();
                         _stocks[index].Increment();
@@ -79,7 +79,7 @@ namespace EvolveThisMatch.Lobby
 
                 _stocks[i].InitializeItem(() =>
                 {
-                    if (_controller.AddFood(index))
+                    if (_presenter.AddFood(index))
                     {
                         _eats[index].Increment();
                         _stocks[index].Decrement();
@@ -95,7 +95,7 @@ namespace EvolveThisMatch.Lobby
                     stockCounts[i] = _stocks[i].count;
                 }
 
-                int[] result = _controller.AutoSelect(stockCounts);
+                int[] result = _presenter.AutoSelect(stockCounts);
 
                 for (int i = 0; i < result.Length; i++)
                 {
@@ -107,12 +107,12 @@ namespace EvolveThisMatch.Lobby
                 }
             });
             GetButton((int)Buttons.ClearButton).onClick.AddListener(Clear);
-            GetButton((int)Buttons.LevelUpButton).onClick.AddListener(_controller.LevelUp);
+            GetButton((int)Buttons.LevelUpButton).onClick.AddListener(_presenter.LevelUp);
         }
 
         internal void Show(AgentSaveData.Agent owned, UnityAction reShow)
         {
-            _controller.Show(owned, reShow);
+            _presenter.Show(owned, reShow);
 
             Clear();
         }
@@ -140,7 +140,7 @@ namespace EvolveThisMatch.Lobby
 
         private void Clear()
         {
-            _controller.Clear();
+            _presenter.Clear();
 
             for (int i = 0; i < _eats.Length; i++)
             {
