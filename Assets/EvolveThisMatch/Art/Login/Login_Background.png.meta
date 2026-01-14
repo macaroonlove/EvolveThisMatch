@@ -1,0 +1,2010 @@
+fileFormatVersion: 2
+guid: ed7d9f4be6a73ce47abe6d09b96deb5c
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Login_Background_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7d43a5ca1f8a334dadaad408a6b869a
+      internalID: -1369651734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_1
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d897afc299b697c4eb7c8224346191d2
+      internalID: 357999157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_2
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f176884c1fd664b499e72c35df85f8ac
+      internalID: -31206662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_3
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6dffecdcc08df8242975e91929ab958a
+      internalID: -28340150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_4
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f2efc546c9bb2f47b0fb04bc5ddb2a0
+      internalID: -310410251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_5
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de95ba6e244ec38458c717a2f3f3823e
+      internalID: -747057155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_6
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e7df3d251837d1438112ed8cf704574
+      internalID: -22210596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_7
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3c3416fc16366843909d0094eb7c8c1
+      internalID: 505556617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_8
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 3840
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8676c574b87504a4ca0241c2514031b7
+      internalID: -1649199142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6c6bed03c92a574d9fe5fa18de0d601
+      internalID: 535101454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_10
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 489fa7bafbf47ad4b9a83b5f385bf664
+      internalID: 1356516103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_11
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 850f0a7930992f14b83c25c6c8e07914
+      internalID: 1203918376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_12
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1e46866204b75944bbc8e077c243c69
+      internalID: 1501040019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_13
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9abf1fd24d5cd3341953465d9750dfd7
+      internalID: 1708547669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_14
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d2e7b1716e3ff842904e6a0ee3039bf
+      internalID: 867932082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_15
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46e5a08e87a38b945b76fd8d4f62769a
+      internalID: -251674047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_16
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c951c910a215d36478e80a65e020b872
+      internalID: -216962437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_17
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 3360
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f35c5d1a32b07a742a441343dc744303
+      internalID: -1185587065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d40bf2d0ba7ef049b3432a0b44e2aef
+      internalID: -2052164189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_19
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c975ea09455d4d4f939f7ad7f348956
+      internalID: -1050684868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_20
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d568f36087d2e8946a6b9f6ed2cbd4f3
+      internalID: 948138690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_21
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8e739a7dea6d144382c3745015009e5
+      internalID: -1650327883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_22
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e236c1cf1214b1c4bb7dcbc72a8f7b22
+      internalID: 297074386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_23
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf85a54b045efff4c946fe5913c3b45c
+      internalID: -1778296814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_24
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4ae55520cc663749bd4c96fd71202fb
+      internalID: -1725270449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_25
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 817024a4a1bb8f8428c02532c9e9e93f
+      internalID: -1333160124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_26
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 2880
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3138d43dd9cd7bc439a1abcf8e7dfbbb
+      internalID: 1251102933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_27
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cd9b538886f3324db1c586bfc066c85
+      internalID: -686403645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_28
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef0ed6d4d5e35d145b5ac711ac24f62a
+      internalID: -1913305848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_29
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 318c14dbf4200924bacec84ab1ecd919
+      internalID: 2127881548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_30
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 286688cec0348d3468c64c1fc4ddd005
+      internalID: 736811124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_31
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42417bf7db2adae4a9c1a2a3023f15f4
+      internalID: 141445795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_32
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0cde2e750a31fd54f99b5abaa38529c6
+      internalID: 438633673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_33
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91b7e68f8f9c3fa45b846c64af342e61
+      internalID: 1065921990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_34
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2942d2341c66034cbfcd19e12aecfcb
+      internalID: 1273985258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_35
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 2400
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0aa87e2eb9828d84b9cf036fc10c4ba9
+      internalID: -1601165816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc15c0fa1869b1248a0472c944cc3831
+      internalID: 676565785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_37
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2053f4b8f3cdcc042bf3622a021043f2
+      internalID: -1421579241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_38
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d195f743204c922448892e79fe3840f0
+      internalID: 398308368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_39
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31112380e7862cf4f854961ad7dae13d
+      internalID: 1017801295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_40
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a93386798421f0e41bf08ceba15b2620
+      internalID: -970554723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_41
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10d56562d25fdea4e8fca2309720fb77
+      internalID: 1972679599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_42
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a255666cc6636a48a07a22f7b684f5d
+      internalID: -1507287632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_43
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f74871764499623428d2ea9c7be67b61
+      internalID: 42777730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_44
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 1920
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56c6778c5b8af1d42b8da4825283b8a8
+      internalID: 732085531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 081307424a45c0b4883f1a091f15fcd2
+      internalID: -1339082147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_46
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44ae9a8e9fb4d874880f99f021c734e0
+      internalID: -428725953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_47
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa781277a04f33644b925e99566d753c
+      internalID: 396376681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_48
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 182fcd21bbad71c49add8f75e056e38e
+      internalID: -1651828699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_49
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5abb316b3bc811447bca6492741e8956
+      internalID: 1890579774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_50
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 012c664f9e19ae045b725bf874102d37
+      internalID: -1704993833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_51
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7e9699af7ce9a147a058fc5099fd87e
+      internalID: -1295911637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_52
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5905fe2eea9968458317eef00c49325
+      internalID: 760017833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_53
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 1440
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c8bf4415cd5fdf4c960c05327f2c592
+      internalID: -1396584882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_54
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94fac85e3fccf9f4eb769c50f432b7a3
+      internalID: -884895809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_55
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50753b5f42405f5408c181b0b8bb51c3
+      internalID: -2024085210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_56
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c16f369d2754a30479d3ff426f3fb2fe
+      internalID: -1472645461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_57
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57c7469eb4636e4498aec3ce2b31cb7c
+      internalID: -936007923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_58
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8ab7c9f9e39f764b96938a85b16ec47
+      internalID: -882273583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_59
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba1f8e41aae038348af3aeaa3ca51187
+      internalID: -1492433770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_60
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 172c01960250b304fb5cd37e1667c2f8
+      internalID: -406756369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_61
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3132f915acc8114e8bfeb0af0612d6e
+      internalID: -956990369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_62
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 960
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 888fc08ddc69e7e469294be8ae6399e9
+      internalID: 2126814433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_63
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9ab3d076c1f8824aaa6c00233f2ecd0
+      internalID: -894188975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_64
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64403c10c0f95f3478d365efcd5f75be
+      internalID: 1125583909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_65
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed89313595421404ebaa2f66490dabca
+      internalID: 135373533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_66
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e90f79c2c8b45194a83af4ad713d126d
+      internalID: 1503201023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_67
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 73d490b4b7a9a0f48a03f38e0849f1eb
+      internalID: -732811144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_68
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ddbf660bc5daa848a135215d27ef041
+      internalID: -438447444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_69
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 853a15f1f00264b4fb9f496bf7e9ef3a
+      internalID: 821007579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_70
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2875af7abc42e584394c09782584f9f6
+      internalID: -468761884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_71
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 480
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e7b80947cb2d8a4a8c09b32670451b7
+      internalID: 1118364965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_72
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca5c3c1eed10ad9478b6d82dbb196ae1
+      internalID: -1538352542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_73
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ca1bbb928c533840abb316471add9e2
+      internalID: 2137575333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_74
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b1596e9093952d48aac0dcfaac20857
+      internalID: 1278605103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_75
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b97db7f9afd5d04a87f46a0abcd5ab5
+      internalID: -1106622735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_76
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04b6ccc545bd8e543adda8cf89632862
+      internalID: -621018781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_77
+      rect:
+        serializedVersion: 2
+        x: 4160
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acd8a8375c4019a4e8b2091942ad6fee
+      internalID: -447327115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_78
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a49017bb16ddc54da43acc4df7f0c36
+      internalID: 463847083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_79
+      rect:
+        serializedVersion: 2
+        x: 5824
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0595a58e0162a014eb9df48961fc0f55
+      internalID: -1113051216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Login_Background_80
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 0
+        width: 832
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 713c9db9ee41228489c26928393ff637
+      internalID: -630532650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":9.0,"y":9.0},"gridSpriteSize":{"x":832.0,"y":480.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+      - key: SpriteEditor.SliceOnImport
+        value: False
+    nameFileIdTable:
+      Login_Background_0: -1369651734
+      Login_Background_1: 357999157
+      Login_Background_10: 1356516103
+      Login_Background_11: 1203918376
+      Login_Background_12: 1501040019
+      Login_Background_13: 1708547669
+      Login_Background_14: 867932082
+      Login_Background_15: -251674047
+      Login_Background_16: -216962437
+      Login_Background_17: -1185587065
+      Login_Background_18: -2052164189
+      Login_Background_19: -1050684868
+      Login_Background_2: -31206662
+      Login_Background_20: 948138690
+      Login_Background_21: -1650327883
+      Login_Background_22: 297074386
+      Login_Background_23: -1778296814
+      Login_Background_24: -1725270449
+      Login_Background_25: -1333160124
+      Login_Background_26: 1251102933
+      Login_Background_27: -686403645
+      Login_Background_28: -1913305848
+      Login_Background_29: 2127881548
+      Login_Background_3: -28340150
+      Login_Background_30: 736811124
+      Login_Background_31: 141445795
+      Login_Background_32: 438633673
+      Login_Background_33: 1065921990
+      Login_Background_34: 1273985258
+      Login_Background_35: -1601165816
+      Login_Background_36: 676565785
+      Login_Background_37: -1421579241
+      Login_Background_38: 398308368
+      Login_Background_39: 1017801295
+      Login_Background_4: -310410251
+      Login_Background_40: -970554723
+      Login_Background_41: 1972679599
+      Login_Background_42: -1507287632
+      Login_Background_43: 42777730
+      Login_Background_44: 732085531
+      Login_Background_45: -1339082147
+      Login_Background_46: -428725953
+      Login_Background_47: 396376681
+      Login_Background_48: -1651828699
+      Login_Background_49: 1890579774
+      Login_Background_5: -747057155
+      Login_Background_50: -1704993833
+      Login_Background_51: -1295911637
+      Login_Background_52: 760017833
+      Login_Background_53: -1396584882
+      Login_Background_54: -884895809
+      Login_Background_55: -2024085210
+      Login_Background_56: -1472645461
+      Login_Background_57: -936007923
+      Login_Background_58: -882273583
+      Login_Background_59: -1492433770
+      Login_Background_6: -22210596
+      Login_Background_60: -406756369
+      Login_Background_61: -956990369
+      Login_Background_62: 2126814433
+      Login_Background_63: -894188975
+      Login_Background_64: 1125583909
+      Login_Background_65: 135373533
+      Login_Background_66: 1503201023
+      Login_Background_67: -732811144
+      Login_Background_68: -438447444
+      Login_Background_69: 821007579
+      Login_Background_7: 505556617
+      Login_Background_70: -468761884
+      Login_Background_71: 1118364965
+      Login_Background_72: -1538352542
+      Login_Background_73: 2137575333
+      Login_Background_74: 1278605103
+      Login_Background_75: -1106622735
+      Login_Background_76: -621018781
+      Login_Background_77: -447327115
+      Login_Background_78: 463847083
+      Login_Background_79: -1113051216
+      Login_Background_8: -1649199142
+      Login_Background_80: -630532650
+      Login_Background_9: 535101454
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
