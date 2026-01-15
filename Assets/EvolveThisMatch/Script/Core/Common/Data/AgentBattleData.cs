@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace EvolveThisMatch.Core
 {
@@ -27,10 +28,18 @@ namespace EvolveThisMatch.Core
             this.agentUnit = agentUnit;
             this.agentTemplate = agentTemplate;
 
-            this.sync = 1;
+            this.sync =  1;
             this.limit = GameDataManager.Instance.GetAgentRandomRarity();
 
             _agentChangeSystem = BattleManager.Instance.GetSubSystem<AgentChangeSystem>();
+
+            // TODO: 임시로 씬 이름으로 싱크로율을 결정했음, 추후에 외부에서 컨텍스트 받아서 동작하도록 수정하기
+            bool isLobby = SceneManager.GetActiveScene().name == "Lobby";
+            if (isLobby)
+            {
+                this.sync = 15;
+                this.skillUnlock = 3;
+            }
         }
 
         #region 위치

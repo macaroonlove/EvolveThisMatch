@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f98ef2f13386b0549a14a4a9b22e56cb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 0
+  packageName: Elemental Blasts URP
+  packageVersion: 1.0.0
+  assetPath: Assets/EvolveThisMatch/Art/Global/Unit/02_Poseidon_New/FX/PixPlays/ElementalBlastVFX/WaterBlast/Anims/WaterWaveAnimController.controller
+  uploadId: 699677

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace EvolveThisMatch.Core
     [Serializable]
     public class DamageEffectLogic : IMutableValueBindingProvider
     {
+        [SerializeField] private float _delay;
         [SerializeField] private MutableValue _repeatCountMutableValue;
         [SerializeField] private ElementalValue _repeatCountElementalValue;
         [SerializeField] private int _repeatCount;
@@ -91,9 +93,14 @@ namespace EvolveThisMatch.Core
         }
         #endregion
 
-        public void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)
+        public async void Execute(EffectContext effectContext, Unit casterUnit, Unit targetUnit)
         {
             int damage = GetAmount(effectContext, casterUnit, targetUnit);
+
+            if (_delay > 0f)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(_delay));
+            }
 
             Execute_RepeatCount(effectContext, casterUnit, targetUnit, damage);
         }
@@ -187,7 +194,15 @@ namespace EvolveThisMatch.Core
 #if UNITY_EDITOR
         public void Draw(Rect rect)
         {
+            #region µô·¹ÀÌ
+            EffectDrawUtility.DrawRow(ref rect, "È¿°ú ½ÇÇà±îÁö µô·¹ÀÌ", valueRect =>
+            {
+                _delay = EditorGUI.FloatField(valueRect, _delay);
+            });
+            #endregion
+
             #region ÇÇÇØ È½¼ö
+            rect.y += 20;
             EffectDrawUtility.DrawBoxedScaledValue(ref rect, _repeatCountMutableValue, _repeatCountElementalValue, "ÇÇÇØ È½¼ö", valueRect =>
             {
                 _repeatCount = EditorGUI.IntField(valueRect, _repeatCount);
@@ -264,7 +279,7 @@ namespace EvolveThisMatch.Core
 
         public int GetNumRows()
         {
-            float rowNum = 1;
+            float rowNum = 3;
 
             if (_isTick)
             {

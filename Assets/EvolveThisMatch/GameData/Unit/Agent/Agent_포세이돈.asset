@@ -27,17 +27,20 @@ MonoBehaviour:
   _atk: 200
   _attackTerm: 1.2
   _attackRange: 2
-  _isProjectileAttack: 0
-  _projectilePrefab: {fileID: 0}
-  _spawnPoint: 0
+  _isProjectileAttack: 1
+  _projectilePrefab: {fileID: 9214699220727189353, guid: 82cd031e99f95f14a8c9603407d670bb, type: 3}
+  _spawnPoint: 2
   _physicalPenetration: 10
   _magicPenetration: 10
   _criticalHitChance: 0
-  _criticalHitDamage: 200
+  _criticalHitDamage: 10
   _maxHP: 4800
   _physicalResistance: 40
   _magicResistance: 40
   _hpRecoveryPerSec: 0
-  _skillTemplates: []
+  _skillTemplates:
+  - {fileID: 11400000, guid: f42a1f7caeab1024c953c2a5c2b71237, type: 2}
+  - {fileID: 11400000, guid: 3b21acc31990ad24ab5329b3d5a17dea, type: 2}
+  - {fileID: 11400000, guid: 8013928e049b3014580fca3f2523a4b5, type: 2}
   skins:
   - {fileID: 11400000, guid: bfde3b963aba0fe4a9d9a83396d61429, type: 2}

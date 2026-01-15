@@ -13,7 +13,6 @@ namespace EvolveThisMatch.Core
 
         [SerializeField] private GameObject _prefab;
         [SerializeField] private ESpawnPoint _spawnPoint;
-        [SerializeField] private EActiveSkillControlType _controlType;
         [SerializeField] private ENontargetProjectileRangeType _rangeType;
         [SerializeField] private EDirectionType _directionType;
         [SerializeField] private float _range;
@@ -34,16 +33,8 @@ namespace EvolveThisMatch.Core
             Vector3 direction;
             float distance;
 
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                FindTargetAbility.directionMap.TryGetValue(_directionType, out direction);
-                distance = _range;
-            }
-            else
-            {
-                direction = (targetVector - casterUnit.transform.position).normalized;
-                distance = Mathf.Min(Vector3.Distance(casterUnit.transform.position, targetVector), _range);
-            }
+            FindTargetAbility.directionMap.TryGetValue(_directionType, out direction);
+            distance = _range;
 
             switch (_rangeType)
             {
@@ -99,16 +90,8 @@ namespace EvolveThisMatch.Core
 
             labelRect.y += 40;
             valueRect.y += 40;
-            GUI.Label(labelRect, "스킬 조작 방식");
-            _controlType = (EActiveSkillControlType)EditorGUI.EnumPopup(valueRect, _controlType);
-
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                labelRect.y += 20;
-                valueRect.y += 20;
-                GUI.Label(labelRect, "방향");
-                _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
-            }
+            GUI.Label(labelRect, "방향");
+            _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
 
             labelRect.y += 40;
             valueRect.y += 40;
@@ -140,9 +123,6 @@ namespace EvolveThisMatch.Core
         public override int GetNumRows()
         {
             int rowNum = base.GetNumRows() + 7;
-
-            if (_controlType == EActiveSkillControlType.Instant)
-                rowNum++;
 
             if (_rangeType == ENontargetProjectileRangeType.Cone)
                 rowNum += 2;

@@ -12,7 +12,6 @@ namespace EvolveThisMatch.Core
         private AbnormalStatusAbility _abnormalStatusAbility;
 
         private bool _isExecuteSkill;
-        private Unit _targetUnit;
         private Vector3 _targetVector;
 
         private Dictionary<int, ActiveSkillInstance> _skills = new Dictionary<int, ActiveSkillInstance>();
@@ -166,14 +165,7 @@ namespace EvolveThisMatch.Core
 
         private bool TryExecuteNonTargetingSkill(ActiveSkillTemplate template)
         {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity))
-            {
-                _targetVector = hit.point.normalized;
-
-                return SkillAnimation(template);
-            }
-
-            return false;
+            return SkillAnimation(template);
         }
         #endregion
 
@@ -208,6 +200,7 @@ namespace EvolveThisMatch.Core
 
         private void ExecuteSkill(ActiveSkillTemplate template)
         {
+            // 시전자 유닛 FX 실행
             ExecuteCasterFX(template);
 
             switch (template.skillTargetingType)
@@ -229,7 +222,7 @@ namespace EvolveThisMatch.Core
                 if (effect is GetTargetUnitEffect unitEffect)
                 {
                     var targets = unitEffect.GetTarget(unit);
-
+                    
                     foreach (var target in targets)
                     {
                         unitEffect.Deliver(unit.effectContext, unit, target);

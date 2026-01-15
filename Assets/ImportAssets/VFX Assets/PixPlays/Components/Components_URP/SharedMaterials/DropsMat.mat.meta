@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a4abbf551ddae6f4183308f693a0795b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 0
+  packageName: Elemental Blasts URP
+  packageVersion: 1.0.0
+  assetPath: Assets/EvolveThisMatch/Art/Global/Unit/02_Poseidon_New/FX/PixPlays/Components/Components_URP/SharedMaterials/DropsMat.mat
+  uploadId: 699677

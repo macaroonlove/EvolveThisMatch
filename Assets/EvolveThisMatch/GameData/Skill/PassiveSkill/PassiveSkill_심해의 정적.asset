@@ -1,0 +1,154 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9063888037081789805
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 562f768d9418032409a7da83495552e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitType: 1
+  _buffEffectLogic:
+    _isInfinity: 1
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _duration: 0
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _probability: 0
+    _buff: {fileID: 11400000, guid: e32c18daac2279c4cab17a599a7fd5ab, type: 2}
+    _isfoldout: 0
+--- !u!114 &-4720512878091145268
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3f4161005dfed43a03cebd93a59aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects:
+  - {fileID: 8736278729370776008}
+  _targetFX: {fileID: 0}
+  _isCaster: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71b1008b4fe70354d8be8c6f2cdfbf1f, type: 3}
+  m_Name: "PassiveSkill_\uC2EC\uD574\uC758 \uC815\uC801"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _id: 1
+  _displayName: "\uC2EC\uD574\uC758 \uC815\uC801"
+  _description: "\uC8FC\uB294 \uD53C\uD574\uB7C9\uC774 10% \uC99D\uAC00\uD558\uACE0,
+    \uAE30\uBCF8 \uACF5\uACA9\uC744 \uB9DE\uC740 \uB300\uC0C1\uC5D0\uAC8C 3\uCD08\uAC04
+    \uBE59\uACB0 \uC0C1\uD0DC\uC774\uC0C1\uC744 \uC801\uC6A9\uC2DC\uD0B5\uB2C8\uB2E4."
+  triggers:
+  - {fileID: 5807429257871761184}
+  - {fileID: 6812814489085153745}
+--- !u!114 &5807429257871761184
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a331dc886cbd054998e8959bd719950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - {fileID: -9063888037081789805}
+--- !u!114 &6812814489085153745
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c113e5d57dab53743a8d7bea8e5dd371, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - {fileID: -4720512878091145268}
+--- !u!114 &8736278729370776008
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _duration: 3
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _probability: 0
+    _abnormalStatus: {fileID: 11400000, guid: 8036d0c2744767c45810eb83d5234df8, type: 2}
+    _isfoldout: 0

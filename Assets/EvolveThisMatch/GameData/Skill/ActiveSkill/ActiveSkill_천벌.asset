@@ -43,7 +43,7 @@ MonoBehaviour:
   _displayName: "\uCC9C\uBC8C"
   _description: "\uC81C\uC6B0\uC2A4\uAC00 \uC190\uC744 \uD558\uB298\uB85C \uBED7\uC5B4
     \uBC94\uC704 \uB0B4 10\uB9C8\uB9AC\uC758 \uBB34\uC791\uC704 \uC801\uC5D0\uAC8C
-    \uC804\uD22C\uB825\uC758 2000%\uB9CC\uD07C\uC758 \uB9C8\uBC95 \uD53C\uD574\uB97C
+    \uC804\uD22C\uB825\uC758 200%\uB9CC\uD07C\uC758 \uB9C8\uBC95 \uD53C\uD574\uB97C
     \uC785\uD788\uB294 \uBCBC\uB77D\uC744 \uAC15\uD558\uC2DC\uD0B5\uB2C8\uB2E4."
   _skillType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
   _skillTriggerType: 0
@@ -76,6 +76,7 @@ MonoBehaviour:
       _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
+      _effectType: 0
       _previewScaleBase: 2
     _repeatCountElementalValue:
       _enabled: 0
@@ -89,6 +90,7 @@ MonoBehaviour:
       _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
+      _effectType: 0
       _previewScaleBase: 2
     _tickCycleElementalValue:
       _enabled: 0
@@ -101,6 +103,7 @@ MonoBehaviour:
       _bindKey: 
       _scaleFactor: 0
       _scaleBase: 0
+      _effectType: 0
       _previewScaleBase: 2
     _tickCountElementalValue:
       _enabled: 0
@@ -115,11 +118,12 @@ MonoBehaviour:
         _bindKey: 
         _scaleFactor: 0
         _scaleBase: 0
+        _effectType: 0
         _previewScaleBase: 2
       _elementalValue:
         _enabled: 1
         _scaleFactor: 0.1
         _elementalType: {fileID: 11400000, guid: 21db49775cbd5fe4cacae00dba0b8160, type: 2}
-        _previewElementalLevel: 1
+        _previewElementalLevel: 0
       _applyType: 1
-      _amount: 20
+      _amount: 2

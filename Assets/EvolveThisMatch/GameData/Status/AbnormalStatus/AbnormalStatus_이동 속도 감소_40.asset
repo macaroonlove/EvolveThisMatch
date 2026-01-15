@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2676ce51c0285f242bd88fb9ab686a0b, type: 3}
+  m_Name: "AbnormalStatus_\uC774\uB3D9 \uC18D\uB3C4 \uAC10\uC18C_40"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: e4b0447c185d0354aa304d873bc90d2b, type: 3}
+  _displayName: "\uB454\uD654"
+  _description: "\uC774\uB3D9 \uC18D\uB3C4\uAC00 50% \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  _delay: 0
+  _useHitCountLimit: 0
+  _hitCount: 0
+  effects:
+  - {fileID: 7737341697799894692}
+  _applyFX: {fileID: 0}
+  _removeFX: {fileID: 0}
+--- !u!114 &7737341697799894692
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0361f67fc2d444847afcd657c94a6b3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mutableValue:
+    _enabled: 0
+    _bindKey: 
+    _scaleFactor: 0
+    _scaleBase: 0
+    _effectType: 0
+    _previewScaleBase: 2
+  _elementalValue:
+    _enabled: 0
+    _scaleFactor: 0
+    _elementalType: {fileID: 0}
+    _previewElementalLevel: 1
+  _value: -0.4
+  _previewScaleBase: 2

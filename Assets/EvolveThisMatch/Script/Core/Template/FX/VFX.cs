@@ -68,7 +68,7 @@ namespace EvolveThisMatch.Core
         {
             Transform point = GetSpawnPoint(target);
 
-            Vector3 pos = point.TransformPoint(_posOffset);
+            Vector3 pos = point.position + _posOffset;
 
             Quaternion baseRot = point.rotation;
             Quaternion rot = baseRot * Quaternion.Euler(_rotOffset);

@@ -11,7 +11,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] private EUnitType _unitType;
         [SerializeField] private ERangeType _rangeType;
 
-        [SerializeField] private EActiveSkillControlType _controlType;
         [SerializeField] private EDirectionType _directionType;
         [SerializeField] private float _range;
         [SerializeField] private float _assistantRange;
@@ -89,15 +88,7 @@ namespace EvolveThisMatch.Core
         private void GetTargetStraight(EffectContext effectContext, Unit casterUnit, Vector3 targetVector, int maxCount)
         {
             List<Unit> targets;
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInStraight(_directionType, _range, _assistantRange, _unitType, maxCount);
-            }
-            else
-            {
-                var direction = (casterUnit.transform.position - targetVector).normalized;
-                targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInStraight(direction, _range, _assistantRange, _unitType, maxCount);
-            }
+            targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInStraight(_directionType, _range, _assistantRange, _unitType, maxCount);
 
             foreach (var target in targets)
             {
@@ -110,15 +101,7 @@ namespace EvolveThisMatch.Core
         private void GetTargetCone(EffectContext effectContext, Unit casterUnit, Vector3 targetVector, int maxCount)
         {
             List<Unit> targets;
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, maxCount);
-            }
-            else
-            {
-                var direction = (casterUnit.transform.position - targetVector).normalized;
-                targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInCone(direction, _range, (int)_assistantRange, _unitType, maxCount);
-            }
+            targets = casterUnit.GetAbility<FindTargetAbility>().FindTargetInCone(_directionType, _range, (int)_assistantRange, _unitType, maxCount);
 
             foreach (var target in targets)
             {
@@ -191,16 +174,8 @@ namespace EvolveThisMatch.Core
                 {
                     labelRect.y += 20;
                     valueRect.y += 20;
-                    GUI.Label(labelRect, "스킬 조작 방식");
-                    _controlType = (EActiveSkillControlType)EditorGUI.EnumPopup(valueRect, _controlType);
-
-                    if (_controlType == EActiveSkillControlType.Instant)
-                    {
-                        labelRect.y += 20;
-                        valueRect.y += 20;
-                        GUI.Label(labelRect, "방향");
-                        _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
-                    }
+                    GUI.Label(labelRect, "방향");
+                    _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
 
                     labelRect.y += 20;
                     valueRect.y += 20;
@@ -216,16 +191,8 @@ namespace EvolveThisMatch.Core
                 {
                     labelRect.y += 20;
                     valueRect.y += 20;
-                    GUI.Label(labelRect, "스킬 조작 방식");
-                    _controlType = (EActiveSkillControlType)EditorGUI.EnumPopup(valueRect, _controlType);
-
-                    if (_controlType == EActiveSkillControlType.Instant)
-                    {
-                        labelRect.y += 20;
-                        valueRect.y += 20;
-                        GUI.Label(labelRect, "방향");
-                        _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
-                    }
+                    GUI.Label(labelRect, "방향");
+                    _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
 
                     labelRect.y += 20;
                     valueRect.y += 20;

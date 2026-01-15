@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5093661109052b9438d278789d9e23d4, type: 3}
+  m_Name: "ActiveSkill_\uD574\uC77C"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: 1666fb24b220d2242b4e75e7057d249a, type: 3}
+  _id: 2
+  _displayName: "\uD574\uC77C"
+  _description: "\uD3EC\uC138\uC774\uB3C8\uC774 \uC804\uBC29\uC73C\uB85C \uAC70\uB300\uD55C
+    \uD574\uC77C\uC744 \uC77C\uC73C\uCF1C, \uACBD\uB85C \uC0C1\uC758 \uC801\uB4E4\uC5D0\uAC8C
+    \uC804\uD22C\uB825\uC758 120%\uB9CC\uD07C\uC758 \uB9C8\uBC95 \uD53C\uD574\uB97C
+    \uC785\uD788\uACE0\n2\uCD08\uAC04 \uC774\uB3D9\uC18D\uB3C4\uB97C 40% \uAC10\uC18C\uC2DC\uD0B5\uB2C8\uB2E4."
+  _skillType: {fileID: 11400000, guid: 4de51a13e3a546249bc22572b87bdd5c, type: 2}
+  _skillTriggerType: 0
+  _skillTargetingType: 1
+  _unitType: 0
+  _skillRange: 0
+  _skillPayType: 0
+  _payAmount: 0
+  _cooldownTime: 7
+  _parameterName: Skill
+  _parameterHash: -1610822797
+  _casterFX: {fileID: 11400000, guid: 7638a9a97326e9a4b970273721b4df61, type: 2}
+  effects:
+  - {fileID: 5296143796304784547}
+--- !u!114 &4972550810330353021
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damageEffectLogic:
+    _delay: 0.2
+    _repeatCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _repeatCount: 1
+    _isTick: 0
+    _tickCycleMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _tickCycle: 0
+    _tickCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _tickCount: 0
+    _damageType: 1
+    _applyTypeByAmountDatas:
+    - _mutableValue:
+        _enabled: 0
+        _bindKey: 
+        _scaleFactor: 0
+        _scaleBase: 0
+        _effectType: 0
+        _previewScaleBase: 2
+      _elementalValue:
+        _enabled: 1
+        _scaleFactor: 0.2
+        _elementalType: {fileID: 11400000, guid: 4de51a13e3a546249bc22572b87bdd5c, type: 2}
+        _previewElementalLevel: 1
+      _applyType: 1
+      _amount: 1.2
+--- !u!114 &5296143796304784547
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e58b352691d11b499298106f7408394, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects:
+  - {fileID: 4972550810330353021}
+  - {fileID: 6556205743586805829}
+  _targetType: 3
+  _unitType: 4
+  _rangeType: 2
+  _directionType: 3
+  _range: 3.2
+  _assistantRange: 3
+  _numberOfTarget: 0
+  _targetFX: {fileID: 0}
+--- !u!114 &6556205743586805829
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _duration: 2
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _probability: 0
+    _abnormalStatus: {fileID: 11400000, guid: 5f9684dbefac4f94a86584670a543cfa, type: 2}
+    _isfoldout: 0

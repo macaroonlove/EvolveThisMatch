@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5093661109052b9438d278789d9e23d4, type: 3}
+  m_Name: "ActiveSkill_\uBC14\uB2E4\uC758 \uC2EC\uD310"
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: add1cb68348f0f94483ffaa67fbcbb29, type: 3}
+  _id: 3
+  _displayName: "\uBC14\uB2E4\uC758 \uC2EC\uD310"
+  _description: "\uD3EC\uC138\uC774\uB3C8\uC774 \uBB3C\uAE30\uB465\uC744 \uB04C\uC5B4\uC62C\uB824
+    \uBC94\uC704 \uB0B4 10\uB9C8\uB9AC\uC758 \uC801\uB4E4\uC744 3\uCD08\uAC04 \uC774\uB3D9
+    \uBD88\uAC00 \uC0C1\uD0DC\uB85C \uB9CC\uB4ED\uB2C8\uB2E4. \uC774\uD6C4 \uBC14\uB2F7\uBB3C\uC744
+    \uB0B4\uB824\uCC0D\uC5B4 \uC801\uC758 \uD604\uC7AC \uCCB4\uB825\uC758 50%\uC5D0
+    \uD574\uB2F9\uD558\uB294 \uACE0\uC815 \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4.
+    (\uBCF4\uC2A4 \uBAAC\uC2A4\uD130 \uC81C\uC678)"
+  _skillType: {fileID: 11400000, guid: 4de51a13e3a546249bc22572b87bdd5c, type: 2}
+  _skillTriggerType: 0
+  _skillTargetingType: 0
+  _unitType: 0
+  _skillRange: 0
+  _skillPayType: 0
+  _payAmount: 0
+  _cooldownTime: 10
+  _parameterName: Skill2
+  _parameterHash: -750362048
+  _casterFX: {fileID: 0}
+  effects:
+  - {fileID: 3718583319418719731}
+--- !u!114 &673901920145742429
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5da10aee7cedc469a0d3587776beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damageEffectLogic:
+    _delay: 0.8
+    _repeatCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _repeatCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _repeatCount: 1
+    _isTick: 0
+    _tickCycleMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _tickCycleElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _tickCycle: 0
+    _tickCountMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _tickCountElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _tickCount: 0
+    _damageType: 2
+    _applyTypeByAmountDatas:
+    - _mutableValue:
+        _enabled: 0
+        _bindKey: 
+        _scaleFactor: 0
+        _scaleBase: 0
+        _effectType: 0
+        _previewScaleBase: 2
+      _elementalValue:
+        _enabled: 1
+        _scaleFactor: 0.04
+        _elementalType: {fileID: 11400000, guid: 4de51a13e3a546249bc22572b87bdd5c, type: 2}
+        _previewElementalLevel: 1
+      _applyType: 4
+      _amount: 50
+--- !u!114 &3718583319418719731
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3012cfd102b50094b870ab094792a71b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effects:
+  - {fileID: 5589896794009755111}
+  - {fileID: 673901920145742429}
+  _getTargetData:
+    _getTargetFilter: 0
+    _attackType: 0
+    _targetType: 2
+    _unitType: 4
+    _rangeType: 4
+    _directionType: 0
+    _range: 4
+    _assistantRange: 0
+    _numberOfTarget: 10
+  _targetFX: {fileID: 11400000, guid: 5725288c8d9429145be8bfb86273b399, type: 2}
+  _impactDelay: 0
+--- !u!114 &5589896794009755111
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449fbb5a6fdb8074ab9ca25d1e212021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abnormalStatusEffectLogic:
+    _isInfinity: 0
+    _durationMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _durationElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _duration: 3
+    _isProbability: 0
+    _probabilityMutableValue:
+      _enabled: 0
+      _bindKey: 
+      _scaleFactor: 0
+      _scaleBase: 0
+      _effectType: 0
+      _previewScaleBase: 2
+    _probabilityElementalValue:
+      _enabled: 0
+      _scaleFactor: 0
+      _elementalType: {fileID: 0}
+      _previewElementalLevel: 1
+    _probability: 0
+    _abnormalStatus: {fileID: 11400000, guid: 3da182b849c060a4a8ad64c0d808fe70, type: 2}
+    _isfoldout: 0

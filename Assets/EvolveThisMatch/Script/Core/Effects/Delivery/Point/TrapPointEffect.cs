@@ -11,7 +11,6 @@ namespace EvolveThisMatch.Core
         [SerializeField] protected bool _isInfinity;
         [SerializeField] protected float _duration;
 
-        [SerializeField] private EActiveSkillControlType _controlType;
         [SerializeField] private ERangeType _rangeType;
         [SerializeField] private EDirectionType _directionType;
         [SerializeField] private float _range;
@@ -47,18 +46,9 @@ namespace EvolveThisMatch.Core
         #region Circle
         private void SpawnCircleTrap(EffectContext effectContext, Unit casterUnit, Vector3 targetVector)
         {
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                // 범위 내 랜덤한 위치에 생성
-                var finalPosition = GetRandomFinalPositionInCircle(casterUnit);
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
-            else
-            {
-                var finalPosition = GetMouseFinalPosition(casterUnit, targetVector);
-
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
+            // 범위 내 랜덤한 위치에 생성
+            var finalPosition = GetRandomFinalPositionInCircle(casterUnit);
+            SpawnTrap(effectContext, casterUnit, finalPosition);
         }
 
         private Vector3 GetRandomFinalPositionInCircle(Unit casterUnit)
@@ -72,20 +62,9 @@ namespace EvolveThisMatch.Core
         #region Straight
         private void SpawnStraightTrap(EffectContext effectContext, Unit casterUnit, Vector3 targetVector)
         {
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                // 범위 내 랜덤한 위치에 생성
-                var finalPosition = GetRandomFinalPositionInStraight(casterUnit);
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
-            else
-            {
-                var maxPosition = GetMouseFinalPosition(casterUnit, targetVector);
-
-                Vector3 finalPosition = casterUnit.transform.position + maxPosition;
-
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
+            // 범위 내 랜덤한 위치에 생성
+            var finalPosition = GetRandomFinalPositionInStraight(casterUnit);
+            SpawnTrap(effectContext, casterUnit, finalPosition);
         }
 
         private Vector3 GetRandomFinalPositionInStraight(Unit casterUnit)
@@ -101,21 +80,9 @@ namespace EvolveThisMatch.Core
         #region Cone
         private void SpawnConeTrap(EffectContext effectContext, Unit casterUnit, Vector3 targetVector)
         {
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                // 범위 내 랜덤한 위치에 생성
-                var finalPosition = GetRandomFinalPositionInCone(casterUnit);
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
-            else
-            {
-                // 해당 방향 최대 범위에 생성
-                var maxPosition = GetMouseFinalPosition(casterUnit, targetVector);
-
-                Vector3 finalPosition = casterUnit.transform.position + maxPosition;
-
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
+            // 범위 내 랜덤한 위치에 생성
+            var finalPosition = GetRandomFinalPositionInCone(casterUnit);
+            SpawnTrap(effectContext, casterUnit, finalPosition);
         }
 
         private Vector3 GetRandomFinalPositionInCone(Unit casterUnit)
@@ -133,18 +100,9 @@ namespace EvolveThisMatch.Core
         #region Line
         private void SpawnLineTrap(EffectContext effectContext, Unit casterUnit, Vector3 targetVector)
         {
-            if (_controlType == EActiveSkillControlType.Instant)
-            {
-                // 범위 내 랜덤한 위치에 생성
-                var finalPosition = GetRandomFinalPositionInLine();
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
-            else
-            {
-                // 범위 내 가장 먼 위치에 생성
-                var finalPosition = GetFinalPositionInLine(casterUnit, targetVector);
-                SpawnTrap(effectContext, casterUnit, finalPosition);
-            }
+            // 범위 내 랜덤한 위치에 생성
+            var finalPosition = GetRandomFinalPositionInLine();
+            SpawnTrap(effectContext, casterUnit, finalPosition);
         }
 
         private Vector3 GetRandomFinalPositionInLine()
@@ -252,11 +210,6 @@ namespace EvolveThisMatch.Core
 
             labelRect.y += 40;
             valueRect.y += 40;
-            GUI.Label(labelRect, "스킬 조작 방식");
-            _controlType = (EActiveSkillControlType)EditorGUI.EnumPopup(valueRect, _controlType);
-
-            labelRect.y += 20;
-            valueRect.y += 20;
             GUI.Label(labelRect, "범위 타입");
             _rangeType = (ERangeType)EditorGUI.EnumPopup(valueRect, _rangeType);
 
@@ -270,21 +223,18 @@ namespace EvolveThisMatch.Core
                 _range = (int)Mathf.Clamp(_range, 1, 4);
             }
 
-            if (_controlType == EActiveSkillControlType.Instant)
+            labelRect.y += 20;
+            valueRect.y += 20;
+            GUI.Label(labelRect, "방향");
+            _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
+
+            if (_rangeType == ERangeType.Cone)
             {
                 labelRect.y += 20;
                 valueRect.y += 20;
-                GUI.Label(labelRect, "방향");
-                _directionType = (EDirectionType)EditorGUI.EnumPopup(valueRect, _directionType);
-
-                if (_rangeType == ERangeType.Cone)
-                {
-                    labelRect.y += 20;
-                    valueRect.y += 20;
-                    GUI.Label(labelRect, "각도");
-                    _angle = EditorGUI.IntField(valueRect, _angle);
-                }
-            }            
+                GUI.Label(labelRect, "각도");
+                _angle = EditorGUI.IntField(valueRect, _angle);
+            }
 
             var listRect = new Rect(rect.x, labelRect.y + 40, rect.width, rect.height);
             _effectsList?.DoList(listRect);
@@ -292,7 +242,7 @@ namespace EvolveThisMatch.Core
 
         public override int GetNumRows()
         {
-            int rowNum = base.GetNumRows() + 5;
+            int rowNum = base.GetNumRows() + 6;
 
             if (_isInfinity) rowNum++;
 
@@ -302,16 +252,11 @@ namespace EvolveThisMatch.Core
             }
             else
             {
-                rowNum++;
+                rowNum += 2;
 
-                if (_controlType == EActiveSkillControlType.Instant)
+                if (_rangeType == ERangeType.Cone)
                 {
                     rowNum++;
-
-                    if (_rangeType == ERangeType.Cone)
-                    {
-                        rowNum++;
-                    }
                 }
             }
 

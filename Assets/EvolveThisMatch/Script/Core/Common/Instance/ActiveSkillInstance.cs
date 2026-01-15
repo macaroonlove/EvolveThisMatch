@@ -74,20 +74,21 @@ namespace EvolveThisMatch.Core
         }
 
         #region ÄðÅ¸ÀÓ °ü¸®
-        public float Update(float deltaTime)
+        public void Update(float deltaTime)
         {
             if (coolDownTime > 0)
             {
                 coolDownTime -= deltaTime;
-                if (coolDownTime < 0) coolDownTime = 0;
+                return;
             }
-
+            
             if (CanExecute() && isAutoSkill)
             {
-                _activeSkillAbility.TryExecuteSkill(this);
+                if (_activeSkillAbility.TryExecuteSkill(this))
+                {
+                    coolDownTime = finalCoolDownTime;
+                }
             }
-
-            return coolDownTime;
         }
 
         public bool CanExecute()
@@ -97,7 +98,7 @@ namespace EvolveThisMatch.Core
             if (coolDownTime > 0) return false;
 
             if (_isEnoughPayAmount == false) return false;
-
+            
             return true;
         }
 

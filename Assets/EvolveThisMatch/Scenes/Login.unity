@@ -2029,6 +2029,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5362883560410376803, guid: 5f303b8762aa0b4409635f73a68c8d0e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7733126395138182830, guid: 5f303b8762aa0b4409635f73a68c8d0e, type: 3}
       propertyPath: m_Name
       value: UIPopupManager

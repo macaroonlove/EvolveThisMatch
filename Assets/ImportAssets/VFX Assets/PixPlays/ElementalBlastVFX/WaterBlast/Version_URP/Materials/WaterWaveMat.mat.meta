@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 01e225aae262bb449b3d31d30f732625
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 0
+  packageName: Elemental Blasts URP
+  packageVersion: 1.0.0
+  assetPath: Assets/EvolveThisMatch/Art/Global/Unit/02_Poseidon_New/FX/PixPlays/ElementalBlastVFX/WaterBlast/Version_URP/Materials/WaterWaveMat.mat
+  uploadId: 699677

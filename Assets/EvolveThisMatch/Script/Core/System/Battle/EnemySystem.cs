@@ -206,7 +206,8 @@ namespace EvolveThisMatch.Core
             List<EnemyUnit> enemies = new List<EnemyUnit>();
 
             targetDir = targetDir.normalized;
-            float widthThreshold = (width * 0.5f) * (width * 0.5f);
+            float halfWidth = width * 0.5f;
+            float halfWidthSqr = halfWidth * halfWidth;
 
             foreach (EnemyUnit enemy in _enemies)
             {
@@ -219,8 +220,9 @@ namespace EvolveThisMatch.Core
                     if (forwardDist < 0 || forwardDist > range) continue;
 
                     // 유닛을 기준으로한 측면 거리
-                    float sideDist = Vector3.Cross(targetDir, dirVector).sqrMagnitude;
-                    if (sideDist <= widthThreshold)
+                    Vector2 perpendicular = dirVector - targetDir * forwardDist;
+                    float sideDist = perpendicular.sqrMagnitude;
+                    if (sideDist <= halfWidthSqr)
                     {
                         enemies.Add(enemy);
                     }
@@ -693,7 +695,7 @@ namespace EvolveThisMatch.Core
 
             return CheckAttackable(enemies, attackType, maxCount);
         }
-        
+
         internal List<EnemyUnit> GetAttackableEnemies(Vector2Int unitPos, TileRangeTemplate tileRangeTemplate, EAttackType attackType, int maxCount = int.MaxValue)
         {
             var enemies = GetSortedEnemiesInTileTemplate(unitPos, tileRangeTemplate);

@@ -162,14 +162,6 @@ namespace EvolveThisMatch.Core
     }
 
     /// <summary>
-    /// 액티브 스킬 조작 방식
-    /// </summary>
-    public enum EActiveSkillControlType
-    {
-        Instant,
-    }
-
-    /// <summary>
     /// 액티브 스킬 발동 방식
     /// </summary>
     public enum EActiveSkillTriggerType

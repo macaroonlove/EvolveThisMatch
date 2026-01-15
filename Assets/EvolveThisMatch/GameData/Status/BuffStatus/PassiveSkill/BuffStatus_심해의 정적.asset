@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6620224138093380851
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f62e512ba95634fb77f79ee0c2bd40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mutableValue:
+    _enabled: 0
+    _bindKey: 
+    _scaleFactor: 0
+    _scaleBase: 0
+    _effectType: 0
+    _previewScaleBase: 2
+  _elementalValue:
+    _enabled: 0
+    _scaleFactor: 0
+    _elementalType: {fileID: 0}
+    _previewElementalLevel: 1
+  _value: 0.1
+  _previewScaleBase: 2
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d5374d65afbf1140988092280a6fc8c, type: 3}
+  m_Name: "BuffStatus_\uC2EC\uD574\uC758 \uC815\uC801"
+  m_EditorClassIdentifier: 
+  _displayName: "\uC2EC\uD574\uC758 \uC815\uC801"
+  _description: 
+  _delay: 0
+  _useAttackCountLimit: 0
+  _attackCount: 0
+  effects:
+  - {fileID: -6620224138093380851}
+  _applyFX: {fileID: 0}
+  _removeFX: {fileID: 0}

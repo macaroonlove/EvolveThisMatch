@@ -129,6 +129,8 @@ namespace EvolveThisMatch.Core
         #region 상태이상 추가
         private void AddInstance(AbnormalStatusTemplate template, float duration, EffectContext context)
         {
+            if (unit.isDie) return;
+
             // 포함되어 있지 않다면 생성
             StatusInstance statusInstance = new StatusInstance(duration, Time.time);
 

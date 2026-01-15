@@ -203,7 +203,7 @@ Material:
     - _BurnFade: 0
     - _BurnInsideContrast: 3
     - _BurnInsideNoiseFactor: 0.7
-    - _BurnRadius: 10
+    - _BurnRadius: 20
     - _BurnSwirlFactor: 1
     - _BurnWidth: 0.3
     - _CamouflageAnimationToggle: 0
