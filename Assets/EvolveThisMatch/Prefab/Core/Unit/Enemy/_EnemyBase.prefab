@@ -245,7 +245,7 @@ SortingGroup:
   m_GameObject: {fileID: 1736555264916169751}
   m_Enabled: 1
   m_SortingLayerID: 351196539
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_SortAtRoot: 0
 --- !u!114 &-7132471313836108199
@@ -264,7 +264,7 @@ MonoBehaviour:
   _isLookingLeft: 1
   _baseMoveSpeed: 0
   _isLeft: 0
-  _arrivalPoint: {x: 0, y: 0, z: 0}
+  _boundaryX: 0
 --- !u!114 &6499476120074428051
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -78,7 +78,7 @@ namespace EvolveThisMatch.Core
                 _baseMoveSpeed = enemyUnit.enemyData.template.MoveSpeed;
             }
 
-            _scaleX = transform.GetChild(3).localScale.x;
+            _scaleX = transform.GetChild(3).localScale.y;
         }
 
         internal override bool IsExecute()
@@ -93,23 +93,18 @@ namespace EvolveThisMatch.Core
         }
 
         #region 회전
-        private bool IsUnitLeft(Vector3 direction)
-        {
-            Vector3 unitRight = _isLookingLeft ? -unit.transform.forward : unit.transform.forward;
-            float angle = Vector3.SignedAngle(direction, unitRight, Vector3.up);
-
-            return angle > 0f;
-        }
-
         protected void FlipUnit(Vector3 direction)
         {
-            bool isLeft = IsUnitLeft(direction);
+            bool isLeft = direction.x < 0f;
 
+            // 방향이 변하지 않았다면 굳이 회전시키지 않기
             if (_isLeft == isLeft) return;
-
             _isLeft = isLeft;
 
-            float scaleX = isLeft ? -_scaleX : _scaleX;
+            // 기본 방향을 적용
+            bool needFlip = (_isLookingLeft != isLeft);
+
+            float scaleX = needFlip ? -_scaleX : _scaleX;
             transform.GetChild(3).DOScaleX(scaleX, 0.1f);
         }
         #endregion

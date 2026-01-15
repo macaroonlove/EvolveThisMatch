@@ -16,12 +16,13 @@ namespace EvolveThisMatch.Core
         public override void Deliver(EffectContext effectContext, Unit casterUnit, Unit targetUnit)
         {
             if (_isCaster) targetUnit = casterUnit;
+
+            ExecuteTargetFX(targetUnit);
+
             if (casterUnit == null || targetUnit == null) return;
             if (targetUnit.isDie) return;
 
             Resolve(effectContext, casterUnit, targetUnit);
-
-            ExecuteTargetFX(targetUnit);
         }
 
         #region FX

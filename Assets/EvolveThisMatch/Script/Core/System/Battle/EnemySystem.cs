@@ -806,30 +806,116 @@ namespace EvolveThisMatch.Core
         #endregion
 
         /// <summary>
-        /// 범위 내에 가장 가까운 적 유닛을 반환
+        /// 범위 내에서
+        /// 1. 성벽(x=0)에 가장 가까운 적
+        /// 2. 그중에서 unitPos와 가장 가까운 적
+        /// 을 반환
         /// </summary>
-        internal EnemyUnit GetNearestEnemy(Vector2 unitPos, float radius)
+        //internal EnemyUnit GetNearestEnemy(Vector2 unitPos, float radius)
+        //{
+        //    EnemyUnit enemyUnit = null;
+        //    radius *= radius;
+        //    float minWallDistance = Mathf.Infinity;
+        //    float minUnitDistance = Mathf.Infinity;
+
+        //    foreach (EnemyUnit enemy in _enemies)
+        //    {
+        //        if (enemy != null && enemy.isActiveAndEnabled)
+        //        {
+        //            Vector2 enemyPos = enemy.cellPos;
+
+        //            // 이동할 수 있는 범위를 넘어선 위치에 있는 적은 무시
+        //            if (enemyPos.x > 6f) continue;
+
+        //            float unitDistance = (enemyPos - unitPos).sqrMagnitude;
+
+        //            // 적이 범위 내에 존재하는지 확인
+        //            if (unitDistance > radius) continue;
+
+        //            float wallDistance = Mathf.Abs(enemyPos.x);
+
+        //            // 성벽에 가장 가까운 적을 체크
+        //            if (wallDistance < minWallDistance)
+        //            {
+        //                enemyUnit = enemy;
+        //                minWallDistance = wallDistance;
+        //                minUnitDistance = unitDistance;
+        //            }
+        //            // 적과 성벽 사이의 거리가 비슷하다면, unitPos와 가장 가까운 적
+        //            else if (Mathf.Approximately(wallDistance, minUnitDistance))
+        //            {
+        //                if (unitDistance < minUnitDistance)
+        //                {
+        //                    enemyUnit = enemy;
+        //                    minUnitDistance = unitDistance;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return enemyUnit;
+        //}
+
+        internal EnemyUnit GetNearestEnemy(Vector2 unitPos, float radius, float attackRange)
         {
-            EnemyUnit enemyUnit = null;
-            radius *= radius;
-            float nearestDistance = Mathf.Infinity;
+            EnemyUnit bestInAttackRange = null;
+            float minAttackDist = Mathf.Infinity;
+
+            EnemyUnit bestWallTarget = null;
+            float minWallDistance = Mathf.Infinity;
+            float minUnitDistance = Mathf.Infinity;
+
+            float radiusSqr = radius * radius;
+            float attackRangeSqr = attackRange * attackRange;
 
             foreach (EnemyUnit enemy in _enemies)
             {
-                if (enemy != null && enemy.isActiveAndEnabled)
-                {
-                    float distance = (enemy.cellPos - unitPos).sqrMagnitude;
+                if (enemy == null || !enemy.isActiveAndEnabled)
+                    continue;
 
-                    if (distance < nearestDistance && distance <= radius)
+                Vector2 enemyPos = enemy.cellPos;
+
+                // 이동 제한
+                if (enemyPos.x > 6f)
+                    continue;
+
+                float unitDist = (enemyPos - unitPos).sqrMagnitude;
+
+                // 탐색 반경 초과
+                if (unitDist > radiusSqr)
+                    continue;
+
+                if (unitDist <= attackRangeSqr)
+                {
+                    if (unitDist < minAttackDist)
                     {
-                        enemyUnit = enemy;
-                        nearestDistance = distance;
+                        bestInAttackRange = enemy;
+                        minAttackDist = unitDist;
+                    }
+                    continue;
+                }
+
+                float wallDist = Mathf.Abs(enemyPos.x);
+
+                if (wallDist < minWallDistance)
+                {
+                    bestWallTarget = enemy;
+                    minWallDistance = wallDist;
+                    minUnitDistance = unitDist;
+                }
+                else if (Mathf.Abs(wallDist - minWallDistance) < 0.05f)
+                {
+                    if (unitDist < minUnitDistance)
+                    {
+                        bestWallTarget = enemy;
+                        minUnitDistance = unitDist;
                     }
                 }
             }
 
-            return enemyUnit;
+            return bestInAttackRange != null ? bestInAttackRange : bestWallTarget;
         }
+
         #endregion
     }
 }

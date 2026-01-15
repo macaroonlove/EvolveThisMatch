@@ -400,7 +400,7 @@ namespace EvolveThisMatch.Core
 
             onAttack?.Invoke();
             _attackUnitEvent?.Raise(unit, attackTarget);
-
+            
             foreach (var effect in _passiveSkillAbility.attackEventEffects)
             {
                 effect.Deliver(unit.effectContext, unit, attackTarget);
