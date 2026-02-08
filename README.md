@@ -1,5 +1,36 @@
-# 🛡️ EvolveThisMatch (이번판만 키우기)
+# <img src="https://github.com/user-attachments/assets/4ba7c2d5-2668-4043-90b7-b3c528b46af3" height="30"> EvolveThisMatch (이번판만 키우기)
 > **방치형 로그라이크 디펜스**
+
+---
+
+## 📺 Project Showcase
+
+| 에디터 가이드 (Editor View) | 게임 플레이 (Runtime View) |
+| :---: | :---: |
+| ![Editor Video](https://img.shields.io/badge/Editor_Video-R%26D_Focus-blue?style=for-the-badge&logo=youtube) | [![Runtime Video](https://img.youtube.com/vi/A55OV25PP6A/0.jpg)](https://youtu.be/A55OV25PP6A) |
+| *자동화 파이프라인 시연 준비 중* | *이미지를 클릭하면 유튜브 영상으로 이동합니다.* |
+
+---
+
+## 🛠 Project Overview
+
+| 항목 | 상세 내용 |
+| :--- | :--- |
+| **개발 기간** | **2025.06.10 ~ 2026.01.15 (Core Architecture Completed)** |
+| **개발 환경** | Unity 6000.1.2f1 (URP), PlayFab, DOTween, UniTask |
+| **핵심 목표** | **상용 수준의 데이터 자동화 및 서버-클라이언트 보안 아키텍처 수립** |
+
+### 🚀 개발 의도 및 성과 (R&D Purpose)
+본 프로젝트는 단순한 게임 출시가 아닌, **상용 방치형 게임에서 마주하게 될 고난도 기술적 한계들을 스스로 설정하고 이를 해결하는 것**을 최종 목표로 삼았습니다. 모든 시스템이 빌드 후 즉시 서비스 가능한 수준으로 설계되었으며, 핵심 기술 목표를 성공적으로 달성함에 따라 개발을 마무리하였습니다.
+
+#### 1. 주도적 개발의 가치: 프로젝트 통합 시야 확보
+기획부터 시스템 설계, 리소스 관리까지 모든 프로세스를 홀로 수행하며 **프로젝트 전체를 조망하는 통합적인 시야**를 길렀습니다. 기술적 구현에만 매몰되지 않고, 게임 서비스의 지속 가능성을 위한 백엔드와의 긴밀한 결합 구조를 설계하는 법을 학습했습니다.
+
+#### 2. 효율적 설계의 힘: 확장 가능한 구조 설계
+방치형 게임의 방대한 콘텐츠를 1인 개발로 감당하기 위해, 기획 데이터의 변경이 코드 수정 없이 즉시 배포되는 **'데이터 파이프라인 자동화'**를 구축했습니다. 런타임 성능 저하 없는 확장 가능한 구조 설계를 통해, 설계의 완성도가 곧 개발의 효율성임을 증명했습니다.
+
+#### 3. 기술적 완성도의 집착: 안정적인 서비스의 무게
+눈에 보이지 않는 보안과 무결성을 설계 단계부터 치열하게 고민했습니다. 상용 서비스 시 발생할 수 있는 메모리 변조, 패킷 위조 등의 위협에 대비해 **클라이언트-서버 이중 검증 구조**를 확립하며, 기술적 화려함보다 유저에게 변치 않는 신뢰를 제공하는 **'안정적인 서비스의 무게'**를 깊이 있게 체감했습니다.
 
 ---
 
@@ -44,7 +75,7 @@
 ---
 
 ## 2️⃣ Unit & Ability
-유닛은 독립적인 **Ability**들의 집합체로 구성됩니다. 모든 행동은 원자 단위로 쪼개져 **[Unit.cs](링크.cs)**에서 전역적으로 관리됩니다.
+유닛은 독립적인 **Ability**들의 집합체로 구성됩니다. 모든 행동은 원자 단위로 쪼개져 **[Unit](https://github.com/macaroonlove/EvolveThisMatch/blob/main/Assets/EvolveThisMatch/Script/Core/Unit/Unit.cs)**에서 전역적으로 관리됩니다.
 
 ### 🔹 Always Ability
 | 어빌리티 명칭 | 설명 |
@@ -88,6 +119,8 @@
 
 3. **[데이터 계층 (DataEffect)](https://github.com/macaroonlove/EvolveThisMatch/blob/main/Assets/EvolveThisMatch/Script/Core/Effects/Status/Data/DataEffect.cs)**
    - **DataEffect**: 버프나 상태이상처럼 특정 기간 동안 유지되어야 하는 '상태 데이터'입니다. 효과의 지속 시간, 중첩 여부, 종료 시의 회수 로직을 전담합니다.
+
+<img width="1346" height="596" alt="Image" src="https://github.com/user-attachments/assets/553b272c-e2b5-4ec0-9ba2-f4e40a3dfb9c" />
 
 ### 🔹 [MutableValue (가변 수치 시스템)](https://github.com/macaroonlove/EvolveThisMatch/blob/main/Assets/EvolveThisMatch/Script/Core/Effects/MutableValue.cs)
 방치형 게임의 기하급수적인 성장을 제어하기 위한 핵심 클래스입니다.
